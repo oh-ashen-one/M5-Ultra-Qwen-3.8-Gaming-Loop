@@ -59,4 +59,6 @@ First integration proposal: GDQuest code, Easy Vehicle Physics, small authored r
 
 ## Import checklist for the future
 
+Additional **reference-only** skill candidates from the 2026-10-03 research pass: [Superpowers](https://github.com/obra/superpowers/tree/8ca22dba9a94f28898bbce59f2537ff4d87c747d) (MIT; writing-plans, systematic-debugging, verification-before-completion), [wshobson/agents](https://github.com/wshobson/agents/tree/156b7a5e7a8b93642628a339ee4039c925b34c7f) (MIT; Godot patterns require correction/testing), and [awesome-gamedev-agent-skills](https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/d4b0e35550c55ae70bdfcab4ef5a0e94610438a9) (Apache-2.0; headless-testing, game-feel, create-game-assets). They are not imported, trusted wholesale, or installed account-wide. Their instructions require selective review against this project's authorized scope before use.
+
 Select only the needed component; pin repository/ref and hashes; inspect the exact license and file-level exceptions; retain upstream notices; record modifications and transitive dependencies; replace restricted art; prove engine/API compatibility and a red/green acceptance test. A link in this catalog is not permission to copy a whole repository or a claim that it works in this stack.
