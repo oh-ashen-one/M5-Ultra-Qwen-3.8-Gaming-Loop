@@ -70,4 +70,6 @@ For each accepted story, record model artifact/hash, runtime and quantization, a
 
 The local coding target is about 90% of actual accepted gameplay work. Before start, choose a primary attribution metric and audit mixed edits; track accepted tasks and code contributions alongside it. Changed-line counts alone can be inflated by rewrites, and tokens/time are not gameplay authorship. Report the observed share and exceptions honestly rather than assigning cloud repairs to the local model.
 
+Record imported baseline code separately from new integration work. Existing MIT controller/vehicle/harness source was written upstream; it must not be credited as code authored by local Qwen in this run. Disclose inherited source, local changes, cloud rescue and cloud NPC runtime inference separately in video claims.
+
 Only sanitized summaries and redistributable evidence are published. Keep credentials, private transcripts, hidden reasoning, and machine-specific operational paths out of the public ledger.

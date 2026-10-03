@@ -15,6 +15,8 @@ Updated 2026-10-03. Requirement, recommendation, and unresolved choice are separ
 | Native engine priority | Godot or Unity CLI; browser fallback only |
 | Custom art pipeline | Meshy 3D assets plus Blender MCP cleanup, rigging and animation; polished movement, driving, camera, art, lighting and audio |
 | Reuse prior work | Learn from and selectively reuse authorized Ralph/game projects; do not copy private repositories wholesale |
+| Persistent model-powered NPCs | Distinct identity, permitted observations, factual memories and player relationships per NPC; cheap Chinese/GPT models or Jev candidates may share one backend |
+| Honest video claims | Disclose local development versus cloud NPC runtime inference; record observed state, actions, memory changes, latency, costs and fallbacks |
 | Public scope | User-facing research, concise decision rationale, architecture and planning; exclude private chat, hidden reasoning, credentials and private operational records |
 
 ## Current recommendations
@@ -43,3 +45,9 @@ Updated 2026-10-03. Requirement, recommendation, and unresolved choice are separ
 Future entries record date, decision status, concise user-facing rationale, alternatives considered where useful, supporting evidence, and effect on the acceptance contract. A proposed choice becomes confirmed only through explicit approval or verified evidence within an already authorized scope. Do not paste private conversations or hidden reasoning into the record.
 
 The initial documentation publication is complete planning work; it is not a game start decision.
+
+## Source reuse update: 2026-10-03
+
+Bounded, attributed source preparation is authorized. The [import manifest](../reference/IMPORT-MANIFEST.json) includes selected MIT source and excerpts; it does not finalize Godot or qualify runtime behavior. Frameworks are pinned references only. The [NPC architecture](NPC-ARCHITECTURE.md) now includes persistent factual memory and relationships, with provider candidates and dated illustrative prices. No provider is selected or connected.
+
+The [towering-monster investigation note](concepts/TOWERING-MONSTER-INVESTIGATION.md) is a separate original horror concept, not a replacement for the local-loop game scope. Other game/video projects are outside this repository's implementation scope. The explicit-start hold remains in force.

@@ -2,6 +2,18 @@
 
 Research snapshot: 2026-10-03. Star counts are rounded discovery signals, not evidence of suitability. Primary repository metadata, license texts, and documentation informed this list. Versions below are upstream documentary claims or research observations; **nothing is installed, executed, or qualified together for this project**. Recheck exact releases, files, licenses, and compatibility before import.
 
+## Source preparation now included
+
+The user authorized bounded source reuse after the initial documentation publication. Eight small source files/excerpts across five components are now included, with exact refs and full notices in the [import manifest](../reference/IMPORT-MANIFEST.json). [Reference notes](../reference/README.md) list dependencies and integration gaps. The imported set is:
+
+- Ralph's stdlib stuck detector; overseer execution/scheduling remains reference-only.
+- Grindline's real input/physics-frame helpers as an attributed excerpt, not the full game-specific simulation bridge.
+- Space-salvage's error-marker and timeout/exit fragments as non-executable reference text, not its host-specific wrappers.
+- GDQuest's MIT camera script, with no demo art/scenes; full player movement remains a [pinned candidate](https://github.com/gdquest-demos/godot-4-3d-third-person-controller/blob/b3bd6e81084f568be8aa44a69a0c2b1e52e806b3/player/player.gd) because of weapon/UI/skin dependencies.
+- Easy Vehicle Physics' three source-only Vehicle/Wheel/input scripts, with no demo assets or scene.
+
+Everything remains unintegrated and runtime-untested. OpenCode, Blender MCP, Godot MCP and the Unity alternative have [exact dependency-reference pins](DEPENDENCY-PINS.json), not vendored frameworks or installations. The remaining catalog entries remain candidates.
+
 ## Prior user projects
 
 | Public source | Candidate reuse | License and limits |
@@ -11,7 +23,7 @@ Research snapshot: 2026-10-03. Star counts are rounded discovery signals, not ev
 | [grindline](https://github.com/oh-ashen-one/grindline) | Real input/physics simulation bridge and acceptance patterns | [License text](https://github.com/oh-ashen-one/grindline/blob/2c0932270778ee1392f72d9815860987b0b4080c/LICENSE): code MIT; asset notices separate, described as CC0. `NOASSERTION` metadata was resolved by reading the text. Builder lineage includes `ox-alpha` and human management. |
 | [space-salvage](https://github.com/oh-ashen-one/space-salvage) | Godot wrappers, capture, progress and loop-supervision patterns | [License text](https://github.com/oh-ashen-one/space-salvage/blob/172474406bd2801676a3189595c17a3475724945/LICENSE): code MIT; art/audio/fonts separately described as CC0. Gate reliability still needs deliberate red tests. |
 
-Authorized private-source research is not a public dependency or evidence bundle. No private repository content is included in this initial commit. Publishable lessons are expressed as general acceptance requirements rather than private logs.
+Authorized private-source research is not a public dependency or evidence bundle. No private repository content is included. Publishable lessons are expressed as general acceptance requirements rather than private logs.
 
 ## Agent and engine tooling
 
