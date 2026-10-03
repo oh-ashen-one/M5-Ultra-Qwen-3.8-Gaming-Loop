@@ -49,7 +49,11 @@
             438
           ],
           "upstream_excerpt_sha256": "739162d8362a6e7e7cb85dcc1a4e1b30fe8c076b14dabc438fb4352eddc3179e",
-          "modifications": "exact source excerpt; added inheritance/comment wrapper"
+          "modifications": "exact source excerpt; added inheritance/comment wrapper",
+          "upstream_byte_range": [
+            12362,
+            14139
+          ]
         }
       ],
       "license_file": {
@@ -79,7 +83,11 @@
             12
           ],
           "upstream_excerpt_sha256": "5b53b98bd8a6d7a7fd5fbebd4e3f4f7d62b098457640bbbf0630d92b2cdf700f",
-          "modifications": "exact source excerpt; added inheritance/comment wrapper"
+          "modifications": "exact source excerpt; added inheritance/comment wrapper",
+          "upstream_byte_range": [
+            544,
+            590
+          ]
         },
         {
           "path": "reference/vendor/space-verification/timeout_exit_excerpt.sh.txt",
@@ -93,7 +101,11 @@
             15
           ],
           "upstream_excerpt_sha256": "616f1e99ece4c1b2c76e065fd59c9e36d4511f5850ceadeda9fa61f1f3cd4bad",
-          "modifications": "exact source excerpt"
+          "modifications": "exact source excerpt",
+          "upstream_byte_range": [
+            572,
+            664
+          ]
         }
       ],
       "license_file": {
@@ -171,5 +183,6 @@
         "upstream_blob": "2b00ac8ffd2f15920f5c1e4ddbdc75dab3d0474b"
       }
     }
-  ]
+  ],
+  "excerpt_range_convention": "upstream_byte_range uses zero-based offsets with end excluded; line ranges locate context, including partial-line excerpts"
 }
