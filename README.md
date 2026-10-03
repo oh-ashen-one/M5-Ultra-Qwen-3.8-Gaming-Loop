@@ -1,6 +1,6 @@
 # M5 Ultra Qwen 3.8 Gaming Loop
 
-**Status: planning and research only. No game-development loop has started.**
+**Status: planning, research and licensed source preparation. No game-development loop has started.**
 
 An open-source plan for a local-first coding loop that aims to produce a polished, roughly ten-minute playable urban action/driving game. The intended workload is Qwen3.8 27B on the requested M5 Ultra configuration: 256 GB memory and 80 GPU cores. That configuration, the exact model artifact, and its runtime remain to be verified before a future run.
 
@@ -10,7 +10,7 @@ The game should evoke the movement, driving, camera, atmosphere, and mission flo
 
 The future game run comes **after the existing M5 tests and a separate, explicit user instruction to start**. The initial 8–72-hour window is a planning range, subject to an agreed budget and stop conditions. Time alone is never a completion criterion.
 
-This repository currently contains documentation. Publishing it does not authorize model inference, benchmark changes, installations, engine execution, paid generation, or changes to another active project. There is no runnable loop, game, or asset bundle in this initial commit.
+This repository contains documentation and a small, attributed set of unintegrated source references. Publishing or copying source does not authorize model inference, benchmark changes, installations, engine execution, paid generation, or changes to another active project. There is no runnable game, development-loop automation, or asset bundle.
 
 ## What success should mean
 
@@ -25,6 +25,8 @@ One controller coordinates mostly sequential local planner, coder, and tester co
 
 Godot is the current recommendation, with Unity still open. A single agent harness, Blender MCP, and one engine adapter form the proposed lean tooling stack. None of the candidates has been installed or qualified together for this project.
 
+The [source references](reference/README.md) include selected MIT diagnostic, input, camera and vehicle code with pinned refs, checksums and full notices. They are preparation for later qualification, not an integrated game. The [NPC plan](docs/NPC-ARCHITECTURE.md) specifies distinct persistent NPC memories and relationships on a shared backend, and discloses remote runtime brains separately from local Qwen development.
+
 ## Navigation
 
 | Document | Purpose |
@@ -34,11 +36,15 @@ Godot is the current recommendation, with Unity still open. A single agent harne
 | [Prior attempts](docs/PRIOR-ATTEMPTS.md) | Pinned static evidence and limits on success claims |
 | [Asset pipeline](docs/ASSET-PIPELINE.md) | Meshy → Blender → engine, including rigs and animation |
 | [Reuse catalog](docs/REUSE-CATALOG.md) | Prior user projects and external code/tool candidates |
+| [Source references](reference/README.md) | Exact imported files, manifest, notices and integration gaps |
+| [Dependency pins](docs/DEPENDENCY-PINS.json) | Framework refs only; nothing installed |
+| [NPC architecture](docs/NPC-ARCHITECTURE.md) | Legal async decisions, persistent memory, costs and video evidence |
+| [Horror concept](docs/concepts/TOWERING-MONSTER-INVESTIGATION.md) | Separate original monster-investigation discussion |
 | [Decisions](docs/DECISIONS.md) | Confirmed requirements, recommendations, open decisions |
 | [Third-party notices](THIRD_PARTY_NOTICES.md) | Attribution, component licensing, import policy |
 
 ## License and publication scope
 
-[MIT](LICENSE) covers original project material. Third-party components retain their own licenses; the root license does not relicense upstream code, art, model weights, or generated assets. No third-party code or assets are vendored in this initial commit.
+[MIT](LICENSE) covers original project material. Third-party components retain their own notices and licenses. Selected MIT source is listed in the [import manifest](reference/IMPORT-MANIFEST.json); no third-party art, audio, model weights or demo assets are included. The root license does not relicense upstream material or generated assets.
 
 Public records contain research summaries, decisions, plans, and sanitized evidence. Credentials, private conversations, hidden reasoning, private operational records, and machine-specific paths do not belong here.

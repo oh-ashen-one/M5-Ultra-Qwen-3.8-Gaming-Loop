@@ -42,7 +42,7 @@ Keep the external acceptance harness and its configuration outside the coder's w
 
 ## Acceptance and visual evidence
 
-Use a layered gate: import/parse → deterministic input/physics checks → full mission state checks → rendered input-driven playthrough → visual/audio/performance review. Headless tests validate logic; they cannot establish camera feel, final appearance, sound balance, or rendered frame rate.
+Use a layered gate: import/parse → controlled input/physics checks → full mission state checks → rendered input-driven playthrough → visual/audio/performance review. Headless tests validate logic; they cannot establish camera feel, final appearance, sound balance, or rendered frame rate. Fixed seeds/ticks do not guarantee deterministic Godot physics. Use tolerances, repeated native runs, pinned-runtime scenarios and renderer-specific baselines, and qualify one version-matched test framework such as GdUnit4 or GUT.
 
 Run checks against the exact candidate commit and build. Preserve structured exit status, diagnostics, measured assertions, harness hash, seed, settings, and evidence IDs. Parse/autoload/resource errors, missing assertions, unknown test operations, timeouts, and missing outputs fail the gate even if a success string appears. A grep, self-score, screenshot alone, or stale recording cannot prove completion.
 
@@ -69,5 +69,7 @@ Watchdogs observe useful progress, budgets, memory/disk pressure, resource owner
 For each accepted story, record model artifact/hash, runtime and quantization, actual context/settings, role, commit/diff, elapsed time, tool actions, tests, and author class: local, cloud rescue, human, or mixed. Record generated assets and paid-service contributions separately from gameplay coding.
 
 The local coding target is about 90% of actual accepted gameplay work. Before start, choose a primary attribution metric and audit mixed edits; track accepted tasks and code contributions alongside it. Changed-line counts alone can be inflated by rewrites, and tokens/time are not gameplay authorship. Report the observed share and exceptions honestly rather than assigning cloud repairs to the local model.
+
+Record imported baseline code separately from new integration work. Existing MIT controller/vehicle/harness source was written upstream; it must not be credited as code authored by local Qwen in this run. Disclose inherited source, local changes, cloud rescue and cloud NPC runtime inference separately in video claims.
 
 Only sanitized summaries and redistributable evidence are published. Keep credentials, private transcripts, hidden reasoning, and machine-specific operational paths out of the public ledger.

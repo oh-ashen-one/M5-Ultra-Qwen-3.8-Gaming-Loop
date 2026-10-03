@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-03",
+  "scope": "source-only reference preparation; no engine/model execution or installation",
+  "qualification": "not performed",
+  "components": [
+    {
+      "id": "ralph-diagnostics",
+      "repository": "https://github.com/oh-ashen-one/ralph-loop-playbook",
+      "commit": "11f068df8fd2c260d7490adf300dff5cc7067821",
+      "upstream_ref_observed": "main",
+      "license": "MIT",
+      "status": "unintegrated-untested-reference",
+      "files": [
+        {
+          "path": "reference/vendor/ralph-diagnostics/stuck_detector.py",
+          "sha256": "41c2827f9b1339547790cd58c10aaec93e07fa6a5917739589ae121925a621da",
+          "bytes": 4255,
+          "upstream_path": "reference/stuck_detector.py",
+          "upstream_blob": "71753aa4a9e6cb3efa146158d833d3226aef23e6",
+          "upstream_sha256": "41c2827f9b1339547790cd58c10aaec93e07fa6a5917739589ae121925a621da",
+          "modifications": "none; exact upstream file"
+        }
+      ],
+      "license_file": {
+        "path": "reference/vendor/ralph-diagnostics/LICENSE.upstream.txt",
+        "sha256": "160406e2c9609f51e7a742e1908560ad54e39ee124ffa26bae46da7c78bc7b4c",
+        "upstream_path": "LICENSE",
+        "upstream_blob": "05d1ce25f2348e67b9e4317be6fc51da30f12d4b"
+      }
+    },
+    {
+      "id": "grindline-input",
+      "repository": "https://github.com/oh-ashen-one/grindline",
+      "commit": "2c0932270778ee1392f72d9815860987b0b4080c",
+      "upstream_ref_observed": "main",
+      "license": "MIT",
+      "status": "unintegrated-untested-reference",
+      "files": [
+        {
+          "path": "reference/vendor/grindline-input/input_events.gd",
+          "sha256": "1732998246de99725fe8ffcc765414976ec06897ce7717e2c8a4ada7689eab59",
+          "bytes": 1928,
+          "upstream_path": "game/sim/sim_bridge.gd",
+          "upstream_blob": "c00f3c3e3c2d9c38d1a180083b34fb0a956c1bb2",
+          "upstream_sha256": "435b630d1dfa8c9be0d0a6d8b82217367636346f7e3c86d10baa8dbe01737e78",
+          "upstream_line_range": [
+            387,
+            438
+          ],
+          "upstream_excerpt_sha256": "739162d8362a6e7e7cb85dcc1a4e1b30fe8c076b14dabc438fb4352eddc3179e",
+          "modifications": "exact source excerpt; added inheritance/comment wrapper",
+          "upstream_byte_range": [
+            12362,
+            14139
+          ]
+        }
+      ],
+      "license_file": {
+        "path": "reference/vendor/grindline-input/LICENSE.upstream.txt",
+        "sha256": "ae3e06a71631ad3810d7c941e56f6bfac5588860815d6a98335efd721831d81a",
+        "upstream_path": "LICENSE",
+        "upstream_blob": "8ec63a613d4794c3e60eb9efcb79c732da86d1f7"
+      }
+    },
+    {
+      "id": "space-verification",
+      "repository": "https://github.com/oh-ashen-one/space-salvage",
+      "commit": "172474406bd2801676a3189595c17a3475724945",
+      "upstream_ref_observed": "main",
+      "license": "MIT",
+      "status": "unintegrated-untested-reference",
+      "files": [
+        {
+          "path": "reference/vendor/space-verification/parse_error_markers.txt",
+          "sha256": "0ad76099cac72a0dbd08524e2f8c3070934f723da2ffb22e7bd79e80d68b8caf",
+          "bytes": 47,
+          "upstream_path": "scripts/ralph/godot/verify-parse.sh",
+          "upstream_blob": "4b0361272e712a219cb024e08ced87a81f536de1",
+          "upstream_sha256": "696d813fc2e5b87b1b84013b50826c31be38e7140c23b3558e90d8ff80d8c5d1",
+          "upstream_line_range": [
+            12,
+            12
+          ],
+          "upstream_excerpt_sha256": "5b53b98bd8a6d7a7fd5fbebd4e3f4f7d62b098457640bbbf0630d92b2cdf700f",
+          "modifications": "exact source excerpt; added inheritance/comment wrapper",
+          "upstream_byte_range": [
+            544,
+            590
+          ]
+        },
+        {
+          "path": "reference/vendor/space-verification/timeout_exit_excerpt.sh.txt",
+          "sha256": "616f1e99ece4c1b2c76e065fd59c9e36d4511f5850ceadeda9fa61f1f3cd4bad",
+          "bytes": 92,
+          "upstream_path": "scripts/ralph/godot/verify-sim.sh",
+          "upstream_blob": "56b4878146d64e64a00b53783d7400bac1672710",
+          "upstream_sha256": "58fc6edcb4efff11006b3a9919ea3704e9f10fc20bb3e727ed68daac9ed829ff",
+          "upstream_line_range": [
+            13,
+            15
+          ],
+          "upstream_excerpt_sha256": "616f1e99ece4c1b2c76e065fd59c9e36d4511f5850ceadeda9fa61f1f3cd4bad",
+          "modifications": "exact source excerpt",
+          "upstream_byte_range": [
+            572,
+            664
+          ]
+        }
+      ],
+      "license_file": {
+        "path": "reference/vendor/space-verification/LICENSE.upstream.txt",
+        "sha256": "af7a5b7e97167f19382f8d7379d07bef5ec6575a08ce0692830fac91bba8f85d",
+        "upstream_path": "LICENSE",
+        "upstream_blob": "b559c65e907b1d8b521e48a695d1d76bb377a527"
+      }
+    },
+    {
+      "id": "gdquest-camera",
+      "repository": "https://github.com/gdquest-demos/godot-4-3d-third-person-controller",
+      "commit": "b3bd6e81084f568be8aa44a69a0c2b1e52e806b3",
+      "upstream_ref_observed": "main",
+      "license": "MIT code; upstream license file also describes excluded CC-BY-NC-SA-4.0 art",
+      "status": "unintegrated-untested-reference",
+      "files": [
+        {
+          "path": "reference/vendor/gdquest-camera/camera_controller.gd",
+          "sha256": "acd5243e0a8a4cdff4852bef6b3a7aad69abcea842a275a59908a1ac31717dcb",
+          "bytes": 3342,
+          "upstream_path": "player/camera_controller.gd",
+          "upstream_blob": "3284ea2b2d0fdc8d9228d51e7a83fa6c995bbd77",
+          "upstream_sha256": "acd5243e0a8a4cdff4852bef6b3a7aad69abcea842a275a59908a1ac31717dcb",
+          "modifications": "none; exact upstream file"
+        }
+      ],
+      "license_file": {
+        "path": "reference/vendor/gdquest-camera/LICENSE.upstream.txt",
+        "sha256": "c298531e638430618d5f68ca9e1be23d3e6510173aa764068c3f7e3fcf25d140",
+        "upstream_path": "LICENSE",
+        "upstream_blob": "58dd0f4da2b237cbe2ab8d8a7f14f75cf9f88d0c"
+      }
+    },
+    {
+      "id": "easy-vehicle-physics",
+      "repository": "https://github.com/DAShoe1/Godot-Easy-Vehicle-Physics",
+      "commit": "c392257f54f6ca537dc10bc5badad0c060f18982",
+      "upstream_ref_observed": "main",
+      "license": "MIT",
+      "status": "unintegrated-untested-reference",
+      "files": [
+        {
+          "path": "reference/vendor/easy-vehicle-physics/vehicle.gd",
+          "sha256": "24bd3ef06ef6a3f4792ed2502f8fea784dbed37bf7c707dd908fc77169740bc3",
+          "bytes": 45652,
+          "upstream_path": "addons/gevp/scripts/vehicle.gd",
+          "upstream_blob": "cbe54918dc2d7f9d164812a907e4568ca13dd18f",
+          "upstream_sha256": "24bd3ef06ef6a3f4792ed2502f8fea784dbed37bf7c707dd908fc77169740bc3",
+          "modifications": "none; exact upstream file"
+        },
+        {
+          "path": "reference/vendor/easy-vehicle-physics/wheel.gd",
+          "sha256": "3608cea80937798457c75291e73ae83f1598ba44b0e848abcf0186b0318da73e",
+          "bytes": 13767,
+          "upstream_path": "addons/gevp/scripts/wheel.gd",
+          "upstream_blob": "098dc762a96881ba343c6337d53a001736defe2e",
+          "upstream_sha256": "3608cea80937798457c75291e73ae83f1598ba44b0e848abcf0186b0318da73e",
+          "modifications": "none; exact upstream file"
+        },
+        {
+          "path": "reference/vendor/easy-vehicle-physics/vehicle_controllergd.gd",
+          "sha256": "f7ae201a5f5f75b8b7b7640df55cc303e9ac1100cc29e7ab88b3d63fb3cdf8ec",
+          "bytes": 4290,
+          "upstream_path": "addons/gevp/scripts/vehicle_controllergd.gd",
+          "upstream_blob": "29d63e3002148209db49c33349af1ae6c8de8621",
+          "upstream_sha256": "f7ae201a5f5f75b8b7b7640df55cc303e9ac1100cc29e7ab88b3d63fb3cdf8ec",
+          "modifications": "none; exact upstream file"
+        }
+      ],
+      "license_file": {
+        "path": "reference/vendor/easy-vehicle-physics/LICENSE.upstream.txt",
+        "sha256": "4015874521f575a794fc7e07c1956cf6b7bcd9afcc70e04efe8cc56fc318a93f",
+        "upstream_path": "LICENSE",
+        "upstream_blob": "2b00ac8ffd2f15920f5c1e4ddbdc75dab3d0474b"
+      }
+    }
+  ],
+  "excerpt_range_convention": "upstream_byte_range uses zero-based offsets with end excluded; line ranges locate context, including partial-line excerpts"
+}

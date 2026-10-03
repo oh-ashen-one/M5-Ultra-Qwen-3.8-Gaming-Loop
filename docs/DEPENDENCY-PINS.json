@@ -1,0 +1,46 @@
+{
+  "reviewed_on": "2026-10-03",
+  "qualification": "not performed; exact package/release mapping must be verified before installation",
+  "references": [
+    {
+      "repository": "https://github.com/anomalyco/opencode",
+      "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+      "ref_observed": "dev",
+      "license": "MIT",
+      "license_source": "https://github.com/anomalyco/opencode/blob/907b3bc518fa48e90e8ec24dd327d13eee71c36c/LICENSE",
+      "license_sha256_reviewed": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+      "status": "reference-only-not-installed",
+      "role": "proposed dependency; not finalized"
+    },
+    {
+      "repository": "https://github.com/ahujasid/mcp-for-blender",
+      "commit": "60d2a31b4632a7bc178f3dd636f7e68dfb5c8ae4",
+      "ref_observed": "main",
+      "license": "MIT",
+      "license_source": "https://github.com/ahujasid/mcp-for-blender/blob/60d2a31b4632a7bc178f3dd636f7e68dfb5c8ae4/LICENSE",
+      "license_sha256_reviewed": "049501fd54d27852507853a5b88094ca1c6ff97404418a5032f3310eecc9cde6",
+      "status": "reference-only-not-installed",
+      "role": "proposed dependency; not finalized"
+    },
+    {
+      "repository": "https://github.com/Coding-Solo/godot-mcp",
+      "commit": "1209744fad78f3998f98c7394fd0f6ef50da5281",
+      "ref_observed": "main",
+      "license": "MIT",
+      "license_source": "https://github.com/Coding-Solo/godot-mcp/blob/1209744fad78f3998f98c7394fd0f6ef50da5281/LICENSE",
+      "license_sha256_reviewed": "7b41e467235966a8618b806a9eb79982cff82454218488ff736b346a9e8a06ff",
+      "status": "reference-only-not-installed",
+      "role": "proposed dependency; not finalized"
+    },
+    {
+      "repository": "https://github.com/CoplayDev/unity-mcp",
+      "commit": "d49ae2953580f3481beb1e084a1da2682f0b5610",
+      "ref_observed": "v10.0.0",
+      "license": "MIT",
+      "license_source": "https://github.com/CoplayDev/unity-mcp/blob/d49ae2953580f3481beb1e084a1da2682f0b5610/LICENSE",
+      "license_sha256_reviewed": "6efe650c965012ac418238dcd6b9116e4130a5220717ef0dfb539dd159c4245c",
+      "status": "reference-only-not-installed",
+      "role": "Unity alternative only"
+    }
+  ]
+}

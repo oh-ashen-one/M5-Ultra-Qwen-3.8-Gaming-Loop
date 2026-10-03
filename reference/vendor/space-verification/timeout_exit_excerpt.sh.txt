@@ -1,0 +1,3 @@
+CODE=$?
+[ $CODE -eq 142 ] && { echo "sim timed out after ${TIMEOUT}s"; exit 1; }
+exit $CODE
