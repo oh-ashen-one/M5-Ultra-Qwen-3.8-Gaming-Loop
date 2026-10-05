@@ -1,6 +1,7 @@
 from pathlib import Path
 import sys
 import unittest
+from copy import deepcopy
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from inspect_combat_contracts import summarize_combat
@@ -62,10 +63,7 @@ class CombatObservationTests(unittest.TestCase):
         self.assertIn('rival-import-basis-or-visible-scale-invalid',inspect_combat_contract(rows,'wall')['failure'])
 
     def test_driving_pursuit_and_damage_cannot_use_near_inactive_foot_actor(self):
-        rows=self.rows()
-        for i,row in enumerate(rows):
-            row.update(mode='vehicle',pursuit=0)
-            row['rivals'][0].update(actorDistance=23,position=[0,0,i*.2])
+        rows=self.driving_rows(23)
         self.assertTrue(inspect_combat_contract(rows,'driving')['passed'])
         rows[-1].update(pursuit=3,health=96)
         failures=inspect_combat_contract(rows,'driving')['failure']
@@ -73,13 +71,29 @@ class CombatObservationTests(unittest.TestCase):
         self.assertIn('damage-outside-actual-controlled-actor-range',failures)
 
     def test_coverage_matches_actual_18m_escape_rule_without_extra_margin(self):
-        rows=self.rows()
-        for i,row in enumerate(rows):
-            row.update(mode='vehicle',pursuit=0)
-            row['rivals'][0].update(actorDistance=18.11,position=[0,0,i*.2])
+        rows=self.driving_rows(18.11)
         self.assertTrue(inspect_combat_contract(rows,'driving')['passed'])
         for row in rows:row['rivals'][0]['actorDistance']=17.99
         self.assertIn('driving-escape-distance-not-exercised',inspect_combat_contract(rows,'driving')['failure'])
+
+    def driving_rows(self,distance):
+        rows=deepcopy(self.rows()+self.rows())
+        for i,row in enumerate(rows):
+            row.update(time=7+i*.1,mode='vehicle',pursuit=3 if i==0 else 0)
+            row['rivals'][0].update(actorDistance=3 if i==0 else distance,position=[0,0,i*.2])
+        return rows
+
+    def test_escape_requires_two_continuous_seconds_not_reset_or_single_crossing(self):
+        rows=self.driving_rows(20)
+        for i,row in enumerate(rows):
+            if i!=10:row['pursuit']=3;row['rivals'][0]['actorDistance']=17
+        self.assertIn('sustained-driving-escape-not-established',inspect_combat_contract(rows,'driving')['failure'])
+        rows=self.driving_rows(20)
+        for row in rows[1:]:row['restarts']=1
+        self.assertIn('sustained-driving-escape-not-established',inspect_combat_contract(rows,'driving')['failure'])
+        rows=self.driving_rows(20)
+        for i,row in enumerate(rows):row['time']=7+i*.5
+        self.assertIn('sustained-driving-escape-not-established',inspect_combat_contract(rows,'driving')['failure'])
 
     def test_combined_replay_preserves_the_accepted_input_route_after_real_reset(self):
         prior=dict(steps=[dict(start=4,end=5,keys=['W']),dict(start=14.3,end=14.6,keys=['F'])])

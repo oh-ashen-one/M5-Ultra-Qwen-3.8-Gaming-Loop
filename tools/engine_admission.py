@@ -35,7 +35,7 @@ def ownership(rows,baseline,lease=None):
         'foreign_renderer_pids':foreign,'renderer_cap':2,'owner_identity_valid':valid_owner if lease else None}
 
 
-def snapshot(coordination=None,baseline=(),lease=None,process_module=None):
+def snapshot(coordination=None,baseline=None,lease=None,process_module=None):
     if process_module is None:import psutil as process_module
     from unity_smoke import renderer_process
     rows=[]
@@ -81,4 +81,6 @@ def snapshot(coordination=None,baseline=(),lease=None,process_module=None):
         (lease and (p['pid']==lease.get('controller_pid') or p.get('pgid')==lease.get('engine_pid')))]
     return {'captured_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'host_scope':'local-machine-only',
         'processes':relevant,'slots':slots,'leases':records,'lease':lease,
-        'decision':ownership(rows,list(baseline),lease),'shared_paused':(base/'PAUSED').exists()}
+        'decision':ownership(rows,list(baseline),lease) if baseline is not None else
+            {'status':'observation-only','active_renderer_pids':[p['pid'] for p in rows if p.get('renderer')]},
+        'shared_paused':(base/'PAUSED').exists()}

@@ -34,6 +34,20 @@ def inspect_combat_contract(rows,kind):
         facts['far_pursuit_levels']=sorted({r['pursuit'] for r,v in far})
         facts['escape_samples']=[dict(time=r['time'],distance=v['actorDistance'],pursuit=r['pursuit'],
             restarts=r.get('restarts',0)) for r,v in far]
+        longest=0.;start=None;previous=None;had_pursuit=False
+        for row,v in driving:
+            if previous and row.get('restarts',0)!=previous.get('restarts',0):
+                start=None;had_pursuit=False
+            had_pursuit=had_pursuit or row.get('pursuit',0)>0
+            escaped=had_pursuit and row.get('pursuit')==0 and v['actorDistance']>18.0
+            if escaped:
+                if start is None or (previous and row['time']-previous['time']>.25):start=row['time']
+                longest=max(longest,row['time']-start)
+            else:start=None
+            previous=row
+        facts['longest_continuous_escape_seconds']=round(longest,3)
+        facts['required_continuous_escape_seconds']=2.0
+        if longest<2.0:failed.append('sustained-driving-escape-not-established')
         if not driving:failed.append('actual-driving-not-exercised')
         if not far:failed.append('driving-escape-distance-not-exercised')
         elif any(r.get('pursuit')!=0 for r,v in far):failed.append('pursuit-does-not-follow-actual-vehicle-distance')
