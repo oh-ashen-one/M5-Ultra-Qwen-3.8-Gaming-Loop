@@ -15,6 +15,8 @@ namespace ChicagoGame
                 ? UnityEngine.Object.Instantiate(streetPrefab)
                 : new GameObject("Street");
             street.name = "Street";
+            street.transform.eulerAngles = new Vector3(0f, 90f, 0f);
+            street.transform.position = new Vector3(-0.9f, 0f, 7f);
             static GameObject Coupe() { var p = Resources.Load<GameObject>("Generated/coupe/scene"); return p ? UnityEngine.Object.Instantiate(p) : null; }
             static GameObject Props() { var p = Resources.Load<GameObject>("Generated/props/scene"); return p ? UnityEngine.Object.Instantiate(p) : null; }
             var props = Props(); if (props != null) { props.name = "Props"; props.transform.position = new Vector3(-4.5f, 0f, 10.3f); props.transform.eulerAngles = new Vector3(0f, 90f, 0f); }
