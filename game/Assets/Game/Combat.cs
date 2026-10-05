@@ -250,8 +250,13 @@ namespace ChicagoGame
             int level = 0;
             if (encounterLive && rival != null && rival.alive)
             {
-                float d = Vector3.Distance(
-                    player.position, rivalGo.position);
+                Transform actor = player;
+                if (ReadStr("Mode") == "vehicle")
+                {
+                    var v = LoopSignals.Vehicle;
+                    if (v) actor = v;
+                }
+                float d = Vector3.Distance(actor.position, rivalGo.position);
                 if (d < 5f) level = 3;
                 else if (d < 10f) level = 2;
                 else if (d < 18f) level = 1;
