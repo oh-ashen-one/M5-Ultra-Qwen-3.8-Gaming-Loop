@@ -1,10 +1,10 @@
 # Architecture
 
-Updated 2026-10-05. The game controller below is proposed and held. The current implementation supplies a resident Flash-Next service, settings fixtures and a bounded image/tool warm-up; see [runtime readiness](FLASH-NEXT-READINESS.md). Role scheduling, durable recovery, acceptance promotion, fresh gameplay criticism and ongoing manager reporting are not implemented.
+Updated 2026-10-05. The approved Chicago controller now implements serial role sessions, mediated edits, scoped Blender export, native Unity build/play, fresh criticism, durable state and bounded recovery. Native green/red qualification and twelve CPU fixtures pass. See the [controller runbook](CONTROLLER-RUNBOOK.md) for implementation, operating limits and remaining evidence gaps. The design principles below remain applicable; proposals beyond those implemented capabilities are not completion claims.
 
 ## Roles and flow
 
-Parent midir manages project direction and approvals. The planned execution lead will coordinate serial local Qwen planner, coder, tester and fresh visual-critic contexts and report real artifacts, gaps and blockers. One Flash-Next model is currently resident. The proposed roles require separate histories and permissions; the warm-up is not that controller. The existing process supervisor checks resources and service availability and stops its owned server on faults; external alarm delivery remains unimplemented. Keep generation and rendering bounded and task-owned. Disposable connector tests do not authorize the game loop.
+Parent dot manages project direction through its existing oversight schedule. The execution controller coordinates serial local Qwen planning, game coding and fresh visual criticism, with fixed external engine tests between builder and critic. Each role receives a separate private history. One Flash-Next model remains resident and yields shared admission while the owned engine runs. The supervisor stops its owned service on a resource fault; the controller records readable blockers and never silently restarts it. The owner's later full-run instruction authorizes the Chicago loop after qualification.
 
 ```mermaid
 flowchart TD

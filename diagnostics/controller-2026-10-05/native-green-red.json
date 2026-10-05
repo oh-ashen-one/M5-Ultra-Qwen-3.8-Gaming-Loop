@@ -1,0 +1,49 @@
+{
+  "art": {
+    "ok": true,
+    "scope": "reused verified prior original export"
+  },
+  "asset_author": "unchanged prior local Qwen original Blender source",
+  "evidence_sha256": "204481c7f1aaa3edd35d137f64163100984752503ae8757339d60f6e7aafd13f",
+  "finished_utc": "2026-10-05T06:12:30.048813+00:00",
+  "fixture_author": "cloud infrastructure",
+  "game_started": false,
+  "green": {
+    "build_exit": 0,
+    "build_id": "eb8ef015a79d1cb91d2a9bdc41507144196a2802714104cb8a790c7de00cc0e9",
+    "candidate_commit": "disposable-fixture",
+    "capture_id": "native-green",
+    "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+    "compile_errors": [],
+    "coverage": "foundation",
+    "duration": 16.01675796508789,
+    "failure": null,
+    "frame_count": 4,
+    "harness_sha256": "505b4d04f088b094ae3a7d1dba7625cffca6a94e84180b52be753e6c20d60986",
+    "passed": true,
+    "performance_claim": "unqualified; shared renderer and capture overhead",
+    "player_displacement": 16.094,
+    "player_exit": 0,
+    "samples": 140,
+    "vehicle_displacement": 0
+  },
+  "red": {
+    "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+    "coverage": "foundation",
+    "duration": 16.00180435180664,
+    "failure": [
+      "input-driven-player-movement",
+      "unchanging-captures"
+    ],
+    "frame_count": 4,
+    "passed": false,
+    "performance_claim": "unqualified; shared renderer and capture overhead",
+    "player_displacement": 0.0,
+    "player_exit": 0,
+    "samples": 141,
+    "vehicle_displacement": 0
+  },
+  "scope": "disposable controller fixture, not Chicago game output",
+  "started_utc": "2026-10-05T06:11:34.857798+00:00",
+  "status": "PASS"
+}

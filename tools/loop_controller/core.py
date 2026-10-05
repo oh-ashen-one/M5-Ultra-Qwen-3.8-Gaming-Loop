@@ -169,7 +169,7 @@ class Files:
     def tree(self):
         return [{"path": str(p.relative_to(self.root)), "bytes": p.stat().st_size}
                 for p in sorted(self.root.rglob("*")) if p.is_file() and not p.is_symlink()
-                and p.parts[len(self.root.parts)] in ("Assets", "Art", "Notes", "Packages", "ProjectSettings")
+                and p.parts[len(self.root.parts)] in ("Assets", "Art", "ArtSources", "Notes", "Packages", "ProjectSettings")
                 and p.suffix != ".meta"][:1500]
 
     def read(self, path, start_line=1, line_count=140):
@@ -217,13 +217,18 @@ class Files:
 def seal(directory, metadata):
     directory = Path(directory)
     entries = []
-    for p in sorted(directory.rglob("*")):
-        if p.is_symlink():
-            raise Halt("Evidence contains a symlink")
-        if p.is_file() and p.name != "manifest.json":
-            entries.append({"path": str(p.relative_to(directory)), "bytes": p.stat().st_size,
-                            "sha256": sha(p.read_bytes())})
-    value = {**metadata, "sealed_utc": now(), "files": entries}
+    for base, dirs, names in os.walk(directory):
+        # Engine caches/builds have their own build digest and source commit;
+        # only durable observation records belong in this evidence manifest.
+        dirs[:] = sorted(d for d in dirs if d not in ("project", "build", "tmp"))
+        for name in sorted(names):
+            p = Path(base) / name
+            if p.is_symlink():
+                raise Halt("Evidence contains a symlink")
+            if p.is_file() and p != directory / "manifest.json":
+                entries.append({"path": str(p.relative_to(directory)), "bytes": p.stat().st_size,
+                                "sha256": sha(p.read_bytes())})
+    value = {**metadata, "sealed_utc": now(), "excluded_regenerable_dirs": ["project", "build", "tmp"], "files": entries}
     atomic(directory / "manifest.json", value)
     return sha((directory / "manifest.json").read_bytes())
 

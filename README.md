@@ -1,6 +1,6 @@
 # M5 Ultra Qwen 3.8 Gaming Loop
 
-**Status: the Chicago overnight run is authorized. The durable local controller is implemented and undergoing native adapter qualification before launch. No playable Chicago result is claimed yet.**
+**Status: the Chicago overnight run is authorized. The durable local controller passes native Unity green/red qualification and twelve recovery/boundary tests. No playable Chicago result is claimed yet.** See the [controller runbook](docs/CONTROLLER-RUNBOOK.md) and [qualification evidence](diagnostics/controller-2026-10-05/README.md).
 
 An open-source plan for a local-first coding loop that aims to produce a polished, roughly ten-minute playable urban action/driving game. The M5 Ultra was verified with 256 GB memory and 80 GPU cores. The selected model is now `mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp`, pinned and loaded through isolated oMLX 0.6.4. See [current readiness](docs/FLASH-NEXT-READINESS.md) for exact settings, evidence and launch blockers. Earlier 27B BF16 records are historical.
 
@@ -10,7 +10,7 @@ The game should evoke the movement, driving, camera, atmosphere, and mission flo
 
 The existing M5 tests are closed. The owner subsequently authorized implementing the controller, qualifying it, and starting the full Chicago run autonomously. [The consolidated brief](docs/CHICAGO-BRIEF.md) is authoritative. The initial controller has a 12-hour wall-clock bound with bounded failure recovery; time and round counts never imply completion. Parent dot supplies the existing 30-minute oversight schedule.
 
-This repository contains documentation, a durable serial controller, native Unity/Blender adapters, bounded diagnostic tools, generated Chicago visual targets and a small attributed set of source references. Actual game code/art comes from local Qwen on a separate game branch. Public progress must distinguish controller qualification, generated targets and actual game evidence.
+This repository contains documentation, a durable serial controller, native Unity/Blender adapters, bounded diagnostic tools, descriptions of private Chicago visual targets and a small attributed set of source references. Actual game code/art comes from local Qwen on a separate game branch. Public progress must distinguish controller qualification, generated targets and actual game evidence.
 
 ## What success should mean
 
@@ -23,7 +23,7 @@ This repository contains documentation, a durable serial controller, native Unit
 
 Parent midir manages project direction and approvals; the execution lead performs approved work and reports evidence and blockers. Separate, serial local Qwen planner, coder, tester and visual-critic contexts receive exact context and mediated tools. Protected acceptance checks govern checkpoint promotion. A fresh local critic returns three to five prioritized fixes from actual gameplay evidence; disclosed cloud supervision can spot-review and escalate. See [Architecture](docs/ARCHITECTURE.md).
 
-The owner selected native Unity CLI/C# for the initial game, with local Blender tools as needed. Unity 6000.6.4f1 import, C# compilation and Metal rendering passed with active editor licensing. The production render pipeline, game adapter and live Editor Pipeline/MCP remain unqualified. Godot source references remain useful lessons for the planned Unity implementation.
+The owner selected native Unity CLI/C# with local Blender tools. Unity 6000.6.4f1 native compilation, Metal play, input replay and real captures pass with active editor licensing. The first controller uses the Built-in Render Pipeline and fixed CLI adapters. Live Editor Pipeline/MCP is not required by this route and remains unqualified. Godot references remain useful design lessons.
 
 The [source references](reference/README.md) include selected MIT diagnostic, input, camera and vehicle code with pinned refs, checksums and full notices. They are preparation for later qualification, not an integrated game. The [NPC plan](docs/NPC-ARCHITECTURE.md) specifies distinct persistent NPC memories and relationships on a shared backend, and discloses remote runtime brains separately from local Qwen development.
 

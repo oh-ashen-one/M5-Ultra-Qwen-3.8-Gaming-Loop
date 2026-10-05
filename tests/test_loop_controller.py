@@ -3,15 +3,18 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
+import struct
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
+import zlib
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"tools"))
 from loop_controller.core import Files, Halt, Store, atomic, failure_key, seal, sha, verify_seal
 from loop_controller.adapters import evaluate_runtime, sandbox_profile
 from loop_controller.model import conservative_prompt_bound
-from loop_controller.runner import scenario_for
+from loop_controller.runner import Runner, git, scenario_for
 
 
 class ControllerTests(unittest.TestCase):
@@ -69,8 +72,12 @@ class ControllerTests(unittest.TestCase):
         atomic(path/"runtime-result.json",{"completed":True,"errors":0,"capture_id":"test","graphics":"Metal","duration":2})
         rows=[{"time":i/10,"camera":True,"player":[i/5 if moves else 0,0,0],"vehicle":None,"keys":["W"]} for i in range(21)]
         (path/"trace.jsonl").write_text("\n".join(json.dumps(row) for row in rows))
-        # Deliberately synthetic evaluator fixtures, not real image/play evidence.
-        for i in range(2):(path/f"frame-{i:03d}.png").write_bytes(b"\x89PNG\r\n\x1a\n"+bytes([i]))
+        # Deliberately synthetic evaluator fixtures, never actual image/play evidence.
+        def chunk(kind,data):return struct.pack(">I",len(data))+kind+data+struct.pack(">I",zlib.crc32(kind+data)&0xffffffff)
+        for i in range(2):
+            pixels=(b"\x00"+bytes([i,10,20])*320)*180
+            png=b"\x89PNG\r\n\x1a\n"+chunk(b"IHDR",struct.pack(">IIBBBBB",320,180,8,2,0,0,0))+chunk(b"IDAT",zlib.compress(pixels))+chunk(b"IEND",b"")
+            (path/f"frame-{i:03d}.png").write_bytes(png)
         return path,scenario
 
     def test_stationary_runtime_rejected_despite_success_sentinel(self):
@@ -97,6 +104,48 @@ class ControllerTests(unittest.TestCase):
     def test_failure_fingerprint_ignores_round_identity(self):
         self.assertEqual(failure_key({"compile_errors":["/tmp/r0001-aaaaaaaa/project/Assets/Game/A.cs error CS123"]}),
                          failure_key({"compile_errors":["/tmp/r0002-bbbbbbbb/project/Assets/Game/A.cs error CS123"]}))
+
+    def source_runner(self):
+        repo=self.root/"repo";repo.mkdir()
+        git(repo,"init","-q")
+        git(repo,"config","user.name","Controller test")
+        git(repo,"config","user.email","test@example.invalid")
+        project=repo/"game";project.mkdir()
+        (project/"fixture.cs").write_text("accepted")
+        (repo/"outside.txt").write_text("preserve unrelated repository content")
+        git(repo,"add",".");git(repo,"commit","-qm","accepted fixture")
+        runner=Runner.__new__(Runner)
+        runner.store=self.store;runner.repo=repo;runner.project=project
+        runner.c={"push_checkpoints":False,"identical_failure_limit":2,"rollback_limit":1}
+        runner.model=SimpleNamespace(ready=lambda:None)
+        return runner
+
+    def test_recovery_preserves_interrupted_edits_and_abandons_pending_actions(self):
+        runner=self.source_runner()
+        (runner.project/"fixture.cs").write_text("interrupted actual edit")
+        self.store.set(current_round="r0001-test",stage="building")
+        self.store.begin_action("interrupted","blender",{"script":"Art/test.py"})
+        runner.recover()
+        self.assertEqual(git(runner.repo,"show","HEAD:game/fixture.cs"),"interrupted actual edit")
+        self.assertEqual(self.store.get("stage"),"idle")
+        self.assertEqual(self.store.get("recovery_count"),1)
+        self.assertFalse(self.store.incomplete())
+        runner.recover()
+        self.assertEqual(self.store.get("recovery_count"),1)
+
+    def test_repeated_failure_restores_only_owned_game_and_preserves_failed_candidate(self):
+        runner=self.source_runner();accepted=git(runner.repo,"rev-parse","HEAD")
+        self.store.set(accepted_checkpoint=accepted)
+        (runner.project/"fixture.cs").write_text("broken candidate")
+        candidate=runner.checkpoint_source("failed fixture")
+        feedback={"failure":"input-driven-player-movement"}
+        runner.reject(feedback,candidate);runner.reject(feedback,candidate)
+        self.assertEqual((runner.project/"fixture.cs").read_text(),"accepted")
+        self.assertEqual(git(runner.repo,"show",candidate+":game/fixture.cs"),"broken candidate")
+        self.assertEqual((runner.repo/"outside.txt").read_text(),"preserve unrelated repository content")
+        self.assertEqual(self.store.get("rollback_count"),1)
+        runner.reject(feedback,candidate)
+        with self.assertRaises(Halt):runner.reject(feedback,candidate)
 
 
 if __name__=="__main__":unittest.main()

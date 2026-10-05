@@ -7,9 +7,12 @@ from pathlib import Path
 import re
 import shutil
 import signal
+import struct
 import subprocess
+import tempfile
 import time
 import uuid
+import zlib
 
 try:
     import psutil
@@ -25,11 +28,12 @@ def sandbox_profile(writable, readable, private_root, token_file, protected=()):
     # Default OS reads/mach services remain available for installed signed tools;
     # writes are scoped and the run's private state/credentials are unreadable.
     write_except = " ".join("(require-not (subpath " + lit(p) + "))" for p in writable)
+    write_except += ' (require-not (literal "/dev/null"))'
     read_except = " ".join("(require-not (subpath " + lit(p) + "))" for p in readable)
     return ("(version 1)\n(allow default)\n"
             "(deny file-write* (require-all " + write_except + "))\n"
-            "(deny file-read* (literal " + lit(token_file) + "))\n"
-            "(deny file-read* (require-all (subpath " + lit(private_root) + ") " + read_except + "))\n"
+            "(deny file-read-data (literal " + lit(token_file) + "))\n"
+            "(deny file-read-data (require-all (subpath " + lit(private_root) + ") " + read_except + "))\n"
             "(deny network*)\n(allow network* (local unix-socket) (remote unix-socket))\n" +
             "".join("(deny file-write* (literal " + lit(p) + "))\n" for p in protected))
 
@@ -103,17 +107,32 @@ class Machine:
             while ack.exists() and time.monotonic() < deadline:
                 time.sleep(0.25)
 
-    def execute(self, label, argv, cwd, output, timeout, env_extra=None, protected=()):
+    def execute(self, label, argv, cwd, output, timeout, env_extra=None, protected=(), writable_roots=None):
         output = Path(output)
         output.mkdir(parents=True, exist_ok=True)
-        temp = output / "tmp"
-        temp.mkdir()
+        # Darwin Unix-domain sockets allow only 104 bytes; Bee adds its own
+        # nested directory and socket name. Keep owned IPC scratch deliberately short.
+        temp = Path(tempfile.mkdtemp(prefix="ql-", dir="/private/tmp"))
         profile = output / "execution.sb"
-        readable = [cwd, output, Path(argv[0]).resolve().parent.parent]
-        profile.write_text(sandbox_profile([cwd, output], readable, self.store.root,
+        executable = Path(argv[0]).resolve()
+        # CoreFoundation discovers the main bundle by enumerating the .app root,
+        # not just Contents. Denying that read makes Unity's native startup dereference
+        # a missing bundle path before it can emit a player log.
+        bundle = next((p for p in executable.parents if p.suffix == ".app"), executable.parent)
+        readable = [cwd, output, bundle]
+        # Unity's native lock/IPC helpers use Darwin's per-user temporary path
+        # even when TMPDIR is scoped. These are OS scratch roots, never projects.
+        darwin_temp = subprocess.check_output(["getconf", "DARWIN_USER_TEMP_DIR"], text=True).strip()
+        writable = [cwd] if writable_roots is None else list(writable_roots)
+        profile.write_text(sandbox_profile([*writable, output, "/private/tmp", darwin_temp], readable, self.store.root,
                                           self.c["token_file"], protected))
         env = {k:v for k,v in os.environ.items() if not any(x in k.upper() for x in ("TOKEN", "SECRET", "PASSWORD", "API_KEY"))}
-        env.update(TMPDIR=str(temp), PYTHONDONTWRITEBYTECODE="1")
+        preferences = output / "preferences-home"
+        for child_dir in ("Library/Preferences", "Library/Caches", "Library/Logs", "dotnet", "upm"):
+            (preferences / child_dir).mkdir(parents=True, exist_ok=True)
+        env.update(TMPDIR=str(temp), PYTHONDONTWRITEBYTECODE="1",
+                   CFFIXED_USER_HOME=str(preferences), DOTNET_CLI_HOME=str(preferences / "dotnet"),
+                   UPM_CACHE_ROOT=str(preferences / "upm"))
         env.update(env_extra or {})
         with self.engine(label, timeout), (output / (label + ".log")).open("wb") as log:
             child = subprocess.Popen(["/usr/bin/sandbox-exec", "-f", str(profile), *argv], cwd=cwd,
@@ -140,6 +159,14 @@ class Machine:
                         child.wait(timeout=10)
                 self.child = None
                 self.store.set(owned_process=None)
+                # Compilers and package helpers inherit this task's process group.
+                # Do not leave their private IPC helpers alive after the editor exits.
+                try:
+                    os.killpg(child.pid, signal.SIGTERM)
+                except ProcessLookupError:
+                    pass
+                shutil.rmtree(temp)
+                self.store.report()
             return child.returncode
 
 
@@ -163,28 +190,35 @@ class Engines:
         shutil.copyfile(path, output / "original-authoring-source.py")
         generated = Path(project) / "Assets/Resources/Generated" / path.stem
         generated.mkdir(parents=True, exist_ok=True)
+        originals = Path(project) / "ArtSources" / path.stem
+        originals.mkdir(parents=True, exist_ok=True)
         wrapper = output / "author.py"
         wrapper.write_text("import os,runpy,bpy\nfrom pathlib import Path\n"
             "out=Path(os.environ['LOOP_ASSET_OUTPUT'])\n"
             "runpy.run_path(os.environ['LOOP_ART_SCRIPT'],run_name='__main__')\n"
-            "bpy.ops.wm.save_as_mainfile(filepath=str(out/'source.blend'))\n"
+            "bpy.context.preferences.filepaths.save_version=0\n"
+            "bpy.ops.wm.save_as_mainfile(filepath=str(Path(os.environ['LOOP_BLEND_SOURCE'])/'source.blend'))\n"
             "bpy.ops.export_scene.fbx(filepath=str(out/'scene.fbx'),use_selection=False,add_leaf_bones=False,"
             "path_mode='COPY',embed_textures=True)\n")
         code = self.machine.execute("blender", [self.c["blender"], "--background", "--factory-startup",
             "--python-exit-code", "7", "--python", str(wrapper)], project, output, 240,
-            {"LOOP_ASSET_OUTPUT": str(generated), "LOOP_ART_SCRIPT": str(path)})
+            {"LOOP_ASSET_OUTPUT": str(generated), "LOOP_ART_SCRIPT": str(path), "LOOP_BLEND_SOURCE": str(originals)},
+            protected=[path, wrapper], writable_roots=[generated, originals])
         result = {"ok": code == 0, "exit_code": code, "script": script, "files": []}
-        for p in sorted(generated.rglob("*")):
+        for p in sorted([*generated.rglob("*"), *originals.rglob("*")]):
             if p.is_file():
                 if p.is_symlink() or p.stat().st_size > 50*1024**2:
                     raise Halt("Generated asset violates the bounded local artifact contract")
+                if p.suffix.lower() not in (".fbx", ".blend", ".png", ".jpg", ".jpeg", ".tga", ".json"):
+                    raise Halt("Blender output must contain art data only, never executable Unity code")
                 result["files"].append({"path": str(p.relative_to(project)), "sha256": sha(p.read_bytes()), "bytes": p.stat().st_size})
-        if not all((generated/name).exists() for name in ("source.blend", "scene.fbx")):
+        if not (originals/"source.blend").exists() or not (generated/"scene.fbx").exists():
             result["ok"] = False
         if result["ok"]:
             shutil.copytree(generated, output / "original-assets")
+            shutil.copytree(originals, output / "editable-originals")
         result["diagnostic"] = (output / "blender.log").read_text(errors="replace")[-6000:]
-        atomic(generated / "provenance.json", {"author": "local-Qwen", "script": script,
+        atomic(originals / "provenance.json", {"author": "local-Qwen", "script": script,
                "script_sha256": sha(path.read_bytes()), "action_id": action_id, "files": result["files"]})
         self.store.finish_action(action_id, result)
         self.store.event("local-art", action_id=action_id, ok=result["ok"], files=result["files"])
@@ -262,7 +296,7 @@ def evaluate_runtime(captures, scenario, player_exit, capture_id):
     if any(b["time"] <= a["time"] for a,b in zip(trace, trace[1:])):
         failed.append("nonmonotonic-trace")
     frames = sorted(captures.glob("frame-*.png"))
-    if len(frames) != len(scenario["captures"]) or any(not p.read_bytes().startswith(b"\x89PNG\r\n\x1a\n") for p in frames):
+    if len(frames) != len(scenario["captures"]) or any(not valid_capture_png(p.read_bytes()) for p in frames):
         failed.append("missing-captures")
     def distance(key):
         values = [t.get(key) for t in trace if t.get(key) and len(t[key]) == 3]
@@ -288,13 +322,40 @@ def evaluate_runtime(captures, scenario, player_exit, capture_id):
             failed.append("combat-input-and-hit")
         if max(t.get("pursuit", 0) for t in trace) < 1:
             failed.append("pursuit-response")
+        if not any("Mouse0" in t.get("keys", []) for t in trace):
+            failed.append("combat-input-missing")
     if coverage in ("mission", "polish", "whole-route"):
         if not any(t.get("mission") == "complete" for t in trace):
             failed.append("mission-ending")
         if max(t.get("restarts", 0) for t in trace) < 1:
             failed.append("restart")
+        if not any(t.get("mission") == "failed" or t.get("health", 100) <= 0 for t in trace):
+            failed.append("failure-or-death-path")
     return {"passed": not failed, "failure": failed or None, "player_exit": player_exit,
             "coverage": coverage, "samples": len(trace), "duration": final["duration"],
             "player_displacement": round(movement, 3), "vehicle_displacement": round(driving, 3),
             "frame_count": len(frames), "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
             "performance_claim": "unqualified; shared renderer and capture overhead"}
+
+
+def valid_capture_png(raw):
+    """Validate complete RGB/RGBA PNG bytes, not a success filename or header."""
+    try:
+        if not raw.startswith(b"\x89PNG\r\n\x1a\n"): return False
+        offset=8; payload=b""; dimensions=None; ended=False
+        while offset<len(raw):
+            length=struct.unpack(">I",raw[offset:offset+4])[0]
+            kind=raw[offset+4:offset+8];data=raw[offset+8:offset+8+length]
+            crc=struct.unpack(">I",raw[offset+8+length:offset+12+length])[0]
+            if zlib.crc32(kind+data)&0xffffffff!=crc:return False
+            if kind==b"IHDR":
+                width,height,depth,color,compression,filtering,interlace=struct.unpack(">IIBBBBB",data)
+                if not (320<=width<=4096 and 180<=height<=4096 and depth==8 and color in (2,6) and compression==filtering==interlace==0):return False
+                dimensions=(width,height,3 if color==2 else 4)
+            elif kind==b"IDAT":payload+=data
+            elif kind==b"IEND":ended=True
+            offset+=12+length
+        if not ended or dimensions is None:return False
+        width,height,channels=dimensions
+        return len(zlib.decompress(payload))==height*(1+width*channels)
+    except (ValueError,struct.error,zlib.error):return False

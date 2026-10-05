@@ -1,6 +1,8 @@
 # Flash-Next readiness
 
-Verified 2026-10-05. **Model service ready; overnight game loop not ready.** Flash-Next remains loaded and idle after a two-request image/tool warm-up. This qualifies a small functional path, not sustained coding, game quality or an unattended overnight run.
+**Update, 2026-10-05:** the owner authorized the full Chicago run. The durable controller is implemented; native Unity green/red checks and twelve recovery/boundary tests pass. The [controller runbook](CONTROLLER-RUNBOOK.md) and [current qualification evidence](../diagnostics/controller-2026-10-05/README.md) supersede the missing-controller/start-hold statements in the historical readiness audit below. Sustained coding and game quality remain outcomes to measure, not assumptions.
+
+The following is the earlier model-only readiness audit. Its pinned runtime and model settings remain applicable; its original launch blockers describe the state before controller implementation.
 
 ## Model and runtime
 

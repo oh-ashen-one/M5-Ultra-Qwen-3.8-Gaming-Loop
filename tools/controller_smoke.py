@@ -15,18 +15,35 @@ def main():
     p.add_argument("--run-dir",type=Path,required=True)
     p.add_argument("--config",type=Path,required=True)
     p.add_argument("--allow-smoke",action="store_true")
+    p.add_argument("--reuse-fixture",type=Path)
     a=p.parse_args()
     if not a.allow_smoke:p.error("Explicit bounded fixture authorization is required")
     if a.run_dir.exists():p.error("Use a fresh fixture directory; preserve failed attempts")
     s=Store(a.run_dir);c=read_json(a.config)
     machine=Machine(c,s);engines=Engines(c,s,machine,ROOT)
-    project=a.run_dir/"fixture";initialize_project(project)
+    project=a.run_dir/"fixture"
+    if a.reuse_fixture:
+        shutil.copytree(a.reuse_fixture,project)
+        if sha((project/"Art/smoke.py").read_bytes()) != sha((ROOT/"diagnostics/connector-2026-10-05/asset_scene.py").read_bytes()):
+            raise RuntimeError("Reused original fixture source changed")
+        provenance=read_json(project/"Assets/Resources/Generated/smoke/provenance.json")
+        for item in provenance["files"]:
+            if sha((project/item["path"]).read_bytes())!=item["sha256"]:
+                raise RuntimeError("Reused fixture asset changed")
+        # Raw authoring files stay outside Assets, avoiding Unity's implicit
+        # Blender conversion on top of the already exported FBX.
+        original=project/"ArtSources/smoke";original.mkdir(parents=True,exist_ok=True)
+        shutil.move(project/"Assets/Resources/Generated/smoke/source.blend",original/"source.blend")
+        shutil.move(project/"Assets/Resources/Generated/smoke/provenance.json",original/"prior-export-provenance.json")
+    else:
+        initialize_project(project)
     shutil.copyfile(ROOT/"tests/fixtures/Bootstrap.cs",project/"Assets/Game/Bootstrap.cs")
     shutil.copyfile(ROOT/"diagnostics/connector-2026-10-05/asset_scene.py",project/"Art/smoke.py")
     receipt={"started_utc":now(),"scope":"disposable controller fixture, not Chicago game output",
              "game_started":False,"fixture_author":"cloud infrastructure","asset_author":"unchanged prior local Qwen original Blender source"}
     try:
-        art=engines.blender(project,"Art/smoke.py","smoke-art")
+        art={"ok":True,"scope":"reused verified prior original export"} if a.reuse_fixture else engines.blender(project,"Art/smoke.py","smoke-art")
+        receipt["art"]={k:v for k,v in art.items() if k!="diagnostic"}
         if not art["ok"]:raise RuntimeError("Existing original Blender fixture failed: "+art["diagnostic"])
         scenario=scenario_for("foundation")
         bundle=a.run_dir/"evidence/native-green"

@@ -31,8 +31,9 @@ Mission='not_started'/'active'/'complete'/'failed', Health, Shots, Hits, Pursuit
 actual gameplay events. Do not invent signals, move objects in the harness, or detect replay to cheat.
 Controller records these observations and actual native runtime frames. A compile is not a pass.
 All game meshes originate from your Blender authoring, including ground/building/vehicle/character.
-Write Art/<asset>.py using bpy, then run_blender. It saves source.blend and exports scene.fbx under
-Assets/Resources/Generated/<asset>/; load via Resources.Load<GameObject>('Generated/<asset>/scene').
+Write Art/<asset>.py using bpy, then run_blender. It saves editable sources under ArtSources/<asset>/
+and exports scene.fbx under Assets/Resources/Generated/<asset>/; load via
+Resources.Load<GameObject>('Generated/<asset>/scene'). Never put .blend files in Assets; Unity would launch an extra Blender importer.
 Preserve mesh names, meter scale, sensible origins and pivots, materials, UVs, rigs/clips where needed.
 Blender wrapper exports the scene you leave and preserves a .blend; create/clear your own scene.
 No external meshes/textures, Meshy, Tripo, internet packages or resource downloads. Use generated mesh
@@ -45,6 +46,15 @@ Finish with a concise factual handoff, uncertainties, and input replay steps mat
 
 def git(repo, *args):
     return subprocess.check_output(["git", "-C", str(repo), *args], text=True).strip()
+
+
+def target_for(task):
+    text = (task["outcome"] + " " + task["phase"]).lower()
+    if any(word in text for word in ("rain", "night")): return "chicago_05_rainy_night_driving.png"
+    if any(word in text for word in ("river", "bridge")): return "chicago_04_riverwalk_bridge.png"
+    if any(word in text for word in ("alley", "combat")): return "chicago_03_alley_combat.png"
+    if any(word in text for word in ("driv", "vehicle")): return "chicago_02_downtown_l_driving.png"
+    return "chicago_01_neighborhood_on_foot.png"
 
 
 def scenario_for(coverage, proposed=None):
@@ -202,12 +212,12 @@ class Runner:
             "Never forge evidence or claim a test passed without its result.",prompt,tools,
             {"list_files":lambda *_:{"files":files.tree()},"read_file":read,"write_file":write,"replace_text":patch,
              "run_blender":blender,"finish_task":finish},
-            images=[("AI-generated Chicago target; not an actual build",self.refs/"chicago_01_neighborhood_on_foot.png")])
+            images=[("AI-generated Chicago target; not an actual build",self.refs/target_for(task))])
 
     def critic(self, task, round_id, brief, bundle, gate, whole=False):
         captures=sorted((bundle/"captures").glob("frame-*.png"))
         chosen=[captures[0],captures[len(captures)//2],captures[-1]]
-        reference="chicago_02_downtown_l_driving.png" if task["phase"]=="driving" else "chicago_01_neighborhood_on_foot.png"
+        reference=target_for(task)
         def submit(_,fields):
             if fields["verdict"] not in ("PASS","FIX","UNVERIFIED"):
                 raise ValueError("Use PASS, FIX or UNVERIFIED")
@@ -344,7 +354,17 @@ def main():
     if args.command=="status":
         print(json.dumps(store.status(),indent=2));return 0
     if args.command=="stop":
-        atomic(args.run_dir/"STOP",{"requested_utc":now()});print("Stop requested; owned engine exits gracefully; resident model is preserved.");return 0
+        atomic(args.run_dir/"STOP",{"requested_utc":now()})
+        pid=store.get("controller_pid")
+        if pid:
+            import psutil
+            try:
+                owner=psutil.Process(pid)
+                argv=owner.cmdline()
+                if str((ROOT/"tools/game_loop.py").resolve()) in argv and str(args.run_dir.absolute()) in argv:
+                    owner.send_signal(signal.SIGTERM)
+            except psutil.NoSuchProcess:pass
+        print("Stop requested; owned engine exits gracefully; resident model is preserved.");return 0
     if not args.authorize_game_start:
         parser.error("The current owner's explicit start authorization is required")
     config=read_json(args.config)

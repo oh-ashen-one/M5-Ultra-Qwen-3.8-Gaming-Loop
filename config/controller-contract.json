@@ -3,14 +3,46 @@
   "engine": "Unity 6000.6.4f1 native macOS / Metal",
   "required_setting": "Chicago",
   "game_art_author": "local Qwen through original Blender work",
-  "forbidden_asset_sources": ["Meshy", "Tripo", "premade asset packs", "third-party game assets"],
+  "forbidden_asset_sources": [
+    "Meshy",
+    "Tripo",
+    "premade asset packs",
+    "third-party game assets"
+  ],
   "harness_scope": "Native compile/build, application input replay, runtime transforms/state and immutable camera captures",
-  "foundation": ["native build", "Metal runtime", "camera", "input-driven player displacement >= 1.5m", "changing actual frames"],
-  "driving": ["foundation", "vehicle entry", "vehicle displacement >= 3m", "return to foot"],
-  "combat": ["driving", "input-driven shot and hit", "pursuit response"],
-  "mission": ["combat", "600 second native route", "observed mission ending", "restart"],
+  "foundation": [
+    "native build",
+    "Metal runtime",
+    "camera",
+    "input-driven player displacement >= 1.5m",
+    "changing actual frames"
+  ],
+  "driving": [
+    "foundation",
+    "vehicle entry",
+    "vehicle displacement >= 3m",
+    "return to foot"
+  ],
+  "combat": [
+    "driving",
+    "input-driven shot and hit",
+    "pursuit response"
+  ],
+  "mission": [
+    "combat",
+    "600 second native route",
+    "observed mission ending",
+    "observed failure or death",
+    "restart"
+  ],
   "promotion": "All mechanical gates plus fresh evidence-based critic PASS for the bounded task",
-  "not_proven_by_camera_frames": ["HUD", "audio", "60fps performance", "collision completeness", "unobserved mission branches"],
+  "not_proven_by_camera_frames": [
+    "HUD",
+    "audio",
+    "60fps performance",
+    "collision completeness",
+    "unobserved mission branches"
+  ],
   "final_delivery": "Fresh whole-game review; disclose every unverified axis and remaining limitation",
   "provenance": "Original cloud infrastructure is separate from local Qwen game code/art"
 }
