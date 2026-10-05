@@ -139,7 +139,7 @@ namespace ChicagoGame
             card.name = "HudCard";
             card.transform.SetParent(go.transform, false);
             card.transform.localPosition = new Vector3(0f, -0.06f, 0.025f);
-            card.transform.localScale = new Vector3(1.7f, 0.28f, 0.01f);
+            card.transform.localScale = new Vector3(1.5f, 0.20f, 0.01f);
             Destroy(card.GetComponent<Collider>());
             Paint(card.GetComponent<Renderer>(), Color.black, Color.black);
 
