@@ -20,6 +20,7 @@ INT={'type':'integer'}
 class SmallRunner(Runner):
     def builder(self,task,round_id,brief):
         files=Files(self.project,self.store);reads={}
+        self.store.set(stage='small-edit',current_task=task['outcome']);self.store.report()
         def read(_,f):
             count=f.get('line_count',80)
             if count>100:raise ValueError('Read at most 100 lines for one small task')
@@ -47,7 +48,8 @@ class SmallRunner(Runner):
                tool('finish_task','Submit this small changed candidate for real native tests.',{'summary':STRING})]
         prompt=('Work on ONE small concrete fix or feature, then finish_task. No whole-file rewrite or broad redesign. '
                 'No new art. The broader task remains:\n'+json.dumps(task)+'\nObserved feedback:\n'
-                +json.dumps(self.store.get('feedback',{}))[:6000]+'\nNative API:\n'+API_GUIDE+
+                +json.dumps(self.store.get('feedback',{}))[:6000]+'\nNative API:\n'+API_GUIDE.split('All game meshes originate')[0]+
+                '\nExisting Resources prefabs Generated/street/scene, Generated/player/scene, Generated/coupe/scene and Generated/props/scene may be reused or instanced. No art tools are available. read_file already returns total_lines. '+
                 '\nThis job exposes only small C# edits. Read the exact section needed, change at most 40 lines, then test. '
                 'Prefer grounded control and readable existing-street framing before extra features. Never invent success.')
         return self.model.session('builder',round_id+'-small-builder',
@@ -70,8 +72,8 @@ def select_block(files,needle):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('run-dir','previous-run','config','brief'):p.add_argument('--'+name,type=Path,required=True)
-    p.add_argument('--authorize-repair',action='store_true');p.add_argument('--resume-elementary',action='store_true');a=p.parse_args()
-    if not a.authorize_repair or (a.run_dir.exists() and not a.resume_elementary):p.error('Explicit authorization and fresh run directory required unless resuming the diagnosed small-edit failure')
+    p.add_argument('--authorize-repair',action='store_true');p.add_argument('--resume-elementary',action='store_true');p.add_argument('--resume-framing',action='store_true');a=p.parse_args()
+    if not a.authorize_repair or (a.run_dir.exists() and not (a.resume_elementary or a.resume_framing)):p.error('Explicit authorization and fresh run directory required unless resuming a diagnosed failure')
     old=read_json(a.previous_run/'status.json')
     if old.get('controller_pid') or old.get('status') not in ('paused','paused-deadline'):raise Halt('Previous owner must be stopped')
     preserved={n:sha((a.previous_run/n).read_bytes()) for n in ('status.json','state.sqlite3')}
@@ -79,6 +81,8 @@ def main():
     os.umask(0o077);r=SmallRunner(a.run_dir,c);s=r.store
     if a.resume_elementary and (s.get('controller_pid') or s.get('status')!='paused' or s.get('elementary_started_utc')):
         raise Halt('Expected the stopped selected-edit failure; elementary continuation is allowed once')
+    if a.resume_framing and (s.get('controller_pid') or s.get('status')!='paused' or s.get('framing_resume_utc')):
+        raise Halt('Expected the stopped framing-tool failure; no duplicate continuation')
     started=s.get('started_epoch',time.time());repair_deadline=s.get('repair_deadline_epoch',started+30*60);overall_deadline=s.get('overall_deadline_epoch',started+12*3600)
     if time.time()>=repair_deadline:raise Halt('Original repair deadline expired; no extension')
     tasks=read_json(a.previous_run/'plan.json');atomic(a.run_dir/'plan.json',tasks);atomic(a.run_dir/'private-config.json',c)
@@ -122,6 +126,9 @@ def main():
                      'Replace this line with one assignment setting ground world position to (0,-.36,0). Its existing thickness is 1m, so the top matches the measured sidewalk Y=.14. One C# line only.'),
                     ('spawn-line','if (p.y < 0.05f) body.transform.position = new Vector3(p.x, 0.05f, p.z);',
                      'Replace this line with one unconditional assignment setting body world position to (0,.3,1.7), just above the measured sidewalk. Keep its unit scale and rotation. One C# line only.')]
+            if a.resume_framing:
+                stages=[];s.set(framing_resume_utc=now())
+                s.event('cloud-infrastructure-intervention',action='Recover unsupported read_line_count call with bounded tool feedback; continue existing-asset framing',deadline_unchanged=True)
             for label,needle,instruction in stages:
                 for attempt in range(2):
                     start,end=select_block(files,needle) if not a.resume_elementary else (
@@ -148,15 +155,23 @@ def main():
                 if scenario['coverage']=='foundation':scenario=grounding_scenario()
                 gate=native_unity(project,bundle,scenario,candidate)
                 if scenario['coverage']=='foundation':
-                    observed=summarize(bundle) if (Path(bundle)/'captures/scene-transforms.json').exists() else {'stationary_grounded':False}
+                    observed=summarize(bundle) if (Path(bundle)/'captures/scene-transforms.json').exists() else {'stationary_grounded':None}
                     atomic(Path(bundle)/'world-observations.json',observed)
                     gate['stationary_grounded']=observed['stationary_grounded']
                     if not observed['stationary_grounded']:
-                        gate['passed']=False;gate['failure']=(gate.get('failure') if isinstance(gate.get('failure'),list) else [])+['stationary-grounding-preflight']
+                        prior=gate.get('failure');prior=prior if isinstance(prior,list) else ([prior] if prior else [])
+                        gate['passed']=False;gate['failure']=prior+['stationary-grounding-preflight' if observed['stationary_grounded'] is False else 'missing-grounding-evidence']
                     atomic(Path(bundle)/'grounding-gate.json',gate)
                 return gate
             r.engines.unity=grounded_unity
-            for attempt in range(3):
+            first_native=0
+            if a.resume_framing:
+                first_native=len(list((a.run_dir/'evidence').glob('grounding-*')))
+                if first_native>=3:raise Halt('Original native repair budget exhausted')
+                c.update(output_tokens=4096,model_timeout_seconds=180)
+                r.builder({'phase':'foundation','outcome':'Fix only rendered framing using existing street geometry',
+                    'acceptance':'The upright player and readable street/buildings stay visible before and after walking'},'framing-adapter-recovery','')
+            for attempt in range(first_native,3):
                 candidate=r.checkpoint_source('Local Qwen: preserve bounded grounding candidate')
                 bundle=a.run_dir/'evidence'/('grounding-'+str(attempt+1));s.set(stage='native-grounding');s.report()
                 gate=grounded_unity(r.project,bundle,grounding_scenario(),candidate)

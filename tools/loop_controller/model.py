@@ -122,6 +122,7 @@ class LocalModel:
                                   "sha256": sha(Path(path).read_bytes())})
         messages = [{"role": "system", "content": system}, {"role": "user", "content": content}]
         self.store.event("role-start", role=role, session_id=session_id, images=image_records)
+        unsupported_calls = 0
         with exclusive(Path(self.config["coordination_dir"]) / "request.lock"):
             self.ready()
             for turn in range(turns):
@@ -162,10 +163,15 @@ class LocalModel:
                 for index, call in enumerate(calls):
                     self.guard()
                     function = call["function"]
-                    if function["name"] not in dispatch:
-                        raise Halt("Unexpected tool call")
                     action_id = request_id + "-tool-" + str(index)
                     try:
+                        if function["name"] not in dispatch:
+                            unsupported_calls += 1
+                            if unsupported_calls > 2:
+                                raise Halt("Repeated unsupported tool calls; bounded diagnosis required")
+                            raise ValueError("Unavailable tool. Use only: " + ", ".join(sorted(dispatch)) +
+                                             ". read_file already returns total_lines.")
+                        unsupported_calls = 0
                         fields = typed_arguments(function, tools)
                         result = dispatch[function["name"]](action_id, fields)
                     except (ValueError, KeyError, TypeError, UnicodeError, FileNotFoundError) as error:

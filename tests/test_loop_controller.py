@@ -13,7 +13,7 @@ import zlib
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"tools"))
 from loop_controller.core import Files, Halt, Store, atomic, failure_key, seal, sha, verify_seal
 from loop_controller.adapters import evaluate_runtime, sandbox_profile
-from loop_controller.model import conservative_prompt_bound, tool, typed_arguments
+from loop_controller.model import LocalModel, conservative_prompt_bound, tool, typed_arguments
 from loop_controller.runner import Runner, git, scenario_for
 from inspect_and_repair_grounding import summarize, grounding_scenario
 from loop_controller.small_edits import SelectedEdit
@@ -44,6 +44,23 @@ class ControllerTests(unittest.TestCase):
         edit=SelectedEdit(self.files,'Assets/Game/A.cs',3,3,max_lines=2)
         with self.assertRaises(ValueError):edit.apply('large','one\ntwo\nthree\n')
         self.assertTrue((self.project/'Assets/Game/A.cs').read_text().endswith('unique\n'))
+
+    def test_unknown_tool_returns_feedback_without_executing_and_can_recover(self):
+        model=LocalModel.__new__(LocalModel);model.store=self.store;model.guard=lambda:None
+        model.ready=lambda:None;model.text_counter=None
+        model.config={'coordination_dir':str(self.root/'coord'),'output_tokens':512,'working_context_tokens':65536,'model_timeout_seconds':1}
+        requests=[];executed=[]
+        def api(route,payload,timeout):
+            requests.append(payload)
+            name='read_line_count' if len(requests)==1 else 'finish_task'
+            return {'choices':[{'finish_reason':'tool_calls','message':{'role':'assistant','tool_calls':[
+                {'id':str(len(requests)),'type':'function','function':{'name':name,'arguments':'{}'}}]}}]}
+        model.api=api
+        result=model.session('test','unknown-tool','system','prompt',[tool('finish_task','finish',{})],
+            {'finish_task':lambda *_:executed.append('valid') or {'ok':True}},turns=2)
+        self.assertTrue(result['ok']);self.assertEqual(executed,['valid'])
+        feedback=[m for m in requests[1]['messages'] if m['role']=='tool'][0]['content']
+        self.assertIn('Unavailable tool',feedback);self.assertIn('total_lines',feedback)
 
     def test_stationary_preflight_rejects_unstable_scaled_or_tilted_physics(self):
         bundle=self.root/'observed';capture=bundle/'captures';capture.mkdir(parents=True)
