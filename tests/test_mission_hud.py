@@ -2,11 +2,14 @@ import copy
 from pathlib import Path
 import sys
 import unittest
+import tempfile
+import json
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from loop_controller.mission_hud import inspect_courier_hud
 from resume_mission_focus import observed_route
 from loop_controller.replay_contract import validate_submission
+from resume_mission_review import verified_probe
 
 
 class MissionHudTests(unittest.TestCase):
@@ -46,6 +49,20 @@ class MissionHudTests(unittest.TestCase):
         result=validate_submission(fixture,{'maximum':150,'coverage':'mission-core'})
         self.assertEqual(result['scenario']['steps'][0],previous['steps'][0])
         self.assertEqual(result['scenario']['steps'][-1]['keys'],['R'])
+
+    def test_recovery_uses_native_pass_not_last_schema_valid_failed_route(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);task={'maximum':150,'coverage':'mission-core'}
+            fixture=observed_route({'steps':[{'start':4,'end':5,'keys':['W']}]})
+            scenario=validate_submission(fixture,task)['scenario']
+            for name,passed in [('passed',True),('newer-failed',False)]:
+                bundle=root/'evidence'/name;(bundle/'captures').mkdir(parents=True)
+                (bundle/'captures/scenario.json').write_text(json.dumps(scenario))
+                (bundle/'scoped-gate.json').write_text(json.dumps({'scope':'connected-mission','passed':passed,
+                    'scoped_facts':{'mission_anchors':{'passed':passed},'courier_hud_states':{'passed':passed}}}))
+            probe,evidence=verified_probe(root,task)
+            self.assertEqual(evidence,'evidence/passed')
+            self.assertEqual(probe['steps'],scenario['steps'])
 
 
 if __name__=='__main__':unittest.main()
