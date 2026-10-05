@@ -1,31 +1,16 @@
 {
-  "accepted_utc": "2026-10-05T12:03:03.809975+00:00",
-  "candidate": "d7b75884c916c28f52b437745a7c7ea443c16225",
-  "evidence": "evidence/vehicle-entry-drive-exit",
+  "accepted_utc": "2026-10-05T12:10:30.466441+00:00",
+  "candidate": "8a57dd4f6501e3d3c205c01b008f6f6205133acd",
+  "evidence": "evidence/vehicle-heading-corrected",
   "final_game_accepted": false,
-  "heading_evidence": {
-    "forward_alignment": -1.0,
-    "front_minus_rear_xz": [
-      0.0,
-      -4.559999465942383
-    ],
-    "net_motion_xz": [
-      0.0,
-      16.341081619262695
-    ],
-    "passed": false,
-    "scope": "Straight throttle replay must move toward the authored front bumper, not the rear."
-  },
-  "reason": "Visual nose opposes W motion; longer return walk leaves pavement",
   "remaining": "Chicago target quality, final HUD/audio/performance, combat and complete ten-minute mission remain separate.",
   "review": {
     "camera_readable": true,
     "car_visible": true,
     "continuous_paving": true,
     "ok": true,
-    "summary": "Within the stated limited scope the demonstration is supported. frame-000.png shows the player on foot (dark two-post figure) on continuous gray paving; frame-001.png and frame-002.png show the same blue coupe (blue body, black lower trim) at the curb and from above on the same gray street; frame-003.png keeps the identical blue coupe between pillars; frame-004.png shows the rear of that same blue coupe (red taillights) moved off, with the on-foot figure in the foreground — consistent with entry, forward drive, exit and return to walking. Native trace agrees (vehicle_displacement 16.34m > 3m, player_displacement 29.46m, capture_id \"vehicle-entry-drive-exit\", passed). No conflicting vehicle appears, so car/player coherence holds. Broader deliverables (HUD, audio, FPS, Chicago-target art quality, ten-minute game, mission acceptance) remain unmet and are not claimed.",
+    "summary": "Limited scope supported. frame-001.png, frame-002.png, frame-003.png and frame-004.png all show the same blue coupe, and the native trace records 10.31 m of forward motion at ~1.0 forward alignment (entry plus >3 m drive) with 97/97 pavement-covered return-walk samples (exit and return to walking). Pavement is continuous street/sidewalk in every supplied frame. Weaknesses noted but outside this milestone: frame-000.png omits the car, frame-001.png and frame-003.png occlude it behind the spiked fence, frame-004.png is partly blocked by a pillar, and no on-foot player mesh is visible. HUD/audio/FPS, Chicago-target art and full collision/audio remain unmet and are not credited.",
     "verdict": "PASS"
   },
-  "scope": "vehicle-entry-drive-exit",
-  "status": "requires-correction"
+  "scope": "vehicle-entry-drive-exit"
 }
