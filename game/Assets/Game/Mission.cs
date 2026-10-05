@@ -83,7 +83,7 @@ namespace ChicagoGame
             var pad = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             pad.name = "DropPad";
             pad.transform.SetParent(missionRoot, false);
-            pad.transform.position = new Vector3(laneX, PAV_TOP + 0.01f, 27.5f);
+            pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
             pad.transform.localScale = new Vector3(3.6f, 0.02f, 3.6f); // r = 1.8, thin
             var padCol = pad.GetComponent<Collider>();
             if (padCol != null) Destroy(padCol);
