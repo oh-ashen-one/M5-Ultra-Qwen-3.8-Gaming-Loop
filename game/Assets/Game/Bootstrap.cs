@@ -14,6 +14,7 @@ namespace ChicagoGame
             street.name = "Street";
             GameObject body = new GameObject("Player");
             body.name = "Player";
+            var visual = Instantiate(Resources.Load<GameObject>("Generated/player/scene"), body.transform, worldPositionStays: true);
 
             if (street.GetComponentInChildren<Collider>() == null)
             {
