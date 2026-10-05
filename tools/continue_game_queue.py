@@ -59,6 +59,11 @@ def review_captures(task,bundle):
             # Failed, reset, carrying and completed retain all required transitions.
             # Omit the redundant initial frame so a tool correction fits the context budget.
             predicates=[predicates[4],predicates[3],predicates[1],predicates[2]]
+        elif 'combat' in task.get('checks',[]):
+            # Include the actual fight instead of a redundant initial state;
+            # retain carrying/ending/reset with room for the reference image.
+            predicates=[lambda row:row.get('hits',0)>0 and row.get('pursuit',0)>0,
+                        predicates[1],predicates[2],predicates[3]]
         selected=[]
         for predicate in predicates:
             match=next((frame for frame,row in observed if predicate(row)),None)

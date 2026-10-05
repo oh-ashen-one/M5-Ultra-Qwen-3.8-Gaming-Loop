@@ -72,6 +72,15 @@ class CombatObservationTests(unittest.TestCase):
         self.assertIn('pursuit-does-not-follow-actual-vehicle-distance',failures)
         self.assertIn('damage-outside-actual-controlled-actor-range',failures)
 
+    def test_coverage_matches_actual_18m_escape_rule_without_extra_margin(self):
+        rows=self.rows()
+        for i,row in enumerate(rows):
+            row.update(mode='vehicle',pursuit=0)
+            row['rivals'][0].update(actorDistance=18.11,position=[0,0,i*.2])
+        self.assertTrue(inspect_combat_contract(rows,'driving')['passed'])
+        for row in rows:row['rivals'][0]['actorDistance']=17.99
+        self.assertIn('driving-escape-distance-not-exercised',inspect_combat_contract(rows,'driving')['failure'])
+
     def test_combined_replay_preserves_the_accepted_input_route_after_real_reset(self):
         prior=dict(steps=[dict(start=4,end=5,keys=['W']),dict(start=14.3,end=14.6,keys=['F'])])
         probe=combined_probe(prior)

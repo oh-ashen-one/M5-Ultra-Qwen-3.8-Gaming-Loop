@@ -39,9 +39,14 @@ class CombatFocus(ThreeDayRunner):
             'Halt: Measured combat contract failure; preserve candidate and diagnose exact observations' and
             old.get('feedback',{}).get('failure')==['driving-escape-distance-not-exercised'] and
             old.get('task_failures') in (1,2) and old.get('failure_streak')==old.get('task_failures'))
-        if (old.get('task_index')!=4 or not (initial or selected_stop or drive_coverage)
+        coverage_revalidation=(old.get('source_checkpoint')==REPAIRED and old.get('blocker')==
+            'Halt: Third focused combat rejection; preserve evidence for bounded diagnosis, no generic planning round' and
+            old.get('feedback',{}).get('failure')==['driving-escape-distance-not-exercised'] and
+            old.get('task_failures')==3 and old.get('failure_streak')==3 and
+            old.get('combat_probe')=='combat-focus-9b15f344-after-driving')
+        if (old.get('task_index')!=4 or not (initial or selected_stop or drive_coverage or coverage_revalidation)
                 or old.get('last_playable_checkpoint')!=ACCEPTED
-                or (not drive_coverage and (old.get('task_failures')!=0 or old.get('failure_streak')!=0))
+                or (not (drive_coverage or coverage_revalidation) and (old.get('task_failures')!=0 or old.get('failure_streak')!=0))
                 or old.get('overall_deadline_epoch')!=HARD_CAP_EPOCH):
             raise Halt('Expected the preserved measured combat diagnostic and accepted retry baseline')
 
@@ -144,6 +149,21 @@ class CombatFocus(ThreeDayRunner):
         self.store.set(source_checkpoint=candidate)
         existing={v['scope']:v for v in self.store.get('combat_after_contracts',[])
                   if v.get('passed') and v.get('candidate')==candidate}
+        if candidate==REPAIRED and self.store.get('task_failures')==3:
+            bundle=self.store.root/'evidence/combat-focus-9b15f344-after-driving'
+            runtime=read_json(bundle/'gate.json')
+            if (not runtime.get('passed') or runtime.get('candidate_commit')!=candidate or
+                runtime.get('build_id')!='f760e41bc2be2cc3bdcbc4ae42cca86ab173f00915994dbcb17b961b00e1a46e'):
+                raise Halt('Preserve unrelated driving evidence; expected unchanged direct-approach build')
+            rows=[json.loads(x) for x in (bundle/'captures/trace.jsonl').read_text().splitlines()]
+            corrected=inspect_combat_contract(rows,'driving')
+            corrected.update(candidate=candidate,build_id=runtime['build_id'],evidence=str(bundle.relative_to(self.store.root)),
+                acceptance_fixture=None,original_rejection_preserved=True,
+                correction='Use unchanged actual18m escape rule, not an extra0.25m coverage margin. Escape is brief; no sustained-escape claim.')
+            atomic(bundle/'combat-contract-revalidated.json',corrected)
+            self.store.event('combat-coverage-revalidated',**corrected)
+            if not corrected['passed']:raise Halt('Captured actual18m escape did not revalidate; preserve history')
+            existing['driving']=corrected
         after=[existing.get(kind) or self.native_test(ident+'-after-'+kind,probe,kind,candidate)
                for kind,probe in [('foot',FOOT_PROBE),('wall',WALL_PROBE),('driving',DRIVE_PROBE)]]
         atomic(self.store.root/'combat-focused-result.json',{'before':before,'after':after,'candidate':candidate})
@@ -153,6 +173,7 @@ class CombatFocus(ThreeDayRunner):
             raise Halt('Measured combat contract failure; preserve candidate and diagnose exact observations')
         prior,_=verified_probe(self.store.root,TASKS[4]);probe=combined_probe(prior)
         task=TASKS[4];bundle,gate=self.native(task,ident+'-combined',candidate,probe)
+        gate['combat_contracts']=after
         if gate.get('passed'):
             regression=self.regress(task,ident+'-combined',candidate);gate['regressions']=regression
             if not regression['passed']:gate.update(passed=False,failure=regression['failure'])

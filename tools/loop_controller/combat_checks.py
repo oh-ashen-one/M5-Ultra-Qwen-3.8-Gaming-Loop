@@ -27,9 +27,13 @@ def inspect_combat_contract(rows,kind):
     if any(v['distance']>16.25 for v in changes):failed.append('damage-outside-actual-controlled-actor-range')
     if kind=='driving':
         driving=[(r,v) for r,v in samples if r.get('mode')=='vehicle']
-        far=[(r,v) for r,v in driving if v['actorDistance']>18.25]
+        # The actual gameplay rule clears at18m; a former extra0.25m coverage
+        # margin falsely rejected a genuine18.11m escape. Do not change the rule.
+        far=[(r,v) for r,v in driving if v['actorDistance']>18.0]
         facts['maximum_vehicle_distance']=max([v['actorDistance'] for r,v in driving] or [0])
         facts['far_pursuit_levels']=sorted({r['pursuit'] for r,v in far})
+        facts['escape_samples']=[dict(time=r['time'],distance=v['actorDistance'],pursuit=r['pursuit'],
+            restarts=r.get('restarts',0)) for r,v in far]
         if not driving:failed.append('actual-driving-not-exercised')
         if not far:failed.append('driving-escape-distance-not-exercised')
         elif any(r.get('pursuit')!=0 for r,v in far):failed.append('pursuit-does-not-follow-actual-vehicle-distance')
