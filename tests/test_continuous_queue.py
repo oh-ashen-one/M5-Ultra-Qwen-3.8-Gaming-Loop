@@ -114,6 +114,21 @@ class QueueTests(unittest.TestCase):
         self.assertTrue(result['ok']);self.assertTrue(self.store.get('entry_selected_edit_saved'))
         self.assertEqual((self.project/path).read_text(),original.replace(ENTRY_ANCHOR,'if (e && near_body)'))
 
+    def test_mission_review_includes_captured_ending_between_drive_and_reset(self):
+        times=[3.2,5.2,7.2,7.9,9.4,12.5,14,15.2,16.2,18.5]
+        rows=[]
+        for i,t in enumerate(times):
+            (self.bundle/'captures'/('frame-%03d.png'%i)).write_bytes(b'fixture')
+            carry=7.4<=t<14.3
+            rows.append(dict(time=t,mission='complete' if 14.3<=t<17 else 'active',
+                restarts=int(t>=17),missionObjects=[{'name':'Parcel','playerChild':carry}]))
+        atomic(self.bundle/'captures/scenario.json',{'captures':times})
+        (self.bundle/'captures/trace.jsonl').write_text('\n'.join(json.dumps(r) for r in rows))
+        frames,mapping=review_captures({'id':'connected-mission','checks':['mission_complete']},self.bundle)
+        self.assertEqual([p.name for p in frames],['frame-000.png','frame-003.png','frame-007.png','frame-009.png'])
+        self.assertEqual(mapping['frame-007.png'],15.2)
+        self.assertEqual(mapping['frame-009.png'],18.5)
+
     def test_mission_scope_is_distinct_from_combat_and_requires_actual_retry(self):
         rows=[]
         for t,z,carry,keys,mission,restarts in [(3,0,False,[],'active',0),(4,-2,False,['S'],'active',0),

@@ -30,6 +30,29 @@ def review_captures(task,bundle):
     scenario=read_json(bundle/'captures/scenario.json')
     indices=[0,3,4,5,6] if task['id']=='vehicle-collision-reset' and len(frames)==7 else [0,len(frames)//2,len(frames)-1]
     chosen=[frames[i] for i in indices]
+    trace=bundle/'captures/trace.jsonl'
+    if 'mission_complete' in task.get('checks',[]) and trace.exists():
+        rows=[json.loads(line) for line in trace.read_text().splitlines()]
+        observed=[]
+        for frame in frames:
+            when=scenario['captures'][int(frame.stem.split('-')[-1])]
+            near=min(rows,key=lambda row:abs(row['time']-when)) if rows else None
+            if near and abs(near['time']-when)<=.25:observed.append((frame,near))
+        initial_restarts=rows[0].get('restarts',0) if rows else 0
+        def carrying(row):
+            return row.get('mission')=='active' and any(o['name']=='Parcel' and
+                (o.get('playerChild') or o.get('vehicleChild')) for o in row.get('missionObjects',[]))
+        predicates=[lambda row:row.get('mission')=='active' and not carrying(row),carrying,
+                    lambda row:row.get('mission')=='complete',
+                    lambda row:row.get('restarts',0)>initial_restarts and row.get('mission')=='active' and not carrying(row),
+                    lambda row:row.get('mission')=='failed' or row.get('health',100)<=0]
+        selected=[]
+        for predicate in predicates:
+            match=next((frame for frame,row in observed if predicate(row)),None)
+            if match is not None and match not in selected:selected.append(match)
+        # At most five genuine state captures fit the bounded image context.
+        # Missing state captures remain missing evidence; never invent or relabel them.
+        if selected:chosen=sorted(selected)
     mapping={p.name:scenario['captures'][int(p.stem.split('-')[-1])] for p in chosen}
     return chosen,mapping
 
