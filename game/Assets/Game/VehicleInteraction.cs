@@ -73,7 +73,7 @@ namespace ChicagoGame
         {
             _driving = false; _speed = 0f;
             _player.transform.position = transform.position + transform.right * -1.5f + Vector3.up * 0.3f;
-            _player.transform.rotation = Quaternion.LookRotation(-transform.right, Vector3.up);
+            _player.transform.rotation = Quaternion.LookRotation(transform.forward, Vector3.up);
             _walker.enabled = true; _cc.enabled = true;
             if (_pv) _pv.gameObject.SetActive(true);
             _follow.target = _player.transform;
