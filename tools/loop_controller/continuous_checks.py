@@ -3,6 +3,7 @@ import json
 import math
 from .core import read_json
 from .mission_anchors import inspect_mission_anchors
+from .mission_hud import inspect_courier_hud
 
 KEYS={'W','A','S','D','E','R','F','Space','LeftShift','Mouse0','Mouse1','Escape'}
 
@@ -97,6 +98,10 @@ def evaluate_step(task,bundle,base):
         anchors=inspect_mission_anchors(rows)
         facts['mission_anchors']=anchors
         if not anchors['passed']:failed.extend(anchors['failure'])
+        if task['id']=='connected-mission':
+            hud=inspect_courier_hud(rows)
+            facts['courier_hud_states']=hud
+            if not hud['passed']:failed.extend(hud['failure'])
         if task.get('polish'):
             primitives={'Cube','Cylinder','Sphere','Capsule','Plane','Quad'}
             if any(o.get('meshName') in primitives for r in rows for o in r.get('missionObjects',[])):

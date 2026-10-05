@@ -34,7 +34,7 @@ class FixtureResume(ContinuousRunner):
         return result
 
 
-def main():
+def main(runner_class=FixtureResume):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--run-dir',type=Path,required=True)
     parser.add_argument('--authorize-recovery',action='store_true')
@@ -42,7 +42,7 @@ def main():
     if not args.authorize_recovery:parser.error('Explicit ongoing mission recovery authorization required')
     config=read_json(args.run_dir/'private-config.json')
     with exclusive(Path(config['coordination_dir'])/'game-owner.lock'),exclusive(args.run_dir/'controller.lock'):
-        runner=FixtureResume(args.run_dir,config);store=runner.store;state=store.status()
+        runner=runner_class(args.run_dir,config);store=runner.store;state=store.status()
         if (state.get('controller_pid') or state.get('owned_process') or state['status']!='paused'
                 or not state.get('mission_selected_repairs_done') or state['task_index']!=2
                 or not state.get('blocker','').startswith('Halt: Replay-only role supplied no valid finish_task')):
