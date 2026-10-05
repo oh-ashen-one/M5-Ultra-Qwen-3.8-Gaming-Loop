@@ -41,7 +41,14 @@ namespace ChicagoGame
         public static void Install(GameObject player, Camera cam)
         {
             if (!player || !cam) return;
-            var m = player.gameObject.AddComponent<CourierMission>();
+            // Host the mission on its OWN stationary, unparented world object so
+            // that any transform-relative parenting (respawn, reset) anchors to a
+            // fixed block location instead of dragging props along with the courier.
+            var host = new GameObject("CourierMission");
+            host.transform.position = Vector3.zero;
+            host.transform.rotation = Quaternion.identity;
+            host.transform.SetParent(null, false);
+            var m = host.AddComponent<CourierMission>();
             m.player = player.transform;
             m.cam = cam;
             m.Build();
