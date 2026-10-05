@@ -88,3 +88,19 @@ the focused local-Qwen gameplay correction is tested. The fixed project cap,
 accepted `81659ed` and historical rejection counts remain preserved. **105 CPU
 checks pass on both machines.** See current machine-local status for later
 qualification results; resumed service alone does not promote a game checkpoint.
+
+## HUD/audio continuation
+
+The next task saved local-Qwen source `202b53b`, adding original procedural audio
+and a status panel. Its replay-only response exhausted 8,192 output tokens before
+returning instructions, and the new modules had not yet been installed. The model
+remained healthy. Recovery `b946be1` requests one bounded local-Qwen installation
+edit and reuses the sealed accepted combat/courier input scenario. The current
+source must still pass native HUD/audio checks, all baseline and combat
+regressions, and fresh actual-image criticism. This reuse does not assert that
+new source passes. Other phases still require their appropriate replay.
+
+All **114 CPU tests pass on both machines**, including rejection of a changed
+scenario, wrong source, failed/diagnostic gate, unaccepted review, wrong task or
+changed failure counters. The same queue resumed at 21:02:56 UTC with the fixed
+cap and all original history intact. Native HUD/audio acceptance remains pending.
