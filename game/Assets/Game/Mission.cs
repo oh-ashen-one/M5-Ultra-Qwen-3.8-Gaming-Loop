@@ -207,7 +207,7 @@ namespace ChicagoGame
         void Start()
         {
             lastRestarts = ReadInt("Restarts");
-            padPos = new Vector3(laneX, PAV_TOP, 27.5f);
+            padPos = padRend.transform.position;
         }
 
         void Update()
