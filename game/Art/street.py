@@ -123,25 +123,36 @@ box("storm_grate", (0.92, 0.70, 0.05), (4.40, -3.80, 0.055), "grate")
 for i in range(6):
     box("grate_bar%02d" % i, (0.82, 0.05, 0.06), (4.40, -4.10 + i * 0.12, 0.080), "grate")
 
-# ---- alley mouth: paved gap between lots, brick party walls, closed gate --
-box("alley_slab", (1.80, 11.60, 0.12), (6.90, 2.20, -0.01), "asphalt")
-box("alley_wallW", (0.30, 11.60, 5.60), (5.85, 2.20, 2.80), "dkbrick")
-box("alley_wallE", (0.30, 11.60, 5.60), (7.95, 2.20, 2.80), "dkbrick")
-box("alley_copingW", (0.44, 11.60, 0.16), (5.85, 2.20, 5.68), "stone")
-box("alley_copingE", (0.44, 11.60, 0.16), (7.95, 2.20, 5.68), "stone")
+# ---- (alley party-wall / gate section REMOVED) ---------------------------
+# The alley_slab / alley_wallW,E / copings / gate mesh were present in this
+# source but absent from the accepted 102a2095 FBX. Re-export exposed them:
+# their first world centers (-3.10, 2.80, 12.85 / 14.95, sizes 11.60x5.60x0.30)
+# run ACROSS the accepted route lane and stopped the car at Z~10.55. They are
+# removed outright so the accepted X-1..6, Z-2..30 route stays physically open.
+# No colliders disabled, no anchors moved, no targeting widened.
 
-gate = bpy.data.objects.new("alley_gate", None)
-scene.collection.objects.link(gate)
-gate.parent = root
-box("gate_post_L", (0.13, 0.13, 2.30), (5.98, -1.60, 1.15), "steel", parent=gate)
-box("gate_post_R", (0.13, 0.13, 2.30), (7.82, -1.60, 1.15), "steel", parent=gate)
-box("gate_rail_top", (2.00, 0.10, 0.10), (6.90, -1.60, 2.22), "steel", parent=gate)
-box("gate_rail_bot", (2.00, 0.09, 0.09), (6.90, -1.60, 0.22), "steel", parent=gate)
-for i in range(13):
-    box("gate_wireV%02d" % i, (0.045, 0.045, 2.00), (6.05 + i * 0.142, -1.60, 1.22), "chain", parent=gate)
-for i in range(7):
-    for k in (-1, 1):
-        box("gate_wireD%02d_%d" % (i, k), (0.05, 0.05, 0.60),
-            (6.12 + i * 0.26, -1.60, 1.22), "chain", parent=gate, rz=0.785398 * k)
+# ---- south END-FACE relief (Blender X = -6 plane -> world z ~= 1) ---------
+# This is the large blank red gable wall seen at the LEFT of the route (NOT the
+# already-windowed front, whose mullions/pier trims did not read in-frame).
+# Repeated recessed window bays, projecting brick pilasters, a stone base band
+# and a cornice cap divide the slab with strong cast-shadow relief. Everything
+# protrudes toward -BlenderX (world z < 1) and spans world x <= -1.2, so the
+# playable pavement / route (x -1..6) is never obstructed; original facade_wall
+# and facade_base geometry is left intact.
+EF = -6.0
+box("ef_base", (0.30, D, 1.05), (EF - 0.12, D / 2, 0.52), "stone")
+box("ef_cornice_bed", (0.34, D, 0.24), (EF - 0.15, D / 2, H - 0.50), "stone")
+box("ef_cornice", (0.52, D, 0.40), (EF - 0.24, D / 2, H - 0.18), "stone")
+for pi, py in enumerate((0.45, D / 2, D - 0.45)):
+    box("ef_pil%d" % pi, (0.24, 0.55, H - 1.30), (EF - 0.10, py, (H - 1.30) / 2 + 1.05), "brick")
+    box("ef_pil%d_cap" % pi, (0.34, 0.70, 0.16), (EF - 0.15, py, H - 0.70), "stone")
+for ei, ey in enumerate((2.05, 4.0, 5.95)):
+    for ri, ez in enumerate((2.95, 5.45)):
+        t = "ef_win%d_%d" % (ri, ei)
+        box(t + "_frame", (0.16, 1.05, 1.55), (EF - 0.07, ey, ez), "trim")
+        box(t + "_glass", (0.08, 0.78, 1.30), (EF - 0.11, ey, ez), "glass")
+        box(t + "_sill",   (0.36, 1.26, 0.14), (EF - 0.17, ey, ez - 0.86), "stone")
+        box(t + "_lintel", (0.26, 1.16, 0.24), (EF - 0.12, ey, ez + 0.92), "stone")
+        box(t + "_mullV",  (0.07, 0.09, 1.30), (EF - 0.14, ey, ez), "trim")
 
 print("street module objects:", len(scene.objects), "mats:", len(M))
