@@ -10,12 +10,20 @@ namespace ChicagoGame
 
         public static void Create()
         {
-            var street = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Generated/street/scene"));
+            var streetPrefab = Resources.Load<GameObject>("Generated/street/scene");
+            var street = streetPrefab != null
+                ? UnityEngine.Object.Instantiate(streetPrefab)
+                : new GameObject("Street");
             street.name = "Street";
             GameObject body = new GameObject("Player");
             body.name = "Player";
-            var visual = Instantiate(Resources.Load<GameObject>("Generated/player/scene"), body.transform, worldPositionStays: true);
-            visual.transform.localPosition += new Vector3(0f, -0.79f, 0f);
+            var playerPrefab = Resources.Load<GameObject>("Generated/player/scene");
+            if (playerPrefab != null)
+            {
+                var visual = UnityEngine.Object.Instantiate(playerPrefab, body.transform, true);
+                visual.name = "PlayerVisual";
+                visual.transform.localPosition += new Vector3(0f, -0.79f, 0f);
+            }
 
             if (street.GetComponentInChildren<Collider>() == null)
             {
