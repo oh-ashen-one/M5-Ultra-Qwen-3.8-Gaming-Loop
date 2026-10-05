@@ -157,9 +157,7 @@ namespace ChicagoGame
         void RefreshHud()
         {
             if (hud == null) return;
-            string mission = LoopSignals.Mission ?? "0";
-
-            if (mission == "2")
+            if (stage == 2)
             {
                 hud.text =
                     "\u2605 DELIVERY COMPLETE \u2605\n" +
