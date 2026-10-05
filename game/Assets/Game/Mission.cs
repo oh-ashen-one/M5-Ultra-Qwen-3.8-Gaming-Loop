@@ -160,7 +160,7 @@ namespace ChicagoGame
         void RefreshHud()
         {
             if (hud == null) return;
-            if (stage == 3) { hud.text = "DELIVERY FAILED\nDelivery window expired\nR to retry"; return; }
+            if (stage == 3) { hud.text = "MISSION FAILED\nRan out of time to grab & deliver the parcel\nPress R to retry"; return; }
             if (stage == 2)
             {
                 hud.text =
@@ -208,7 +208,10 @@ namespace ChicagoGame
         int lastRestarts;
         Vector3 padPos;
         float missionStartTime;       // Time.time when mission became active
-        const float DEADLINE = 45f;   // seconds to complete the mission
+        // Human-fair courier window: the grab->drive->deliver route takes ~10 s,
+        // so 30 s leaves ample margin. A previous 45 s window was so long that a
+        // timed-out run could not also complete its retry inside the session.
+        const float DEADLINE = 30f;   // seconds to complete the mission
 
         void Start()
         {
