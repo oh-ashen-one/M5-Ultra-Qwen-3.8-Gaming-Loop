@@ -1,0 +1,19 @@
+{
+  "accepted_utc": "2026-10-05T14:29:00.581800+00:00",
+  "candidate": "aba189af8d8e2e4f9d4b1f9fff384c75a5e0758d",
+  "evidence": "evidence/q0001-21f1e825",
+  "final_game_accepted": false,
+  "review": {
+    "fixes": [
+      "Reconcile the car's visual assembly with its physical body: the black roof/cargo slab floats and intersects the blue panels and the wheels read as detached from the silhouette (frame-003, frame-004), obscuring the visual front heading even though motion is now collision-safe.",
+      "Remove or gate the stray thin black diagonal line drawn across the pavement, visible in frame-000, frame-003 and frame-005; it reads as a leftover debug/line renderer rather than road paint.",
+      "Add camera occlusion/offset handling: at t=18.5 the chase camera is steep over the roof with the entire right half filled by a flat maroon wall, so the boundary the car is being driven into is barely readable.",
+      "Confirm the lane visually: in frame-003 the stopped car is riding tight against the curb/step edge rather than centered in the street, so verify spawn (3.6,0,8) and route keep it on the roadway.",
+      "Confirm from state trace (frames cannot show it) that Restarts incremented exactly once at R=24 and that health, visible player and Walker/CharacterController were re-enabled."
+    ],
+    "ok": true,
+    "summary": "Scoped evidence supports the collision-reset pass. frame-000 (t=3.2) shows the player grounded on foot at the start with empty pavement ahead; frame-003 (t=18.5, inside the held-W-into-boundary window) shows the blue car upright on its wheels pressed against the end of the street, consistent with native vehicle_stop_motion ~0.001 (physically stopped under held throttle, no runaway root translation); frame-004 (t=21.8, after E exit) shows the car parked upright with wheels on the ground beside the building and the player back on foot, confirming a grounded exit; frame-005 (t=25, after R) reproduces the pre-entry framing, indicating position/orientation/camera-follow were restored; frame-006 (t=31) shows the view displaced down the sidewalk with the reset car now partly visible at lower-left, confirming post-reset foot movement actually occurred. This matches scoped_facts (entered_before_throttle, grounded_exit_before_reset, vehicle_stop_motion ~0.00098, reset_positions_and_state) and the passing walk and world-collision regressions. Not establishable from frames: Restarts counter, health, CharacterController enable state, HUD/audio - those rest on the state trace alone. Remaining issues are visual polish, not blocked mechanics: the black roof box intersects the blue slab body with seemingly detached wheels (visual/physical mismatch), a stray black line is painted across the pavement in three frames, and the chase camera clips into the facade during the boundary stop.",
+    "verdict": "PASS"
+  },
+  "scope": "vehicle-collision-reset"
+}
