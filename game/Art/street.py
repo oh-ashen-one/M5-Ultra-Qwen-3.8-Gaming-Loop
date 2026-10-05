@@ -96,4 +96,38 @@ for bi, x in enumerate((-4.5, -1.5)):
 box("sidewalk", (W + 2.0, 3.20, 0.14), (0, -1.70, 0.07), "concrete")
 box("curb", (W + 2.0, 0.22, 0.18), (0, -3.32, 0.09), "concrete")
 
+M["asphalt"] = mat("asphalt", (0.085, 0.085, 0.090), 0.95)
+M["paint"] = mat("road paint", (0.620, 0.520, 0.110), 0.70)
+M["grate"] = mat("storm grate", (0.230, 0.235, 0.240), 0.60, 1.0)
+M["chain"] = mat("chain link", (0.420, 0.430, 0.440), 0.50, 1.0)
+
+# ---- drivable street surface, painted centre line, storm grate -----------
+box("road_asphalt", (W + 2.0, 11.00, 0.12), (0, -9.05, -0.01), "asphalt")
+for i in range(6):
+    box("road_dash%02d" % i, (2.40, 0.16, 0.03), (-5.5 + i * 2.2, -9.0, 0.06), "paint")
+box("storm_grate", (0.92, 0.70, 0.05), (4.40, -3.80, 0.055), "grate")
+for i in range(6):
+    box("grate_bar%02d" % i, (0.82, 0.05, 0.06), (4.40, -4.10 + i * 0.12, 0.080), "grate")
+
+# ---- alley mouth: paved gap between lots, brick party walls, closed gate --
+box("alley_slab", (1.80, 11.60, 0.12), (6.90, 2.20, -0.01), "asphalt")
+box("alley_wallW", (0.30, 11.60, 5.60), (5.85, 2.20, 2.80), "dkbrick")
+box("alley_wallE", (0.30, 11.60, 5.60), (7.95, 2.20, 2.80), "dkbrick")
+box("alley_copingW", (0.44, 11.60, 0.16), (5.85, 2.20, 5.68), "stone")
+box("alley_copingE", (0.44, 11.60, 0.16), (7.95, 2.20, 5.68), "stone")
+
+gate = bpy.data.objects.new("alley_gate", None)
+scene.collection.objects.link(gate)
+gate.parent = root
+box("gate_post_L", (0.13, 0.13, 2.30), (5.98, -1.60, 1.15), "steel", parent=gate)
+box("gate_post_R", (0.13, 0.13, 2.30), (7.82, -1.60, 1.15), "steel", parent=gate)
+box("gate_rail_top", (2.00, 0.10, 0.10), (6.90, -1.60, 2.22), "steel", parent=gate)
+box("gate_rail_bot", (2.00, 0.09, 0.09), (6.90, -1.60, 0.22), "steel", parent=gate)
+for i in range(13):
+    box("gate_wireV%02d" % i, (0.045, 0.045, 2.00), (6.05 + i * 0.142, -1.60, 1.22), "chain", parent=gate)
+for i in range(7):
+    for k in (-1, 1):
+        box("gate_wireD%02d_%d" % (i, k), (0.05, 0.05, 0.60),
+            (6.12 + i * 0.26, -1.60, 1.22), "chain", parent=gate, rz=0.785398 * k)
+
 print("street module objects:", len(scene.objects), "mats:", len(M))
