@@ -1,0 +1,16 @@
+{
+  "accepted_utc": "2026-10-05T12:03:03.809975+00:00",
+  "candidate": "d7b75884c916c28f52b437745a7c7ea443c16225",
+  "evidence": "evidence/vehicle-entry-drive-exit",
+  "final_game_accepted": false,
+  "remaining": "Chicago target quality, final HUD/audio/performance, combat and complete ten-minute mission remain separate.",
+  "review": {
+    "camera_readable": true,
+    "car_visible": true,
+    "continuous_paving": true,
+    "ok": true,
+    "summary": "Within the stated limited scope the demonstration is supported. frame-000.png shows the player on foot (dark two-post figure) on continuous gray paving; frame-001.png and frame-002.png show the same blue coupe (blue body, black lower trim) at the curb and from above on the same gray street; frame-003.png keeps the identical blue coupe between pillars; frame-004.png shows the rear of that same blue coupe (red taillights) moved off, with the on-foot figure in the foreground — consistent with entry, forward drive, exit and return to walking. Native trace agrees (vehicle_displacement 16.34m > 3m, player_displacement 29.46m, capture_id \"vehicle-entry-drive-exit\", passed). No conflicting vehicle appears, so car/player coherence holds. Broader deliverables (HUD, audio, FPS, Chicago-target art quality, ten-minute game, mission acceptance) remain unmet and are not claimed.",
+    "verdict": "PASS"
+  },
+  "scope": "vehicle-entry-drive-exit"
+}
