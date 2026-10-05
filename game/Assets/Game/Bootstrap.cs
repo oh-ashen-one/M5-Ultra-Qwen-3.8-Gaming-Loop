@@ -20,6 +20,20 @@ namespace ChicagoGame
             streetExt.name = "Street";
             streetExt.transform.position = new Vector3(-0.9f, 0f, 21f);
             street.transform.position = new Vector3(-0.9f, 0f, 7f);
+            Transform sw = null;
+            foreach (var r in street.GetComponentsInChildren<MeshRenderer>())
+                if (r.name.ToLower().Contains("side")) { sw = r.transform; break; }
+            if (sw != null) {
+                var smr = sw.GetComponent<MeshRenderer>(); var smf = sw.GetComponent<MeshFilter>();
+                var b = smf.sharedMesh.bounds; var wb = smr.bounds;
+                var ls = new Vector3(32f / b.size.x, wb.size.y / b.size.y, 7f / b.size.z);
+                var pv = new GameObject("Pavement");
+                pv.transform.rotation = sw.rotation;
+                pv.transform.localScale = ls;
+                pv.transform.position = new Vector3(2.5f, 0.14f - wb.size.y * 0.5f, 14f) - pv.transform.rotation * Vector3.Scale(b.center, ls);
+                pv.AddComponent<MeshFilter>().sharedMesh = smf.sharedMesh;
+                pv.AddComponent<MeshRenderer>().sharedMaterial = smr.sharedMaterial;
+            }
             static GameObject Coupe() { var p = Resources.Load<GameObject>("Generated/coupe/scene"); return p ? UnityEngine.Object.Instantiate(p) : null; }
             static GameObject Props() { var p = Resources.Load<GameObject>("Generated/props/scene"); return p ? UnityEngine.Object.Instantiate(p) : null; }
             var props = Props(); if (props != null) { props.name = "Props"; props.transform.position = new Vector3(5.5f, 0f, 11f); props.transform.rotation = Quaternion.Euler(0f, 90f, 0f) * props.transform.rotation; }
