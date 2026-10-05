@@ -5,7 +5,7 @@ import unittest
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from inspect_combat_contracts import summarize_combat
 from loop_controller.combat_checks import inspect_combat_contract
-from qualify_combat_focus import combined_probe,CombatFocus,VISUAL_REPAIRED,ACCEPTED
+from qualify_combat_focus import combined_probe,CombatFocus,VISUAL_REPAIRED,REPAIRED,ACCEPTED
 from loop_controller.core import Halt
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 from loop_controller.continuous_checks import validate_proposed
@@ -22,6 +22,13 @@ class CombatObservationTests(unittest.TestCase):
         for changes in [dict(source_checkpoint='other'),dict(task_failures=1),dict(failure_streak=1),
                         dict(blocker='different fault'),dict(combat_before_contracts=[])]:
             with self.assertRaises(Halt):CombatFocus.validate_recovery(None,{**old,**changes})
+        drive={**old,'source_checkpoint':REPAIRED,'task_failures':1,'failure_streak':1,
+            'blocker':'Halt: Measured combat contract failure; preserve candidate and diagnose exact observations',
+            'feedback':{'failure':['driving-escape-distance-not-exercised']}}
+        CombatFocus.validate_recovery(None,drive)
+        for changes in [dict(task_failures=2),dict(feedback={'failure':['damage-through-wall']}),
+                        dict(source_checkpoint='other')]:
+            with self.assertRaises(Halt):CombatFocus.validate_recovery(None,{**drive,**changes})
 
     def test_damage_and_pursuit_use_actual_vehicle_distance_in_diagnostic(self):
         rows=[]

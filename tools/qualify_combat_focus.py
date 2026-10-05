@@ -16,6 +16,7 @@ from resume_three_day_queue import ThreeDayRunner,main
 
 COMBAT='Assets/Game/Combat.cs'
 VISUAL_REPAIRED='ed84a51d044d67735dfc7c4af18651d4c943f9a5'
+REPAIRED='f965eaecf19d0aa56600c3249af81282dcdabd10'
 
 
 def combined_probe(previous):
@@ -34,9 +35,14 @@ class CombatFocus(ThreeDayRunner):
             'Halt: Local combat edit saved no change: chase-and-occluded-attack' and
             old.get('combat_selected_edits')==['preserve-imported-visual-basis','rival-pavement-height'] and
             {v.get('scope') for v in old.get('combat_before_contracts',[])}=={'foot','wall'})
-        if (old.get('task_index')!=4 or not (initial or selected_stop)
-                or old.get('last_playable_checkpoint')!=ACCEPTED or old.get('task_failures')!=0
-                or old.get('failure_streak')!=0 or old.get('overall_deadline_epoch')!=HARD_CAP_EPOCH):
+        drive_coverage=(old.get('source_checkpoint')==REPAIRED and old.get('blocker')==
+            'Halt: Measured combat contract failure; preserve candidate and diagnose exact observations' and
+            old.get('feedback',{}).get('failure')==['driving-escape-distance-not-exercised'] and
+            old.get('task_failures')==1 and old.get('failure_streak')==1)
+        if (old.get('task_index')!=4 or not (initial or selected_stop or drive_coverage)
+                or old.get('last_playable_checkpoint')!=ACCEPTED
+                or (not drive_coverage and (old.get('task_failures')!=0 or old.get('failure_streak')!=0))
+                or old.get('overall_deadline_epoch')!=HARD_CAP_EPOCH):
             raise Halt('Expected the preserved measured combat diagnostic and accepted retry baseline')
 
     def recovery_settings(self):return {'combat_focused_qualification_pending':True}
@@ -126,7 +132,9 @@ class CombatFocus(ThreeDayRunner):
             'semantics. No layer, wall, target-size or hit-radius shortcuts.',method='void HandleFire()',max_lines=65)
         candidate=self.checkpoint_source('Local Qwen: measured combat repairs')
         self.store.set(source_checkpoint=candidate)
-        after=[self.native_test(ident+'-after-'+kind,probe,kind,candidate)
+        existing={v['scope']:v for v in self.store.get('combat_after_contracts',[])
+                  if v.get('passed') and v.get('candidate')==candidate}
+        after=[existing.get(kind) or self.native_test(ident+'-after-'+kind,probe,kind,candidate)
                for kind,probe in [('foot',FOOT_PROBE),('wall',WALL_PROBE),('driving',DRIVE_PROBE)]]
         atomic(self.store.root/'combat-focused-result.json',{'before':before,'after':after,'candidate':candidate})
         self.store.set(combat_after_contracts=after,combat_focused_qualification_pending=False)
