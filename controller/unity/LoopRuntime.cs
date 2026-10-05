@@ -8,7 +8,7 @@ using UnityEngine;
 [DefaultExecutionOrder(-32000)]
 public class LoopInputPump : MonoBehaviour
 {
-    void Update() { LoopInput.Tick(Time.realtimeSinceStartup - LoopRuntime.StartedAt); }
+    void Update() { LoopInput.Tick(Time.time - LoopRuntime.StartedAt); }
 }
 
 [DefaultExecutionOrder(32000)]
@@ -30,9 +30,9 @@ public class LoopRuntime : MonoBehaviour
         public bool enabled;
     }
     [Serializable] public class SceneObservation { public ObjectObservation[] objects; }
-    [Serializable] public class Final { public string capture_id, unity, graphics; public int samples, errors; public float duration; public bool completed; }
+    [Serializable] public class Final { public string capture_id, unity, graphics, replay_clock; public int samples, errors; public float duration, wallDuration; public bool completed; }
     string output, captureId;
-    float started, nextSample;
+    float started, wallStarted, nextSample;
     int samples, errors, captureIndex;
     bool finished;
     bool observedScene;
@@ -56,7 +56,12 @@ public class LoopRuntime : MonoBehaviour
         QualitySettings.vSyncCount = 0; Application.targetFrameRate = 60;
         output = Arg("--loop-output"); captureId = Arg("--loop-capture-id");
         var scenario = Arg("--loop-scenario");
-        if (scenario != null) LoopInput.Load(scenario);
+        if (scenario != null) {
+            LoopInput.Load(scenario);
+            // Automated input follows simulation time. Slow PNG/first-shader capture
+            // must not jump over a held key interval; ordinary human play is unchanged.
+            Time.captureDeltaTime = 1f / 60f;
+        }
         if (output != null) Directory.CreateDirectory(output);
         Application.logMessageReceived += OnLog;
         var type = AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType("ChicagoGame.Bootstrap", false)).FirstOrDefault(t => t != null);
@@ -64,7 +69,8 @@ public class LoopRuntime : MonoBehaviour
         var method = type.GetMethod("Create", BindingFlags.Public | BindingFlags.Static);
         if (method == null) throw new Exception("Required public static Create() is missing");
         method.Invoke(null, null);
-        started = Time.realtimeSinceStartup;
+        started = Time.time;
+        wallStarted = Time.realtimeSinceStartup;
         StartedAt = started;
         gameObject.AddComponent<LoopInputPump>();
     }
@@ -133,7 +139,8 @@ public class LoopRuntime : MonoBehaviour
             finished = true;
             var result = new Final {capture_id=captureId, unity=Application.unityVersion,
                 graphics=SystemInfo.graphicsDeviceType.ToString(), samples=samples, errors=errors,
-                duration=elapsed, completed=true};
+                duration=elapsed, wallDuration=Time.realtimeSinceStartup-wallStarted,
+                replay_clock="fixed-game-time-60Hz", completed=true};
             File.WriteAllText(Path.Combine(output, "runtime-result.json"), JsonUtility.ToJson(result, true));
             Application.Quit(errors == 0 ? 0 : 3);
         }
