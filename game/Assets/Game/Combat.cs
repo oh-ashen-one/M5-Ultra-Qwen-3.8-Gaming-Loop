@@ -151,33 +151,43 @@ namespace ChicagoGame
 
         void ActRival()
         {
-            Vector3 me = player.position; me.y = 0f;
+            Transform tgt = LoopSignals.Mode == "vehicle" && LoopSignals.Vehicle != null
+                ? LoopSignals.Vehicle : player;
+            Vector3 me = tgt.position; me.y = 0f;
             Vector3 to = me - rivalGo.position; to.y = 0f;
             float d = to.magnitude;
-
-            // Face and walk toward the courier (visible action), but keep a
-            // small personal space so shots have room.
             if (d > 0.01f)
             {
                 var want = Quaternion.LookRotation(to.normalized, Vector3.up);
-                rivalGo.rotation = Quaternion.RotateTowards(
-                    rivalGo.rotation, want, 260f * Time.deltaTime);
-                if (d > 3.0f)
-                    rivalGo.position += to.normalized * (RIVAL_SPEED * Time.deltaTime);
+                rivalGo.rotation = Quaternion.RotateTowards(rivalGo.rotation, want, 260f * Time.deltaTime);
+                if (d > 3.0f) rivalGo.position += to.normalized * (RIVAL_SPEED * Time.deltaTime);
             }
-
-            // Shoot at the courier on a cooldown while in range: real damage.
             rival.muzzle -= Time.deltaTime;
             if (d < SHOT_RANGE && rival.muzzle <= 0f)
             {
                 rival.muzzle = SHOT_COOLDOWN;
-                int hp = Mathf.Max(0, ReadInt("Health") - SHOT_DAMAGE);
-                Set("Health", hp);
-                Tracer(rivalGo.position + Vector3.up * 1.25f,
-                       player.position + Vector3.up * 1.0f,
-                       new Color(1f, 0.5f, 0.05f), 0.06f);
-                if (hp <= 0 && ReadStr("Mission") == "active")
-                    Set("Mission", "failed");
+                Vector3 mp = rivalGo.position + Vector3.up * 1.25f;
+                Vector3 tb = tgt.position + Vector3.up * 1.0f;
+                Vector3 dir = tb - mp; float len = dir.magnitude;
+                bool blocked = false; float stop = len;
+                if (len > 0.01f)
+                {
+                    var hits = Physics.RaycastAll(mp, dir.normalized, len);
+                    System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+                    foreach (var h in hits)
+                    {
+                        if (h.transform.root == rivalGo.root || h.collider.isTrigger) continue;
+                        if (h.transform.root != tgt.root) { blocked = true; stop = h.distance; }
+                        break;
+                    }
+                }
+                if (!blocked)
+                {
+                    int hp = Mathf.Max(0, ReadInt("Health") - SHOT_DAMAGE);
+                    Set("Health", hp);
+                    if (hp <= 0 && ReadStr("Mission") == "active") Set("Mission", "failed");
+                }
+                Tracer(mp, mp + dir.normalized * stop, new Color(1f, 0.5f, 0.05f), 0.06f);
             }
         }
 
