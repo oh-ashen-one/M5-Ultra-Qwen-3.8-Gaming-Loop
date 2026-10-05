@@ -266,7 +266,7 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
                             float dz = Vector2.Distance(
                                 new Vector2(veh.position.x, veh.position.z),
                                 new Vector2(padPos.x, padPos.z));
-                            if (dz <= 3.2f)
+                            if (dz <= 2.6f)
                             {
                                 stage = 2;
                                 if (parcel != null) Destroy(parcel.gameObject);
