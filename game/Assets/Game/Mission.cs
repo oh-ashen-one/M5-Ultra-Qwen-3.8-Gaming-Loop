@@ -83,7 +83,10 @@ namespace ChicagoGame
             var pad = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             pad.name = "DropPad";
             pad.transform.SetParent(missionRoot, false);
-            pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
+            // Center the pad on the same drivable lane as the beacon/coupe so
+            // "drive to the green pad" is literally the lane the car travels;
+            // a far-off-pad X previously made the delivery check untestable.
+            pad.transform.position = new Vector3(laneX, PAV_TOP + 0.01f, 26);
             pad.transform.localScale = new Vector3(3.6f, 0.02f, 3.6f); // r = 1.8, thin
             var padCol = pad.GetComponent<Collider>();
             if (padCol != null) Destroy(padCol);
@@ -261,7 +264,7 @@ namespace ChicagoGame
                             float dz = Vector2.Distance(
                                 new Vector2(veh.position.x, veh.position.z),
                                 new Vector2(padPos.x, padPos.z));
-                            if (dz <= 2.6f)
+                            if (dz <= 3.2f)
                             {
                                 stage = 2;
                                 if (parcel != null) Destroy(parcel.gameObject);
