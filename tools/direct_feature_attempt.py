@@ -131,7 +131,7 @@ class DirectRunner(Runner):
                'The player must not end on brown unrendered background.' if ident=='foundation-short-walk' else
                'A limited vehicle entry, forward driving over3m, exit and return to walking demonstration with the same blue coupe. '
                'Judge visible car/player coherence, not final driving feel or full collision/audio quality.')
-        if ident in ('vehicle-safe-exit-view','vehicle-clear-exit'):
+        if ident in ('vehicle-safe-exit-view','vehicle-clear-exit','vehicle-grounded-exit'):
             scope+=' This follow-up specifically requires the on-foot character to be identifiable in BOTH exit frame-003.png and return frame-004.png. Pillar/fence/car occlusion hiding the player is a FIX, not outside scope.'
         self.c.update(output_tokens=8192,model_timeout_seconds=400)
         self.store.set(stage='scoped-critic',current_task=scope);self.store.report()
@@ -172,6 +172,16 @@ class DirectRunner(Runner):
 
     def work(self):
         self.model.ready();self.guard()
+        if self.store.get('repair_exit_height'):
+            self.edit('vehicle-exit-height',
+                'Change only the exit-position assignment vertical clearance. The actual car root is already ground-aligned '
+                'atY0.14; adding0.3 currently spawns player feetY0.44 above pavement, which fails the unchanged surface check '
+                'for one transition sample. Use a small clearance near the CharacterController skinWidth0.02m so exit feet '
+                'begin near the established ground height. Keep the clear-side negative-right1.5m offset, corridor-facing '
+                'rotation, camera, driving and all other physics unchanged.',
+                anchor='_player.transform.position =',path='Assets/Game/VehicleInteraction.cs',max_lines=1)
+            self.store.set(repair_exit_height=False)
+            return self.vehicle_test('vehicle-grounded-exit',bounded_route=True,feature='vehicle-safe-exit-view')
         if self.store.get('repair_exit_facing'):
             self.edit('vehicle-exit-facing',
                 'Change only this player exit-facing assignment. The player now exits on the correct clear side atX2.1, '
@@ -281,10 +291,11 @@ def main():
     parser.add_argument('--repair-vehicle-heading',action='store_true')
     parser.add_argument('--repair-vehicle-exit',action='store_true')
     parser.add_argument('--repair-exit-facing',action='store_true')
+    parser.add_argument('--repair-exit-height',action='store_true')
     a=parser.parse_args()
     if not a.authorize_bounded_continuation:parser.error('Current parent authorization required')
     os.umask(0o077)
-    recovering=a.recover_local_proposal or a.repair_pavement_axis or a.recover_vehicle_proposal or a.repair_vehicle_heading or a.repair_vehicle_exit or a.repair_exit_facing
+    recovering=a.recover_local_proposal or a.repair_pavement_axis or a.recover_vehicle_proposal or a.repair_vehicle_heading or a.repair_vehicle_exit or a.repair_exit_facing or a.repair_exit_height
     if a.run_dir.exists() and not recovering:raise Halt('Fresh attempt requires a new ledger; preserve every previous run')
     old=read_json(a.previous_run/'status.json')
     if old.get('controller_pid') or old['status']!='paused':raise Halt('Previous sole owner must be stopped')
@@ -337,8 +348,9 @@ def main():
               repair_vehicle_heading=a.repair_vehicle_heading,
               repair_vehicle_exit=a.repair_vehicle_exit,
               repair_exit_facing=a.repair_exit_facing,
+              repair_exit_height=a.repair_exit_height,
               controller_pid=os.getpid(),status='running',blocker=None)
-        s.event('bounded-diagnosed-recovery',reason=('Exit framing still intersects facade; local corridor-aligned facing with unchanged camera' if a.repair_exit_facing else 'Observed exit camera is occluded; local clear-side placement and outward facing' if a.repair_vehicle_exit else 'Native front/rear measurements contradict forward driving; local visual-heading correction and bounded drive replay' if a.repair_vehicle_heading else 'Exact92-line local vehicle proposal plus one measured input API correction' if a.recover_vehicle_proposal else 'Measured native pavement axes require one scale assignment' if a.repair_pavement_axis
+        s.event('bounded-diagnosed-recovery',reason=('Exit spawns30cm above pavement for one sample; local small-clearance correction under unchanged gate' if a.repair_exit_height else 'Exit framing still intersects facade; local corridor-aligned facing with unchanged camera' if a.repair_exit_facing else 'Observed exit camera is occluded; local clear-side placement and outward facing' if a.repair_vehicle_exit else 'Native front/rear measurements contradict forward driving; local visual-heading correction and bounded drive replay' if a.repair_vehicle_heading else 'Exact92-line local vehicle proposal plus one measured input API correction' if a.recover_vehicle_proposal else 'Measured native pavement axes require one scale assignment' if a.repair_pavement_axis
                 else 'Exact local tool proposal has15lines; allow16 preserving hash and source scope'),
                 original_deadline_unchanged=True,original_inference_record_unchanged=True)
         if a.repair_pavement_axis:
@@ -351,6 +363,8 @@ def main():
             s.set(bounds=bounds)
         if a.repair_exit_facing:
             bounds=s.get('bounds');bounds['diagnosed_exit_facing_edits']=1;s.set(bounds=bounds)
+        if a.repair_exit_height:
+            bounds=s.get('bounds');bounds['diagnosed_exit_clearance_edits']=1;s.set(bounds=bounds)
     else:s.set(started_epoch=started,started_utc=now(),attempt_deadline_epoch=deadline,
           overall_deadline_epoch=old['overall_deadline_epoch'],previous_run=a.previous_run.name,
           previous_record_sha256=hashes,source_checkpoint=known['candidate_commit'],
