@@ -13,8 +13,17 @@ namespace ChicagoGame
         Walker _walker;
         CharacterController _cc;
         Follow _follow;
+        Rigidbody _rb;
         bool _driving;
         float _speed;
+
+        static readonly Vector3 PlayerResetPos = new Vector3(0f, 0.3f, 1.7f);
+        static readonly Vector3 CarResetPos = new Vector3(3.6f, 0f, 8f);
+        static readonly Quaternion CarResetRot = Quaternion.identity;
+
+        const float VEHICLE_LENGTH = 4.5f;
+        const float VEHICLE_WIDTH = 1.9f;
+        const float VEHICLE_HEIGHT = 1.4f;
 
         public static void Install(GameObject player, GameObject coupe, Follow follow)
         {
@@ -24,60 +33,182 @@ namespace ChicagoGame
             root.transform.rotation = Quaternion.Euler(0f, coupe.transform.eulerAngles.y, 0f);
             coupe.transform.SetParent(root.transform, true);
             coupe.transform.rotation = Quaternion.Euler(0f, 180f, 0f) * coupe.transform.rotation;
+
+            var boxCol = root.AddComponent<BoxCollider>();
+            boxCol.center = new Vector3(0f, VEHICLE_HEIGHT * 0.5f, 0f);
+            boxCol.size = new Vector3(VEHICLE_WIDTH, VEHICLE_HEIGHT, VEHICLE_LENGTH);
+
+            var rb = root.AddComponent<Rigidbody>();
+            rb.mass = 1200f;
+            rb.drag = 2.5f;
+            rb.angularDrag = 50f;
+            rb.useGravity = true;
+            rb.isKinematic = false;
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
+            rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
             var v = root.AddComponent<VehicleInteraction>();
             v._player = player;
+            v._rb = rb;
             v._cc = player.GetComponent<CharacterController>();
             v._walker = player.GetComponent<Walker>();
             v._follow = follow;
             for (int i = 0; i < player.transform.childCount; i++)
                 if (player.transform.GetChild(i).name == "PlayerVisual")
                     v._pv = player.transform.GetChild(i);
+
+            // Always register vehicle root even on foot so reset is observable
+            Set("Vehicle", root.transform);
+        }
+
+        void Start()
+        {
+            // Let gravity settle vehicle onto ground at start
+            _rb.linearVelocity = Vector3.zero;
         }
 
         void Update()
         {
             bool e = LoopInput.Pressed(KeyCode.E);
+            bool r = LoopInput.Pressed(KeyCode.R);
+
+            if (r)
+            {
+                DoReset();
+                return;
+            }
+
             if (!_driving)
             {
                 if (e && Vector3.Distance(_player.transform.position, transform.position) < 2.5f)
                     Enter();
                 return;
             }
+
+            // Driving: physics-based swept movement
             float throttle = LoopInput.MoveY;
             float steer = LoopInput.MoveX;
+
             _speed += throttle * 6f * Time.deltaTime;
             _speed = Mathf.Clamp(_speed, -3f, 8f);
             if (Mathf.Abs(throttle) < 0.01f)
-                _speed = Mathf.MoveTowards(_speed, 0f, 3f * Time.deltaTime);
+                _speed = Mathf.MoveTowards(_speed, 0f, 4f * Time.deltaTime);
+
+            // Steering: set Y rotation via physics
             float turn = 90f * Mathf.Clamp01(Mathf.Abs(_speed) / 4f) * Mathf.Sign(_speed);
-            transform.Rotate(0f, steer * turn * Time.deltaTime, 0f);
-            Vector3 move = transform.forward * _speed * Time.deltaTime;
-            float groundY = transform.position.y;
-            if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out var hit, 3f))
-                groundY = hit.point.y;
-            move.y = groundY - transform.position.y;
-            transform.position += move;
+            float newYaw = transform.eulerAngles.y + steer * turn * Time.deltaTime;
+            Quaternion rot = Quaternion.Euler(0f, newYaw, 0f);
+            _rb.MoveRotation(rot);
+
+            // Desired velocity in car forward (horizontal only)
+            Vector3 forward = rot * Vector3.forward;
+            forward.y = 0f;
+            Vector3 targetVel = forward * _speed;
+            targetVel.y = _rb.linearVelocity.y;
+
+            // If car is physically blocked (against wall), kill engine speed
+            var rv = _rb.linearVelocity;
+            float horizontalSpeed = new Vector3(rv.x, 0f, rv.z).magnitude;
+            if (horizontalSpeed < 0.05f && Mathf.Abs(_speed) > 0.1f && Mathf.Abs(throttle) > 0.1f)
+                _speed = Mathf.MoveTowards(_speed, 0f, 10f * Time.deltaTime);
+
+            _rb.linearVelocity = targetVel;
+
+            // Ground snap: raycast down skipping own collider
+            if (GroundRaycast(transform.position, out var hit))
+            {
+                float groundY = hit.point.y;
+                float diff = groundY - transform.position.y;
+                if (diff > 0.02f && diff < 0.5f)
+                {
+                    Vector3 vel = _rb.linearVelocity;
+                    vel.y = diff / Time.deltaTime;
+                    _rb.linearVelocity = vel;
+                }
+            }
+
             if (e) Exit();
         }
 
         void Enter()
         {
-            _driving = true; _speed = 0f;
-            _walker.enabled = false; _cc.enabled = false;
+            _driving = true;
+            _speed = 0f;
+            _walker.enabled = false;
+            _cc.enabled = false;
             if (_pv) _pv.gameObject.SetActive(false);
             _follow.target = transform;
-            Set("Vehicle", transform); Set("Mode", "vehicle");
+            Set("Mode", "vehicle");
         }
 
         void Exit()
         {
-            _driving = false; _speed = 0f;
-            _player.transform.position = transform.position + transform.right * -1.5f + Vector3.up * 0.02f;
+            _driving = false;
+            _speed = 0f;
+            _rb.linearVelocity = Vector3.zero;
+
+            Vector3 exitPos = transform.position + transform.right * -1.5f + Vector3.up * 0.3f;
+            _player.transform.position = exitPos;
             _player.transform.rotation = Quaternion.LookRotation(transform.forward, Vector3.up);
-            _walker.enabled = true; _cc.enabled = true;
+            _walker.enabled = true;
+            _cc.enabled = true;
             if (_pv) _pv.gameObject.SetActive(true);
             _follow.target = _player.transform;
-            Set("Vehicle", null); Set("Mode", "foot");
+            Set("Mode", "foot");
+        }
+
+        void DoReset()
+        {
+            // Reset car state
+            _rb.linearVelocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
+            transform.position = CarResetPos;
+            transform.rotation = CarResetRot;
+            _rb.position = CarResetPos;
+            _rb.rotation = CarResetRot;
+            _speed = 0f;
+            _driving = false;
+
+            // Reset player
+            _player.transform.position = PlayerResetPos;
+            _player.transform.rotation = Quaternion.identity;
+            _walker.enabled = true;
+            _cc.enabled = true;
+            if (_pv) _pv.gameObject.SetActive(true);
+            _follow.target = _player.transform;
+            Set("Mode", "foot");
+            Set("Vehicle", transform);
+
+            // Increment restart count
+            int current = 0;
+            var f = typeof(LoopSignals).GetField("Restarts", St);
+            var p = typeof(LoopSignals).GetProperty("Restarts", St);
+            if (f != null) current = (int)f.GetValue(null);
+            else if (p != null) current = (int)p.GetValue(null);
+            Set("Restarts", current + 1);
+        }
+
+        bool GroundRaycast(Vector3 from, out RaycastHit hit)
+        {
+            Ray ray = new Ray(from + Vector3.up * 1.5f, Vector3.down);
+            float remaining = 6f;
+            hit = default;
+            for (int i = 0; i < 4; i++)
+            {
+                if (!Physics.Raycast(ray, out RaycastHit h, remaining, ~0, QueryTriggerInteraction.Ignore))
+                    return false;
+                if (h.transform.root == transform)
+                {
+                    float advance = (ray.origin - (h.point + Vector3.down * 0.005f)).magnitude;
+                    ray.origin = h.point - Vector3.up * 0.005f;
+                    remaining -= advance + 0.01f;
+                    if (remaining <= 0f) return false;
+                    continue;
+                }
+                hit = h;
+                return true;
+            }
+            return false;
         }
 
         static void Set(string n, object val)
