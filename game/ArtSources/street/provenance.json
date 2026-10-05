@@ -1,0 +1,18 @@
+{
+  "action_id": "r0003-1aa6d5c4-builder-1-tool-0",
+  "author": "local-Qwen",
+  "files": [
+    {
+      "bytes": 154015,
+      "path": "ArtSources/street/source.blend",
+      "sha256": "42364e8f6450b570eec88f16b16a4c67d28a7dc4f2c65d8a8d67b6f6715d2eb0"
+    },
+    {
+      "bytes": 350508,
+      "path": "Assets/Resources/Generated/street/scene.fbx",
+      "sha256": "35c8c9a5c30824601bf61d103bf377e225460cd3d5fb2cffbeb06da4941956f8"
+    }
+  ],
+  "script": "Art/street.py",
+  "script_sha256": "28233d6189a09e0492157536ec2ab4a6f751063274dcf5fdad66869e2d07ab33"
+}
