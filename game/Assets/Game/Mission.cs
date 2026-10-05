@@ -210,6 +210,7 @@ namespace ChicagoGame
         {
             lastRestarts = ReadInt("Restarts");
             padPos = padRend.transform.position;
+            missionStartTime = Time.time;
         }
 
         void Update()
