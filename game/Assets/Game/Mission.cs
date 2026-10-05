@@ -20,6 +20,11 @@ namespace ChicagoGame
         public Transform player;
         public Camera cam;
         public Transform parcel;
+        // Fixed world-space root for objectives. CourierMission itself lives on
+        // the player, so parenting world props to this.transform would drag them
+        // along as the courier walks. This no-parent root keeps the parcel, drop
+        // pad and beacon anchored to the block.
+        Transform missionRoot;
         public Renderer padRend;
         public Renderer beaconRend;
         public Transform beacon;
@@ -46,10 +51,16 @@ namespace ChicagoGame
         {
             laneX = ProbeLane();
 
+            // Stationary world root: the objective, destination and beacon must
+            // stay fixed on the block regardless of the courier's transform.
+            var root = new GameObject("MissionRoot");
+            root.transform.position = Vector3.zero;
+            missionRoot = root.transform;
+
             // ---- Objective parcel: bright yellow bobbing/spinning cube ----
             parcel = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
             parcel.name = "Parcel";
-            parcel.SetParent(transform, false);
+            parcel.SetParent(missionRoot, false);
             parcel.position = new Vector3(laneX, 0.45f, 3.2f);
             parcel.localScale = new Vector3(0.4f, 0.4f, 0.4f);
             var pcol = parcel.GetComponent<Collider>();
@@ -60,7 +71,7 @@ namespace ChicagoGame
             // ---- Destination pad: flat green cylinder ----
             var pad = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             pad.name = "DropPad";
-            pad.SetParent(transform, false);
+            pad.SetParent(missionRoot, false);
             pad.position = new Vector3(laneX, PAV_TOP + 0.01f, 27.5f);
             pad.localScale = new Vector3(3.6f, 0.02f, 3.6f); // r = 1.8, thin
             var padCol = pad.GetComponent<Collider>();
@@ -72,7 +83,7 @@ namespace ChicagoGame
             // ---- Beacon column: translucent tall light shaft over the pad ----
             var beaconGo = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             beaconGo.name = "Beacon";
-            beaconGo.SetParent(transform, false);
+            beaconGo.SetParent(missionRoot, false);
             beaconGo.position = new Vector3(laneX, PAV_TOP + 3.5f, 27.5f);
             beaconGo.localScale = new Vector3(1.1f, 3.5f, 1.1f); // 7 m tall
             var bcol = beaconGo.GetComponent<Collider>();
