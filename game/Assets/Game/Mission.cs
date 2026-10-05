@@ -131,7 +131,7 @@ namespace ChicagoGame
         {
             var go = new GameObject("MissionHud");
             go.transform.SetParent(cam.transform, false);
-            go.transform.localPosition = new Vector3(0f, 0.34f, 1.6f);
+            go.transform.localPosition = new Vector3(0f, 0.70f, 1.6f);
             go.transform.localRotation = Quaternion.identity;
 
             // Black backing card 0.2 m further from the lens than the text.
