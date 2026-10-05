@@ -25,6 +25,15 @@ STEPS={'type':'array','items':{'type':'object','properties':{
     'required':['start','end','keys'],'additionalProperties':False}}
 
 
+def validate_scoped_review(fields,names):
+    verdict=fields['verdict'].strip().upper()
+    if verdict not in ('PASS','FIX','UNVERIFIED') or len(fields['fixes'])>5:
+        raise ValueError('Use PASS/FIX/UNVERIFIED with at most five prioritized fixes')
+    if not references_capture(fields['summary'],names):raise ValueError('Cite an actual supplied frame in summary')
+    if verdict!='PASS' and not fields['fixes']:raise ValueError('State an actionable evidence-based fix or missing proof')
+    return {'ok':True,**fields,'verdict':verdict}
+
+
 def review_captures(task,bundle):
     frames=sorted((bundle/'captures').glob('frame-*.png'))
     scenario=read_json(bundle/'captures/scenario.json')
@@ -46,6 +55,10 @@ def review_captures(task,bundle):
                     lambda row:row.get('mission')=='complete',
                     lambda row:row.get('restarts',0)>initial_restarts and row.get('mission')=='active' and not carrying(row),
                     lambda row:row.get('mission')=='failed' or row.get('health',100)<=0]
+        if 'failure_retry' in task.get('checks',[]):
+            # Failed, reset, carrying and completed retain all required transitions.
+            # Omit the redundant initial frame so a tool correction fits the context budget.
+            predicates=[predicates[4],predicates[3],predicates[1],predicates[2]]
         selected=[]
         for predicate in predicates:
             match=next((frame for frame,row in observed if predicate(row)),None)
@@ -193,11 +206,7 @@ class ContinuousRunner(Runner):
         names=[p.name for p in chosen]
         expected=seal(bundle/'captures',{'candidate':gate['candidate_commit'],'scope':task['id']})
         def submit(_,f):
-            if f['verdict'] not in ('PASS','FIX','UNVERIFIED') or len(f['fixes'])>5:
-                raise ValueError('Use PASS/FIX/UNVERIFIED with at most five prioritized fixes')
-            if not references_capture(f['summary'],names):raise ValueError('Cite an actual supplied frame in summary')
-            if f['verdict']!='PASS' and not f['fixes']:raise ValueError('State an actionable evidence-based fix or missing proof')
-            return {'ok':True,**f}
+            return validate_scoped_review(f,names)
         images=[('ACTUAL NATIVE UNITY '+p.name+'; scheduled t='+str(capture_times[p.name])+' seconds',p) for p in chosen]
         images.insert(0,('AI-GENERATED CHICAGO TARGET; not the build',self.refs/target_for(task)))
         result=self.model.session('critic',ident+'-critic',

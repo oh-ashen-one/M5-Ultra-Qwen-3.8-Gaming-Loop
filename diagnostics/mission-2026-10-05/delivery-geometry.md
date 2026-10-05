@@ -54,3 +54,22 @@ not yet claimed. Actual failure, reset and successful-retry frames from
 18:50:36–18:50:55 UTC are privately saved to Library for the owner's milestone
 update. The art remains a blockout with flat lighting and an oversized bright
 beacon. This scoped success does not establish final visual quality.
+
+## Review format correction
+
+At 18:56:01 UTC, the fresh local critic submitted lowercase `pass`, a frame-cited
+summary and five fixes. The controller rejected only the verdict casing; its
+next tool-correction turn exceeded the conservative image-context budget. The
+sixth rejection triggered the existing guard, preserving the native-passing
+source and restoring `ca12a18` in commit `cc8522d`.
+
+Review validation now normalizes only whitespace/case for the same three verdicts;
+it still rejects unknown verdicts, missing frame citations and excessive fixes.
+Future failure/retry reviews retain failure/reset/carrying/completion frames plus
+the reference, leaving room for a tool correction. A one-time revalidation reads
+the original completed review and verifies its original image hashes, native
+PASS and all four regression results. It preserves the original rejection and
+counters. It requests no new inference, gameplay edit or native retry. Only a
+validated existing PASS can restore the exact tested game tree, promote the
+milestone and advance the authorized queue; counter reset then belongs to normal
+successful promotion. Ninety CPU tests cover these boundaries.

@@ -11,7 +11,7 @@ from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from loop_controller.core import Files,Halt,Store,atomic
 from loop_controller.continuous_checks import evaluate_step,validate_proposed
-from continue_game_queue import ContinuousRunner,ReadBoundEdits,review_captures
+from continue_game_queue import ContinuousRunner,ReadBoundEdits,review_captures,validate_scoped_review
 from recover_vehicle_entry import EntryRecovery,ENTRY_ANCHOR
 from resume_inspected_queue import validate_resume
 
@@ -142,6 +142,26 @@ class QueueTests(unittest.TestCase):
         self.assertTrue(self.gate(['mission_complete','failure_retry'],rows)['passed'])
         for row in rows:row['restarts']=0
         self.assertFalse(self.gate(['mission_complete','failure_retry'],rows)['passed'])
+
+    def test_review_normalizes_case_but_preserves_verdict_and_fix_requirements(self):
+        fields=dict(verdict='pass',summary='Observed frame-002.png.',fixes=['Retain polish limitation'])
+        self.assertEqual(validate_scoped_review(fields,['frame-002.png'])['verdict'],'PASS')
+        self.assertEqual(fields['verdict'],'pass')
+        self.assertEqual(validate_scoped_review({**fields,'verdict':' fix '},['frame-002.png'])['verdict'],'FIX')
+        for changes in [dict(verdict='almost pass'),dict(verdict='FIX',fixes=[]),dict(fixes=['x']*6),dict(summary='No frame cited')]:
+            with self.subTest(changes=changes),self.assertRaises(ValueError):
+                validate_scoped_review({**fields,**changes},['frame-002.png'])
+
+    def test_failure_review_retains_four_state_frames_with_context_headroom(self):
+        times=[3.2,31,32.5,39.9,47.2];rows=[]
+        for i,t in enumerate(times):
+            (self.bundle/'captures'/('frame-%03d.png'%i)).write_bytes(b'fixture')
+            rows.append(dict(time=t,mission='failed' if i==1 else 'complete' if i==4 else 'active',
+                restarts=int(i>=2),missionObjects=[dict(name='Parcel',playerChild=i==3)]))
+        atomic(self.bundle/'captures/scenario.json',dict(captures=times))
+        (self.bundle/'captures/trace.jsonl').write_text('\n'.join(json.dumps(r) for r in rows))
+        chosen,mapping=review_captures(dict(id='mission-failure-retry',checks=['mission_complete','failure_retry']),self.bundle)
+        self.assertEqual([p.name for p in chosen],['frame-001.png','frame-002.png','frame-003.png','frame-004.png'])
 
     def test_mission_promotion_cannot_skip_anchor_gate(self):
         r=ContinuousRunner.__new__(ContinuousRunner)
