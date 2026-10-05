@@ -199,8 +199,9 @@ class Runner:
 
     def builder(self, task, round_id, brief):
         files=Files(self.project,self.store)
-        integration_only = task["phase"] == "foundation" and not self.store.get("latest_evidence") and all(
+        integration_only = self.c.get("csharp_only", False) or (task["phase"] == "foundation" and not self.store.get("latest_evidence") and all(
             (self.project/"Assets/Resources/Generated"/name/"scene.fbx").exists() for name in ("street","coupe","props","player"))
+        )
         def read(_, f): return files.read(**f)
         def create(a,f):
             if integration_only and not f.get("path", "").startswith("Assets/Game/"):
@@ -244,8 +245,8 @@ class Runner:
         if integration_only:
             tools=[t for t in tools if t["function"]["name"] != "run_blender"]
             prompt+=("\nCURRENT JOB IS C# INTEGRATION ONLY. All street/coupe/props/player models already exist and are exported. "
-                     "Do not author or revise art, and do not inspect every Blender script. Your next action is create_file for "
-                     "Assets/Game/Bootstrap.cs implementing public static ChicagoGame.Bootstrap.Create(). "
+                     "Do not author or revise art, and do not inspect every Blender script. If Bootstrap.cs is absent, use create_file for "
+                     "Assets/Game/Bootstrap.cs implementing public static ChicagoGame.Bootstrap.Create(); otherwise read and fix the exact existing C# needed. "
                      "Reuse Resources prefabs Generated/street/scene, Generated/coupe/scene, Generated/props/scene and Generated/player/scene. "
                      "Implement the smallest coherent ground/collision, player movement and following camera using LoopInput and actual registered transforms. "
                      "Split other C# into small files if needed. Finish with the real walking input scenario so the external native build/capture can run. "

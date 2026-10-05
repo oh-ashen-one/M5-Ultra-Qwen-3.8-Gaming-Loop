@@ -1,0 +1,49 @@
+{
+  "actions": [
+    {
+      "id": "create-only-check-0",
+      "kind": "model-request",
+      "result": {
+        "finish_reason": "tool_calls",
+        "usage": {
+          "completion_tokens": 171,
+          "input_tokens": 400,
+          "output_tokens": 171,
+          "prompt_tokens": 400,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "total_time": 5.21,
+          "total_tokens": 571
+        }
+      },
+      "status": "complete"
+    },
+    {
+      "id": "create-only-check-0-tool-0",
+      "kind": "source-create",
+      "result": {
+        "ok": true,
+        "path": "Notes/create-tool-check.md",
+        "sha256": "b659431ff831d6142ea98fd41e56f7f0a4c9cada3e5dd1fa41f194f96a6774d3"
+      },
+      "status": "complete"
+    }
+  ],
+  "authorship": "local Qwen",
+  "finished_utc": "2026-10-05T08:33:57.535005+00:00",
+  "output_tokens": 2048,
+  "passed": true,
+  "requests_max": 1,
+  "saved_file": {
+    "bytes": 47,
+    "path": "fixture/Notes/create-tool-check.md",
+    "sha256": "b659431ff831d6142ea98fd41e56f7f0a4c9cada3e5dd1fa41f194f96a6774d3"
+  },
+  "scope": "isolated tool fixture; not game implementation",
+  "session_outcome": {
+    "bounded_stop": "turns",
+    "summary": "Tool-turn budget exhausted; preserve partial work for the next task."
+  },
+  "started_utc": "2026-10-05T08:33:52.277163+00:00"
+}

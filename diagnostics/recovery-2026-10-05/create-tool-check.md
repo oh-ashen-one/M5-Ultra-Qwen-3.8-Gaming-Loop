@@ -1,0 +1,1 @@
+This file confirms an isolated file-tool check.
