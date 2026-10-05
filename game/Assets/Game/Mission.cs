@@ -83,9 +83,7 @@ namespace ChicagoGame
             var pad = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             pad.name = "DropPad";
             pad.transform.SetParent(missionRoot, false);
-// Restored to native-verified west bay; accepted F delivery measured 1.19m from X1,
-// while X3.6 produced a 3.22m gap at F.
-pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
+            pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
             pad.transform.localScale = new Vector3(3.6f, 0.02f, 3.6f); // r = 1.8, thin
             var padCol = pad.GetComponent<Collider>();
             if (padCol != null) Destroy(padCol);
@@ -97,7 +95,7 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
             var beaconGo = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             beaconGo.name = "Beacon";
             beaconGo.transform.SetParent(missionRoot, false);
-            beaconGo.transform.position = new Vector3(1.0f, PAV_TOP + 3.5f, 26.0f);
+            beaconGo.transform.position = new Vector3(laneX, PAV_TOP + 3.5f, 26.0f);
             beaconGo.transform.localScale = new Vector3(1.1f, 3.5f, 1.1f); // 7 m tall
             var bcol = beaconGo.GetComponent<Collider>();
             if (bcol != null) Destroy(bcol);
@@ -159,7 +157,6 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
         void RefreshHud()
         {
             if (hud == null) return;
-            if (stage == 3) { hud.text = "MISSION FAILED\nRan out of time to grab & deliver the parcel\nPress R to retry"; return; }
             if (stage == 2)
             {
                 hud.text =
@@ -187,7 +184,7 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
                 int d = Mathf.RoundToInt(Vector3.Distance(me, target));
                 hud.text =
                     "COURIER: grab the YELLOW parcel\n" +
-                    "OBJECTIVE: reach the parcel  (" + d + " m) [" + Mathf.CeilToInt(Mathf.Max(0, DEADLINE - (Time.time - missionStartTime))) + "s]\n" +
+                    "OBJECTIVE: reach the parcel  (" + d + " m)\n" +
                     "WASD move   E enter/exit coupe   F grab/deliver   R reset";
             }
             else // stage 1 – carrying
@@ -197,7 +194,7 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
                 int d = Mathf.RoundToInt(Vector3.Distance(me, pad));
                 hud.text =
                     "COURIER: parcel in hand\n" +
-                    "OBJECTIVE: drive to the GREEN pad  (" + d + " m) | remaining: " + Mathf.CeilToInt(Mathf.Max(0, DEADLINE - (Time.time - missionStartTime))) + " s\n" +
+                    "OBJECTIVE: drive to the GREEN pad  (" + d + " m)\n" +
                     "WASD move   E enter/exit coupe   F deliver   R reset";
             }
         }
@@ -206,17 +203,11 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
         int stage;           // 0=parcel on ground, 1=carrying, 2=delivered(latched)
         int lastRestarts;
         Vector3 padPos;
-        float missionStartTime;       // Time.time when mission became active
-        // Human-fair courier window: the grab->drive->deliver route takes ~10 s,
-        // so 30 s leaves ample margin. A previous 45 s window was so long that a
-        // timed-out run could not also complete its retry inside the session.
-        const float DEADLINE = 30f;   // seconds to complete the mission
 
         void Start()
         {
             lastRestarts = ReadInt("Restarts");
             padPos = padRend.transform.position;
-            missionStartTime = Time.time;
         }
 
         void Update()
@@ -229,8 +220,6 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
                 Respawn();
             }
 
-            if ((stage == 0 || stage == 1) && Time.time - missionStartTime >= DEADLINE) { stage = 3; Set("Mission", "failed"); Set("MissionComplete", false); }
-            if (stage == 3) { RefreshHud(); return; }
             // Animate parcel when in world.
             if (stage == 0 && parcel != null)
             {
@@ -296,7 +285,7 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
 
         void Respawn()
         {
-            stage = 0; missionStartTime = Time.time;
+            stage = 0;
             Set("MissionComplete", false);
             Set("Mission", "active");
 
