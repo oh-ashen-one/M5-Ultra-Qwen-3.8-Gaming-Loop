@@ -107,13 +107,15 @@ def main():
                 'Keep it compact, at most 25 replacement lines. Do not add camera or other fixes here.')]
             if a.resume_elementary:
                 s.set(elementary_started_utc=now())
-                s.event('cloud-infrastructure-intervention',action='Split unsaved root block into five elementary selected-line edits',
+                s.event('cloud-infrastructure-intervention',action='Split unsaved root block into six elementary selected-line edits',
                         prior_attempts_preserved=True,deadline_unchanged=True,attempts_per_line=2)
                 stages=[
                     ('unit-root-line','var body = UnityEngine.Object.Instantiate',
                      'Replace the shown declaration with one C# line creating an empty GameObject named Player. Keep variable body as GameObject. Do not instantiate a prefab in this step. One line only.'),
                     ('attach-visual-lines','body.name = "Player";',
-                     'Keep this naming statement. Add a GameObject variable visual by instantiating Resources.Load<GameObject>("Generated/player/scene") under body.transform with its stored local transform preserved. The parent body is already unit scale and identity rotation. Preserve the prefab scale 100 and import rotation; its visible height is correctly 1.57m. Offset visual.localPosition downward .79m in the parent coordinates so its measured feet align to the physics-root base. At most four C# lines. No other changes.'),
+                     'Keep this naming statement. Add one declaration named visual by instantiating Resources.Load<GameObject>("Generated/player/scene") under body.transform with its stored local transform preserved. Body is already unit scale and identity rotation. Do not rescale or reposition the imported visual. Two C# lines only.'),
+                    ('align-visual-feet-line','Generated/player/scene',
+                     'Keep the shown visual declaration unchanged. Add one statement shifting visual.localPosition downward .79 metres in its unit-scale parent coordinates. This aligns its measured feet while preserving its 1.57m height. Two C# lines only.'),
                     ('independent-ground-line','ground.transform.SetParent(street.transform, false);',
                      'The ground is a newly created primitive at origin with identity rotation. Replace this line with a single C# statement leaving ground unparented in world space. Do not attach it to street. One line only.'),
                     ('ground-height-line','ground.transform.localPosition = Vector3.down * 0.5f;',
