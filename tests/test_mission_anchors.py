@@ -35,6 +35,17 @@ class MissionAnchorTests(unittest.TestCase):
         rows[2]['missionObjects'][1]['position'][2] += 1
         self.assertIn('DropPad-world-anchor-moved', inspect_mission_anchors(rows)['failure'])
 
+    def test_delivery_diagnostic_measures_F_edge_without_loosening_reach(self):
+        rows=self.rows();rows[-1]['vehicle']=[3.22,0,10]
+        rows[-1].update(vehicleCollisionEnabled=True,vehiclePenetration=.001)
+        rows.append({**copy.deepcopy(rows[-1]),'time':9.1,'vehicle':[1,0,10]})
+        facts=inspect_mission_anchors(rows)
+        self.assertIn('delivery-not-at-fixed-destination',facts['failure'])
+        self.assertEqual(len(facts['delivery_input_edges']),1)
+        self.assertEqual(facts['delivery_input_edges'][0]['distance_xz_m'],3.22)
+        self.assertEqual(facts['delivery_input_edges'][0]['penetration_m'],.001)
+        self.assertEqual(facts['closest_driving_approach']['distance_xz_m'],1)
+
     def test_player_children_cannot_pass_even_with_constant_reported_world_positions(self):
         rows = self.rows()
         for row in rows:

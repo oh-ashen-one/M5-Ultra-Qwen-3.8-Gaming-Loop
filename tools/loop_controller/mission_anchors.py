@@ -65,8 +65,22 @@ def inspect_mission_anchors(rows):
         actual = completed.get('vehicle') if completed.get('mode') == 'vehicle' else completed.get('player')
         if not actual or math.dist(xz(actual), xz(initial['DropPad']['position'])) > 2.6:
             failures.append('delivery-not-at-fixed-destination')
+    attempts=[];held=False;closest=None
+    for row,objects in samples:
+        pressed='F' in row.get('keys',[])
+        pad=objects.get('DropPad');vehicle=row.get('vehicle')
+        if row.get('mode')=='vehicle' and pad and vehicle:
+            observation={'time':row['time'],'vehicle':vehicle,'pad':pad['position'],
+                'distance_xz_m':math.dist(xz(vehicle),xz(pad['position'])),
+                'mission':row.get('mission'),'restarts':row.get('restarts',0),
+                'collision_enabled':row.get('vehicleCollisionEnabled'),
+                'penetration_m':row.get('vehiclePenetration')}
+            if closest is None or observation['distance_xz_m']<closest['distance_xz_m']:closest=observation
+            if pressed and not held:attempts.append(observation)
+        held=pressed
     return {'passed': not failures, 'failure': sorted(set(failures)), 'away_seconds': away,
             'returned_seconds': returned, 'pickup_seconds': carried,
             'delivery_seconds': completed['time'] if completed else None,
             'sample_count': len(samples), 'scope': 'fixed-world-objectives-and-input-transitions',
+            'delivery_input_edges':attempts[-8:],'closest_driving_approach':closest,
             'final_visual_acceptance': False}

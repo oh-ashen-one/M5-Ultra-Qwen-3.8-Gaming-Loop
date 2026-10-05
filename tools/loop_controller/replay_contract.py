@@ -41,6 +41,10 @@ def validate_submission(fields, task):
         raise ValueError('summary must describe the actual proposed replay')
     replay = validate_proposed({'duration':value['duration'], 'steps':value['input_steps'],
                                 'captures':value['captures']}, task['maximum'], task['coverage'])
+    if 'failure_retry' in task.get('checks',[]):
+        resets=[s for s in replay['steps'] if 'R' in s['keys']]
+        if not any(s['start']>r['end'] and 'F' in s['keys'] for r in resets for s in replay['steps']):
+            raise ValueError('Failure/retry requires ordinary R reset followed by later F interactions; native evidence must prove actual failure first')
     return {'ok':True, 'summary':value['summary'][:2000], 'scenario':replay}
 
 

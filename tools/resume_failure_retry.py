@@ -21,13 +21,13 @@ def validate_failure_pause(state,project):
         raise Halt('Preserve any pause other than the inspected failure/retry directory-read fault')
 
 
-def failure_probe(previous,task):
+def failure_probe(previous,task,deadline=45):
     """Wait for the real deadline, then R and the observed successful route."""
-    offset=47
+    offset=deadline+2
     value={'duration':previous['duration']+offset,
-        'steps':[{'start':47,'end':47.3,'keys':['R']}]+[
+        'steps':[{'start':offset,'end':offset+.3,'keys':['R']}]+[
             {**step,'start':step['start']+offset,'end':step['end']+offset} for step in previous['steps']],
-        'captures':[3.2,44.5,46,47.5,52.2,54.9,59.5,62.2,65.5]}
+        'captures':[3.2,deadline-.5,deadline+1,offset+.5]+[offset+t for t in [5.2,7.9,12.5,15.2,18.5]]}
     return validate_proposed(value,task['maximum'],task['coverage'])
 
 

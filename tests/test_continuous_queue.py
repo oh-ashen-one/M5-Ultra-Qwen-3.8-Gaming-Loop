@@ -149,6 +149,26 @@ class QueueTests(unittest.TestCase):
             r.promote({'checks':['mission_complete']},'candidate',self.bundle,{'passed':True},
                       {'ok':True,'verdict':'PASS'})
 
+    def test_failure_retry_rechecks_the_actual_accepted_courier_route(self):
+        r=ContinuousRunner.__new__(ContinuousRunner);r.store=self.store
+        prior=self.store.root/'evidence/accepted';(prior/'captures').mkdir(parents=True)
+        probe=dict(duration=20,steps=[dict(start=4,end=5,keys=['W'])],captures=[3.2,6,10,18])
+        atomic(prior/'scoped-gate.json',dict(passed=True,candidate_commit='accepted-source'))
+        atomic(prior/'captures/scenario.json',probe)
+        self.store.set(task_index=3,accepted_queue_features={'connected-mission':dict(
+            evidence='evidence/accepted',candidate='accepted-source')})
+        seen=[]
+        def native(contract,ident,candidate,scenario):
+            seen.append((contract,scenario))
+            return self.bundle,dict(passed=contract['id']!='connected-mission',player_displacement=19)
+        r.native=native
+        with patch('continue_game_queue.pavement_coverage',return_value={'passed':True}):
+            result=r.regress({'id':'mission-failure-retry'},'candidate','new-source')
+        self.assertFalse(result['passed'])
+        self.assertEqual([v['test'] for v in result['regressions']],['walk','world','motor','courier'])
+        self.assertEqual(seen[-1][0]['id'],'connected-mission')
+        self.assertEqual(seen[-1][1]['steps'],probe['steps'])
+
     def test_read_bound_edit_rejects_unread_span_and_concurrent_changes(self):
         files=Files(self.project,self.store);files.create('initial','Assets/Game/A.cs','line one\nline two\n')
         edits=ReadBoundEdits(files);fields={'path':'Assets/Game/A.cs','old':'line one','new':'changed'}

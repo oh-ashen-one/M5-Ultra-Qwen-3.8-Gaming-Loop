@@ -38,5 +38,13 @@ class ReplayContractTests(unittest.TestCase):
         self.assertEqual(block_span(source,'void Build()'),(2,5))
         with self.assertRaises(Halt):block_span(source+source,'void Build()')
 
+    def test_failure_retry_cannot_submit_a_route_without_R_and_later_interaction(self):
+        task={**self.task,'checks':['failure_retry']};value=copy.deepcopy(MISSION_EXAMPLE)
+        with self.assertRaisesRegex(ValueError,'ordinary R reset'):validate_submission(value,task)
+        value['input_steps'].insert(0,dict(start=4,end=4.3,keys=['R']))
+        self.assertTrue(validate_submission(value,task)['ok'])
+        value['input_steps'][0].update(start=19,end=19.3)
+        with self.assertRaises(ValueError):validate_submission(value,task)
+
 
 if __name__=='__main__':unittest.main()
