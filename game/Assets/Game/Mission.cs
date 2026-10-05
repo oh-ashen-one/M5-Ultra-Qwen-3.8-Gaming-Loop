@@ -288,7 +288,7 @@ namespace ChicagoGame
 
         void Respawn()
         {
-            stage = 0;
+            stage = 0; missionStartTime = Time.time;
             Set("MissionComplete", false);
             Set("Mission", "active");
 
