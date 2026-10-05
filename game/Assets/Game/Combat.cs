@@ -39,7 +39,7 @@ namespace ChicagoGame
         const float PLAYER_RESET_Y = 0.3f;
 
         // Rival behaviour.
-        const float RIVAL_SPEED = 2.0f;      // slower than the car: escapable
+        const float RIVAL_SPEED = 1.0f;      // slower than the car: escapable
         const float RIVAL_HP = 3f;
         const float SHOT_RANGE = 16f;
         const float SHOT_COOLDOWN = 1.6f;
