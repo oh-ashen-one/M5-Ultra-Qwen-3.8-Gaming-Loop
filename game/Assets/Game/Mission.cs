@@ -203,6 +203,8 @@ namespace ChicagoGame
         int stage;           // 0=parcel on ground, 1=carrying, 2=delivered(latched)
         int lastRestarts;
         Vector3 padPos;
+        float missionStartTime;       // Time.time when mission became active
+        const float DEADLINE = 45f;   // seconds to complete the mission
 
         void Start()
         {
