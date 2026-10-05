@@ -1,0 +1,58 @@
+{
+  "started_utc": "2026-10-05T03:28:44.280434+00:00",
+  "host": "Apple M5 Ultra / Mac17,15",
+  "game_loop": "held",
+  "asset_author": "prior unchanged local Qwen source",
+  "fixture_author": "Codex cloud connector setup",
+  "stages": {
+    "blender-export": {
+      "exit_code": 0
+    },
+    "unity-import-compile": {
+      "exit_code": 0
+    },
+    "unity-render": {
+      "exit_code": 0
+    }
+  },
+  "external_renderer_count": 1,
+  "import_compile": {
+    "stage": "import-compile",
+    "unity": "6000.6.4f1",
+    "graphics": "Null",
+    "meshes": 3,
+    "materials": 3,
+    "vertices": 587,
+    "width": 0,
+    "height": 0,
+    "objects": [
+      "BlueSphere",
+      "GroundPlane",
+      "RedCube"
+    ],
+    "passed": true
+  },
+  "owner_authorized_render_shape": "one external Blender, one task Unity editor, at most one owned Metal import worker",
+  "bounded_render_process_limit": 3,
+  "render": {
+    "stage": "render",
+    "unity": "6000.6.4f1",
+    "graphics": "Metal",
+    "meshes": 3,
+    "materials": 3,
+    "vertices": 587,
+    "width": 512,
+    "height": 512,
+    "objects": [
+      "BlueSphere",
+      "GroundPlane",
+      "RedCube"
+    ],
+    "passed": true
+  },
+  "frame_sha256": "45d5d0c0dbb093bec809cd674dad51f3360cded758cb26def6590e5c4610a148",
+  "status": "PASS",
+  "finished_utc": "2026-10-05T03:28:58.214693+00:00",
+  "available_GiB": 229.248,
+  "swap_growth_MiB": 0.0
+}

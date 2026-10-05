@@ -2,6 +2,8 @@
 
 Verified 2026-10-05. **Model warmed and resident; game/agent loop held for the owner's launch-plan review.** This is functional preparation, not another benchmark campaign or proof of game-building quality.
 
+**Current post-reboot state:** Qwen was explicitly restored from its clean stop and is healthy/idle. Unity **6000.6.4f1** native import, C# compilation, Metal rendering and fresh Qwen recognition of the Unity image all passed. [Current qualification and receipts](../diagnostics/unity-2026-10-04/README.md) supersede the earlier Unity-absent/pending entries below. Runtime restoration now requires both `warmup_resident.py` and its `unity_smoke.py` process-classification helper beside it; it has no automatic restart path.
+
 ## Actual state
 
 - Host: Apple M5 Ultra, Mac17,15, 36 CPU cores, 80 GPU cores, 256 GB memory, macOS 27.0.1. The older M3 performs lightweight orchestration only.

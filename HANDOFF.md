@@ -2,6 +2,12 @@
 
 Updated 2026-10-05. Status: pinned BF16 verified, warmed and resident on the M5; game/agent loop held for owner review.
 
+**Latest verified state (October 4 Eastern / October 5 UTC):** after the owner's reboot and changed LAN address, existing SSH host identity was verified and the ignored connection adapter updated. Unity Hub 3.22.2, owner-installed editor **6000.6.4f1 ARM64**, active local editor licensing, Blender 5.2.0 LTS, Codex app 26.930.51102, Git/Python/Xcode tools were checked. Actual original FBX import, C# compile, Metal render and fresh local Qwen recognition **PASS**; see [post-reboot evidence](diagnostics/unity-2026-10-04/README.md). Earlier Unity-not-installed entries below are historical.
+
+The owner authorized finishing this bounded check while their Blender instance stayed open. An observed Unity Metal import worker required explicit accounting alongside its parent editor; all task Unity processes subsequently exited. Qwen was explicitly restored with one warm-up, then recognized the Unity frame correctly. It remains healthy and idle with roughly 178.9 GiB available and zero swap, preserving the external Blender. No other development owner or game loop was started.
+
+Remaining distinctions: SSH-side Unity CLI account storage reports no active session/Keychain rejection despite active editor licensing; its binary is outside the tested SSH PATH and works by explicit path. Live Editor Pipeline/MCP commands remain unqualified; native editor batch automation and Blender CLI work. The registered user project was not edited. Runtime restoration uses the updated `warmup_resident.py` with `unity_smoke.py` beside it, an explicit clean-stop resume flag, secure reuse of the existing task token, shared admission and no automatic restart. Current process IDs and route belong only in the ignored private adapter.
+
 The original public planning commit is followed by a bounded source/reference update on `reuse/licensed-foundation`. Inspect the current branch, remote and pull request before continuing; preserve any later user changes. The [import manifest](reference/IMPORT-MANIFEST.json) is the authority for imported files and exact source/license hashes.
 
 Included: five MIT source components, framework dependency pins only, persistent NPC architecture with official dated price examples, and a separate original towering-monster investigation concept. See [source notes](reference/README.md) for exact imports and gaps.

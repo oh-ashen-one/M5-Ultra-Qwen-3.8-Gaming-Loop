@@ -10,11 +10,13 @@ from pathlib import Path
 import secrets
 import signal
 import socket
+import stat
 import subprocess
 import threading
 import time
 import urllib.request
 import psutil
+from unity_smoke import renderer_process
 
 
 def write_state(path, state):
@@ -24,8 +26,26 @@ def write_state(path, state):
     temporary.replace(path)
 
 
+def session_token(path, resume=False, initial=None):
+    if resume:
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+        with os.fdopen(fd) as stream:
+            info = os.fstat(stream.fileno())
+            if not stat.S_ISREG(info.st_mode) or stat.S_IMODE(info.st_mode) != 0o600 or info.st_uid != os.getuid():
+                raise RuntimeError("Existing task token must be an owned regular mode-0600 file")
+            token = stream.read(257).strip()
+        if not 32 <= len(token) <= 256 or not all(c.isalnum() or c in "-_" for c in token):
+            raise RuntimeError("Invalid existing task token format")
+        return token
+    token = initial or secrets.token_urlsafe(32)
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, "w") as stream:
+        stream.write(token)
+    return token
+
+
 @contextlib.contextmanager
-def gpu_admission(label):
+def gpu_admission(label, external_renderers=0):
     base = Path.home() / ".cache/gpu-slot"
     if (base / "PAUSED").exists():
         raise RuntimeError("Shared GPU admission paused")
@@ -42,6 +62,7 @@ def gpu_admission(label):
         descriptors.append(perf)
         fcntl.flock(perf, fcntl.LOCK_SH | fcntl.LOCK_NB)
         slot = None
+        reserved = []
         for index in range(2):
             fd = (base / "locks" / ("capture." + str(index) + ".lock")).open("a+")
             try:
@@ -50,13 +71,17 @@ def gpu_admission(label):
                 fd.close()
                 continue
             descriptors.append(fd)
-            slot = index
-            break
+            reserved.append(index)
+            if slot is None:
+                slot = index
+            if not external_renderers:
+                break
         if slot is None:
             raise RuntimeError("Shared GPU capture slots occupied")
         process_start = subprocess.check_output(["ps", "-o", "lstart=", "-p", str(os.getpid())], text=True).strip()
         write_state(holder, {"pid": os.getpid(), "start": process_start,
                             "class": "capture", "label": label, "slot": str(slot),
+                            "reserved_slots": reserved, "external_renderer_count": external_renderers,
                             "state": "warmup-and-resident-idle", "cmd": "tools/warmup_resident.py"})
         yield base
     finally:
@@ -70,11 +95,19 @@ def main():
     parser.add_argument("--runtime-python", required=True, type=Path)
     parser.add_argument("--work-dir", required=True, type=Path)
     parser.add_argument("--allow-warmup", action="store_true")
+    parser.add_argument("--resume-stopped-session", action="store_true",
+                        help="Explicit owner-requested restoration after a clean stop/reboot")
+    parser.add_argument("--allow-one-existing-renderer", action="store_true",
+                        help="Count and preserve one observed external renderer within shared admission")
     args = parser.parse_args()
     if not args.allow_warmup:
         parser.error("Warm-up needs current owner authorization and --allow-warmup")
     root = args.work_dir.resolve()
     receipt = root / "resident-state.json"
+    if args.resume_stopped_session:
+        previous = json.loads(receipt.read_text())
+        if previous.get("status") != "stopped-by-request":
+            raise RuntimeError("Resume requires a previously clean stopped-by-request receipt")
     model = root / "bf16/model"
     download = json.loads((root / "bf16/download-state.json").read_text())
     lock = json.loads((root / "QWEN-BF16-LOCK.json").read_text())
@@ -90,12 +123,17 @@ def main():
         raise RuntimeError("Refuse compute on a different machine")
     if psutil.virtual_memory().available < 100 * 1024 ** 3:
         raise RuntimeError("Insufficient pre-load memory headroom")
-    for process in psutil.process_iter(["pid", "name", "cmdline"]):
+    external_renderers = 0
+    for process in psutil.process_iter(["pid", "name", "cmdline", "exe"]):
         if process.pid == os.getpid():
             continue
         words = process.info["cmdline"] or []
-        if any(any(k in word.lower() for k in ["mlx_vlm.server", "mlx_lm.server", "llama-server", "unrealeditor", "unity.app/", "blender.app/", "godot.app/"]) for word in words):
-            raise RuntimeError("Existing inference or renderer process requires coordination")
+        if any(word in ["mlx_vlm.server", "mlx_lm.server"] or Path(word).name == "llama-server" for word in words):
+            raise RuntimeError("Existing inference process requires coordination")
+        if renderer_process(process.info["exe"] or "", (process.info["name"] or "").lower(), words):
+            external_renderers += 1
+    if external_renderers > (1 if args.allow_one_existing_renderer else 0):
+        raise RuntimeError("Existing renderer count exceeds explicitly admitted capacity")
     with socket.socket() as probe:
         probe.bind(("127.0.0.1", 8027))
     stopped = threading.Event()
@@ -122,9 +160,14 @@ def main():
             raise RuntimeError("Desktop session lost; pause compute")
         if child and child.poll() is not None:
             raise RuntimeError("Owned model server exited")
+        live_renderers = sum(renderer_process(p.info["exe"] or "", (p.info["name"] or "").lower(),
+                                             p.info["cmdline"] or [])
+                             for p in psutil.process_iter(["exe", "name", "cmdline"]))
+        if live_renderers > 1:
+            raise RuntimeError("Additional renderer appeared; stop owned model to preserve capacity")
     with (root / "resident.lock").open("a+") as mutex:
         fcntl.flock(mutex, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        with gpu_admission("m5-qwen-gaming-bf16-warm-idle") as shared:
+        with gpu_admission("m5-qwen-gaming-bf16-warm-idle", external_renderers) as shared:
             try:
                 env = os.environ.copy()
                 # These are task-child settings only; no shared/system configuration changes.
@@ -133,12 +176,9 @@ def main():
                         env.pop(key)
                 env.update(PYTHONDONTWRITEBYTECODE="1", MLX_TRUST_REMOTE_CODE="false",
                            HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
-                token = env.get("MLX_VLM_SERVER_API_KEY") or secrets.token_urlsafe(32)
-                env["MLX_VLM_SERVER_API_KEY"] = token
                 token_path = root / "server-access-token.txt"
-                fd = os.open(token_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-                with os.fdopen(fd, "w") as stream:
-                    stream.write(token)
+                token = session_token(token_path, args.resume_stopped_session, env.get("MLX_VLM_SERVER_API_KEY"))
+                env["MLX_VLM_SERVER_API_KEY"] = token
                 def api(path, data=None, timeout=4):
                     request = urllib.request.Request("http://127.0.0.1:8027" + path,
                         data=json.dumps(data).encode() if data is not None else None,

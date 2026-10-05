@@ -1,5 +1,7 @@
 # Unity installation readiness — 2026-10-05
 
+**Later verified update:** the owner installed Unity **6000.6.4f1 ARM64** and an active local license. Actual import/C# compile/Metal render and Qwen image recognition now pass. See [post-reboot qualification](../diagnostics/unity-2026-10-04/README.md) for current state and remaining SSH CLI/Pipeline distinctions. The original installation record below is historical.
+
 The owner approved official Unity Hub and a compatible stable LTS Apple Silicon editor on the M5, with minimal native macOS components. **Hub is installed/open; the editor is not installed and license activation is pending. Game generation remains held.** No subscription, purchase, credentials, agreement acceptance or security override was performed.
 
 [Installation evidence](UNITY-INSTALL-EVIDENCE.json) records the actual application, package assessment and final resident-model snapshot.
