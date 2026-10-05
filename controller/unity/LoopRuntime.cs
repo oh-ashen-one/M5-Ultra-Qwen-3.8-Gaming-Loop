@@ -20,6 +20,9 @@ public class LoopRuntime : MonoBehaviour
         public float[] player, vehicle; public string[] keys;
         public int frame, shots, hits, pursuit, restarts; public bool camera, hasController, grounded;
         public float[] playerScale, playerUp, playerForward;
+        public float playerPenetration, vehiclePenetration, audioRms;
+        public bool playerCollisionEnabled, vehicleCollisionEnabled;
+        public string[] visibleText;
     }
     [Serializable] public class ObjectObservation {
         public string name, kind; public float[] position, lossyScale, up, forward, boundsCenter, boundsSize;
@@ -38,7 +41,8 @@ public class LoopRuntime : MonoBehaviour
         return new ObjectObservation {name=Hierarchy(c.transform), kind=kind, position=Vec(c.transform.position),
             lossyScale=Vec(c.transform.lossyScale), up=Vec(c.transform.up), forward=Vec(c.transform.forward),
             boundsCenter=Vec(b.center), boundsSize=Vec(b.size),
-            enabled=c.gameObject.activeInHierarchy && (!(c is Renderer) || ((Renderer)c).enabled)};
+            enabled=c.gameObject.activeInHierarchy && (!(c is Renderer) || ((Renderer)c).enabled)
+                && (!(c is Collider) || ((Collider)c).enabled)};
     }
     static string Arg(string key) {
         var args = Environment.GetCommandLineArgs();
@@ -83,7 +87,7 @@ public class LoopRuntime : MonoBehaviour
             var renderers=UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None)
                 .Take(2048).Select(r => Observe(r,"renderer",r.bounds));
             var colliders=UnityEngine.Object.FindObjectsByType<Collider>(FindObjectsSortMode.None)
-                .Take(150).Select(c => Observe(c,c.GetType().Name,c.bounds));
+                .Take(2048).Select(c => Observe(c,c.GetType().Name,c.bounds));
             File.WriteAllText(Path.Combine(output,"scene-transforms.json"),JsonUtility.ToJson(
                 new SceneObservation {objects=renderers.Concat(colliders).ToArray()},true));
             observedScene=true;
@@ -99,7 +103,12 @@ public class LoopRuntime : MonoBehaviour
                 camera=Camera.main != null, graphics=SystemInfo.graphicsDeviceType.ToString(),
                 hasController=cc != null, grounded=cc != null && cc.isGrounded,
                 playerScale=actor == null ? null : Vec(actor.lossyScale),
-                playerUp=actor == null ? null : Vec(actor.up),playerForward=actor == null ? null : Vec(actor.forward)};
+                playerUp=actor == null ? null : Vec(actor.up),playerForward=actor == null ? null : Vec(actor.forward),
+                playerCollisionEnabled=LoopObservation.HasCollider(actor),
+                vehicleCollisionEnabled=LoopObservation.HasCollider(LoopSignals.Vehicle),
+                playerPenetration=LoopObservation.HorizontalPenetration(actor),
+                vehiclePenetration=LoopObservation.HorizontalPenetration(LoopSignals.Vehicle),
+                visibleText=LoopObservation.VisibleText(),audioRms=LoopObservation.AudioRms()};
             File.AppendAllText(Path.Combine(output, "trace.jsonl"), JsonUtility.ToJson(sample) + "\n"); samples++;
         }
         var captures = LoopInput.Replay.captures;

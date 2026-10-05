@@ -1,0 +1,17 @@
+# Continuous local game queue
+
+The owner authorized continuing the full project after the accepted walking/vehicle baseline `754dd5956cb5a24c18507aef638c29c4781baa53`. The new queue preserves that baseline and the completed diagnostic run. Its original overall ceiling remains **2026-10-05 21:37:50 UTC**. A limited PASS advances to the next task without ending the owner process.
+
+The ordered work is world collision; vehicle collision/reset; connected objective/ending; failure/retry; mission combat/pursuit; HUD/audio; a complete rough route; then Chicago reference polish and a roughly ten-minute input-driven route. Existing original art is reused until the rough route works. Polish may revise the four existing local-Qwen Blender assets. No new asset volume is scheduled.
+
+Local Qwen owns every substantive gameplay and Blender edit. Mechanical editing uses thinking-enabled `low` with an 8,192-token ceiling. Task-specific design and repeated-failure diagnosis use bounded `xhigh` with 16,384 tokens; fresh scoped criticism uses `xhigh` with 8,192. The controller remembers the full-file hash of each exact source read, requires replacement text to have been read, and rejects a concurrent change. It never applies partial model output.
+
+Native tests observe actual transforms, active colliders, horizontal penetration, input, mission state, camera captures, text meshes and mixer output. The first two input probes are fixed externally. Later route proposals may choose normal input timing but cannot change the gate coverage, checks, initial stationary interval or timing limits. Every promoted task also reruns the accepted walking route and earlier collision/reset probes. Compile-only results and saved edits never constitute a playable PASS.
+
+The observation harness uses Unity's [penetration query](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Physics.ComputePenetration.html) and [audio output sampling](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/AudioListener.GetOutputData.html). Penetration samples do not prove collision completeness. An active text mesh still needs actual frame review for readability. Audio RMS proves a mixer signal, not sound quality. Final visual, audio and performance quality remain evidence-review obligations.
+
+One SQLite ledger records source commits, tool actions, failures, native evidence, fresh critique, queue position and last playable state. Every scoped promotion receives separate metadata with `final_game_accepted: false`. Three identical failures or six failed attempts on one task trigger a fresh local diagnosis; repeated failures after that diagnosis preserve the failed source and restore only this owner's game directory to the last playable commit, with an additional recovery commit. No branch history is reset. Resource/access faults, explicit stops and the original overall ceiling remain hard stops.
+
+The transport publisher uses the existing controller's GitHub authentication to publish only the game task branch without force. It is not a second game owner. Parent oversight remains the existing schedule. No new schedule, main merge, runtime reload or model benchmark is part of this continuation.
+
+Infrastructure validation: **49 CPU tests pass** on the controller before deployment, including continuous advancement, failed-reset and boundary red fixtures, hash-bound edits and preserved-source recovery. Native qualification and live milestones must be reported separately; these tests do not establish that collision or the mission works yet.
