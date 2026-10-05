@@ -70,21 +70,24 @@ def select_block(files,needle):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('run-dir','previous-run','config','brief'):p.add_argument('--'+name,type=Path,required=True)
-    p.add_argument('--authorize-repair',action='store_true');a=p.parse_args()
-    if not a.authorize_repair or a.run_dir.exists():p.error('Explicit authorization and fresh run directory required')
+    p.add_argument('--authorize-repair',action='store_true');p.add_argument('--resume-elementary',action='store_true');a=p.parse_args()
+    if not a.authorize_repair or (a.run_dir.exists() and not a.resume_elementary):p.error('Explicit authorization and fresh run directory required unless resuming the diagnosed small-edit failure')
     old=read_json(a.previous_run/'status.json')
     if old.get('controller_pid') or old.get('status') not in ('paused','paused-deadline'):raise Halt('Previous owner must be stopped')
     preserved={n:sha((a.previous_run/n).read_bytes()) for n in ('status.json','state.sqlite3')}
     c=read_json(a.config);c.update(csharp_only=True,wall_hours=12,max_rounds=96,no_accepted_progress_minutes=120)
     os.umask(0o077);r=SmallRunner(a.run_dir,c);s=r.store
-    started=time.time();repair_deadline=started+30*60;overall_deadline=started+12*3600
+    if a.resume_elementary and (s.get('controller_pid') or s.get('status')!='paused' or s.get('elementary_started_utc')):
+        raise Halt('Expected the stopped selected-edit failure; elementary continuation is allowed once')
+    started=s.get('started_epoch',time.time());repair_deadline=s.get('repair_deadline_epoch',started+30*60);overall_deadline=s.get('overall_deadline_epoch',started+12*3600)
+    if time.time()>=repair_deadline:raise Halt('Original repair deadline expired; no extension')
     tasks=read_json(a.previous_run/'plan.json');atomic(a.run_dir/'plan.json',tasks);atomic(a.run_dir/'private-config.json',c)
-    s.set(controller_pid=os.getpid(),status='running',started_epoch=started,started_utc=now(),tasks=tasks,task_index=0,
+    s.set(controller_pid=os.getpid(),status='running',blocker=None,started_epoch=started,started_utc=s.get('started_utc',now()),tasks=tasks,task_index=0,
           previous_run=a.previous_run.name,previous_record_sha256=preserved,repair_deadline_epoch=repair_deadline,
           overall_deadline_epoch=overall_deadline,stop_conditions={'repair_minutes':30,'attempts_per_selected_edit':2,
           'native_repair_rounds':3,'continuation_hours':12,'continuation_requires':'stationary grounded control plus actual readable-frame review'})
     def stop(*_):raise Halt('Current bounded deadline or explicit stop reached')
-    signal.signal(signal.SIGALRM,stop);signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop);signal.alarm(30*60)
+    signal.signal(signal.SIGALRM,stop);signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop);signal.alarm(max(1,int(repair_deadline-time.time())))
     with exclusive(a.run_dir/'controller.lock'):
         try:
             r.model.ready();r.machine.guard();files=Files(r.project,s)
@@ -102,11 +105,28 @@ def main():
                 'Set body spawn just above a safe visible surface. Do not change imported visible geometry. '
                 'Following code adds a 1.75m CharacterController centered at local y=.9 and radius .32. '
                 'Keep it compact, at most 25 replacement lines. Do not add camera or other fixes here.')]
+            if a.resume_elementary:
+                s.set(elementary_started_utc=now())
+                s.event('cloud-infrastructure-intervention',action='Split unsaved root block into five elementary selected-line edits',
+                        prior_attempts_preserved=True,deadline_unchanged=True,attempts_per_line=2)
+                stages=[
+                    ('unit-root-line','var body = UnityEngine.Object.Instantiate',
+                     'Replace the shown declaration with one C# line creating an empty GameObject named Player. Keep variable body as GameObject. Do not instantiate a prefab in this step. One line only.'),
+                    ('attach-visual-lines','body.name = "Player";',
+                     'Keep this naming statement. Add a GameObject variable visual by instantiating Resources.Load<GameObject>("Generated/player/scene") under body.transform with its stored local transform preserved. The parent body is already unit scale and identity rotation. Preserve the prefab scale 100 and import rotation; its visible height is correctly 1.57m. Offset visual.localPosition downward .79m in the parent coordinates so its measured feet align to the physics-root base. At most four C# lines. No other changes.'),
+                    ('independent-ground-line','ground.transform.SetParent(street.transform, false);',
+                     'The ground is a newly created primitive at origin with identity rotation. Replace this line with a single C# statement leaving ground unparented in world space. Do not attach it to street. One line only.'),
+                    ('ground-height-line','ground.transform.localPosition = Vector3.down * 0.5f;',
+                     'Replace this line with one assignment setting ground world position to (0,-.36,0). Its existing thickness is 1m, so the top matches the measured sidewalk Y=.14. One C# line only.'),
+                    ('spawn-line','if (p.y < 0.05f) body.transform.position = new Vector3(p.x, 0.05f, p.z);',
+                     'Replace this line with one unconditional assignment setting body world position to (0,.3,1.7), just above the measured sidewalk. Keep its unit scale and rotation. One C# line only.')]
             for label,needle,instruction in stages:
                 for attempt in range(2):
-                    start,end=select_block(files,needle);edit=SelectedEdit(files,'Assets/Game/Bootstrap.cs',start,end,30)
+                    start,end=select_block(files,needle) if not a.resume_elementary else (
+                        next(i+1 for i,l in enumerate(files.path('Assets/Game/Bootstrap.cs').read_text().splitlines()) if needle in l),)*2
+                    edit=SelectedEdit(files,'Assets/Game/Bootstrap.cs',start,end,30)
                     all_lines=files.path(edit.path).read_text().splitlines()
-                    context='\n'.join(all_lines[max(0,start-5):min(len(all_lines),end+12)])
+                    context='' if a.resume_elementary else '\n'.join(all_lines[max(0,start-5):min(len(all_lines),end+12)])
                     c.update(output_tokens=2048 if attempt==0 else 4096,model_timeout_seconds=180)
                     s.set(stage='selected-edit',current_task=label,selected_lines=[start,end]);s.report()
                     result=r.model.session('builder',label+'-'+str(attempt+1),
