@@ -88,7 +88,7 @@ namespace ChicagoGame
 
             if (!_driving)
             {
-                if (e && Vector3.Distance(_player.transform.position, transform.position) < 2.5f)
+                if (e && Vector3.Distance(_player.transform.position, GetComponent<Collider>().ClosestPoint(_player.transform.position)) < 1.0f)
                     Enter();
                 return;
             }
