@@ -76,6 +76,21 @@ def conservative_prompt_bound(messages, tools, text_counter=None):
     return text_tokens + images * 8192 + 2048
 
 
+def response_accounting(message, text_counter=None):
+    """Export counts only; never copy response text or private reasoning into status."""
+    fields = {}
+    for name in ("content", "reasoning_content", "reasoning"):
+        value = message.get(name)
+        if isinstance(value, str):
+            fields[name] = {"characters": len(value),
+                           "retokenized_tokens": text_counter(value) if text_counter else None,
+                           "closing_think_markers": value.count("</think>"),
+                           "tool_open_markers": value.count("<tool_call>")}
+        else:
+            fields[name] = {"present": False}
+    return {"fields": fields, "parsed_tool_calls": len(message.get("tool_calls") or [])}
+
+
 class LocalModel:
     def __init__(self, config, store, guard):
         self.config, self.store, self.guard = config, store, guard
@@ -111,7 +126,12 @@ class LocalModel:
         if state.get("default_model") != MODEL or state.get("active_requests", 0) or state.get("waiting_requests", 0):
             raise Halt("Model identity changed or another request owns the model")
 
-    def session(self, role, session_id, system, prompt, tools, dispatch, images=(), turns=16):
+    def session(self, role, session_id, system, prompt, tools, dispatch, images=(), turns=16,
+                reasoning_effort="xhigh"):
+        if reasoning_effort not in ("low", "medium", "xhigh"):
+            raise ValueError("Pinned Qwen template supports only low, medium and xhigh")
+        sampling = {**SAMPLING, "reasoning_effort": reasoning_effort,
+                    "chat_template_kwargs": dict(SAMPLING["chat_template_kwargs"])}
         private = self.store.root / "private" / "sessions" / session_id
         private.mkdir(mode=0o700, parents=True, exist_ok=False)
         content = [{"type": "text", "text": prompt}]
@@ -135,19 +155,24 @@ class LocalModel:
                     return {"bounded_stop": "context", "summary": "Inspect current source and continue in a new bounded task."}
                 request_id = session_id + "-" + str(turn)
                 payload = dict(model=MODEL, messages=messages, tools=tools,
-                               tool_choice="auto", max_tokens=self.config["output_tokens"], **SAMPLING)
+                               tool_choice="auto", max_tokens=self.config["output_tokens"], **sampling)
                 self.store.begin_action(request_id, "model-request", {"role": role, "payload_sha256": sha(encode(payload))})
                 atomic(private / "history.json", messages)
-                self.store.set(activity="local-" + role, last_action_utc=now())
+                self.store.set(activity="local-" + role, last_action_utc=now(),
+                               active_model_settings={"role": role, "reasoning_effort": reasoning_effort,
+                                   "enable_thinking": True, "preserve_thinking": True,
+                                   "output_tokens": self.config["output_tokens"]})
                 self.store.report()
                 value = self.api("/v1/chat/completions", payload, self.config["model_timeout_seconds"])
                 atomic(private / ("response-%03d.json" % turn), value)
                 choice = value["choices"][0]
                 msg = choice["message"]
                 usage = value.get("usage", {})
-                self.store.finish_action(request_id, {"usage": usage, "finish_reason": choice.get("finish_reason")})
+                self.store.finish_action(request_id, {"usage": usage, "finish_reason": choice.get("finish_reason"),
+                    "reasoning_effort": reasoning_effort,
+                    "response_accounting": response_accounting(msg, self.text_counter)})
                 self.store.event("model-usage", role=role, session_id=session_id, usage=usage,
-                                 conservative_prompt_bound=bound, settings=SAMPLING,
+                                 conservative_prompt_bound=bound, settings=sampling,
                                  output_tokens=self.config["output_tokens"],
                                  text_budget_mode="pinned-tokenizer" if self.text_counter else "utf8-byte-fallback")
                 if usage.get("prompt_tokens", 0)+self.config["output_tokens"] > self.config["working_context_tokens"]:

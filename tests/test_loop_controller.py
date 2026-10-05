@@ -13,7 +13,7 @@ import zlib
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"tools"))
 from loop_controller.core import Files, Halt, Store, atomic, failure_key, seal, sha, verify_seal
 from loop_controller.adapters import evaluate_runtime, sandbox_profile
-from loop_controller.model import LocalModel, conservative_prompt_bound, tool, typed_arguments
+from loop_controller.model import LocalModel, conservative_prompt_bound, tool, typed_arguments, response_accounting
 from loop_controller.runner import Runner, git, scenario_for
 from inspect_and_repair_grounding import summarize, grounding_scenario
 from loop_controller.small_edits import SelectedEdit
@@ -84,6 +84,32 @@ class ControllerTests(unittest.TestCase):
         self.assertTrue(result['ok']);self.assertEqual(executed,['valid'])
         feedback=[m for m in requests[1]['messages'] if m['role']=='tool'][0]['content']
         self.assertIn('Unavailable tool',feedback);self.assertIn('total_lines',feedback)
+
+    def test_effort_override_keeps_thinking_and_does_not_leak_to_next_role(self):
+        model=LocalModel.__new__(LocalModel);model.store=self.store;model.guard=lambda:None
+        model.ready=lambda:None;model.text_counter=None
+        model.config={'coordination_dir':str(self.root/'coord'),'output_tokens':8192,'working_context_tokens':65536,'model_timeout_seconds':1}
+        requests=[]
+        def api(route,payload,timeout):
+            requests.append(payload)
+            return {'choices':[{'finish_reason':'tool_calls','message':{'role':'assistant','reasoning_content':'private fixture text','tool_calls':[
+                {'id':'1','type':'function','function':{'name':'finish_task','arguments':'{}'}}]}}]}
+        model.api=api
+        for name,kwargs in [('small',{'reasoning_effort':'low'}),('critic',{})]:
+            result=model.session(name,name,'system','prompt',[tool('finish_task','finish',{})],{'finish_task':lambda *_:{'ok':True}},**kwargs)
+            self.assertTrue(result['ok'])
+        self.assertEqual([v['reasoning_effort'] for v in requests],['low','xhigh'])
+        self.assertTrue(all(v['chat_template_kwargs']=={'enable_thinking':True,'preserve_thinking':True} for v in requests))
+        receipt=json.loads(self.store.db.execute("SELECT result FROM actions WHERE id='small-0'").fetchone()[0])
+        self.assertEqual(receipt['reasoning_effort'],'low');self.assertEqual(receipt['response_accounting']['parsed_tool_calls'],1)
+        self.assertNotIn('private fixture text',json.dumps(receipt))
+        with self.assertRaises(ValueError):model.session('bad','bad','s','p',[],{},reasoning_effort='high')
+
+    def test_response_accounting_exports_only_counts(self):
+        result=response_accounting({'content':'private <tool_call>','reasoning_content':'secret </think>','tool_calls':[]},lambda s:len(s.split()))
+        self.assertEqual(result['fields']['content']['tool_open_markers'],1)
+        self.assertEqual(result['fields']['reasoning_content']['closing_think_markers'],1)
+        self.assertNotIn('private',json.dumps(result));self.assertNotIn('secret',json.dumps(result))
 
     def test_stationary_preflight_rejects_unstable_scaled_or_tilted_physics(self):
         bundle=self.root/'observed';capture=bundle/'captures';capture.mkdir(parents=True)
