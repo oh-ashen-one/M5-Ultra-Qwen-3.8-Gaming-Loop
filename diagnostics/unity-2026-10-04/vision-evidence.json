@@ -1,0 +1,54 @@
+{
+  "checked_utc": "2026-10-05T03:31:25.006573+00:00",
+  "status": "PASS",
+  "model": "Qwen3.8-27B BF16",
+  "request_settings": {
+    "enable_thinking": true,
+    "reasoning_effort": "xhigh",
+    "thinking_budget": 1024,
+    "max_tokens": 2048,
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "repetition_penalty": 1.0
+  },
+  "image_sha256": "45d5d0c0dbb093bec809cd674dad51f3360cded758cb26def6590e5c4610a148",
+  "answer": {
+    "objects": [
+      {
+        "color": "blue",
+        "shape": "sphere",
+        "side": "left"
+      },
+      {
+        "color": "red",
+        "shape": "cube",
+        "side": "right"
+      }
+    ]
+  },
+  "independent_color_masks": {
+    "red": {
+      "pixels": 6976,
+      "centroid_x": 350.5,
+      "side": "right"
+    },
+    "blue": {
+      "pixels": 4114,
+      "centroid_x": 160.54,
+      "side": "left"
+    }
+  },
+  "usage": {
+    "prompt_tokens": 349,
+    "completion_tokens": 171,
+    "total_tokens": 520,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  },
+  "reasoning_content_returned": true,
+  "game_loop": "held"
+}

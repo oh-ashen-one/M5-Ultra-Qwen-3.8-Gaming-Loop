@@ -1,6 +1,6 @@
 # Plan
 
-Status: planning only. Updated 2026-10-03.
+Status: model warm and resident; disposable connector qualification authorized; game/agent loop held for readiness review. Updated 2026-10-05.
 
 ## Acceptance before implementation
 
@@ -23,10 +23,10 @@ A suggested performance target is 60 fps, subject to the approved resolution, qu
 
 ## Phases and exits
 
-1. **Planning and start gate — current phase.** Finish source/license review, choose the engine and exact model/runtime, agree on the brief and acceptance contract, confirm existing M5 tests have finished, and obtain the user's explicit start instruction. This phase performs no installations, inference, engine launches, or asset generation.
+1. **Preparation and readiness review — current phase.** The prior benchmark campaign is closed. Unity CLI/C# and Qwen BF16 are selected. Model download/warm-up and a small isolated connector check are authorized; substantive game generation is held. Parent midir manages direction/approvals and the execution lead reports evidence/blockers. Agree on the brief, settings, acceptance contract and bounded run before the explicit game start.
 2. **Qualification.** In a session-owned project, pin versions and verify local model identity, edit tools, context retrieval, engine adapter, export path, resource budget, and recovery behavior. Deliberately broken fixtures must make the acceptance harness fail before it is trusted.
 3. **Playable foundation.** Build a small input-driven movement/driving slice with camera handoff and collision. Temporary graybox assets are allowed. Verify behavior and capture actual gameplay before adding more systems.
-4. **Visual target and asset pilot.** Agree on art direction. Process one representative character, vehicle, and environment asset through Meshy, Blender, and the engine; validate animation, material response, collision, scale, and performance before a larger batch.
+4. **Visual target and original asset pilot.** Agree on art direction. Local Qwen authors representative character, vehicle and environment models, materials, rigs and animation from scratch in Blender; validate them in Unity before a larger batch. No Meshy, Tripo or premade asset packs.
 5. **Approved mission and presentation.** Integrate the selected mission, NPC behavior, ending/restart, custom art, animation, lighting, and audio. Keep every earlier acceptance gate passing.
 6. **Critique and polish.** Review rendered playthroughs; resolve three to five prioritized findings per round through small stories and permanent regression checks. Promote only candidates that pass the full contract.
 7. **Delivery.** Provide the playable native build, editable art sources where redistributable, license/provenance manifest, complete playthrough evidence, build instructions, and known limitations. Record all cloud rescue contributions and unresolved defects.
@@ -41,8 +41,8 @@ Two repeated failures with the same proven cause trigger diagnosis. After two in
 
 ## Decisions needed before start
 
-- Godot or Unity, exact release, native export target, and rendering/physics settings.
-- Qwen3.8 27B artifact, model license, quantization, context size, local serving runtime, and endpoint identity. Existing M5 results should inform this choice; no fastest-quant claim is made here.
+- Exact Unity release/render pipeline, native export target, license and physics/test/capture adapters.
+- Approve the [audited BF16 runtime settings](RUNTIME-READINESS.md), working context/output/thinking budgets and functional tools/vision qualification. The loaded artifact and runtime are pinned; no fastest-runtime claim is made.
 - Approved mission, art direction, controls, camera feel, driving style, audio scope, and content budget.
 - How to measure the local coding share and how to authorize/disclose rescue coding.
 - Exact dependencies and licenses, GPU/process ownership, acceptance-harness location, and stop/recovery policy.

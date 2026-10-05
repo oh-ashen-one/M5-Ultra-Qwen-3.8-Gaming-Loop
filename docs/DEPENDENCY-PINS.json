@@ -40,7 +40,7 @@
       "license_source": "https://github.com/CoplayDev/unity-mcp/blob/d49ae2953580f3481beb1e084a1da2682f0b5610/LICENSE",
       "license_sha256_reviewed": "6efe650c965012ac418238dcd6b9116e4130a5220717ef0dfb539dd159c4245c",
       "status": "reference-only-not-installed",
-      "role": "Unity alternative only"
+      "role": "adapter candidate for selected Unity engine; uninstalled and unqualified"
     }
   ]
 }

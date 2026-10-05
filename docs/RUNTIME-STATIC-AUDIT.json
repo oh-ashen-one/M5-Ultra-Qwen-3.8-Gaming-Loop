@@ -1,0 +1,43 @@
+{
+  "status": "passed",
+  "scope": "CPU source/template/parser fixtures; no model load or inference",
+  "mlx_vlm_commit": "d73f4b1ad90194d53e37beac6e9eef76976aadc5",
+  "checks": [
+    "pinned source: server/cli.py",
+    "pinned source: server/generation.py",
+    "pinned source: server/request_normalization.py",
+    "pinned source: server/openai.py",
+    "pinned source: server/schemas.py",
+    "pinned source: prompt_utils.py",
+    "pinned source: tools/registry.py",
+    "pinned source: tools/parsers/qwen3_coder.py",
+    "pinned source: utils.py",
+    "pinned BF16 template",
+    "top-level thinking forwarded",
+    "top-level effort forwarded",
+    "top-level thinking budget forwarded",
+    "max_tokens forwarded",
+    "explicit sampling forwarded",
+    "nested template fields ignored",
+    "max_completion_tokens ignored",
+    "template accepts low",
+    "template accepts medium",
+    "template accepts xhigh",
+    "template rejects high",
+    "template rejects max",
+    "xhigh instruction present",
+    "thinking preopened",
+    "explicit off closes thinking",
+    "vision marker and tools coexist",
+    "assistant reasoning_content preserved",
+    "XML parser auto-detected",
+    "XML arguments parsed with types",
+    "prompt plus generation rejected above limit",
+    "no accelerator module imported"
+  ],
+  "limitations": [
+    "No native image preprocessing or model output tested",
+    "No latency, memory, gameplay or quality measured",
+    "Synthetic fixtures are not assistant/model reasoning"
+  ]
+}

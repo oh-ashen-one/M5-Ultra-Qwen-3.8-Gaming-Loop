@@ -1,0 +1,33 @@
+{
+  "checked_utc": "2026-10-05T03:32:41.181761+00:00",
+  "host": "Apple M5 Ultra / Mac17,15",
+  "status": "loaded-idle",
+  "model": "Qwen3.8-27B BF16",
+  "model_revision": "6f265714824f3c38d4452baa1628aef3d9b9aae9",
+  "health": {
+    "status": "healthy",
+    "effective_context_limit": 32768,
+    "loaded_tool_parser": "qwen3_coder",
+    "apc_enabled": false
+  },
+  "memory": {
+    "available_GiB": 178.853,
+    "swap_used_GiB": 0.0,
+    "swap_growth_MiB": 0.0
+  },
+  "warmup": {
+    "answer": "READY",
+    "usage": {
+      "prompt_tokens": 57,
+      "completion_tokens": 30,
+      "total_tokens": 87,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    }
+  },
+  "unity_editor_processes": 0,
+  "external_blender_processes": 1,
+  "game_loop": "held",
+  "automatic_restart_configured": false
+}

@@ -1,0 +1,26 @@
+{
+  "checked_utc": "2026-10-05T01:32:32.543863+00:00",
+  "runtime_versions": {
+    "python": "3.12.13",
+    "mlx-vlm": "0.7.4",
+    "mlx": "0.32.3",
+    "zsh": "zsh 5.9 (arm64-apple-darwin26.0)"
+  },
+  "resident": {
+    "status": "loaded-idle",
+    "memory": {
+      "available_GiB": 190.477,
+      "swap_used_GiB": 0.948,
+      "swap_growth_MiB": 0.0
+    },
+    "server_RSS_GiB": 51.515,
+    "loaded_models": 1,
+    "tool_parser": "qwen3_coder",
+    "effective_context_limit": 32768
+  },
+  "renderer_processes": [],
+  "remaining_gpu_holder_labels": [
+    "m5-qwen-gaming-bf16-warm-idle"
+  ],
+  "sharing_settings_changed": false
+}

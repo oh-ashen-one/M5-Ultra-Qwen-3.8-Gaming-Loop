@@ -1,29 +1,29 @@
 # M5 Ultra Qwen 3.8 Gaming Loop
 
-**Status: planning, research and licensed source preparation. No game-development loop has started.**
+**Status: Qwen BF16 restored and resident on the M5. Blender export → Unity import/C# compile/Metal render → fresh Qwen vision passes. Game development remains held for readiness review.**
 
-An open-source plan for a local-first coding loop that aims to produce a polished, roughly ten-minute playable urban action/driving game. The intended workload is Qwen3.8 27B on the requested M5 Ultra configuration: 256 GB memory and 80 GPU cores. That configuration, the exact model artifact, and its runtime remain to be verified before a future run.
+An open-source plan for a local-first coding loop that aims to produce a polished, roughly ten-minute playable urban action/driving game. The M5 Ultra was verified with 256 GB memory and 80 GPU cores. Qwen3.8 27B BF16 is pinned and loaded through the installed MLX-VLM 0.7.4 runtime. See [runtime readiness](docs/RUNTIME-READINESS.md) for exact evidence and remaining qualification.
 
-The game should evoke the movement, driving, camera, atmosphere, and mission flow of a GTA5-style experience while using original content and custom Meshy/Blender assets. This is a small playable slice, with no promise of AAA parity. Native Godot or Unity is the goal; a browser build is a fallback.
+The game should evoke the movement, driving, camera, atmosphere, and mission flow of a GTA5-style experience while using original content. Local Qwen must author every eventual 3D model, material, rig and animation from scratch through Blender. No Meshy, Tripo or premade asset packs. This is a small playable slice, with no promise of AAA parity. Native Unity CLI/C# is selected; a browser build is a fallback.
 
 ## Start boundary
 
-The future game run comes **after the existing M5 tests and a separate, explicit user instruction to start**. The initial 8–72-hour window is a planning range, subject to an agreed budget and stop conditions. Time alone is never a completion criterion.
+The existing M5 tests are closed. The owner authorized model preparation and a short warm-up, while requiring review of the launch plan before the game/agent loop starts. The initial 8–72-hour window is a planning range, subject to an agreed budget and stop conditions. Time alone is never a completion criterion.
 
-This repository contains documentation and a small, attributed set of unintegrated source references. Publishing or copying source does not authorize model inference, benchmark changes, installations, engine execution, paid generation, or changes to another active project. There is no runnable game, development-loop automation, or asset bundle.
+This repository contains documentation, bounded preparation/diagnostic tools and a small attributed set of unintegrated source references. There is no runnable game or development loop. The owner authorized the BF16 preparation, Unity setup and disposable connector qualification, including original test geometry. Game-generation and paid production services remain separate from this preparation.
 
 ## What success should mean
 
 - A player can discover the controls, play the approved ten-minute experience, reach its ending, and restart reliably.
 - Movement, driving, camera transitions, art, animation, lighting, and audio receive real gameplay review. Programmer art is acceptable during development, not final acceptance.
-- About 90% of actual gameplay coding is the local-model goal. Cloud criticism and limited rescue coding are allowed and disclosed. The accounting method must be agreed before the run; a token share is not a coding share.
+- About 90% of actual gameplay coding is the local-model goal. Local Qwen supplies planning, coding and fresh visual critique. Codex supplies intelligent cloud supervision and transparent spot reviews/interventions. Any separately approved cloud rescue code is disclosed. A token share is not a coding share.
 - External acceptance gates, rendered playthroughs, and known-good Git checkpoints determine progress. A green log line or compilation alone cannot establish playability.
 
 ## Proposed architecture
 
-One controller coordinates mostly sequential local planner, coder, and tester contexts. It supplies exact source context, mediates edits, runs protected acceptance checks, records provenance, and promotes only verified checkpoints. A frontier critic reviews actual gameplay evidence and returns three to five prioritized fixes. See [Architecture](docs/ARCHITECTURE.md).
+Parent midir manages project direction and approvals; the execution lead performs approved work and reports evidence and blockers. Separate, serial local Qwen planner, coder, tester and visual-critic contexts receive exact context and mediated tools. Protected acceptance checks govern checkpoint promotion. A fresh local critic returns three to five prioritized fixes from actual gameplay evidence; disclosed cloud supervision can spot-review and escalate. See [Architecture](docs/ARCHITECTURE.md).
 
-Godot is the current recommendation, with Unity still open. A single agent harness, Blender MCP, and one engine adapter form the proposed lean tooling stack. None of the candidates has been installed or qualified together for this project.
+The owner selected native Unity CLI/C# for the initial game, with local Blender tools as needed. The exact Unity release, render pipeline, licensing and adapter remain to be qualified; no Unity editor was found on the M5. Godot source references remain useful lessons, not an integrated Unity foundation.
 
 The [source references](reference/README.md) include selected MIT diagnostic, input, camera and vehicle code with pinned refs, checksums and full notices. They are preparation for later qualification, not an integrated game. The [NPC plan](docs/NPC-ARCHITECTURE.md) specifies distinct persistent NPC memories and relationships on a shared backend, and discloses remote runtime brains separately from local Qwen development.
 
@@ -34,10 +34,14 @@ The [source references](reference/README.md) include selected MIT diagnostic, in
 | [Plan](docs/PLAN.md) | Acceptance-first phases, start gate, unresolved choices |
 | [Architecture](docs/ARCHITECTURE.md) | Context, edit boundaries, verification, recovery, provenance |
 | [Prior attempts](docs/PRIOR-ATTEMPTS.md) | Pinned static evidence and limits on success claims |
-| [Asset pipeline](docs/ASSET-PIPELINE.md) | Meshy → Blender → engine, including rigs and animation |
+| [Asset pipeline](docs/ASSET-PIPELINE.md) | Local Qwen → original Blender models/materials/rigs/animation → Unity |
 | [Reuse catalog](docs/REUSE-CATALOG.md) | Prior user projects and external code/tool candidates |
 | [Source references](reference/README.md) | Exact imported files, manifest, notices and integration gaps |
 | [Dependency pins](docs/DEPENDENCY-PINS.json) | Framework refs only; nothing installed |
+| [Runtime readiness](docs/RUNTIME-READINESS.md) | Pinned BF16, exact settings audit, warm-up and remaining launch gates |
+| [Connector evidence](diagnostics/connector-2026-10-05/README.md) | Earlier file/shell, original Blender and vision results |
+| [Post-reboot qualification](diagnostics/unity-2026-10-04/README.md) | Actual Unity/C# import, Metal frame, Qwen recognition and current setup distinctions |
+| [Unity installation](docs/UNITY-INSTALL.md) | Original official installation record and link to the later qualified editor |
 | [NPC architecture](docs/NPC-ARCHITECTURE.md) | Legal async decisions, persistent memory, costs and video evidence |
 | [Horror concept](docs/concepts/TOWERING-MONSTER-INVESTIGATION.md) | Separate original monster-investigation discussion |
 | [Decisions](docs/DECISIONS.md) | Confirmed requirements, recommendations, open decisions |
