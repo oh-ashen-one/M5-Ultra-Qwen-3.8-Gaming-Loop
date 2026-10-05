@@ -1,5 +1,48 @@
 # Runtime ownership recovery
 
+## Current measured result
+
+Local-Qwen source **`5034b67`** changes the rival's walking speed from 2 to 1 m/s.
+The 18 m pursuit and 16 m attack thresholds, vehicle physics and world geometry
+remain unchanged. Native driving now establishes **5.783 seconds** of continuous
+pursuit clearance, with no reset, and maximum separation **23.069 m**. Open combat,
+both directions of wall occlusion, the 1.57 m imported visual, the combined route
+and all five accepted baseline regressions pass. Actual Mouse0 events at 7.533 s
+and 9.217 s hit the Rival collider and reduce its HP 3→2→1. See
+[the measured evidence](sustained-escape.json).
+
+The original `f965eae` fresh visual review returned FIX. The later `5034b67`
+review returned unsupported `partial`, then exhausted its correction context.
+Neither was converted into a PASS. Controller **`c1d2d26`** supplies explicit
+verdict choices and a compact actual-evidence report distinguishing enemy damage,
+player-shot rival damage and pursuit arming/clearance transitions. The fresh
+actual-image review returned **scoped PASS at 20:49:45 UTC**, promoting source
+`5034b67` to accepted checkpoint **`bbb0a91`**. The original failed reviews and
+earlier accepted `81659ed` remain preserved. This accepts combat/pursuit in the
+short connected mission, not final game quality.
+
+The same sole queue has advanced to **mission-hud-audio**, with local-Qwen source
+`202b53b` awaiting native qualification. Next are a single rough route combining
+the accepted mechanics and failure/retry, then Chicago presentation and meaningful
+roughly ten-minute pacing. No new owner or schedule was created.
+
+Controller **`e1e60ec`** also retains the resident reservation throughout inference
+and counts the standalone native player. It was applied at an inference-idle
+engine handoff, preserving the game controller. The resident stayed healthy
+through subsequent real handoffs; its reservation identity remained unchanged
+across the later idle period and fresh review. **109 CPU checks pass on both
+machines.** Current-source foot/wall/driving contracts, including two-second
+stable escape, now also gate future combat promotions and changes.
+
+Three actual rival/escape/completion images are confirmed in private Library.
+The accepted combined run's requested combat frame 002 (8.0 s) and mission-action
+frame 005 (24.4 s) are also privately delivered. Frame 005 shows pursuit active;
+the separate continuous driving trace establishes sustained escape.
+Blocky silhouettes, limited firing feedback and the oversized beacon remain
+visible weaknesses. Native mechanics are not final visual-quality acceptance.
+
+## Recovery diagnosis and protections
+
 The owner authorized recovery of the stopped combat qualification without a plan
 change or a new game owner. The stopped resident receipt and candidate evidence
 remain preserved.
