@@ -15,6 +15,7 @@ from resume_mission_review import verified_probe
 from resume_three_day_queue import ThreeDayRunner,main
 
 COMBAT='Assets/Game/Combat.cs'
+VISUAL_REPAIRED='ed84a51d044d67735dfc7c4af18651d4c943f9a5'
 
 
 def combined_probe(previous):
@@ -27,10 +28,15 @@ def combined_probe(previous):
 
 class CombatFocus(ThreeDayRunner):
     def validate_recovery(self,old):
-        if (old.get('task_index')!=4 or old.get('source_checkpoint')!=SOURCE
+        initial=(old.get('source_checkpoint')==SOURCE and old.get('blocker')==
+                 'Halt: Combat diagnostic complete; preserve source for measured small local fixes')
+        selected_stop=(old.get('source_checkpoint')==VISUAL_REPAIRED and old.get('blocker')==
+            'Halt: Local combat edit saved no change: chase-and-occluded-attack' and
+            old.get('combat_selected_edits')==['preserve-imported-visual-basis','rival-pavement-height'] and
+            {v.get('scope') for v in old.get('combat_before_contracts',[])}=={'foot','wall'})
+        if (old.get('task_index')!=4 or not (initial or selected_stop)
                 or old.get('last_playable_checkpoint')!=ACCEPTED or old.get('task_failures')!=0
-                or old.get('overall_deadline_epoch')!=HARD_CAP_EPOCH
-                or old.get('blocker')!='Halt: Combat diagnostic complete; preserve source for measured small local fixes'):
+                or old.get('failure_streak')!=0 or old.get('overall_deadline_epoch')!=HARD_CAP_EPOCH):
             raise Halt('Expected the preserved measured combat diagnostic and accepted retry baseline')
 
     def recovery_settings(self):return {'combat_focused_qualification_pending':True}
@@ -76,8 +82,9 @@ class CombatFocus(ThreeDayRunner):
     def work(self):
         if not self.store.get('combat_focused_qualification_pending'):raise Halt('Focused qualification is one-time only')
         ident='combat-focus-'+uuid.uuid4().hex[:8]
-        before=[self.native_test(ident+'-before-'+kind,probe,kind,SOURCE)
-                for kind,probe in [('foot',FOOT_PROBE),('wall',WALL_PROBE)]]
+        before=self.store.get('combat_before_contracts') or [
+            self.native_test(ident+'-before-'+kind,probe,kind,SOURCE)
+            for kind,probe in [('foot',FOOT_PROBE),('wall',WALL_PROBE)]]
         self.store.set(combat_before_contracts=before)
         self.selected(ident,'preserve-imported-visual-basis',
             'Native evidence: imported rival renders only0.0157m tall initially, then0.004m tall while turning, '
@@ -94,6 +101,8 @@ class CombatFocus(ThreeDayRunner):
             'so the wrapper and imported visual feet stand on the same surface as the player.',
             start='static readonly Vector3 RIVAL_SPAWN =',end='static readonly Vector3 RIVAL_SPAWN =',max_lines=2)
         self.selected(ident,'chase-and-occluded-attack',
+            'The previous proposal was rejected unchanged:70 lines exceeded65. Return ONLY the compact ActRival '
+            'method, with target resolution and ordered collision check inline; no extra helper methods or long comments. '
             'Measured defect: while driving22.7m from the rival, health continues falling every1.6s because the inactive '
             'foot player remains3m away. Resolve the actual controlled Transform each update: use LoopSignals.Vehicle '
             'when Mode is vehicle and it exists; otherwise player. Chase, range and tracer endpoint must all use that '

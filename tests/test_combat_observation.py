@@ -5,11 +5,24 @@ import unittest
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from inspect_combat_contracts import summarize_combat
 from loop_controller.combat_checks import inspect_combat_contract
-from qualify_combat_focus import combined_probe
+from qualify_combat_focus import combined_probe,CombatFocus,VISUAL_REPAIRED,ACCEPTED
+from loop_controller.core import Halt
+from loop_controller.delivery_policy import HARD_CAP_EPOCH
 from loop_controller.continuous_checks import validate_proposed
 
 
 class CombatObservationTests(unittest.TestCase):
+    def test_resume_preserves_exact_partial_source_and_rejects_unrelated_failures(self):
+        old=dict(task_index=4,source_checkpoint=VISUAL_REPAIRED,last_playable_checkpoint=ACCEPTED,
+            task_failures=0,failure_streak=0,overall_deadline_epoch=HARD_CAP_EPOCH,
+            blocker='Halt: Local combat edit saved no change: chase-and-occluded-attack',
+            combat_selected_edits=['preserve-imported-visual-basis','rival-pavement-height'],
+            combat_before_contracts=[dict(scope='foot'),dict(scope='wall')])
+        CombatFocus.validate_recovery(None,old)
+        for changes in [dict(source_checkpoint='other'),dict(task_failures=1),dict(failure_streak=1),
+                        dict(blocker='different fault'),dict(combat_before_contracts=[])]:
+            with self.assertRaises(Halt):CombatFocus.validate_recovery(None,{**old,**changes})
+
     def test_damage_and_pursuit_use_actual_vehicle_distance_in_diagnostic(self):
         rows=[]
         for t,hp in [(10,100),(12,96)]:
