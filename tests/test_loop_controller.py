@@ -156,5 +156,35 @@ class ControllerTests(unittest.TestCase):
         runner.reject(feedback,candidate)
         with self.assertRaises(Halt):runner.reject(feedback,candidate)
 
+    def test_context_rotation_preserves_progress_without_promoting_or_erasing_real_failure(self):
+        runner=self.source_runner();before=git(runner.repo,"rev-parse","HEAD")
+        self.store.set(accepted_checkpoint=before, failure_streak=1, feedback={"failure":"compile-build"}, bounded_no_progress_streak=1)
+        p=runner.project/"Art/street.py";p.parent.mkdir();p.write_text("# actual local source fixture")
+        candidate=runner.checkpoint_source("partial original art")
+        runner.continue_bounded_role({"bounded_stop":"context"},before,candidate)
+        self.assertEqual(self.store.get("source_checkpoint"),candidate)
+        self.assertEqual(self.store.get("accepted_checkpoint"),before)
+        self.assertEqual(self.store.get("failure_streak"),1)
+        self.assertEqual(self.store.get("feedback")["failure"],"compile-build")
+        self.assertEqual(self.store.get("bounded_no_progress_streak"),0)
+        self.assertEqual(self.store.get("stage"),"partial")
+
+    def test_context_rotations_without_source_progress_are_bounded(self):
+        runner=self.source_runner();before=git(runner.repo,"rev-parse","HEAD")
+        runner.continue_bounded_role({"bounded_stop":"context"},before,before)
+        with self.assertRaises(Halt):runner.continue_bounded_role({"bounded_stop":"context"},before,before)
+        self.assertIsNone(self.store.get("accepted_checkpoint"))
+
+    def test_diagnosed_legacy_context_failure_migrates_once_on_resume(self):
+        runner=self.source_runner()
+        self.store.set(stage="rejected",feedback={"failure":"builder-context"},failure_streak=3,failure_key="old")
+        runner.recover()
+        self.assertEqual(self.store.get("failure_streak"),0)
+        self.assertEqual(self.store.get("budget_rotation_version"),2)
+        self.assertIsNone(self.store.get("accepted_checkpoint"))
+        self.store.set(feedback={"failure":"compile-build"},failure_streak=2)
+        runner.recover()
+        self.assertEqual(self.store.get("failure_streak"),2)
+
 
 if __name__=="__main__":unittest.main()

@@ -38,7 +38,8 @@ def typed_arguments(function, tools):
         if kind == "object":
             if not isinstance(value, dict): raise ValueError(field + " requires an object")
             properties = schema.get("properties", {})
-            if not set(schema.get("required", [])) <= set(value): raise ValueError(field + " lacks required fields")
+            missing = set(schema.get("required", [])) - set(value)
+            if missing: raise ValueError(field + " lacks required fields: " + ", ".join(sorted(missing)))
             if schema.get("additionalProperties") is False and not set(value) <= set(properties): raise ValueError(field + " has unknown fields")
             return {k: convert(v, properties[k], field + "." + k) for k,v in value.items()}
         if kind == "array":
