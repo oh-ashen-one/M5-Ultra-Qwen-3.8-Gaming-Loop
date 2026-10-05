@@ -224,10 +224,45 @@ namespace ChicagoGame
                 first = (a != null && a.alive) ? a : null;
             }
 
+            // Aim-assist readability: if the exact forward ray missed the live
+            // rival but it sits inside a generous forward cone AND a real
+            // line-of-sight ray reaches it unobstructed, honour that as the
+            // shot's target. This is still gated on an actual unoccluded
+            // connection to the collider -- not a free hit.
+            if (first == null && rival != null && rival.alive && rivalGo != null)
+            {
+                Vector3 chest = rivalGo.position + Vector3.up * 1.0f;
+                Vector3 to = chest - origin;
+                float dist = to.magnitude;
+                if (dist > 0.01f && dist <= FIRE_RANGE)
+                {
+                    Vector3 nd = to / dist;
+                    float cosA = Vector3.Dot(dir, nd);
+                    if (cosA > Mathf.Cos(22f * Mathf.Deg2Rad))
+                    {
+                        // Must actually see the rival: nothing but the player /
+                        // controlled vehicle / rival may block the path.
+                        bool clear = true;
+                        var los = Physics.RaycastAll(origin, nd, dist - 0.35f,
+                                                    ~0, QueryTriggerInteraction.Ignore);
+                        foreach (var h in los)
+                        {
+                            var root = h.transform.root;
+                            if (ignorePlayer != null && root == ignorePlayer) continue;
+                            if (ignoreVehicle != null && root == ignoreVehicle) continue;
+                            if (rivalGo != null && root == rivalGo.root) continue;
+                            clear = false; break;
+                        }
+                        if (clear) { first = rival; hitPt = chest; }
+                    }
+                }
+            }
+
             // Tracer always ends at the first real collision.
             Tracer(origin, hitPt, new Color(1f, 0.95f, 0.4f), 0.06f);
 
-            // Only if the FIRST collider is a live rival does HP/Hits change.
+            // Only if the FIRST collider (or a clear LOS aim-assist target) is a
+            // live rival does HP/Hits change.
             if (first != null)
             {
                 first.hp -= 1;
