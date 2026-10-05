@@ -78,9 +78,9 @@ namespace ChicagoGame
             // ---- Destination pad: flat green cylinder ----
             var pad = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             pad.name = "DropPad";
-            pad.SetParent(missionRoot, false);
-            pad.position = new Vector3(laneX, PAV_TOP + 0.01f, 27.5f);
-            pad.localScale = new Vector3(3.6f, 0.02f, 3.6f); // r = 1.8, thin
+            pad.transform.SetParent(missionRoot, false);
+            pad.transform.position = new Vector3(laneX, PAV_TOP + 0.01f, 27.5f);
+            pad.transform.localScale = new Vector3(3.6f, 0.02f, 3.6f); // r = 1.8, thin
             var padCol = pad.GetComponent<Collider>();
             if (padCol != null) Destroy(padCol);
             padRend = pad.GetComponent<Renderer>();
@@ -90,9 +90,9 @@ namespace ChicagoGame
             // ---- Beacon column: translucent tall light shaft over the pad ----
             var beaconGo = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             beaconGo.name = "Beacon";
-            beaconGo.SetParent(missionRoot, false);
-            beaconGo.position = new Vector3(laneX, PAV_TOP + 3.5f, 27.5f);
-            beaconGo.localScale = new Vector3(1.1f, 3.5f, 1.1f); // 7 m tall
+            beaconGo.transform.SetParent(missionRoot, false);
+            beaconGo.transform.position = new Vector3(laneX, PAV_TOP + 3.5f, 27.5f);
+            beaconGo.transform.localScale = new Vector3(1.1f, 3.5f, 1.1f); // 7 m tall
             var bcol = beaconGo.GetComponent<Collider>();
             if (bcol != null) Destroy(bcol);
             beacon = beaconGo.transform;
