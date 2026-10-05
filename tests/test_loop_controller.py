@@ -38,12 +38,13 @@ class ControllerTests(unittest.TestCase):
         runner=ElementaryRunner.__new__(ElementaryRunner)
         runner.project=self.project;runner.store=self.store;runner.c={}
         calls=[]
-        def session(role,action,system,prompt,tools,dispatch,turns):
+        def session(role,action,system,prompt,tools,dispatch,turns,**kwargs):
             calls.append(role)
             if role=='planner':
-                return dispatch['submit_plan'](action,{'kind':'replace','path':path,
+                return dispatch['submit_plan'](action,{'kind':'replace','operation':'assignment','path':path,
                     'start_line':11,'end_line':11,'goal':'Change the selected fixture line.'})
             self.assertIn('original line 11',prompt)
+            self.assertEqual(kwargs['reasoning_effort'],'low')
             return dispatch['edit_selected_span'](action,{'content':'replacement line 11'})
         runner.model=SimpleNamespace(session=session)
         result=runner.builder({'phase':'foundation','outcome':'Fixture handoff'},'round-fixture','brief')
@@ -60,6 +61,23 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual((self.project/'Assets/Game/A.cs').read_text(),'before\nreplacement // comment\nafter\n')
         with self.assertRaises(ValueError):edit.apply('stale','overwrite')
         self.assertEqual((self.project/'Assets/Game/A.cs').read_text(),'before\nreplacement // comment\nafter\n')
+
+    def test_unsaved_low_effort_micro_edit_stops_without_identical_retry(self):
+        path='Assets/Game/Bootstrap.cs'
+        self.files.create('seed',path,''.join('line %d\n'%i for i in range(1,31)))
+        runner=ElementaryRunner.__new__(ElementaryRunner)
+        runner.project=self.project;runner.store=self.store;runner.c={}
+        calls=[]
+        def session(role,action,system,prompt,tools,dispatch,turns,**kwargs):
+            calls.append(role)
+            if role=='planner':return dispatch['submit_plan'](action,{'kind':'replace','operation':'assignment','path':path,
+                'start_line':11,'end_line':11,'goal':'Adjust one fixture assignment.'})
+            return {'bounded_stop':'output'}
+        runner.model=SimpleNamespace(session=session)
+        with self.assertRaisesRegex(Halt,'inspect formatting/accounting'):
+            runner.builder({'phase':'foundation','outcome':'Fixture'},'failed-edit','brief')
+        self.assertEqual(calls,['planner','builder'])
+        self.assertIn('line 11\n',(self.project/path).read_text())
 
     def test_selected_edit_rejects_ambiguous_or_oversized_replacements(self):
         self.files.create('seed','Assets/Game/A.cs','same\nsame\nunique\n')
@@ -280,6 +298,25 @@ class ControllerTests(unittest.TestCase):
         self.assertFalse(self.store.incomplete())
         runner.recover()
         self.assertEqual(self.store.get("recovery_count"),1)
+
+    def test_real_source_progress_resets_only_unsaved_streak_not_game_acceptance(self):
+        runner=self.source_runner()
+        runner.c.update(working_context_tokens=65536,output_tokens=8192,max_rounds=1,no_accepted_progress_minutes=120)
+        runner.machine=SimpleNamespace(guard=lambda:None)
+        runner.contract_hash='fixture-contract'
+        self.store.set(tasks=[{'id':'fixture','phase':'foundation','outcome':'Small fixture'}],bounded_no_progress_streak=3,stage='idle')
+        def builder(*args):
+            (runner.project/'fixture.cs').write_text('changed fixture')
+            return {'ok':True}
+        runner.builder=builder
+        def native(project,bundle,scenario,candidate):
+            bundle.mkdir(parents=True)
+            return {'passed':False,'failure':'fixture native gate failure'}
+        runner.engines=SimpleNamespace(unity=native)
+        runner.run('brief',max_rounds=1)
+        self.assertEqual(self.store.get('bounded_no_progress_streak'),0)
+        self.assertIsNotNone(self.store.get('last_source_progress_epoch'))
+        self.assertIsNone(self.store.get('accepted_checkpoint'))
 
     def test_repeated_failure_restores_only_owned_game_and_preserves_failed_candidate(self):
         runner=self.source_runner();accepted=git(runner.repo,"rev-parse","HEAD")

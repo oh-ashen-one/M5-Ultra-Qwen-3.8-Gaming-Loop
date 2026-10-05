@@ -345,7 +345,7 @@ class Runner:
         self.store.set(status="running",blocker=None,game_generation_started=True,started_epoch=self.store.get("started_epoch",time.time()),
                        started_utc=self.store.get("started_utc",now()), owner="sole execution controller",manager="parent dot",
                        settings={"native_context":262144,"working_context_upper_bound":self.c["working_context_tokens"],
-                                 "output_tokens":self.c["output_tokens"],"effort":"xhigh","preserve_thinking":True,
+                                 "output_tokens":self.c["output_tokens"],"effort":self.c.get("reasoning_policy","xhigh"),"preserve_thinking":True,
                                  "mtp":False,"kv_quantization":False,"concurrency":1,"memory_floor_GiB":64,"swap_growth_limit_MiB":512})
         if not self.store.get("tasks"):
             self.store.set(current_task="Local Qwen: define bounded Chicago implementation tasks",phase="planning",stage="planning")
@@ -367,6 +367,9 @@ class Runner:
             result=self.builder(task,round_id,brief)
             candidate=self.checkpoint_source("Local Qwen: "+task["id"]+" / "+round_id)
             self.store.set(candidate_commit=candidate, source_checkpoint=candidate)
+            if candidate!=before:
+                self.store.set(bounded_no_progress_streak=0,last_source_progress_utc=now(),last_source_progress_epoch=time.time())
+                self.store.event("source-progress",before=before,candidate=candidate,accepted_checkpoint_unchanged=True)
             if result.get("bounded_stop"):
                 self.continue_bounded_role(result,before,candidate)
                 self.store.report()
