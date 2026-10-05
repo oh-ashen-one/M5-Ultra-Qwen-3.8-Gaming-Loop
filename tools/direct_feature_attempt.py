@@ -131,6 +131,8 @@ class DirectRunner(Runner):
                'The player must not end on brown unrendered background.' if ident=='foundation-short-walk' else
                'A limited vehicle entry, forward driving over3m, exit and return to walking demonstration with the same blue coupe. '
                'Judge visible car/player coherence, not final driving feel or full collision/audio quality.')
+        if ident=='vehicle-safe-exit-view':
+            scope+=' This follow-up specifically requires the on-foot character to be identifiable in BOTH exit frame-003.png and return frame-004.png. Pillar/fence/car occlusion hiding the player is a FIX, not outside scope.'
         self.c.update(output_tokens=8192,model_timeout_seconds=400)
         self.store.set(stage='scoped-critic',current_task=scope);self.store.report()
         result=self.model.session('critic',ident+'-review',
@@ -138,11 +140,11 @@ class DirectRunner(Runner):
             'SCOPE: '+scope+'\nFinal ten-minute game, Chicago-target art quality, HUD/audio/FPS and mission acceptance remain unmet. '
             'Do not require those broader deliverables for this milestone, and do not claim they passed. '
             'Return PASS only if the stated limited scope is supported. Keep summary concise and cite supplied filenames. '
-            'Set camera_readable, car_visible and continuous_paving truthfully from the images. '
+            'Set camera_readable, car_visible, continuous_paving and exit_player_visible truthfully from the images. '
             '\nNATIVE OBSERVATIONS:\n'+json.dumps(gate)+'\nSURFACE OBSERVATIONS:\n'+json.dumps(coverage)+
             '\nSUPPLIED ACTUAL FILES: '+json.dumps(names),
             [tool('submit_review','Judge only the limited subfeature; final-quality acceptance is separate.',
-                  {'verdict':S,'summary':S,'camera_readable':B,'car_visible':B,'continuous_paving':B})],
+                  {'verdict':S,'summary':S,'camera_readable':B,'car_visible':B,'continuous_paving':B,'exit_player_visible':B})],
             {'submit_review':submit},images=[('ACTUAL NATIVE UNITY '+p.name,p) for p in chosen],turns=2,reasoning_effort='xhigh')
         verify_seal(bundle/'captures',capture_hash);atomic(bundle/'scoped-critic.json',result)
         return result
@@ -170,6 +172,17 @@ class DirectRunner(Runner):
 
     def work(self):
         self.model.ready();self.guard()
+        if self.store.get('repair_vehicle_exit'):
+            self.edit('vehicle-safe-exit',
+                'Correct only this exit placement and add its facing assignment. Existing exit uses positive vehicle.right, '
+                'putting playerX5.1 in the rail-pier/fence lane (piers nearX5.5); actual final camera is blocked by a pillar. '
+                'Place the player on the opposite clear side, 1.5m along negative vehicle.right (aboutX2.1), keeping the same '
+                '0.3m vertical clearance. Face the player outward away from the car along negative vehicle.right so Follow '
+                'does not look through the coupe at the exit. Preserve all other exit/control/physics behavior and the camera code.',
+                anchor='_player.transform.position = transform.position + transform.right * 1.5f',
+                path='Assets/Game/VehicleInteraction.cs',max_lines=2)
+            self.store.set(repair_vehicle_exit=False)
+            return self.vehicle_test('vehicle-safe-exit-view',bounded_route=True,feature='vehicle-safe-exit-view')
         if self.store.get('repair_vehicle_heading'):
             self.edit('vehicle-heading',
                 'Preserve the SetParent line, then correct only the imported coupe VISUAL heading relative to its upright '
@@ -226,7 +239,7 @@ class DirectRunner(Runner):
             anchor='rig.AddComponent<Follow>().target = body.transform;',max_lines=3)
         return self.vehicle_test('vehicle-entry-drive-exit')
 
-    def vehicle_test(self,ident,bounded_route=False):
+    def vehicle_test(self,ident,bounded_route=False,feature='vehicle-entry-drive-exit'):
         scenario={'id':'limited-vehicle-entry-drive-exit','coverage':'driving','duration':18,
             'steps':[{'start':4,'end':5.5,'keys':['W']},{'start':5.5,'end':6.5,'keys':['D']},
                      {'start':7,'end':7.25,'keys':['E']},{'start':8,'end':10,'keys':['W']},
@@ -237,7 +250,12 @@ class DirectRunner(Runner):
             scenario['steps'][4].update(start=9.3,end=10.3)
         bundle,gate=self.native(ident,scenario)
         review=self.scoped_review(ident,bundle,gate)
-        self.milestone('vehicle-entry-drive-exit',bundle,gate,review)
+        self.milestone(feature,bundle,gate,review)
+        if feature=='vehicle-safe-exit-view':
+            regression,walk=self.native('final-walk-regression',grounding_scenario())
+            coverage=pavement_coverage(regression);atomic(regression/'pavement-coverage.json',coverage)
+            if not coverage['passed']:raise Halt('Original short-walk pavement regression failed')
+            self.store.set(final_walk_regression={'gate':walk,'pavement':coverage,'evidence':str(regression.relative_to(self.store.root))})
         self.store.set(status='paused-scope-complete',stage='idle',blocker=None,
             next_task='Inspect driving feel/collision regression, then continue the original game plan; final quality remains unmet')
 
@@ -251,10 +269,11 @@ def main():
     parser.add_argument('--repair-pavement-axis',action='store_true')
     parser.add_argument('--recover-vehicle-proposal',action='store_true')
     parser.add_argument('--repair-vehicle-heading',action='store_true')
+    parser.add_argument('--repair-vehicle-exit',action='store_true')
     a=parser.parse_args()
     if not a.authorize_bounded_continuation:parser.error('Current parent authorization required')
     os.umask(0o077)
-    recovering=a.recover_local_proposal or a.repair_pavement_axis or a.recover_vehicle_proposal or a.repair_vehicle_heading
+    recovering=a.recover_local_proposal or a.repair_pavement_axis or a.recover_vehicle_proposal or a.repair_vehicle_heading or a.repair_vehicle_exit
     if a.run_dir.exists() and not recovering:raise Halt('Fresh attempt requires a new ledger; preserve every previous run')
     old=read_json(a.previous_run/'status.json')
     if old.get('controller_pid') or old['status']!='paused':raise Halt('Previous sole owner must be stopped')
@@ -305,14 +324,19 @@ def main():
         s.set(recover_local_proposal=a.recover_local_proposal,repair_pavement_axis=a.repair_pavement_axis,
               recover_vehicle_proposal=a.recover_vehicle_proposal,
               repair_vehicle_heading=a.repair_vehicle_heading,
+              repair_vehicle_exit=a.repair_vehicle_exit,
               controller_pid=os.getpid(),status='running',blocker=None)
-        s.event('bounded-diagnosed-recovery',reason=('Native front/rear measurements contradict forward driving; local visual-heading correction and bounded drive replay' if a.repair_vehicle_heading else 'Exact92-line local vehicle proposal plus one measured input API correction' if a.recover_vehicle_proposal else 'Measured native pavement axes require one scale assignment' if a.repair_pavement_axis
+        s.event('bounded-diagnosed-recovery',reason=('Observed exit camera is occluded; local clear-side placement and outward facing' if a.repair_vehicle_exit else 'Native front/rear measurements contradict forward driving; local visual-heading correction and bounded drive replay' if a.repair_vehicle_heading else 'Exact92-line local vehicle proposal plus one measured input API correction' if a.recover_vehicle_proposal else 'Measured native pavement axes require one scale assignment' if a.repair_pavement_axis
                 else 'Exact local tool proposal has15lines; allow16 preserving hash and source scope'),
                 original_deadline_unchanged=True,original_inference_record_unchanged=True)
         if a.repair_pavement_axis:
             bounds=s.get('bounds');bounds['diagnosed_axis_correction_edits']=1;s.set(bounds=bounds)
         if a.recover_vehicle_proposal:
             bounds=s.get('bounds');bounds['diagnosed_input_api_edits']=1;s.set(bounds=bounds)
+        if a.repair_vehicle_heading or a.repair_vehicle_exit:
+            bounds=s.get('bounds');bounds['diagnosed_heading_edits']=1
+            if a.repair_vehicle_exit:bounds['diagnosed_exit_placement_edits']=1
+            s.set(bounds=bounds)
     else:s.set(started_epoch=started,started_utc=now(),attempt_deadline_epoch=deadline,
           overall_deadline_epoch=old['overall_deadline_epoch'],previous_run=a.previous_run.name,
           previous_record_sha256=hashes,source_checkpoint=known['candidate_commit'],

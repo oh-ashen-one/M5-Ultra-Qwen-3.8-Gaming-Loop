@@ -56,10 +56,12 @@ def accept_subfeature(store, feature, candidate, evidence, gate, review, coverag
             raise Halt('Foundation milestone requires grounding, full route and rendered surface coverage')
         if not all(review.get(k) is True for k in ('camera_readable','car_visible','continuous_paving')):
             raise Halt('Foundation milestone requires observed camera, car and continuous paving')
-    elif feature=='vehicle-entry-drive-exit':
+    elif feature in ('vehicle-entry-drive-exit','vehicle-safe-exit-view'):
         if (gate.get('vehicle_displacement',0)<3 or gate.get('coverage')!='driving'
                 or not gate.get('vehicle_heading',{}).get('passed') or not gate.get('return_walk_pavement',{}).get('passed')):
             raise Halt('Vehicle milestone requires the driving native gate')
+        if feature=='vehicle-safe-exit-view' and not all(review.get(k) is True for k in ('camera_readable','car_visible','exit_player_visible')):
+            raise Halt('Exit-view feature requires visibly readable player, car and camera')
     else:raise Halt('Unknown bounded subfeature')
     features=store.get('accepted_subfeatures',{})
     if feature in features:raise Halt('A repeated feature cannot reset the progress clock')

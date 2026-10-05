@@ -115,6 +115,16 @@ class ControllerTests(unittest.TestCase):
         accept_subfeature(self.store,'vehicle-entry-drive-exit','commit','evidence',gate,review)
         self.assertIsNone(self.store.get('accepted_checkpoint'))
 
+    def test_exit_view_requires_visible_character_not_only_motion(self):
+        gate={'passed':True,'coverage':'driving','vehicle_displacement':10,
+              'vehicle_heading':{'passed':True},'return_walk_pavement':{'passed':True}}
+        review={'ok':True,'verdict':'PASS','camera_readable':True,'car_visible':True,'exit_player_visible':False}
+        with self.assertRaises(Halt):accept_subfeature(self.store,'vehicle-safe-exit-view','commit','evidence',gate,review)
+        self.assertIsNone(self.store.get('last_verified_progress_epoch'))
+        review['exit_player_visible']=True
+        accept_subfeature(self.store,'vehicle-safe-exit-view','commit','evidence',gate,review)
+        self.assertIsNone(self.store.get('accepted_checkpoint'))
+
     def test_local_micro_plan_hands_off_to_hash_checked_edit(self):
         path='Assets/Game/Bootstrap.cs'
         original=''.join('original line %d\n'%i for i in range(1,31))
