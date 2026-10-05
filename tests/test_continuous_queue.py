@@ -115,13 +115,24 @@ class QueueTests(unittest.TestCase):
         self.assertEqual((self.project/path).read_text(),original.replace(ENTRY_ANCHOR,'if (e && near_body)'))
 
     def test_mission_scope_is_distinct_from_combat_and_requires_actual_retry(self):
-        rows=[{'time':4,'mission':'active','visibleText':['Objective: deliver'],'restarts':0},
-              {'time':10,'mission':'failed','restarts':0},
-              {'time':20,'mission':'active','restarts':1},
-              {'time':30,'mission':'complete','restarts':1}]
+        rows=[]
+        for t,z,carry,keys,mission,restarts in [(3,0,False,[],'active',0),(4,-2,False,['S'],'active',0),
+                (5,1,False,['W'],'active',0),(6,1,True,['F'],'active',0),(10,1,True,[],'failed',0),
+                (20,0,False,['R'],'active',1),(21,1,True,['F'],'active',1),(30,10,True,['F'],'complete',1)]:
+            objects=[{'name':'Parcel','position':[0,0,z] if carry else [0,.5,2],'playerChild':carry},
+                     {'name':'DropPad','position':[0,0,10],'playerChild':False},
+                     {'name':'Beacon','position':[0,3,10],'playerChild':False}]
+            rows.append(dict(time=t,player=[0,0,z],vehicle=[0,0,z],mission=mission,restarts=restarts,keys=keys,
+                             mode='vehicle' if t==30 else 'foot',visibleText=['Objective: deliver'],missionObjects=objects))
         self.assertTrue(self.gate(['mission_complete','failure_retry'],rows)['passed'])
-        rows[2]['restarts']=rows[3]['restarts']=0
+        for row in rows:row['restarts']=0
         self.assertFalse(self.gate(['mission_complete','failure_retry'],rows)['passed'])
+
+    def test_mission_promotion_cannot_skip_anchor_gate(self):
+        r=ContinuousRunner.__new__(ContinuousRunner)
+        with self.assertRaisesRegex(Halt,'world-anchor'):
+            r.promote({'checks':['mission_complete']},'candidate',self.bundle,{'passed':True},
+                      {'ok':True,'verdict':'PASS'})
 
     def test_read_bound_edit_rejects_unread_span_and_concurrent_changes(self):
         files=Files(self.project,self.store);files.create('initial','Assets/Game/A.cs','line one\nline two\n')
@@ -142,10 +153,18 @@ class QueueTests(unittest.TestCase):
         replay['steps'][0]['start']=4;replay['duration']=float('nan')
         with self.assertRaises(ValueError):validate_proposed(replay,60,'combat')
 
+    def test_disjoint_reads_of_same_file_hash_remain_valid_until_a_save(self):
+        files=Files(self.project,self.store);files.create('three-lines','Assets/Game/A.cs','one\ntwo\nthree\n')
+        edits=ReadBoundEdits(files)
+        edits.read(None,{'path':'Assets/Game/A.cs','start_line':1,'line_count':1})
+        edits.read(None,{'path':'Assets/Game/A.cs','start_line':3,'line_count':1})
+        edits.replace('earlier-valid-read',{'path':'Assets/Game/A.cs','old':'one','new':'first'})
+        with self.assertRaisesRegex(ValueError,'Read the exact'):
+            edits.replace('invalid-after-save',{'path':'Assets/Game/A.cs','old':'three','new':'third'})
     def test_pass_automatically_advances_without_stopping_owner(self):
         r=ContinuousRunner.__new__(ContinuousRunner);r.store=self.store
         r.machine=SimpleNamespace(guard=lambda:None);r.model=SimpleNamespace(ready=lambda:None)
-        tasks=[{'id':n,'phase':'foundation','outcome':n,'probe':{}} for n in ('first','second')]
+        tasks=[{'id':n,'phase':'foundation','outcome':n,'probe':{'duration':20}} for n in ('first','second')]
         seen=[]
         r.edit=lambda task,ident:seen.append(task['id']) or {'scenario':{'duration':20}}
         r.checkpoint_source=lambda _: 'candidate'

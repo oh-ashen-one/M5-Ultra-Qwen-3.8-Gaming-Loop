@@ -1,5 +1,13 @@
 # Continuous local game queue
 
+## Mission replay recovery
+
+The authorized recovery preserves the stopped attempt and its partial local source. `recover_mission_replay.py` restores that exact candidate with a new commit, asks local Qwen for separate selected Transform API, delivery-position and objective-text corrections, then requests replay JSON in a fresh context. Every gameplay replacement is local-Qwen-authored and checked against the selected source hash. The original run ceiling remains unchanged.
+
+`finish_task` requires all four fields: `summary`, `duration`, `input_steps`, and `captures`. Each input step requires `start`, `end`, and `keys`; times use seconds from launch and the initial four seconds stay input-free. The concrete example in `replay_contract.py` illustrates syntax and a proposed route, with no claim that its timings pass. Required fields, numeric types, key names, bounded intervals and capture times are checked before a native build. An unfinished editing role now hands off to a separate replay-only role instead of losing its saved work to repeated missing-replay failures. Exact reads of multiple ranges remain usable while their full-file hash is unchanged; every edit invalidates those reads.
+
+Every mission gate now requires observations that the parcel starts in the world, pad/beacon stay fixed, the player walks away and returns, and normal input causes pickup and vehicle delivery at the fixed destination. Missing observations fail; promotion checks the result again. The observer reads real transforms and ancestry without moving actors. Known temporary primitive mission meshes fail the final polish gate; CPU fixtures and a rough mechanics PASS do not establish final art quality.
+
 The owner authorized continuing the full project after the accepted walking/vehicle baseline `754dd5956cb5a24c18507aef638c29c4781baa53`. The new queue preserves that baseline and the completed diagnostic run. Its original overall ceiling remains **2026-10-05 21:37:50 UTC**. A limited PASS advances to the next task without ending the owner process.
 
 The ordered work is world collision; vehicle collision/reset; connected objective/ending; failure/retry; mission combat/pursuit; HUD/audio; a complete rough route; then Chicago reference polish and a roughly ten-minute input-driven route. Existing original art is reused until the rough route works. Polish may revise the four existing local-Qwen Blender assets. No new asset volume is scheduled.

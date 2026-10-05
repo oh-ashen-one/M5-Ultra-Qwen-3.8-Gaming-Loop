@@ -6,6 +6,10 @@ def xz(point):
     return [point[0], point[2]]
 
 
+def actor_child(obj):
+    return obj.get('playerChild',False) or obj.get('vehicleChild',False)
+
+
 def inspect_mission_anchors(rows):
     failures = []
     samples = []
@@ -19,18 +23,19 @@ def inspect_mission_anchors(rows):
     for name in ('Parcel', 'DropPad', 'Beacon'):
         if name not in initial:
             failures.append('initial-' + name + '-missing')
-        elif initial[name]['playerChild']:
+        elif actor_child(initial[name]):
             failures.append('initial-' + name + '-follows-player')
-    carried = next((r['time'] for r, obj in samples if obj.get('Parcel', {}).get('playerChild')), None)
+    carried = next((r['time'] for r, obj in samples if actor_child(obj.get('Parcel', {}))), None)
     for row, objects in samples:
         for name in ('DropPad', 'Beacon', 'Parcel'):
             obj = objects.get(name)
-            if name == 'Parcel' and carried is not None and row['time'] >= carried and (not obj or obj['playerChild']):
+            if name == 'Parcel' and carried is not None and row['time'] >= carried and (not obj or actor_child(obj)):
                 continue
             if not obj or name not in initial:
                 failures.append(name + '-observation-missing')
                 continue
-            if obj['playerChild'] or math.dist(xz(obj['position']), xz(initial[name]['position'])) > .05:
+            coords=xz if name=='Parcel' else lambda p:p
+            if actor_child(obj) or math.dist(coords(obj['position']), coords(initial[name]['position'])) > .05:
                 failures.append(name + '-world-anchor-moved')
     before_pickup = [(r, obj) for r, obj in samples if carried is None or r['time'] < carried]
     away = None

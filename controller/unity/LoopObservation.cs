@@ -6,9 +6,9 @@ using UnityEngine;
 public static class LoopObservation
 {
     [Serializable] public class MissionObject {
-        public string name, hierarchy;
+        public string name, hierarchy, meshName;
         public float[] position;
-        public bool playerChild;
+        public bool playerChild, vehicleChild;
     }
     public static MissionObject[] MissionObjects(Transform player)
     {
@@ -17,8 +17,11 @@ public static class LoopObservation
             .Take(12).Select(r => {
                 var t = r.transform; var p = t.position; var path = t.name;
                 for (var parent = t.parent; parent != null; parent = parent.parent) path = parent.name + "/" + path;
+                var filter = r.GetComponent<MeshFilter>();
                 return new MissionObject {name=t.name, hierarchy=path, position=new [] {p.x,p.y,p.z},
-                    playerChild=player != null && t.IsChildOf(player)};
+                    meshName=filter != null && filter.sharedMesh != null ? filter.sharedMesh.name : null,
+                    playerChild=player != null && t.IsChildOf(player),
+                    vehicleChild=LoopSignals.Vehicle != null && t.IsChildOf(LoopSignals.Vehicle)};
             }).ToArray();
     }
     static readonly float[] audio = new float[256];

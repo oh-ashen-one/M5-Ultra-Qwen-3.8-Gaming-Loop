@@ -2,6 +2,7 @@
 import json
 import math
 from .core import read_json
+from .mission_anchors import inspect_mission_anchors
 
 KEYS={'W','A','S','D','E','R','F','Space','LeftShift','Mouse0','Mouse1','Escape'}
 
@@ -93,6 +94,13 @@ def evaluate_step(task,bundle,base):
         facts['mission_states']=sorted(str(x) for x in mission_states)
         if not {'active','complete'}<=mission_states:failed.append('connected-objective-ending-missing')
         if not any(r.get('visibleText') for r in rows):failed.append('objective-presentation-missing')
+        anchors=inspect_mission_anchors(rows)
+        facts['mission_anchors']=anchors
+        if not anchors['passed']:failed.extend(anchors['failure'])
+        if task.get('polish'):
+            primitives={'Cube','Cylinder','Sphere','Capsule','Plane','Quad'}
+            if any(o.get('meshName') in primitives for r in rows for o in r.get('missionObjects',[])):
+                failed.append('temporary-mission-world-primitives-require-Blender-replacement')
     if 'failure_retry' in checks:
         failed_rows=[r for r in rows if r.get('mission')=='failed' or r.get('health',100)<=0]
         if not failed_rows:failed.append('actual-failure-branch-missing')

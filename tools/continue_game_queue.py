@@ -17,6 +17,7 @@ from loop_controller.continuous_tasks import BASELINE, TASKS
 from loop_controller.features import pavement_coverage, references_capture
 from loop_controller.model import tool
 from loop_controller.runner import API_GUIDE, Runner, git, target_for
+from loop_controller.replay_contract import finish_tool, replay_guide, validate_submission
 
 S={'type':'string'}; I={'type':'integer'}
 STEPS={'type':'array','items':{'type':'object','properties':{
@@ -39,7 +40,10 @@ class ReadBoundEdits:
         self.files=files; self.reads={}; self.polish=polish
 
     def read(self, _, fields):
-        value=self.files.read(**fields);self.reads[fields['path']]=value
+        value=self.files.read(**fields)
+        previous=self.reads.get(fields['path'])
+        ranges=previous['ranges'] if previous and previous['sha256']==value['sha256'] else []
+        self.reads[fields['path']]={**value,'ranges':[*ranges,value['content']]}
         return value
 
     def allowed(self, path, content):
@@ -58,14 +62,32 @@ class ReadBoundEdits:
     def replace(self, action, fields):
         self.allowed(fields['path'],fields['new'])
         previous=self.reads.get(fields['path'])
-        if not previous or fields['old'] not in previous['content']:
-            raise ValueError('Read the exact current target span before replacing it')
+        if not previous or not any(fields['old'] in content for content in previous['ranges']):
+            raise ValueError('Read the exact current target span before replacing it; all reads must match the current file hash')
         result=self.files.edit(action,expected_sha256=previous['sha256'],**fields)
         self.reads.pop(fields['path'],None)
         return result
 
 
 class ContinuousRunner(Runner):
+    def propose_replay(self,task,ident):
+        self.c.update(output_tokens=8192,model_timeout_seconds=400)
+        files=Files(self.project,self.store)
+        paths=[x['path'] for x in files.tree() if x['path'].startswith('Assets/Game/') and x['path'].endswith('.cs')]
+        source='\n'.join(p+'\n'+files.path(p).read_text() for p in paths)
+        self.store.set(stage='local-replay-submission');self.store.report()
+        result=self.model.session('replay-author',ident+'-replay',
+            'You are local Qwen submitting a normal-input test of the current game. No source editing. Call finish_task now.',
+            replay_guide(task)+'\nTASK:'+json.dumps(task)+'\nACTUAL FEEDBACK:'+json.dumps(self.store.get('feedback',{}))[:16000]+
+            '\nCURRENT SOURCE:\n'+source,
+            [finish_tool()],{'finish_task':lambda _,f:validate_submission(f,task)},turns=2,reasoning_effort='low')
+        if not result.get('scenario'):
+            raise Halt('Replay-only role supplied no valid finish_task; required: summary, duration, input_steps, captures')
+        self.store.set(last_valid_replay=result['scenario'])
+        self.store.event('replay-preflight-passed',task=task['id'],duration=result['scenario']['duration'],
+                         steps=len(result['scenario']['steps']),captures=len(result['scenario']['captures']))
+        return result
+
     def design(self,task,ident,diagnosis=False):
         self.c.update(output_tokens=16384,model_timeout_seconds=600)
         def submit(_,f):return {'ok':True,'decision':f['decision'][:6500]}
@@ -116,10 +138,11 @@ class ContinuousRunner(Runner):
                 '\nLAST ACTUAL FEEDBACK:'+json.dumps(self.store.get('feedback',{}))[:14000]+
                 '\nSOURCE INVENTORY:'+json.dumps(inventory)+
                 '\nRead current exact source before editing. No need to echo SHA hashes; the controller binds replacement '
-                'to your latest read. After a replacement re-read before editing that file again. Use only the offered tools. '
+                'to reads of the same file hash. After a replacement re-read before editing that file again. Use only the offered tools. '
                 'Keep the first4seconds of every proposed replay input-free for the stationary grounding check. '
                 'No new assets before rough route; no packages or external downloads. HUD must appear in Camera.Render; '
-                'screen-overlay OnGUI is not captured. Existing LoopInput supports Held(KeyCode), Pressed(KeyCode), MoveX/MoveY.')
+                'screen-overlay OnGUI is not captured. Existing LoopInput supports Held(KeyCode), Pressed(KeyCode), MoveX/MoveY.'+
+                ('\nEXACT REPLAY CONTRACT:\n'+replay_guide(task) if not task.get('probe') else ''))
         images=[]
         if task.get('polish'):images=[('AI-generated Chicago target, not an actual game frame',self.refs/target_for(task))]
         return self.model.session('builder',ident+'-builder',
@@ -187,6 +210,8 @@ class ContinuousRunner(Runner):
 
     def promote(self,task,candidate,bundle,gate,review):
         if not gate.get('passed') or not review.get('ok') or review.get('verdict')!='PASS':raise Halt('Cannot promote unverified candidate')
+        if 'mission_complete' in task.get('checks',[]) and not gate.get('scoped_facts',{}).get('mission_anchors',{}).get('passed'):
+            raise Halt('Mission promotion requires the automatic world-anchor and input-transition gate')
         records=self.store.get('accepted_queue_features',{})
         record={'candidate':candidate,'scope':task['id'],'accepted_utc':now(),
                 'evidence':str(bundle.relative_to(self.store.root)),'review':review,'final_game_accepted':False}
@@ -238,10 +263,12 @@ class ContinuousRunner(Runner):
             self.store.set(source_checkpoint=candidate,candidate_commit=candidate)
             probe=task.get('probe') or result.get('scenario')
             if not probe:
-                self.reject_scoped(task,ident,{'failure':['microtask-no-complete-input-replay'],
-                    'continuation':'Saved edits remain. Continue the current module and call finish_task with real replay steps.',
-                    'bounded_stop':result.get('bounded_stop')},candidate)
-                continue
+                self.store.event('separate-replay-role',task=task['id'],saved_candidate=candidate,
+                                 builder_stop=result.get('bounded_stop'),native_pass_claimed=False)
+                probe=self.propose_replay(task,ident)['scenario']
+            # A valid model tool call is not enough: check replay semantics before engine admission.
+            if not task.get('probe'):
+                probe=validate_proposed(probe,task['maximum'],task['coverage'])
             self.store.set(stage='native-scoped-gate');self.store.report()
             bundle,gate=self.native(task,ident,candidate,probe)
             if gate.get('passed'):

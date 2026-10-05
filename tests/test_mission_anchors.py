@@ -6,6 +6,9 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 from loop_controller.mission_anchors import inspect_mission_anchors
+from loop_controller.continuous_checks import evaluate_step
+import tempfile
+import json
 
 
 class MissionAnchorTests(unittest.TestCase):
@@ -50,6 +53,32 @@ class MissionAnchorTests(unittest.TestCase):
                 if mutate == 'observations':
                     for row in changed: row.pop('missionObjects')
                 self.assertFalse(inspect_mission_anchors(changed)['passed'])
+
+    def test_carried_parcel_can_follow_vehicle_but_pad_cannot(self):
+        rows=self.rows()
+        for row in rows[4:]:
+            row['missionObjects'][0].update(playerChild=False,vehicleChild=True)
+        self.assertTrue(inspect_mission_anchors(rows)['passed'])
+        rows[4]['missionObjects'][1]['vehicleChild']=True
+        self.assertFalse(inspect_mission_anchors(rows)['passed'])
+
+    def test_automatic_gate_rejects_missing_observations_and_final_primitive_art(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            bundle=Path(tmp);(bundle/'captures').mkdir()
+            (bundle/'captures/scene-transforms.json').write_text(json.dumps({'objects':[]}))
+            rows=self.rows()
+            for row in rows:
+                row['visibleText']=['Objective']
+                for obj in row['missionObjects']:obj['meshName']='Cube'
+            trace=bundle/'captures/trace.jsonl'
+            trace.write_text('\n'.join(json.dumps(r) for r in rows))
+            task={'id':'courier','checks':['mission_complete']}
+            self.assertTrue(evaluate_step(task,bundle,{'passed':True})['passed'])
+            gate=evaluate_step({**task,'polish':True},bundle,{'passed':True})
+            self.assertIn('temporary-mission-world-primitives-require-Blender-replacement',gate['failure'])
+            for row in rows:row.pop('missionObjects')
+            trace.write_text('\n'.join(json.dumps(r) for r in rows))
+            self.assertFalse(evaluate_step(task,bundle,{'passed':True})['passed'])
 
 
 if __name__ == '__main__': unittest.main()
