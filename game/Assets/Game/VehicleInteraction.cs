@@ -35,12 +35,21 @@ namespace ChicagoGame
             coupe.transform.rotation = Quaternion.Euler(0f, 180f, 0f) * coupe.transform.rotation;
 
             var boxCol = root.AddComponent<BoxCollider>();
-            boxCol.center = new Vector3(0f, VEHICLE_HEIGHT * 0.5f, 0f);
-            boxCol.size = new Vector3(VEHICLE_WIDTH, VEHICLE_HEIGHT, VEHICLE_LENGTH);
+            // Collider bottom raised clear of pavement top (~0.14) so the body
+            // never starts ground-penetrating (friction lock under throttle).
+            var boxCol = root.AddComponent<BoxCollider>();
+            boxCol.center = new Vector3(0f, 0.75f, 0f);
+            boxCol.size = new Vector3(VEHICLE_WIDTH - 0.1f, 1.2f, VEHICLE_LENGTH - 0.2f);
+            var pm = new PhysicMaterial("VehicleLowFriction");
+            pm.dynamicFriction = 0.05f;
+            pm.staticFriction = 0.05f;
+            pm.frictionCombine = PhysicMaterialCombine.Minimum;
+            pm.bounciness = 0f;
+            boxCol.material = pm;
 
             var rb = root.AddComponent<Rigidbody>();
             rb.mass = 1200f;
-            rb.drag = 2.5f;
+            rb.drag = 0.6f;
             rb.angularDrag = 50f;
             rb.useGravity = true;
             rb.isKinematic = false;
@@ -106,12 +115,8 @@ namespace ChicagoGame
             Vector3 targetVel = forward * _speed;
             targetVel.y = _rb.linearVelocity.y;
 
-            // If car is physically blocked (against wall), kill engine speed
-            var rv = _rb.linearVelocity;
-            float horizontalSpeed = new Vector3(rv.x, 0f, rv.z).magnitude;
-            if (horizontalSpeed < 0.05f && Mathf.Abs(_speed) > 0.1f && Mathf.Abs(throttle) > 0.1f)
-                _speed = Mathf.MoveTowards(_speed, 0f, 10f * Time.deltaTime);
-
+            // No artificial speed-kill: rely on the collider/wall contact and
+            // real drag to stop the car under held throttle.
             _rb.linearVelocity = targetVel;
 
             // Ground snap: raycast down skipping own collider
@@ -178,6 +183,7 @@ namespace ChicagoGame
             _follow.target = _player.transform;
             Set("Mode", "foot");
             Set("Vehicle", transform);
+            Set("Health", 100);
 
             // Increment restart count
             int current = 0;
