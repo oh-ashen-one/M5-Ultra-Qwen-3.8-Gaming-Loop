@@ -41,7 +41,18 @@ def window_motion(rows,key,start,end):
 
 
 def evaluate_step(task,bundle,base):
-    if not base.get('passed'):return base
+    if not base.get('passed'):
+        trace=bundle/'captures/trace.jsonl'
+        if trace.exists() and 'motor_reset' in task['checks']:
+            rows=[json.loads(line) for line in trace.read_text().splitlines()]
+            observations=[]
+            for start,end,label in [(7.15,7.6,'first-entry'),(8,18,'intended-driving'),(21.5,23.5,'pre-reset-exit'),(25,26,'after-reset')]:
+                selected=[r for r in rows if start<=r['time']<=end]
+                observations.append({'window':label,'seconds':[start,end],'samples':len(selected),
+                    'modes':sorted({r.get('mode','') for r in selected}),
+                    'last_positions':{k:selected[-1].get(k) for k in ('player','vehicle','restarts')} if selected else None})
+            return {**base,'input_observations':observations}
+        return base
     rows=[json.loads(line) for line in (bundle/'captures/trace.jsonl').read_text().splitlines()]
     objects=read_json(bundle/'captures/scene-transforms.json')['objects']
     failed=[];facts={}
@@ -60,6 +71,12 @@ def evaluate_step(task,bundle,base):
             failed.append('player-left-bounded-pavement')
     if 'motor_reset' in checks:
         drive=[r for r in rows if r.get('mode')=='vehicle']
+        early=[r for r in rows if 7.5<=r['time']<=8]
+        exited=[r for r in rows if 21.5<=r['time']<=23.5]
+        facts['entered_before_throttle']=bool(len(early)>=3 and all(r.get('mode')=='vehicle' for r in early))
+        facts['grounded_exit_before_reset']=bool(len(exited)>=3 and all(r.get('mode')=='foot' and r.get('grounded') for r in exited))
+        if not facts['entered_before_throttle']:failed.append('first-E-did-not-enter-before-throttle')
+        if not facts['grounded_exit_before_reset']:failed.append('E-exit-not-grounded-before-reset')
         facts['vehicle_stop_motion']=window_motion(drive,'vehicle',16,17.8)
         if not drive or not all(r.get('vehicleCollisionEnabled') for r in drive):failed.append('vehicle-collider-missing')
         if facts['vehicle_stop_motion'] is None or facts['vehicle_stop_motion']>.2:failed.append('held-throttle-does-not-stop-at-boundary')

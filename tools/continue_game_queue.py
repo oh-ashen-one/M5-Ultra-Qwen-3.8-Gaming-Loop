@@ -24,6 +24,15 @@ STEPS={'type':'array','items':{'type':'object','properties':{
     'required':['start','end','keys'],'additionalProperties':False}}
 
 
+def review_captures(task,bundle):
+    frames=sorted((bundle/'captures').glob('frame-*.png'))
+    scenario=read_json(bundle/'captures/scenario.json')
+    indices=[0,3,4,5,6] if task['id']=='vehicle-collision-reset' and len(frames)==7 else [0,len(frames)//2,len(frames)-1]
+    chosen=[frames[i] for i in indices]
+    mapping={p.name:scenario['captures'][int(p.stem.split('-')[-1])] for p in chosen}
+    return chosen,mapping
+
+
 class ReadBoundEdits:
     """Remember a read's hash so the model need not transcribe hashes; never waive staleness."""
     def __init__(self, files, polish=False):
@@ -133,8 +142,7 @@ class ContinuousRunner(Runner):
 
     def review(self,task,ident,bundle,gate):
         self.c.update(output_tokens=8192,model_timeout_seconds=400)
-        frames=sorted((bundle/'captures').glob('frame-*.png'))
-        chosen=[frames[0],frames[len(frames)//2],frames[-1]]
+        chosen,capture_times=review_captures(task,bundle)
         names=[p.name for p in chosen]
         expected=seal(bundle/'captures',{'candidate':gate['candidate_commit'],'scope':task['id']})
         def submit(_,f):
@@ -143,12 +151,15 @@ class ContinuousRunner(Runner):
             if not references_capture(f['summary'],names):raise ValueError('Cite an actual supplied frame in summary')
             if f['verdict']!='PASS' and not f['fixes']:raise ValueError('State an actionable evidence-based fix or missing proof')
             return {'ok':True,**f}
-        images=[('ACTUAL NATIVE UNITY '+p.name,p) for p in chosen]
+        images=[('ACTUAL NATIVE UNITY '+p.name+'; scheduled t='+str(capture_times[p.name])+' seconds',p) for p in chosen]
         if task.get('polish'):images.insert(0,('AI-GENERATED CHICAGO TARGET; not the build',self.refs/target_for(task)))
         result=self.model.session('critic',ident+'-critic',
             'You are a fresh local visual critic. Judge actual evidence and only the stated current scope.',
             'TASK:'+json.dumps(task)+'\nNATIVE OBSERVATIONS:'+json.dumps(gate)+
-            '\nFILES:'+json.dumps(names)+'\nRequire readable actors, coherent controls/route evidence, and no visible '
+            '\nFILES:'+json.dumps(names)+'\nAUTHORITATIVE CAPTURE SCHEDULE, seconds:'+json.dumps(capture_times)+
+            '\nFrame numbers refer to the complete replay sequence, not their order in this selected image set. '
+            'Use these supplied times; do not invent a different timing or call post-reset captures pre-reset. '
+            '\nRequire readable actors, coherent controls/route evidence, and no visible '
             'blocking regression. Early mechanics may retain rough development art; reserve reference-quality judgment '
             'for polish. A scoped PASS is not final game acceptance. Audio RMS establishes a mixer signal, not good sound. '
             'Report missing proof honestly and prioritize three to five fixes when needed. Do not infer completion from source.',

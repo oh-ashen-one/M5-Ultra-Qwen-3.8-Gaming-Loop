@@ -11,7 +11,8 @@ from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from loop_controller.core import Files,Halt,Store,atomic
 from loop_controller.continuous_checks import evaluate_step,validate_proposed
-from continue_game_queue import ContinuousRunner,ReadBoundEdits
+from continue_game_queue import ContinuousRunner,ReadBoundEdits,review_captures
+from recover_vehicle_entry import EntryRecovery,ENTRY_ANCHOR
 
 
 class QueueTests(unittest.TestCase):
@@ -44,11 +45,56 @@ class QueueTests(unittest.TestCase):
         rows += [{'time':t,'mode':'foot','grounded':True,'restarts':1,
                   'player':[0,.135,1.7],'vehicle':[3.6,.14,8]} for t in [25,25.5,26]]
         rows += [{'time':t,'player':[0,.135,1.7+(t-27)*3]} for t in [27,28,29]]
+        rows += [{'time':t,'mode':'vehicle','vehicle':[3.6,.14,8],
+                  'vehicleCollisionEnabled':True,'vehiclePenetration':0} for t in [7.5,7.7,7.9]]
+        rows += [{'time':t,'mode':'foot','grounded':True,'player':[2,.135,27]} for t in [21.6,22,23]]
         self.assertTrue(self.gate(['motor_reset'],rows)['passed'])
         rows[2]['vehicle'][2]=30
         self.assertFalse(self.gate(['motor_reset'],rows)['passed'])
         rows[2]['vehicle'][2]=27;rows[4]['vehicle']=[3.6,.14,27]
         self.assertFalse(self.gate(['motor_reset'],rows)['passed'])
+
+    def test_reset_cannot_hide_failed_early_entry_or_failed_E_exit(self):
+        rows=[{'time':t,'mode':'vehicle','vehicle':[3.6,.14,27],
+               'vehicleCollisionEnabled':True,'vehiclePenetration':0} for t in [16,17,17.8]]
+        rows += [{'time':t,'mode':'foot','grounded':True,'restarts':1,
+                  'player':[0,.135,1.7],'vehicle':[3.6,.14,8]} for t in [25,25.5,26]]
+        rows += [{'time':t,'player':[0,.135,1.7+(t-27)*3]} for t in [27,28,29]]
+        gate=self.gate(['motor_reset'],rows)
+        self.assertIn('first-E-did-not-enter-before-throttle',gate['failure'])
+        self.assertIn('E-exit-not-grounded-before-reset',gate['failure'])
+
+    def test_failed_motion_reports_actual_input_mode_instead_of_guessing_physics(self):
+        rows=[{'time':t,'mode':'foot','player':[3.15,.135,5.36],'vehicle':[3.36,0,7.96]}
+              for t in [7.2,7.4,8,12,17]]
+        (self.bundle/'captures/trace.jsonl').write_text('\n'.join(json.dumps(r) for r in rows))
+        gate=evaluate_step({'id':'motor','checks':['motor_reset']},self.bundle,
+                           {'passed':False,'failure':['vehicle-entry-and-motion']})
+        self.assertFalse(gate['passed'])
+        self.assertEqual(gate['input_observations'][1]['modes'],['foot'])
+
+    def test_vehicle_review_includes_real_post_reset_frames_and_exact_times(self):
+        for i in range(7):(self.bundle/'captures'/('frame-%03d.png'%i)).write_bytes(b'fixture')
+        atomic(self.bundle/'captures/scenario.json',{'captures':[3.2,6.8,13,18.5,21.8,25,31]})
+        frames,times=review_captures({'id':'vehicle-collision-reset'},self.bundle)
+        self.assertEqual(len(frames),5)
+        self.assertEqual(times['frame-003.png'],18.5)
+        self.assertEqual(times['frame-005.png'],25)
+        self.assertEqual(times['frame-006.png'],31)
+
+    def test_entry_recovery_can_only_change_the_existing_condition(self):
+        files=Files(self.project,self.store);path='Assets/Game/VehicleInteraction.cs'
+        original='unchanged before\n'+ENTRY_ANCHOR+'\n    Enter();\nunchanged after\n'
+        files.create('seed-entry',path,original)
+        r=EntryRecovery.__new__(EntryRecovery);r.store=self.store;r.project=self.project;r.c={}
+        def session(role,ident,system,prompt,tools,dispatch,**kw):
+            self.assertEqual(kw['turns'],1);self.assertEqual(kw['reasoning_effort'],'low')
+            self.assertEqual(list(dispatch),['edit_selected_span'])
+            return dispatch['edit_selected_span']('exact-entry',{'content':'if (e && near_body)'})
+        r.model=SimpleNamespace(session=session)
+        result=r.edit({'id':'vehicle-collision-reset'},'one-line')
+        self.assertTrue(result['ok']);self.assertTrue(self.store.get('entry_selected_edit_saved'))
+        self.assertEqual((self.project/path).read_text(),original.replace(ENTRY_ANCHOR,'if (e && near_body)'))
 
     def test_mission_scope_is_distinct_from_combat_and_requires_actual_retry(self):
         rows=[{'time':4,'mission':'active','visibleText':['Objective: deliver'],'restarts':0},
