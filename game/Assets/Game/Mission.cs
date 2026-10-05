@@ -145,16 +145,133 @@ namespace ChicagoGame
                 "WASD move   E enter/exit coupe   F grab/deliver   R reset";
         }
 
+        // ---- mission stage state ----
+        int stage;           // 0=parcel on ground, 1=carrying, 2=delivered(latched)
+        int lastRestarts;
+        Vector3 padPos;
+
+        void Start()
+        {
+            lastRestarts = ReadInt("Restarts");
+            padPos = new Vector3(laneX, PAV_TOP, 27.5f);
+        }
+
         void Update()
         {
-            // Live distance readout only; state transitions come next microtask.
-            if (parcel != null)
+            // Detect R reset via Restarts counter change.
+            int r = ReadInt("Restarts");
+            if (r != lastRestarts)
+            {
+                lastRestarts = r;
+                Respawn();
+            }
+
+            // Animate parcel when in world.
+            if (stage == 0 && parcel != null)
             {
                 parcel.Rotate(Vector3.up, 90f * Time.deltaTime, Space.World);
                 parcel.position += Vector3.up *
                     (Mathf.Sin(Time.time * 3f) * 0.0025f);
             }
+
+            // F interaction.
+            if (LoopInput.Pressed(KeyCode.F))
+            {
+                if (stage == 0 && parcel != null)
+                {
+                    float dp = Vector3.Distance(
+                        new Vector3(player.position.x, 0f, player.position.z),
+                        new Vector3(parcel.position.x, 0f, parcel.position.z));
+                    if (dp <= 1.5f)
+                    {
+                        stage = 1;
+                        parcel.SetParent(player, false);
+                        parcel.localPosition = new Vector3(0.35f, 1.05f, 0.45f);
+                        parcel.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+                    }
+                }
+                else if (stage == 1)
+                {
+                    string mode = ReadStr("Mode");
+                    if (mode == "vehicle")
+                    {
+                        float dz = Vector2.Distance(
+                            new Vector2(player.position.x, player.position.z),
+                            new Vector2(padPos.x, padPos.z));
+                        if (dz <= 2.6f)
+                        {
+                            stage = 2;
+                            if (parcel != null) Destroy(parcel.gameObject);
+                            parcel = null;
+                            if (padRend != null)
+                            {
+                                var m = padRend.sharedMaterial;
+                                if (m != null) { m.color = Color.green; m.SetColor("_EmissionColor", Color.green); }
+                            }
+                            if (beaconRend != null)
+                            {
+                                var m = beaconRend.sharedMaterial;
+                                if (m != null) { m.color = Color.green; m.SetColor("_EmissionColor", Color.green); m.SetFloat("_Mode", 0); }
+                            }
+                            if (beacon != null)
+                                beacon.localScale *= 1.8f;
+                            Set("MissionComplete", true);
+                            Set("Mission", "complete");
+                        }
+                    }
+                }
+            }
+
             RefreshHud();
+        }
+
+        void Respawn()
+        {
+            stage = 0;
+            Set("MissionComplete", false);
+            Set("Mission", "active");
+
+            if (parcel == null)
+            {
+                var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                go.name = "Parcel";
+                go.transform.SetParent(transform, false);
+                go.transform.position = new Vector3(laneX, 0.45f, 3.2f);
+                go.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+                var col = go.GetComponent<Collider>();
+                if (col != null) Destroy(col);
+                Paint(go.GetComponent<Renderer>(),
+                      new Color(1f, 0.85f, 0.05f), new Color(1f, 0.75f, 0.0f));
+                parcel = go.transform;
+            }
+            else
+            {
+                parcel.SetParent(transform, false);
+                parcel.position = new Vector3(laneX, 0.45f, 3.2f);
+                parcel.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+            }
+
+            if (padRend != null)
+            {
+                var m = padRend.sharedMaterial;
+                if (m != null) { m.color = padColor; m.SetColor("_EmissionColor", padColor * 0.4f); }
+            }
+            if (beaconRend != null)
+            {
+                var m = beaconRend.sharedMaterial;
+                if (m != null)
+                {
+                    m.color = beaconColor;
+                    m.SetColor("_EmissionColor", beaconColor);
+                    m.SetFloat("_Mode", 3f);
+                    m.EnableKeyword("_ALPHABLEND_ON");
+                    m.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                    m.renderQueue = 3000;
+                    var c = m.color; c.a = 0.28f; m.color = c;
+                }
+            }
+            if (beacon != null)
+                beacon.localScale = new Vector3(1.1f, 3.5f, 1.1f);
         }
 
         // ---- material helpers ----
