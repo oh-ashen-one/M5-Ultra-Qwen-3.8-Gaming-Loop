@@ -230,5 +230,19 @@ class ControllerTests(unittest.TestCase):
         runner.model=SimpleNamespace(session=session)
         self.assertTrue(runner.builder({"phase":"foundation","outcome":"walking"},"fixture","brief")["ok"])
 
+    def test_recovery_keeps_art_disabled_after_native_evidence(self):
+        runner=self.source_runner();runner.refs=self.root/"refs"
+        runner.c["csharp_only"]=True
+        self.store.set(latest_evidence="evidence/prior-candidate")
+        def session(role,session_id,system,prompt,tools,dispatch,**kwargs):
+            self.assertNotIn("run_blender",dispatch)
+            for name,fields in (("create_file",{"path":"Art/new.py","content":"bad"}),
+                                ("replace_text",{"path":"Art/existing.py","expected_sha256":sha(b""),"old":"old","new":"new"})):
+                with self.assertRaises(ValueError):dispatch[name]("forbidden",fields)
+            self.assertFalse((runner.project/"Art").exists())
+            return {"ok":True}
+        runner.model=SimpleNamespace(session=session)
+        self.assertTrue(runner.builder({"phase":"driving","outcome":"existing coupe controls"},"fixture","brief")["ok"])
+
 
 if __name__=="__main__":unittest.main()
