@@ -1,5 +1,7 @@
 # Verified limited foundation and vehicle follow-through
 
+**Completed bounded scope:** foundation, forward vehicle entry/driving/exit mechanics, and a readable grounded exit view are verified separately. Final game source/metadata is [`754dd595`](https://github.com/oh-ashen-one/M5-Ultra-Qwen-3.8-Gaming-Loop/commit/754dd5956cb5a24c18507aef638c29c4781baa53); the final gameplay edit is [`da0e0e6`](https://github.com/oh-ashen-one/M5-Ultra-Qwen-3.8-Gaming-Loop/commit/da0e0e6eb12673a324f87bb68dd350bda13d17db). The controller stopped cleanly after the original walking regression passed. **42 CPU tests pass on both machines.** All gameplay edits came from local Qwen; cloud work supplied controller/test infrastructure, measured supervision and evidence metadata. No full game checkpoint is accepted.
+
 At **11:56:27 UTC**, the fresh bounded attempt accepted **foundation-short-walk**. This is a development milestone: grounded control, readable third-person camera, the actual blue coupe, and continuously visible paving along the short tested walk. The Chicago art target and complete ten-minute game remain unmet.
 
 ## Saved local edit and actual native result
@@ -26,6 +28,27 @@ The original local pavement response completed a tool call with 3,760 output tok
 
 The earlier paused run is preserved. The fresh attempt began at **11:47:40 UTC**, has an unchanged **12:47:40 UTC** ceiling, and stops after 20 minutes without a newly verified subfeature. Foundation acceptance starts that new run's verified-progress window; it does not rewrite any previous run or set final acceptance. See [the acceptance policy](../../docs/SUBFEATURE-ACCEPTANCE.md). The one-hour bound remains subordinate to the original 21:37:50 UTC overall ceiling.
 
-## Next microtasks
+## Vehicle result and important rejected candidates
 
-After the foundation milestone, the same sole controller started local-Qwen vehicle-module authoring, followed by native walking regression, explicit component integration, and input-driven entry/driving/exit testing. This launch statement does not claim vehicle success. Consult the current handoff for the actual latest result. The final game checkpoint remains unaccepted.
+Local Qwen created `VehicleInteraction.cs`, corrected the input read to the real edge-triggered API, and invoked installation from Bootstrap. It implements proximity-based E entry, W/S movement, A/D steering code and E exit with restored walking. The native scenario exercises W/S and entry/exit; steering feel and obstacle handling are not established by that straight replay.
+
+The first replay moved the car 16.34 m and received a local critic PASS, but cloud inspection found the visual nose opposed travel and the longer return walk left the pavement. Runtime front/rear bumper measurements confirmed alignment **−1**. The [original result was superseded](vehicle/superseded-first-result.json), and its progress credit was withdrawn. A local visual-yaw correction preserved imported tilt/scale while aligning the car's nose with motion. The explicitly shortened drive tests the existing bounded street; it does not prove a longer route.
+
+Further actual frames found exit occlusion by a pillar, then by the facade. Local selected edits moved the exit to the clear side and faced the player along the corridor, leaving camera code unchanged. One native test also caught a 30 cm exit spawn lift; a final local assignment reduced it to near the controller skin width. The coverage threshold was not relaxed. These failed candidates and reviews remain in the run record.
+
+The [final native vehicle gate](vehicle/grounding-gate.json) passes with **10.639 m** movement and forward alignment approximately **+1**. [Observed E transitions](vehicle/trace-summary.json) enter at about 7.16 s and exit at 12.07 s; the player resumes grounded walking. All **102/102** checked foot samples remain over pavement with radius clearance. The [fresh scoped exit critic](vehicle/scoped-critic.json) passes, and cloud supervision independently viewed the actual exit and return frames.
+
+| Actual vehicle capture | What it establishes |
+| --- | --- |
+| [Approach](vehicle/frame-001.png) | Same original coupe near the player before entry. |
+| [Driving](vehicle/frame-002.png) | Actual running vehicle view; movement/direction come from the trace and bumper measurements. |
+| [Exit](vehicle/frame-003.png) | Character visibly standing beside the car on pavement, with an open view along the street. |
+| [Return to walking](vehicle/frame-004.png) | Character clearly visible and still on paving after exit. |
+
+After vehicle integration, the **original** short-walk replay passed again at final HEAD: [stationary grounding and 18.960 m movement](final-walk/grounding-gate.json), with [125/125 pavement-covered samples](final-walk/pavement-coverage.json). [Start](final-walk/captures/frame-000.png) and [end](final-walk/captures/frame-003.png) are actual regression frames. The safe request accounting, distinct milestone records, superseded result, unchanged prior-record verification and final idle status are in [the closeout](run-closeout.json).
+
+## Remaining work and handoff
+
+The bounded owner is stopped with scope complete; the resident model is healthy and idle, and the owner's separate Blender remains preserved. The old ledger and its expired deadline were not rewritten. The fresh 12:47:40 UTC ceiling was not extended. Milestones refresh only the new run's verified-subfeature clock; final acceptance remains separate.
+
+Next work is actual horizontal obstacle/collision handling, steering/braking qualification and camera transition robustness, then the original HUD/audio, combat/pursuit and mission plan. The current vehicle module translates its root and raycasts the ground; it does not implement horizontal obstacle resolution. No final handling, sound, FPS, damage, animation or ten-minute playthrough is claimed. The rough character, fencing, materials, lighting and overall Chicago composition still require substantial work against the private visual targets. The clear straight route does not establish robust camera behavior throughout the scene.

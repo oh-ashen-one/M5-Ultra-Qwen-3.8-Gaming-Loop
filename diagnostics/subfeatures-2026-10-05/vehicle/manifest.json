@@ -1,0 +1,17 @@
+{
+  "source_commit": "da0e0e6eb12673a324f87bb68dd350bda13d17db",
+  "exit_view_milestone_commit": "754dd5956cb5a24c18507aef638c29c4781baa53",
+  "actual_native_evidence": true,
+  "files": {
+    "superseded-first-result.json": "6b32e5204af7ac91ac8e5ddc02c3f1de37370054d7416bd4ee3ecf4cb8ff825f",
+    "grounding-gate.json": "c179e414697e73137fe1d0a070ca5ce54a80d04637a29bb6a9773ca23164399b",
+    "frame-004.png": "35e2610570a71029f8d1a75d3401b824c83c3a997aaf6d6373630298c4e88a75",
+    "frame-003.png": "9b46efe235c9d6c56ac4eb1fdc938a4f55504e6c6ad094ad12210cac88b2b5bf",
+    "frame-002.png": "219540a7bfc8e7876faedbb34fdc1e037e9f5a088212fcd43695e42d19183a48",
+    "frame-000.png": "c089dbbf8417dc1b714e7d8f519f2ef5e9741bed94df0ba7b4a8830d9575c480",
+    "frame-001.png": "7e692627d43afdd355d47626aeafe5c3db5872d80c5a68981175a4045b44ee66",
+    "scenario.json": "3bee89c743defe6bfc104f4260ef5c91554950e924ecadaff06bba1a0b951b1b",
+    "trace-summary.json": "cd77c10752ed3507e438ccd6388eea033976b53932ea6fa555504bd794b1b4ed",
+    "scoped-critic.json": "f0d56faf0aca1e7368dccba2f58c751377790d33a54e10704ba7810a71aa2904"
+  }
+}

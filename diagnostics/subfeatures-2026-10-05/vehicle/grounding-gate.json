@@ -1,0 +1,83 @@
+{
+  "build_exit": 0,
+  "build_id": "d2067f6a266e493ab47b3e6e3214b1b62c9a802f05d926dfa50e16cb7757dbd0",
+  "candidate_commit": "da0e0e6eb12673a324f87bb68dd350bda13d17db",
+  "capture_id": "vehicle-grounded-exit",
+  "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+  "compile_errors": [],
+  "coverage": "driving",
+  "displacement_axes": "horizontal XZ",
+  "duration": 18.0111141204834,
+  "failure": null,
+  "frame_count": 5,
+  "harness_sha256": "2c3e27147838d5b77717470fdea967836f48b701adeab2e237c93827fcfd63de",
+  "passed": true,
+  "performance_claim": "unqualified; shared renderer and capture overhead",
+  "player_displacement": 23.422,
+  "player_exit": 0,
+  "player_vertical_drop": 0.158,
+  "return_walk_pavement": {
+    "first_uncovered": [],
+    "passed": true,
+    "radius_m": 0.32,
+    "samples": 102,
+    "scope": "Flat rendered-surface bounds support the route; actual frame review is also required.",
+    "surfaces": [
+      {
+        "max": [
+          2.4000000953674316,
+          0.14000078290700912,
+          28.0
+        ],
+        "min": [
+          -0.7999999523162842,
+          2.2351741790771484e-08,
+          14.0
+        ],
+        "name": "Street/sidewalk"
+      },
+      {
+        "max": [
+          2.4000000953674316,
+          0.14000078290700912,
+          14.0
+        ],
+        "min": [
+          -0.7999999523162842,
+          2.2351741790771484e-08,
+          0.0
+        ],
+        "name": "Street/sidewalk"
+      },
+      {
+        "max": [
+          6.0,
+          0.14000045508146286,
+          30.0
+        ],
+        "min": [
+          -1.0,
+          -1.214444637298584e-06,
+          -2.0
+        ],
+        "name": "Pavement"
+      }
+    ],
+    "uncovered_samples": 0
+  },
+  "samples": 152,
+  "vehicle_displacement": 10.639,
+  "vehicle_heading": {
+    "forward_alignment": 0.9999999999999946,
+    "front_minus_rear_xz": [
+      4.76837158203125e-07,
+      4.559999465942383
+    ],
+    "net_motion_xz": [
+      0.0,
+      10.639392852783203
+    ],
+    "passed": true,
+    "scope": "Straight throttle replay must move toward the authored front bumper, not the rear."
+  }
+}
