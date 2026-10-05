@@ -21,7 +21,7 @@ namespace ChicagoGame
             {
                 var ground = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 ground.name = "GroundCollider";
-                ground.transform.SetParent(street.transform, false);
+                ground.transform.SetParent(null, false);
                 ground.transform.localPosition = Vector3.down * 0.5f;
                 ground.transform.localScale = new Vector3(400f, 1f, 400f);
                 UnityEngine.Object.Destroy(ground.GetComponent<MeshRenderer>());
