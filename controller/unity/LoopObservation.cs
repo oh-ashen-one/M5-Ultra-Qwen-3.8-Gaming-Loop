@@ -5,6 +5,22 @@ using UnityEngine;
 
 public static class LoopObservation
 {
+    [Serializable] public class MissionObject {
+        public string name, hierarchy;
+        public float[] position;
+        public bool playerChild;
+    }
+    public static MissionObject[] MissionObjects(Transform player)
+    {
+        return UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None)
+            .Where(r => r.enabled && (r.name == "Parcel" || r.name == "DropPad" || r.name == "Beacon"))
+            .Take(12).Select(r => {
+                var t = r.transform; var p = t.position; var path = t.name;
+                for (var parent = t.parent; parent != null; parent = parent.parent) path = parent.name + "/" + path;
+                return new MissionObject {name=t.name, hierarchy=path, position=new [] {p.x,p.y,p.z},
+                    playerChild=player != null && t.IsChildOf(player)};
+            }).ToArray();
+    }
     static readonly float[] audio = new float[256];
     public static bool HasCollider(Transform root)
     {
