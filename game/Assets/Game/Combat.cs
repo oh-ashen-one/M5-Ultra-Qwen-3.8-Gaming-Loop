@@ -198,15 +198,8 @@ namespace ChicagoGame
 
             var origin = cam.transform.position;
             var dir = cam.transform.forward;
-            // Fair third-person aim: the follow camera rides high/behind the
-            // courier, so a razor-thin ray systematically passes over (or
-            // beside) a ground-level rival even when the player clearly faces
-            // it. A modest fat bullet keeps this a genuine physics query: the
-            // live rival must still sit near the aim line and be the nearest
-            // unoccluded collider. No replay detection, nothing is teleported.
-            const float BULLET_R = 0.85f;
-            var hits = Physics.SphereCastAll(origin, BULLET_R, dir, FIRE_RANGE,
-                                             ~0, QueryTriggerInteraction.Ignore);
+            var hits = Physics.RaycastAll(origin, dir, FIRE_RANGE,
+                                          ~0, QueryTriggerInteraction.Ignore);
 
             // Find the FIRST (nearest) collider, ignoring only the shooter's
             // own player hierarchy and, while driving, the controlled vehicle.
