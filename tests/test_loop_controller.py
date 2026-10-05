@@ -19,7 +19,7 @@ from inspect_and_repair_grounding import summarize, grounding_scenario
 from loop_controller.small_edits import SelectedEdit
 from continue_small_game import ElementaryRunner
 from direct_feature_attempt import DirectRunner
-from loop_controller.features import accept_subfeature,pavement_coverage,vehicle_heading
+from loop_controller.features import accept_subfeature,pavement_coverage,vehicle_heading,references_capture
 
 
 class ControllerTests(unittest.TestCase):
@@ -124,6 +124,13 @@ class ControllerTests(unittest.TestCase):
         review['exit_player_visible']=True
         accept_subfeature(self.store,'vehicle-safe-exit-view','commit','evidence',gate,review)
         self.assertIsNone(self.store.get('accepted_checkpoint'))
+
+    def test_capture_citations_accept_unambiguous_stems_but_not_unknown_frames(self):
+        names=['frame-000.png','frame-003.png']
+        self.assertTrue(references_capture('frame-003 shows the obstruction',names))
+        self.assertTrue(references_capture('See frame-000.png.',names))
+        for text in ('frame-002.png','frame-0034.png','fake-frame-003','No actual image cited'):
+            self.assertFalse(references_capture(text,names))
 
     def test_local_micro_plan_hands_off_to_hash_checked_edit(self):
         path='Assets/Game/Bootstrap.cs'

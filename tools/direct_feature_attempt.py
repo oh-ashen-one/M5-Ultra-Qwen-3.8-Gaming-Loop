@@ -10,7 +10,7 @@ from datetime import datetime
 
 from inspect_and_repair_grounding import grounding_scenario, summarize
 from loop_controller.core import Files,Halt,atomic,exclusive,now,read_json,seal,sha,verify_seal
-from loop_controller.features import accept_subfeature,pavement_coverage,vehicle_heading
+from loop_controller.features import accept_subfeature,pavement_coverage,vehicle_heading,references_capture
 from loop_controller.model import tool,typed_arguments
 from loop_controller.runner import Runner,git
 from loop_controller.small_edits import SelectedEdit
@@ -123,7 +123,7 @@ class DirectRunner(Runner):
         names=[p.name for p in chosen]
         def submit(_,f):
             if f['verdict'] not in ('PASS','FIX','UNVERIFIED'):raise ValueError('Use PASS, FIX, UNVERIFIED')
-            if not any(n in f['summary'] for n in names):raise ValueError('Summary must cite an exact actual frame filename')
+            if not references_capture(f['summary'],names):raise ValueError('Summary must cite an actual supplied frame identifier')
             return {'ok':True,**f}
         scope=('Grounded control, readable third-person camera, visibly rendered blue coupe, and continuous visible paved '
                'surface beneath the entire approximately19m walking route. Buildings and props may remain rough. '
@@ -131,7 +131,7 @@ class DirectRunner(Runner):
                'The player must not end on brown unrendered background.' if ident=='foundation-short-walk' else
                'A limited vehicle entry, forward driving over3m, exit and return to walking demonstration with the same blue coupe. '
                'Judge visible car/player coherence, not final driving feel or full collision/audio quality.')
-        if ident=='vehicle-safe-exit-view':
+        if ident in ('vehicle-safe-exit-view','vehicle-clear-exit'):
             scope+=' This follow-up specifically requires the on-foot character to be identifiable in BOTH exit frame-003.png and return frame-004.png. Pillar/fence/car occlusion hiding the player is a FIX, not outside scope.'
         self.c.update(output_tokens=8192,model_timeout_seconds=400)
         self.store.set(stage='scoped-critic',current_task=scope);self.store.report()
@@ -172,6 +172,16 @@ class DirectRunner(Runner):
 
     def work(self):
         self.model.ready();self.guard()
+        if self.store.get('repair_exit_facing'):
+            self.edit('vehicle-exit-facing',
+                'Change only this player exit-facing assignment. The player now exits on the correct clear side atX2.1, '
+                'but facing negative vehicle.right rotates Follow toward the facade: actual exit frame is blocked by a '
+                'building/bench. Face the player along the upright vehicle.forward, horizontally along the paved corridor '
+                '(+Z in this replay), so the unchanged Follow offset remains over the street. Preserve clear-side position, '
+                'vertical clearance, camera code, car heading and all mechanics.',
+                anchor='_player.transform.rotation =',path='Assets/Game/VehicleInteraction.cs',max_lines=1)
+            self.store.set(repair_exit_facing=False)
+            return self.vehicle_test('vehicle-clear-exit',bounded_route=True,feature='vehicle-safe-exit-view')
         if self.store.get('repair_vehicle_exit'):
             self.edit('vehicle-safe-exit',
                 'Correct only this exit placement and add its facing assignment. Existing exit uses positive vehicle.right, '
@@ -270,10 +280,11 @@ def main():
     parser.add_argument('--recover-vehicle-proposal',action='store_true')
     parser.add_argument('--repair-vehicle-heading',action='store_true')
     parser.add_argument('--repair-vehicle-exit',action='store_true')
+    parser.add_argument('--repair-exit-facing',action='store_true')
     a=parser.parse_args()
     if not a.authorize_bounded_continuation:parser.error('Current parent authorization required')
     os.umask(0o077)
-    recovering=a.recover_local_proposal or a.repair_pavement_axis or a.recover_vehicle_proposal or a.repair_vehicle_heading or a.repair_vehicle_exit
+    recovering=a.recover_local_proposal or a.repair_pavement_axis or a.recover_vehicle_proposal or a.repair_vehicle_heading or a.repair_vehicle_exit or a.repair_exit_facing
     if a.run_dir.exists() and not recovering:raise Halt('Fresh attempt requires a new ledger; preserve every previous run')
     old=read_json(a.previous_run/'status.json')
     if old.get('controller_pid') or old['status']!='paused':raise Halt('Previous sole owner must be stopped')
@@ -325,8 +336,9 @@ def main():
               recover_vehicle_proposal=a.recover_vehicle_proposal,
               repair_vehicle_heading=a.repair_vehicle_heading,
               repair_vehicle_exit=a.repair_vehicle_exit,
+              repair_exit_facing=a.repair_exit_facing,
               controller_pid=os.getpid(),status='running',blocker=None)
-        s.event('bounded-diagnosed-recovery',reason=('Observed exit camera is occluded; local clear-side placement and outward facing' if a.repair_vehicle_exit else 'Native front/rear measurements contradict forward driving; local visual-heading correction and bounded drive replay' if a.repair_vehicle_heading else 'Exact92-line local vehicle proposal plus one measured input API correction' if a.recover_vehicle_proposal else 'Measured native pavement axes require one scale assignment' if a.repair_pavement_axis
+        s.event('bounded-diagnosed-recovery',reason=('Exit framing still intersects facade; local corridor-aligned facing with unchanged camera' if a.repair_exit_facing else 'Observed exit camera is occluded; local clear-side placement and outward facing' if a.repair_vehicle_exit else 'Native front/rear measurements contradict forward driving; local visual-heading correction and bounded drive replay' if a.repair_vehicle_heading else 'Exact92-line local vehicle proposal plus one measured input API correction' if a.recover_vehicle_proposal else 'Measured native pavement axes require one scale assignment' if a.repair_pavement_axis
                 else 'Exact local tool proposal has15lines; allow16 preserving hash and source scope'),
                 original_deadline_unchanged=True,original_inference_record_unchanged=True)
         if a.repair_pavement_axis:
@@ -337,6 +349,8 @@ def main():
             bounds=s.get('bounds');bounds['diagnosed_heading_edits']=1
             if a.repair_vehicle_exit:bounds['diagnosed_exit_placement_edits']=1
             s.set(bounds=bounds)
+        if a.repair_exit_facing:
+            bounds=s.get('bounds');bounds['diagnosed_exit_facing_edits']=1;s.set(bounds=bounds)
     else:s.set(started_epoch=started,started_utc=now(),attempt_deadline_epoch=deadline,
           overall_deadline_epoch=old['overall_deadline_epoch'],previous_run=a.previous_run.name,
           previous_record_sha256=hashes,source_checkpoint=known['candidate_commit'],

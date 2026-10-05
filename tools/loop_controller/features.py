@@ -1,8 +1,14 @@
 """Limited, evidence-backed subfeatures remain separate from final game acceptance."""
 import json
 import math
+import re
+from pathlib import Path
 import time
 from .core import Halt, now, read_json
+
+
+def references_capture(summary,names):
+    return any(re.search(r'(?<![\w-])'+re.escape(Path(n).stem)+r'(?:\.png)?(?![\w-])',summary) for n in names)
 
 
 def pavement_coverage(bundle, radius=.32, only_grounded=False):
