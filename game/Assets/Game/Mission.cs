@@ -195,7 +195,7 @@ namespace ChicagoGame
                 int d = Mathf.RoundToInt(Vector3.Distance(me, pad));
                 hud.text =
                     "COURIER: parcel in hand\n" +
-                    "OBJECTIVE: drive to the GREEN pad  (" + d + " m)\n" +
+                    "OBJECTIVE: drive to the GREEN pad  (" + d + " m) | remaining: " + Mathf.CeilToInt(Mathf.Max(0, DEADLINE - (Time.time - missionStartTime))) + " s\n" +
                     "WASD move   E enter/exit coupe   F deliver   R reset";
             }
         }
