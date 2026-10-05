@@ -12,7 +12,7 @@ namespace ChicagoGame
         {
             var street = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Generated/street/scene"));
             street.name = "Street";
-            var body = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Generated/player/scene"));
+            GameObject body = new GameObject("Player");
             body.name = "Player";
 
             if (street.GetComponentInChildren<Collider>() == null)
