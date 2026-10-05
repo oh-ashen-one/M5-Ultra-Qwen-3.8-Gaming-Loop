@@ -153,14 +153,42 @@ namespace ChicagoGame
         void RefreshHud()
         {
             if (hud == null) return;
-            float d = 0f;
-            if (parcel != null && player != null)
-                d = Vector3.Distance(new Vector3(player.position.x, 0f, player.position.z),
-                                     new Vector3(parcel.position.x, 0f, parcel.position.z));
-            hud.text =
-                "COURIER: grab the YELLOW parcel\n" +
-                "OBJECTIVE: reach the GREEN drop zone  (" + Mathf.RoundToInt(d) + " m)\n" +
-                "WASD move   E enter/exit coupe   F grab/deliver   R reset";
+            string mission = LoopSignals.Mission ?? "0";
+
+            if (mission == "2")
+            {
+                hud.text =
+                    "\u2605 DELIVERY COMPLETE \u2605\n" +
+                    "The parcel has been delivered.\n" +
+                    "R to reset";
+                return;
+            }
+
+            Vector3 me = (mission == "1" && LoopSignals.Vehicle != null)
+                ? LoopSignals.Vehicle.position
+                : (player != null ? player.position : Vector3.zero);
+            me.y = 0f;
+
+            if (mission == "0")
+            {
+                Vector3 target = parcel != null ? parcel.position : Vector3.zero;
+                target.y = 0f;
+                int d = Mathf.RoundToInt(Vector3.Distance(me, target));
+                hud.text =
+                    "COURIER: grab the YELLOW parcel\n" +
+                    "OBJECTIVE: reach the parcel  (" + d + " m)\n" +
+                    "WASD move   E enter/exit coupe   F grab/deliver   R reset";
+            }
+            else // stage 1 – carrying
+            {
+                Vector3 pad = beacon != null ? beacon.position : Vector3.zero;
+                pad.y = 0f;
+                int d = Mathf.RoundToInt(Vector3.Distance(me, pad));
+                hud.text =
+                    "COURIER: parcel in hand\n" +
+                    "OBJECTIVE: drive to the GREEN pad  (" + d + " m)\n" +
+                    "WASD move   E enter/exit coupe   F deliver   R reset";
+            }
         }
 
         // ---- mission stage state ----
