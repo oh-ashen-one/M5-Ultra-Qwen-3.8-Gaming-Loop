@@ -1,0 +1,8 @@
+{
+  "camera_readable": true,
+  "car_visible": true,
+  "continuous_paving": true,
+  "ok": true,
+  "summary": "Limited scope is supported. frame-000.png and frame-001.png show a coherent third-person chase view of the black character from behind (readable framing, no clipping into geometry), and frame-001.png plus frame-003.png clearly render the blue coupe (side view left in frame-001, rear view with red taillights ahead in frame-003). Grey paved Street/sidewalk + Pavement slabs run continuously under the route from start (frame-000) through frame-003, where the player ends on grey paving beside the car — not on brown unrendered background, which stays beyond the left fence line and far horizon. Surface bounds (124/124 samples covered, 0 uncovered) corroborate the ~18.97 m horizontal displacement with only 0.16 m vertical drop (grounded). Buildings/props (floating fence, bollards, blocky facades) remain rough as permitted and are not held against this milestone; HUD/audio/FPS/mission acceptance are unmet and not claimed.",
+  "verdict": "PASS"
+}

@@ -1,0 +1,13 @@
+{
+  "source_commit": "142f7e0ee87840a50a5074dad7fa206c39e2e82e",
+  "milestone_commit": "6f112fde19e86eae6c7b77bfd47fadd7584ed60a",
+  "actual_native_evidence": true,
+  "files": {
+    "grounding-gate.json": "1710b67a608d199d3d2aec73a6849668ad616e5d70094468540fbcd863c2dcea",
+    "frame-003.png": "a6507f244e78c17b14c91141446d03522fd904304e11c80ddc6d3918fea22766",
+    "frame-000.png": "c089dbbf8417dc1b714e7d8f519f2ef5e9741bed94df0ba7b4a8830d9575c480",
+    "frame-001.png": "48e3b92572b1eb97c08f67c44ec92701ee375bd5bc96e28cb13fd184c2445c8d",
+    "pavement-coverage.json": "dc5d5d09285d02ac5552f41448f922680bf1e4b2cd71aaccd0a981ef3c9fe161",
+    "scoped-critic.json": "84e0943c74367ff897a5a600cbc9fb9671b57cb282696fc06a80498c70b7759f"
+  }
+}
