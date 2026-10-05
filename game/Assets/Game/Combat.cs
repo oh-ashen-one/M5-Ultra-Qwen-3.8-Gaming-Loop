@@ -201,28 +201,41 @@ namespace ChicagoGame
             var hits = Physics.RaycastAll(origin, dir, FIRE_RANGE, ~0,
                                           QueryTriggerInteraction.Ignore);
 
-            // Nearest hit that belongs to a live rival is the real target.
-            RivalAgent best = null; float bestD = float.MaxValue;
+            // Find the FIRST (nearest) collider, ignoring only the shooter's
+            // own player hierarchy and, while driving, the controlled vehicle.
+            Transform ignorePlayer = LoopSignals.Player ? LoopSignals.Player.root : null;
+            Transform ignoreVehicle = null;
+            if (LoopSignals.Mode == "vehicle" && LoopSignals.Vehicle != null)
+                ignoreVehicle = LoopSignals.Vehicle.root;
+
+            float best = float.MaxValue;
+            Vector3 hitPt = origin + dir * FIRE_RANGE;
+            RivalAgent first = null;
+
             foreach (var h in hits)
             {
-                if (h.transform.root == player.transform.root) continue;
+                var root = h.transform.root;
+                if (ignorePlayer != null && root == ignorePlayer) continue;
+                if (ignoreVehicle != null && root == ignoreVehicle) continue;
+                if (h.distance >= best) continue;
+                best = h.distance;
+                hitPt = h.point;
                 var a = h.collider.GetComponentInParent<RivalAgent>();
-                if (a == null || !a.alive) continue;
-                if (h.distance < bestD) { bestD = h.distance; best = a; }
+                first = (a != null && a.alive) ? a : null;
             }
 
-            Vector3 end = origin + dir * (best != null ? bestD : 30f);
-            Tracer(origin, end, new Color(1f, 0.95f, 0.4f), 0.06f);
+            // Tracer always ends at the first real collision.
+            Tracer(origin, hitPt, new Color(1f, 0.95f, 0.4f), 0.06f);
 
-            if (best != null)
+            // Only if the FIRST collider is a live rival does HP/Hits change.
+            if (first != null)
             {
-                best.hp -= 1;
-                best.flashT = 0.12f;
+                first.hp -= 1;
+                first.flashT = 0.12f;
                 Set("Hits", ReadInt("Hits") + 1);
-                if (best.hp <= 0)
+                if (first.hp <= 0)
                 {
-                    best.alive = false;
-                    // Rival visibly drops out of the fight.
+                    first.alive = false;
                     foreach (var rr in rivalGo.GetComponentsInChildren<Renderer>())
                         rr.enabled = false;
                     var c = rivalGo.GetComponent<CapsuleCollider>();
