@@ -1,0 +1,18 @@
+{
+  "action_id": "r0004-7aaab6d9-builder-1-tool-1",
+  "author": "local-Qwen",
+  "files": [
+    {
+      "bytes": 182548,
+      "path": "ArtSources/props/source.blend",
+      "sha256": "b9e0fef925f45fe9b1daa7075635f349558cbba21b3e7209ff8f3bc669ecf2f1"
+    },
+    {
+      "bytes": 739052,
+      "path": "Assets/Resources/Generated/props/scene.fbx",
+      "sha256": "8b53dfc6ff6cbbf951a6da4d310f705f60e390fbac9ac25dce15f808b600795f"
+    }
+  ],
+  "script": "Art/props.py",
+  "script_sha256": "dbc3ba0330016e55dbd57158a5ea1fdfbb413c795a4e162b4c096bb0b56aaf49"
+}
