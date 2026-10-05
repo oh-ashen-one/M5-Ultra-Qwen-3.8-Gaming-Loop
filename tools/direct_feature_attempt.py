@@ -6,10 +6,11 @@ import os
 from pathlib import Path
 import signal
 import time
+from datetime import datetime
 
 from inspect_and_repair_grounding import grounding_scenario, summarize
 from loop_controller.core import Files,Halt,atomic,exclusive,now,read_json,seal,sha,verify_seal
-from loop_controller.features import accept_subfeature,pavement_coverage
+from loop_controller.features import accept_subfeature,pavement_coverage,vehicle_heading
 from loop_controller.model import tool,typed_arguments
 from loop_controller.runner import Runner,git
 from loop_controller.small_edits import SelectedEdit
@@ -103,6 +104,11 @@ class DirectRunner(Runner):
             gate['stationary_grounded']=observed['stationary_grounded']
             if not gate['stationary_grounded']:
                 gate.update(passed=False,failure=['stationary-grounding-preflight',gate.get('failure')])
+        if scenario['coverage']=='driving' and (bundle/'captures/scene-transforms.json').exists():
+            gate['vehicle_heading']=vehicle_heading(bundle)
+            gate['return_walk_pavement']=pavement_coverage(bundle,only_grounded=True)
+            if not gate['vehicle_heading']['passed'] or not gate['return_walk_pavement']['passed']:
+                gate.update(passed=False,failure=['vehicle-forward-heading-or-return-pavement',gate.get('failure')])
         atomic(bundle/'grounding-gate.json',gate)
         self.store.set(latest_evidence=str(bundle.relative_to(self.store.root)),feedback=gate,
             latest_captures=[str(p.relative_to(self.store.root)) for p in sorted((bundle/'captures').glob('frame-*.png'))])
@@ -164,6 +170,16 @@ class DirectRunner(Runner):
 
     def work(self):
         self.model.ready();self.guard()
+        if self.store.get('repair_vehicle_heading'):
+            self.edit('vehicle-heading',
+                'Preserve the SetParent line, then correct only the imported coupe VISUAL heading relative to its upright '
+                'runtime vehicle root. Actual bumper_f centre isZ5.68 and bumper_rZ10.24 while root forward and W motion '
+                'are+Z. The visible nose currently points-Z, so W drives the car backward visually. Apply a180-degree '
+                'world-up yaw to the imported coupe visual around its existing origin after parenting, preserving imported '
+                'tilt/scale and parked position. Do not reverse the runtime movement direction, change root physics, or add assets.',
+                anchor='coupe.transform.SetParent(root.transform, true);',path='Assets/Game/VehicleInteraction.cs',max_lines=2)
+            self.store.set(repair_vehicle_heading=False)
+            return self.vehicle_test('vehicle-heading-corrected',bounded_route=True)
         if 'foundation-short-walk' in self.store.get('accepted_subfeatures',{}):
             return self.vehicle()
         if self.store.get('repair_pavement_axis'):
@@ -208,13 +224,19 @@ class DirectRunner(Runner):
             'Preserve the existing Follow target assignment, then invoke the new VehicleInteraction.Install exactly once with '
             'existing body, coupe and Follow component. Guard a missing coupe. No other change. The new module is supplied below.',
             anchor='rig.AddComponent<Follow>().target = body.transform;',max_lines=3)
+        return self.vehicle_test('vehicle-entry-drive-exit')
+
+    def vehicle_test(self,ident,bounded_route=False):
         scenario={'id':'limited-vehicle-entry-drive-exit','coverage':'driving','duration':18,
             'steps':[{'start':4,'end':5.5,'keys':['W']},{'start':5.5,'end':6.5,'keys':['D']},
                      {'start':7,'end':7.25,'keys':['E']},{'start':8,'end':10,'keys':['W']},
                      {'start':10,'end':11,'keys':['S']},{'start':12,'end':12.25,'keys':['E']},
                      {'start':13,'end':15,'keys':['W']}], 'captures':[3.2,6.8,9.5,12.8,16]}
-        bundle,gate=self.native('vehicle-entry-drive-exit',scenario)
-        review=self.scoped_review('vehicle-entry-drive-exit',bundle,gate)
+        if bounded_route:
+            scenario['steps'][3]['end']=9.3
+            scenario['steps'][4].update(start=9.3,end=10.3)
+        bundle,gate=self.native(ident,scenario)
+        review=self.scoped_review(ident,bundle,gate)
         self.milestone('vehicle-entry-drive-exit',bundle,gate,review)
         self.store.set(status='paused-scope-complete',stage='idle',blocker=None,
             next_task='Inspect driving feel/collision regression, then continue the original game plan; final quality remains unmet')
@@ -228,10 +250,11 @@ def main():
     parser.add_argument('--recover-local-proposal',action='store_true')
     parser.add_argument('--repair-pavement-axis',action='store_true')
     parser.add_argument('--recover-vehicle-proposal',action='store_true')
+    parser.add_argument('--repair-vehicle-heading',action='store_true')
     a=parser.parse_args()
     if not a.authorize_bounded_continuation:parser.error('Current parent authorization required')
     os.umask(0o077)
-    recovering=a.recover_local_proposal or a.repair_pavement_axis or a.recover_vehicle_proposal
+    recovering=a.recover_local_proposal or a.repair_pavement_axis or a.recover_vehicle_proposal or a.repair_vehicle_heading
     if a.run_dir.exists() and not recovering:raise Halt('Fresh attempt requires a new ledger; preserve every previous run')
     old=read_json(a.previous_run/'status.json')
     if old.get('controller_pid') or old['status']!='paused':raise Halt('Previous sole owner must be stopped')
@@ -249,7 +272,7 @@ def main():
     else:c=read_json(a.run_dir/'private-config.json')
     r=DirectRunner(a.run_dir,c);s=r.store
     if recovering:
-        if s.get('controller_pid') or s.get('status')!='paused' or s.get('source_checkpoint')!=git(r.repo,'rev-parse','HEAD'):
+        if s.get('controller_pid') or s.get('status') not in ('paused','paused-scope-complete') or s.get('source_checkpoint')!=git(r.repo,'rev-parse','HEAD'):
             raise Halt('Expected the stopped current candidate')
         if a.recover_local_proposal and s.get('source_checkpoint')!=known['candidate_commit']:
             raise Halt('Exact proposal recovery requires the original unchanged source')
@@ -261,10 +284,29 @@ def main():
         if time.time()>=min(deadline,s.get('last_verified_progress_epoch',started)+1200):raise Halt('Original fresh-attempt bounds expired')
         if a.recover_vehicle_proposal and 'foundation-short-walk' not in s.get('accepted_subfeatures',{}):
             raise Halt('Vehicle work requires the verified limited foundation')
+        if a.repair_vehicle_heading:
+            accepted=s.get('accepted_subfeatures',{})
+            if 'foundation-short-walk' not in accepted:raise Halt('Preserve the verified foundation before heading correction')
+            prior=accepted.pop('vehicle-entry-drive-exit',None)
+            if prior:
+                evidence=vehicle_heading(a.run_dir/prior['evidence'])
+                if evidence['passed']:raise Halt('Expected the measured backward-driving discrepancy')
+                superseded=s.get('superseded_subfeatures',[])
+                superseded.append({**prior,'status':'requires-correction','reason':'Visual nose opposes W motion; longer return walk leaves pavement','heading_evidence':evidence})
+                s.set(superseded_subfeatures=superseded,accepted_subfeatures=accepted,
+                    last_verified_progress_epoch=datetime.fromisoformat(accepted['foundation-short-walk']['accepted_utc']).timestamp(),
+                    last_verified_progress_utc=accepted['foundation-short-walk']['accepted_utc'])
+                note=r.project/'Notes/vehicle-entry-drive-exit-milestone.json'
+                atomic(note,superseded[-1]);git(r.repo,'add','--','game/Notes/vehicle-entry-drive-exit-milestone.json')
+                git(r.repo,'-c','user.name=Evidence controller','-c','user.email=254017794+oh-ashen-one@users.noreply.github.com',
+                    'commit','-m','Supersede vehicle milestone after measured heading discrepancy; preserve prior evidence')
+                s.set(source_checkpoint=git(r.repo,'rev-parse','HEAD'))
+                s.event('subfeature-superseded',feature='vehicle-entry-drive-exit',heading=evidence,verified_clock_restored_to_foundation=True)
         s.set(recover_local_proposal=a.recover_local_proposal,repair_pavement_axis=a.repair_pavement_axis,
               recover_vehicle_proposal=a.recover_vehicle_proposal,
+              repair_vehicle_heading=a.repair_vehicle_heading,
               controller_pid=os.getpid(),status='running',blocker=None)
-        s.event('bounded-diagnosed-recovery',reason=('Exact92-line local vehicle proposal plus one measured input API correction' if a.recover_vehicle_proposal else 'Measured native pavement axes require one scale assignment' if a.repair_pavement_axis
+        s.event('bounded-diagnosed-recovery',reason=('Native front/rear measurements contradict forward driving; local visual-heading correction and bounded drive replay' if a.repair_vehicle_heading else 'Exact92-line local vehicle proposal plus one measured input API correction' if a.recover_vehicle_proposal else 'Measured native pavement axes require one scale assignment' if a.repair_pavement_axis
                 else 'Exact local tool proposal has15lines; allow16 preserving hash and source scope'),
                 original_deadline_unchanged=True,original_inference_record_unchanged=True)
         if a.repair_pavement_axis:

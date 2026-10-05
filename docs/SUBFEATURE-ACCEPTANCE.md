@@ -12,6 +12,8 @@ The first milestone is deliberately limited: grounded control, readable camera, 
 
 Only then does the same sole owner proceed to local-Qwen-authored vehicle entry/driving/exit microtasks, with native walking regression after creating the module and input-driven vehicle testing after integration. An invoked component and observed state transitions are required; an unused helper is not integrated progress.
 
+Vehicle acceptance also checks actual front/rear bumper bounds against net motion in the straight-throttle replay, and requires the settled return walk to remain over pavement. The first motion/critic pass missed a backwards-facing coupe and an overlong return route. That milestone is superseded with its original evidence retained; its progress credit is withdrawn back to the verified foundation timestamp. Local Qwen corrects visual heading, while a shorter documented replay tests the bounded street. Neither a model's PASS nor a successful state transition overrides contrary rendered/geometry evidence.
+
 `accepted_subfeatures` and `last_verified_progress_epoch` track limited verified results separately from `accepted_checkpoint` and final-quality acceptance. A repeated milestone cannot refresh the clock. Source edits alone receive no acceptance credit. Milestone commits contain explicitly scoped evidence metadata and attribute gameplay code to local Qwen.
 
 Chicago-target visual quality, finished movement/driving feel, HUD, sound, performance, collisions, combat, pursuit and the continuous ten-minute mission keep their original acceptance standards. Neither milestone establishes those broader results. Consult the current handoff and actual captures for which milestones, if any, have run and passed.

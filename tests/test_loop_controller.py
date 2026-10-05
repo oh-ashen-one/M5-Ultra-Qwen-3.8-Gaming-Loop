@@ -19,7 +19,7 @@ from inspect_and_repair_grounding import summarize, grounding_scenario
 from loop_controller.small_edits import SelectedEdit
 from continue_small_game import ElementaryRunner
 from direct_feature_attempt import DirectRunner
-from loop_controller.features import accept_subfeature,pavement_coverage
+from loop_controller.features import accept_subfeature,pavement_coverage,vehicle_heading
 
 
 class ControllerTests(unittest.TestCase):
@@ -90,6 +90,30 @@ class ControllerTests(unittest.TestCase):
         when=self.store.get('last_verified_progress_epoch')
         with self.assertRaises(Halt):accept_subfeature(self.store,'foundation-short-walk','commit','evidence',gate,review,{'passed':True})
         self.assertEqual(when,self.store.get('last_verified_progress_epoch'))
+
+    def test_forward_vehicle_motion_must_match_authored_nose(self):
+        bundle=self.root/'heading';capture=bundle/'captures';capture.mkdir(parents=True)
+        front={'kind':'renderer','name':'Vehicle/Coupe/bumper_f','boundsCenter':[3.6,.4,5.68]}
+        rear={'kind':'renderer','name':'Vehicle/Coupe/bumper_r','boundsCenter':[3.6,.4,10.24]}
+        rows=[{'mode':'vehicle','vehicle':[3.6,0,8+i]} for i in range(10)]
+        (capture/'trace.jsonl').write_text('\n'.join(json.dumps(r) for r in rows))
+        def evaluate():
+            atomic(capture/'scene-transforms.json',{'objects':[front,rear]});return vehicle_heading(bundle)
+        result=evaluate();self.assertFalse(result['passed']);self.assertEqual(result['forward_alignment'],-1)
+        front['boundsCenter'][2]=10.32;rear['boundsCenter'][2]=5.76
+        self.assertTrue(evaluate()['passed'])
+        (capture/'trace.jsonl').write_text(json.dumps({'mode':'foot','vehicle':[]}))
+        self.assertFalse(evaluate()['passed'])
+
+    def test_vehicle_feature_rejects_backward_motion_or_unpaved_return(self):
+        gate={'passed':True,'coverage':'driving','vehicle_displacement':10}
+        review={'ok':True,'verdict':'PASS'}
+        with self.assertRaises(Halt):accept_subfeature(self.store,'vehicle-entry-drive-exit','commit','evidence',gate,review)
+        gate['vehicle_heading']={'passed':True};gate['return_walk_pavement']={'passed':False}
+        with self.assertRaises(Halt):accept_subfeature(self.store,'vehicle-entry-drive-exit','commit','evidence',gate,review)
+        gate['return_walk_pavement']['passed']=True
+        accept_subfeature(self.store,'vehicle-entry-drive-exit','commit','evidence',gate,review)
+        self.assertIsNone(self.store.get('accepted_checkpoint'))
 
     def test_local_micro_plan_hands_off_to_hash_checked_edit(self):
         path='Assets/Game/Bootstrap.cs'
