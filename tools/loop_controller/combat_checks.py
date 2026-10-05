@@ -6,8 +6,8 @@ FOOT_PROBE=scenario(16,[(4,5.6,['W']),(5.6,5.9,['D']),(6.3,6.6,['S']),
     (7.5,7.8,['Mouse0']),(9.2,9.5,['Mouse0'])],[3.2,6.9,8,10,14],'mission-core')
 WALL_PROBE={**FOOT_PROBE,'id':'combat-wall-observation','fixture':'combat-wall'}
 DRIVE_PROBE={**MOTOR_PROBE,'id':'combat-driving-actor','coverage':'mission-core','duration':22,
-    'steps':[s for s in MOTOR_PROBE['steps'] if s['start']<7]+[
-        dict(start=6.65,end=6.9,keys=['E']),dict(start=6.95,end=18,keys=['W'])],
+    'steps':[dict(start=4,end=5.65,keys=['W','D']),dict(start=5.65,end=5.9,keys=['W']),
+        dict(start=5.95,end=6.2,keys=['E']),dict(start=6.25,end=18,keys=['W'])],
     'captures':[3.2,7.8,10.8,14,18,21]}
 
 

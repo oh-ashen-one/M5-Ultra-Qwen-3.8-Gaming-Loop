@@ -5,7 +5,7 @@ import uuid
 
 from inspect_combat_contracts import SOURCE,ACCEPTED
 from recover_mission_replay import block_span
-from loop_controller.core import Files,Halt,atomic,read_json,sha
+from loop_controller.core import Files,Halt,atomic,read_json,sha,failure_key
 from loop_controller.continuous_tasks import TASKS
 from loop_controller.combat_checks import FOOT_PROBE,WALL_PROBE,DRIVE_PROBE,inspect_combat_contract
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
@@ -38,7 +38,7 @@ class CombatFocus(ThreeDayRunner):
         drive_coverage=(old.get('source_checkpoint')==REPAIRED and old.get('blocker')==
             'Halt: Measured combat contract failure; preserve candidate and diagnose exact observations' and
             old.get('feedback',{}).get('failure')==['driving-escape-distance-not-exercised'] and
-            old.get('task_failures')==1 and old.get('failure_streak')==1)
+            old.get('task_failures') in (1,2) and old.get('failure_streak')==old.get('task_failures'))
         if (old.get('task_index')!=4 or not (initial or selected_stop or drive_coverage)
                 or old.get('last_playable_checkpoint')!=ACCEPTED
                 or (not drive_coverage and (old.get('task_failures')!=0 or old.get('failure_streak')!=0))
@@ -46,6 +46,16 @@ class CombatFocus(ThreeDayRunner):
             raise Halt('Expected the preserved measured combat diagnostic and accepted retry baseline')
 
     def recovery_settings(self):return {'combat_focused_qualification_pending':True}
+
+    def reject_scoped(self,task,ident,feedback,candidate):
+        if task['id']=='mission-combat-pursuit' and self.store.get('task_failures',0)>=2:
+            key=failure_key({k:feedback[k] for k in ('failure','compile_errors','verdict','fixes') if k in feedback})
+            streak=self.store.get('failure_streak',0)+1 if key==self.store.get('failure_key') else 1
+            attempts=self.store.get('task_failures',0)+1
+            self.store.set(feedback=feedback,failure_key=key,failure_streak=streak,task_failures=attempts,stage='rejected')
+            self.store.event('queue-candidate-rejected',candidate=candidate,task=task['id'],streak=streak,attempts=attempts)
+            raise Halt('Third focused combat rejection; preserve evidence for bounded diagnosis, no generic planning round')
+        return super().reject_scoped(task,ident,feedback,candidate)
 
     def native_test(self,ident,probe,kind,candidate):
         bundle=self.store.root/'evidence'/ident

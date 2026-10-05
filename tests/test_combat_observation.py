@@ -26,7 +26,8 @@ class CombatObservationTests(unittest.TestCase):
             'blocker':'Halt: Measured combat contract failure; preserve candidate and diagnose exact observations',
             'feedback':{'failure':['driving-escape-distance-not-exercised']}}
         CombatFocus.validate_recovery(None,drive)
-        for changes in [dict(task_failures=2),dict(feedback={'failure':['damage-through-wall']}),
+        CombatFocus.validate_recovery(None,{**drive,'task_failures':2,'failure_streak':2})
+        for changes in [dict(task_failures=3),dict(feedback={'failure':['damage-through-wall']}),
                         dict(source_checkpoint='other')]:
             with self.assertRaises(Halt):CombatFocus.validate_recovery(None,{**drive,**changes})
 
