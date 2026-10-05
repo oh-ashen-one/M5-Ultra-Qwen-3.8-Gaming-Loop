@@ -314,5 +314,34 @@ namespace ChicagoGame
             if (f != null) f.SetValue(null, value);
             else if (p != null && p.CanWrite) p.SetValue(null, value);
         }
+
+        // ---- tolerant signal readers (never throw if a member is absent) ----
+        static int ReadInt(string name)
+        {
+            var t = typeof(LoopSignals);
+            var f = t.GetField(name, St);
+            var p = t.GetProperty(name, St);
+            try
+            {
+                if (f != null) return System.Convert.ToInt32(f.GetValue(null));
+                if (p != null && p.CanRead) return System.Convert.ToInt32(p.GetValue(null));
+            }
+            catch { }
+            return 0;
+        }
+
+        static string ReadStr(string name)
+        {
+            var t = typeof(LoopSignals);
+            var f = t.GetField(name, St);
+            var p = t.GetProperty(name, St);
+            try
+            {
+                if (f != null) return f.GetValue(null) as string;
+                if (p != null && p.CanRead) return p.GetValue(null) as string;
+            }
+            catch { }
+            return null;
+        }
     }
 }
