@@ -6,6 +6,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from loop_controller.aim_checks import inspect_aim_contract,require_aim_contracts
 from resume_aim_qualification import validate_aim_pause,SOURCE,ACCEPTED
 from resume_cover_evidence import validate_cover_pause
+from resume_after_cover_limit import validate_cover_limit,QUALIFIED
 from loop_controller.core import Halt
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 
@@ -18,6 +19,16 @@ def shot(hit=False,aligned=False,wall=None):
 
 
 class AimContractTests(unittest.TestCase):
+    def test_cover_output_recovery_cannot_admit_runtime_fault(self):
+        state=dict(source_checkpoint=QUALIFIED,last_playable_checkpoint=ACCEPTED,task_index=6,
+            task_failures=4,failure_streak=2,overall_deadline_epoch=HARD_CAP_EPOCH,
+            aim_complete_review={'bounded_stop':'output'},
+            blocker='Halt: Complete cover review remained incomplete; preserve original and new evidence')
+        before=copy.deepcopy(state);validate_cover_limit(state);self.assertEqual(state,before)
+        for key,value in [('source_checkpoint','different'),('task_failures',0),('failure_streak',0),
+                          ('blocker','runtime fault'),('aim_complete_review',{'bounded_stop':'context'})]:
+            with self.subTest(key=key),self.assertRaises(Halt):validate_cover_limit({**state,key:value})
+
     def test_cover_recovery_preserves_failed_review_and_counters(self):
         state=dict(last_playable_checkpoint=ACCEPTED,task_index=6,task_failures=4,failure_streak=2,
             overall_deadline_epoch=HARD_CAP_EPOCH,blocker='Halt: Requested stop',aim_review={'verdict':'UNVERIFIED'})

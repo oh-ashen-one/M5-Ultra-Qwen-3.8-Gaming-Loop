@@ -1,0 +1,28 @@
+{
+  "scope": "cover-visibility-and-occlusion",
+  "candidate": "1295417194c0f2cdf9716982df06afebd6336c57",
+  "author": "cloud controller visual spot review",
+  "verdict": "PASS",
+  "basis": "Actual native frames and independent pre-shot ray/collider observations with post-shot HP; no gameplay source edits.",
+  "summary": "The wall frame visibly places an opaque obstacle between the camera/player and the rival. The near-cover control view shows the red rival before the fixture appears; the later frame shows a clear cover edge crossing the camera center while part of the rival remains visible beside it. Actual shot events hit the nearer named cover collider and leave rival HP and Hits unchanged. This corroborates scoped physical occlusion, not final art or overall game acceptance.",
+  "images": [
+    {
+      "evidence": "evidence/aim-qualification-5c2a0076-after-wall/captures/frame-002.png",
+      "sha256": "941434af9dc5667d2ac5070c394b52b1061c45916e246c6aba799df5d76c932b",
+      "replay_seconds": 8
+    },
+    {
+      "evidence": "evidence/aim-cover-evidence-a0004565/captures/frame-001.png",
+      "sha256": "32c0dd4f55c8817250ad29086bbdbfdfd325c71c6717ea154b6fc6cd05e80fdc",
+      "replay_seconds": 6.9
+    },
+    {
+      "evidence": "evidence/aim-cover-evidence-a0004565/captures/frame-002.png",
+      "sha256": "f908ad76cab06f4fe61e89cf83563c27cf40182b777eab948baca7e4f7bf9207",
+      "replay_seconds": 7.55
+    }
+  ],
+  "local_review_history": "Original local review corroborated aligned hit and intentional miss; cover imagery was UNVERIFIED. Expanded cover review then reached its 8192 output-token limit without a verdict. Both original records remain preserved.",
+  "promotion_policy": "This scoped cloud spot review does not promote the whole route. All native regressions and the normal fresh local full-route critique remain mandatory.",
+  "final_game_accepted": false
+}
