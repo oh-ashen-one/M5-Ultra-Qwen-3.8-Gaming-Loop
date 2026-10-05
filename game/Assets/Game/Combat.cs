@@ -52,7 +52,7 @@ namespace ChicagoGame
         float startTime;
         bool encounterLive;
 
-        static readonly Vector3 RIVAL_SPAWN = new Vector3(2.0f, 0f, -0.5f);
+        static readonly Vector3 RIVAL_SPAWN = new Vector3(2.0f, 0.14f, -0.5f);
 
         public static void Install(GameObject player, Camera cam)
         {
