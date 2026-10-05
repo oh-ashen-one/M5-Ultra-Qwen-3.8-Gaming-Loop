@@ -92,7 +92,7 @@ namespace ChicagoGame
             if (coupe != null) VehicleInteraction.Install(body, coupe, follow);
             CourierMission.Install(body, cam);
             Combat.Install(body, cam);
-            AudioFX.Install(rig);
+            AudioFX.Install(rig.transform);
             HudStatus.Install(cam);
 
             var sun = new GameObject("Directional Light").AddComponent<Light>();
