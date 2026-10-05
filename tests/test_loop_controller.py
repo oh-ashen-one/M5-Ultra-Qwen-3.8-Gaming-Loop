@@ -33,6 +33,13 @@ class ControllerTests(unittest.TestCase):
     def tearDown(self):
         self.store.db.close();self.tmp.cleanup()
 
+    def test_directory_read_is_recoverable_tool_validation(self):
+        (self.project/'Notes').mkdir()
+        with self.assertRaisesRegex(ValueError,'exact file'):
+            self.files.read('Notes')
+        self.files.create('note','Notes/plan.md','next edit')
+        self.assertEqual(self.files.read('Notes/plan.md')['content'],'next edit')
+
     def test_direct_known_edit_bypasses_planner_and_preserves_unselected_source(self):
         path='Assets/Game/Bootstrap.cs';original='before\nselected fixture\nafter\n'
         self.files.create('seed',path,original)

@@ -184,6 +184,8 @@ class Files:
 
     def read(self, path, start_line=1, line_count=140):
         p = self.path(path)
+        if p.is_dir():
+            raise ValueError("read_file requires an exact file, not a directory; choose a path from the source inventory")
         raw = p.read_bytes()
         text = raw.decode("utf-8")
         if not 1 <= start_line or not 1 <= line_count <= 300:

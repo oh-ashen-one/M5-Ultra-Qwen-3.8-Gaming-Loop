@@ -128,6 +128,7 @@ class ContinuousRunner(Runner):
         if result.get('ok'):self.store.set(task_design=result['decision'])
         self.store.event('bounded-design-result',task=task['id'],completed=bool(result.get('ok')),
                          bounded_stop=result.get('bounded_stop'))
+        return result
 
     def edit(self,task,ident):
         self.c.update(output_tokens=8192,model_timeout_seconds=400)
@@ -261,8 +262,11 @@ class ContinuousRunner(Runner):
         self.store.event('queue-candidate-rejected',candidate=candidate,task=task['id'],streak=streak,attempts=attempts)
         if streak>=3 or attempts>=6:
             if not self.store.get('diagnosis_used'):
-                self.design(task,ident+'-repeated',diagnosis=True)
-                self.store.set(diagnosis_used=True,failure_streak=0,task_failures=0)
+                diagnosis=self.design(task,ident+'-repeated',diagnosis=True)
+                self.store.set(diagnosis_used=True)
+                if not diagnosis.get('ok'):
+                    raise Halt('Repeated blocker diagnosis supplied no plan; preserve failure counters and source')
+                self.store.set(failure_streak=0,task_failures=0)
             else:
                 known=self.store.get('last_playable_checkpoint')
                 archive=self.store.root/'failed-source'/ident;archive.parent.mkdir(parents=True,exist_ok=True)

@@ -197,7 +197,7 @@ class QueueTests(unittest.TestCase):
         r=ContinuousRunner.__new__(ContinuousRunner);r.store=self.store;r.project=self.project;r.repo=self.root
         self.store.set(last_playable_checkpoint='known-good')
         (self.project/'failed.cs').write_text('preserve this candidate')
-        designs=[];r.design=lambda *a,**kw:designs.append(a)
+        designs=[];r.design=lambda *a,**kw:designs.append(a) or {'ok':True,'decision':'bounded fixture repair'}
         calls=[]
         with patch('continue_game_queue.git',side_effect=lambda *a:calls.append(a)),patch('continue_game_queue.subprocess.run') as run:
             for i in range(3):r.reject_scoped({'id':'collision'},str(i),{'failure':['blocked']},'failed-commit')
@@ -209,5 +209,25 @@ class QueueTests(unittest.TestCase):
         args=run.call_args.args[0]
         self.assertIn('restore',args);self.assertIn('known-good',args);self.assertNotIn('reset',args)
         self.assertEqual(self.store.get('last_playable_checkpoint'),'known-good')
+
+    def test_unsuccessful_diagnosis_does_not_reset_repeated_failure_counts(self):
+        r=ContinuousRunner.__new__(ContinuousRunner);r.store=self.store
+        r.design=lambda *a,**kw:{'bounded_stop':'turns'}
+        for i in range(2):r.reject_scoped({'id':'mission'},str(i),{'failure':['blocked']},'candidate')
+        with self.assertRaisesRegex(Halt,'diagnosis supplied no plan'):
+            r.reject_scoped({'id':'mission'},'third',{'failure':['blocked']},'candidate')
+        self.assertEqual(self.store.get('failure_streak'),3)
+        self.assertEqual(self.store.get('task_failures'),3)
+        self.assertTrue(self.store.get('diagnosis_used'))
+
+    def test_retry_requires_physical_R_and_completion_after_that_reset(self):
+        rows=[dict(time=2,mission='complete'),dict(time=10,mission='failed',restarts=0),
+              dict(time=20,mission='active',restarts=1,keys=['R'])]
+        gate=self.gate(['failure_retry'],rows)
+        self.assertIn('retry-does-not-reach-ending',gate['failure'])
+        rows.append(dict(time=30,mission='complete',restarts=1))
+        self.assertTrue(self.gate(['failure_retry'],rows)['passed'])
+        rows[2]['keys']=[]
+        self.assertIn('failure-retry-not-recoverable',self.gate(['failure_retry'],rows)['failure'])
 
 if __name__=='__main__':unittest.main()

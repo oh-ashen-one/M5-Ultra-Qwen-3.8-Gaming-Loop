@@ -16,6 +16,15 @@ from loop_controller.runner import git
 
 
 class ThreeDayRunner(MissionFocus):
+    def validate_recovery(self,old):
+        if not old.get('blocker','').startswith('Halt: Replay-only role supplied no valid finish_task'):
+            raise Halt('Preserve other faults and unchanged-failure retry protections')
+        if old['task_index']!=2:
+            raise Halt('Expected the preserved mission replay stop')
+
+    def recovery_settings(self):
+        return {'three_day_recovery_probe_pending':True}
+
     def edit(self,task,ident):
         if self.store.get('three_day_recovery_probe_pending'):
             for label,needle,instruction in [
@@ -58,7 +67,7 @@ class ThreeDayRunner(MissionFocus):
         return super().reject_scoped(task,ident,feedback,candidate)
 
 
-def main():
+def main(runner_type=ThreeDayRunner):
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--run-dir',type=Path,required=True)
     p.add_argument('--authorize-three-day-cap',action='store_true')
@@ -66,13 +75,12 @@ def main():
     if not a.authorize_three_day_cap:p.error('Owner-authorized three-day cap required')
     c=read_json(a.run_dir/'private-config.json')
     with exclusive(Path(c['coordination_dir'])/'game-owner.lock'),exclusive(a.run_dir/'controller.lock'):
-        r=ThreeDayRunner(a.run_dir,c);s=r.store;old=s.status()
+        r=runner_type(a.run_dir,c);s=r.store;old=s.status()
         if old.get('controller_pid') or old.get('owned_process') or old.get('status')!='paused':
             raise Halt('Preserve the current owner; this migration requires a stopped controller')
-        if not old.get('blocker','').startswith('Halt: Replay-only role supplied no valid finish_task'):
-            raise Halt('Preserve other faults and unchanged-failure retry protections')
-        if old['task_index']!=2 or git(r.repo,'rev-parse','HEAD')!=old['source_checkpoint'] or git(r.repo,'status','--porcelain'):
-            raise Halt('Expected the preserved mission replay stop and clean local source')
+        r.validate_recovery(old)
+        if git(r.repo,'rev-parse','HEAD')!=old['source_checkpoint'] or git(r.repo,'status','--porcelain'):
+            raise Halt('Expected the preserved checkpoint and clean local source')
         if (a.run_dir/'STOP').exists():raise Halt('Preserve an independent stop request')
         r.model.ready()
         archive=a.run_dir/'policy-migrations'/uuid.uuid4().hex;archive.mkdir(parents=True)
@@ -86,7 +94,7 @@ def main():
         r.machine.guard=guard;r.model.guard=guard
         for sig in (signal.SIGALRM,signal.SIGTERM,signal.SIGINT):signal.signal(sig,stop)
         signal.setitimer(signal.ITIMER_REAL,max(.001,HARD_CAP_EPOCH-time.time()))
-        s.set(status='running',controller_pid=os.getpid(),blocker=None,three_day_recovery_probe_pending=True,
+        s.set(status='running',controller_pid=os.getpid(),blocker=None,**r.recovery_settings(),
               cap_resume_utc=now(),alarm_deadline_utc=HARD_CAP_UTC)
         s.event('three-day-queue-resumed',archive=str(archive.relative_to(a.run_dir)),
                 preserved_failure_streak=old.get('failure_streak'),preserved_task_failures=old.get('task_failures'))

@@ -108,10 +108,22 @@ def evaluate_step(task,bundle,base):
                 failed.append('temporary-mission-world-primitives-require-Blender-replacement')
     if 'failure_retry' in checks:
         failed_rows=[r for r in rows if r.get('mission')=='failed' or r.get('health',100)<=0]
+        reset=None;ending=None
         if not failed_rows:failed.append('actual-failure-branch-missing')
-        elif not any(r['time']>failed_rows[0]['time'] and r.get('restarts',0)>failed_rows[0].get('restarts',0)
-                     and r.get('mission') in ('active','complete') for r in rows):failed.append('failure-retry-not-recoverable')
-        if 'complete' not in mission_states:failed.append('retry-does-not-reach-ending')
+        else:
+            first=failed_rows[0]
+            reset=next((r for r in rows if r['time']>first['time']
+                and r.get('restarts',0)>first.get('restarts',0) and r.get('mission')=='active'
+                and any(first['time']<k['time']<=r['time'] and r['time']-k['time']<=.5
+                        and 'R' in k.get('keys',[]) for k in rows)),None)
+            if reset is None:failed.append('failure-retry-not-recoverable')
+            else:
+                ending=next((r for r in rows if r['time']>reset['time'] and r.get('mission')=='complete'
+                             and r.get('restarts',0)==reset.get('restarts',0)),None)
+        if ending is None:failed.append('retry-does-not-reach-ending')
+        facts['failure_retry']={'failure_time':failed_rows[0]['time'] if failed_rows else None,
+                                'reset_time':reset['time'] if reset else None,
+                                'retry_completion_time':ending['time'] if ending else None}
     if 'combat' in checks:
         if not any('Mouse0' in r.get('keys',[]) for r in rows):failed.append('fire-input-missing')
         if max(r.get('shots',0) for r in rows)<1 or max(r.get('hits',0) for r in rows)<1:failed.append('actual-shot-and-hit-missing')
