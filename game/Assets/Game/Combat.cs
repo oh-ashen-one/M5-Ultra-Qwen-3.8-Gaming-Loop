@@ -72,12 +72,21 @@ namespace ChicagoGame
             // physics, then add ONE honest capsule collider so the aim ray and
             // world both recognise a solid, hittable target.
             var prefab = Resources.Load<GameObject>("Generated/player/scene");
-            var go = prefab != null
-                ? Instantiate(prefab)
-                : GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            go.name = "Rival";
-            go.transform.position = RIVAL_SPAWN;
+            var go = new GameObject("Rival");
             go.transform.localScale = Vector3.one;
+            go.transform.rotation = Quaternion.identity;
+            if (prefab != null)
+            {
+                var child = Instantiate(prefab);
+                child.transform.SetParent(go.transform, false);
+                child.transform.localPosition = new Vector3(child.transform.localPosition.x, -0.79f, child.transform.localPosition.z);
+            }
+            else
+            {
+                var cap = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                cap.transform.SetParent(go.transform, false);
+            }
+            go.transform.position = RIVAL_SPAWN;
 
             foreach (var r in go.GetComponentsInChildren<Rigidbody>()) Destroy(r);
             foreach (var c in go.GetComponentsInChildren<Collider>()) Destroy(c);
