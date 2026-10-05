@@ -272,6 +272,8 @@ class ContinuousRunner(Runner):
             if not gate.get('passed'):return {'passed':False,'failure':['accepted-baseline-regression'], 'regressions':results}
         if 'combat' in task.get('checks',[]):
             from loop_controller.combat_checks import FOOT_PROBE,WALL_PROBE,DRIVE_PROBE,inspect_combat_contract
+            from loop_controller.aim_checks import AIM_PROBES,inspect_aim_contract
+            aim_required=task['id'] in ('rough-whole-route','chicago-polish-whole-route')
             for kind,probe in [('foot',FOOT_PROBE),('wall',WALL_PROBE),('driving',DRIVE_PROBE)]:
                 bundle=self.store.root/'evidence'/(ident+'-regression-combat-'+kind)
                 gate=self.engines.unity(self.project,bundle,probe,candidate)
@@ -280,9 +282,26 @@ class ContinuousRunner(Runner):
                     contract=inspect_combat_contract(rows,kind)
                     contract.update(candidate=candidate,evidence=str(bundle.relative_to(self.store.root)),build_id=gate['build_id'])
                     gate.update(combat_contract=contract,passed=contract['passed'],failure=contract.get('failure'))
+                    if gate.get('passed') and aim_required and kind in ('foot','wall'):
+                        events=[json.loads(line) for line in (bundle/'captures/aim-shots.jsonl').read_text().splitlines()]
+                        aim=inspect_aim_contract(events,'aligned' if kind=='foot' else 'wall')
+                        aim.update(candidate=candidate,evidence=str(bundle.relative_to(self.store.root)),build_id=gate['build_id'])
+                        gate.update(aim_contract=aim,passed=aim['passed'],failure=aim.get('failure'))
                 atomic(bundle/'combat-regression-gate.json',gate)
                 results.append({'test':'combat-'+kind,'gate':gate})
                 if not gate.get('passed'):return {'passed':False,'failure':['accepted-combat-regression'],'regressions':results}
+            if aim_required:
+                for kind in ('miss','near-cover'):
+                    bundle=self.store.root/'evidence'/(ident+'-regression-aim-'+kind)
+                    gate=self.engines.unity(self.project,bundle,AIM_PROBES[kind],candidate)
+                    if gate.get('passed'):
+                        events=[json.loads(line) for line in (bundle/'captures/aim-shots.jsonl').read_text().splitlines()]
+                        aim=inspect_aim_contract(events,kind)
+                        aim.update(candidate=candidate,evidence=str(bundle.relative_to(self.store.root)),build_id=gate['build_id'])
+                        gate.update(aim_contract=aim,passed=aim['passed'],failure=aim.get('failure'))
+                    atomic(bundle/'aim-regression-gate.json',gate)
+                    results.append({'test':'aim-'+kind,'gate':gate})
+                    if not gate.get('passed'):return {'passed':False,'failure':['aim-alignment-or-cover-regression'],'regressions':results}
         return {'passed':True,'regressions':results}
 
     def promote(self,task,candidate,bundle,gate,review):
@@ -292,6 +311,10 @@ class ContinuousRunner(Runner):
             raise Halt('Mission promotion requires the automatic world-anchor and input-transition gate')
         if 'combat' in task.get('checks',[]) and not require_combat_contracts(gate):
             raise Halt('Combat promotion requires current-source foot/wall/driving contracts and sustained escape')
+        if task.get('id') in ('rough-whole-route','chicago-polish-whole-route'):
+            from loop_controller.aim_checks import require_aim_contracts
+            if not require_aim_contracts(gate):
+                raise Halt('Whole-route promotion requires current-source aligned hit, intentional miss and wall/near-cover proof')
         records=self.store.get('accepted_queue_features',{})
         record={'candidate':candidate,'scope':task['id'],'accepted_utc':now(),
                 'evidence':str(bundle.relative_to(self.store.root)),'review':review,'final_game_accepted':False}

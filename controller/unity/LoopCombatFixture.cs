@@ -8,7 +8,18 @@ public class LoopCombatFixture : MonoBehaviour
     bool made;
     void Update()
     {
-        if(made || LoopInput.Replay==null || LoopInput.Replay.fixture!="combat-wall" || LoopInput.Elapsed<7f) return;
+        if(made || LoopInput.Replay==null || LoopInput.Elapsed<7f) return;
+        if(LoopInput.Replay.fixture=="combat-near-cover") {
+            var camera=Camera.main;if(camera==null) throw new System.Exception("Near cover requires a real camera");
+            var cover=GameObject.CreatePrimitive(PrimitiveType.Cube);cover.name="CombatNearCover";
+            cover.transform.position=camera.transform.position+camera.transform.forward*.35f;
+            cover.transform.rotation=camera.transform.rotation;
+            cover.transform.localScale=new Vector3(3f,3f,.25f);
+            var shade=new Material(Shader.Find("Standard"));shade.color=new Color(.30f,.35f,.40f);
+            cover.GetComponent<Renderer>().sharedMaterial=shade;
+            Physics.SyncTransforms();made=true;return;
+        }
+        if(LoopInput.Replay.fixture!="combat-wall")return;
         var rival=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
             .FirstOrDefault(m=>m.GetType().Name=="RivalAgent");
         var actor=LoopSignals.Player;
