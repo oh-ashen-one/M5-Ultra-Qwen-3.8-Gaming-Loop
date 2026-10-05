@@ -76,7 +76,7 @@ def gpu_admission(label, external_renderers=0):
                 slot = index
             if not external_renderers:
                 break
-        if slot is None:
+        if slot is None or len(reserved)<min(2,external_renderers+1):
             raise RuntimeError("Shared GPU capture slots occupied")
         process_start = subprocess.check_output(["ps", "-o", "lstart=", "-p", str(os.getpid())], text=True).strip()
         write_state(holder, {"pid": os.getpid(), "start": process_start,

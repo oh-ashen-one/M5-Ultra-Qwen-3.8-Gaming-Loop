@@ -62,8 +62,12 @@ def queue_milestone(store,kind,task,bundle,gate,frames,times,review=None):
 
 def preserve_closeout(runner,reason,deadline_reached):
     store=runner.store
+    try:runtime_snapshot=runner.machine.snapshot()
+    except Exception as error:runtime_snapshot={'capture_error':type(error).__name__+': '+str(error)}
     value={'closed_utc':now(),'reason':reason,'hard_cap_utc':HARD_CAP_UTC,
-        'deadline_reached':deadline_reached,'new_work_allowed':False,
+        'deadline_reached':deadline_reached,'new_work_allowed':False,'runtime_snapshot':runtime_snapshot,
+        'fault_snapshot':store.get('runtime_snapshot'),
+        'stop_class':'capacity-wait' if 'Capacity wait:' in reason else ('deadline' if deadline_reached else 'stopped'),
         'saved_candidate':store.get('source_checkpoint'),
         'best_verified_playable_checkpoint':store.get('last_playable_checkpoint'),
         'latest_evidence':store.get('latest_evidence'),

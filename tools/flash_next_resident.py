@@ -18,6 +18,7 @@ import psutil
 
 from unity_smoke import renderer_process
 from warmup_resident import gpu_admission, session_token, write_state
+from engine_admission import snapshot
 
 
 def main():
@@ -79,6 +80,8 @@ def main():
     child = None
     engine_lease = None
     existing = renderers()
+    baseline=snapshot(args.coordination_dir)['processes']
+    baseline=[p for p in baseline if p.get('renderer')]
     if len(existing) > (1 if args.allow_one_existing_renderer else 0):
         raise RuntimeError("Renderer count exceeds admitted capacity")
     if psutil.virtual_memory().available < 200 * 1024**3:
@@ -124,21 +127,28 @@ def main():
             raise RuntimeError("Desktop session lost")
         if child is not None and child.poll() is not None:
             raise RuntimeError("Owned model server exited")
-        active = renderers()
+        renderers()  # Preserve detection of a competing inference service.
+        observed=snapshot(args.coordination_dir,baseline,engine_lease)
+        state['admission_snapshot']=observed
+        decision=observed['decision']
+        waiting=args.coordination_dir/'capacity-wait.json' if args.coordination_dir else None
+        if decision['status']=='capacity-wait':
+            status=api('/api/status') if child else {}
+            if status.get('active_requests',0) or status.get('waiting_requests',0):
+                raise RuntimeError('Renderer conflict during active inference; snapshot preserved')
+            state['status']='capacity-wait'
+            if waiting:write_state(waiting,{'supervisor_pid':os.getpid(),'status':'capacity-wait',
+                'reason':decision['reasons'],'snapshot':observed})
+            # An idle loaded model needs no renderer slot. Preserve other jobs.
+            admission.close()
+            return False
         if engine_lease:
-            owner = psutil.Process(engine_lease["controller_pid"])
-            if abs(owner.create_time() - engine_lease["controller_start"]) > 0.01:
-                raise RuntimeError("Engine handoff owner identity changed")
-            owned = {p.pid for p in owner.children(recursive=True)}
-            if len(active) > 2 or any(pid not in existing and pid not in owned for pid in active):
-                raise RuntimeError("Engine handoff exceeded renderer ownership/capacity")
             if time.time() > engine_lease["expires_epoch"]:
                 raise RuntimeError("Engine handoff expired")
             status = api("/api/status")
             if status.get("active_requests", 0) or status.get("waiting_requests", 0):
                 raise RuntimeError("Inference overlapped an engine handoff")
-        elif len(active) > 1:
-            raise RuntimeError("Additional renderer exceeds shared capacity")
+        return True
 
     with (root / "resident.lock").open("a+") as mutex:
         fcntl.flock(mutex, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -181,7 +191,7 @@ def main():
                         "--host", "127.0.0.1", "--port", "8027",
                         "--max-concurrent-requests", "1", "--memory-guard-gb", "192",
                         "--no-cache", "--no-hf-cache", "--log-level", "info"]
-                guard()
+                if not guard():raise RuntimeError('Capacity changed before model load; snapshot preserved')
                 with (root / "model-server.log").open("ab") as log:
                     child = subprocess.Popen(argv, cwd=root, env=env, stdin=subprocess.DEVNULL,
                                              stdout=log, stderr=log, start_new_session=True)
@@ -209,6 +219,10 @@ def main():
                         args.coordination_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
                         request = args.coordination_dir / "engine-request.json"
                         ack = args.coordination_dir / "engine-ack.json"
+                        if request.exists() and engine_lease is not None:
+                            refreshed=json.loads(request.read_text())
+                            if refreshed['lease_id']==engine_lease['lease_id']:
+                                engine_lease=refreshed
                         if request.exists() and engine_lease is None:
                             proposal = json.loads(request.read_text())
                             if proposal["expires_epoch"] > time.time() + 1500:
@@ -217,17 +231,35 @@ def main():
                             if abs(owner.create_time() - proposal["controller_start"]) > 0.01:
                                 raise RuntimeError("Invalid engine handoff owner")
                             status = api("/api/status")
-                            if not status.get("active_requests", 0) and not status.get("waiting_requests", 0):
+                            if guard() and not status.get("active_requests", 0) and not status.get("waiting_requests", 0):
                                 admission.close()
                                 engine_lease = proposal
                                 write_state(ack, {"lease_id": proposal["lease_id"], "status": "granted"})
                         elif not request.exists() and engine_lease is not None:
                             # The controller closes its slot locks before withdrawing the request.
-                            shared = admission.enter_context(gpu_admission("m5-flash-next-resident", len(existing)))
                             engine_lease = None
                             ack.unlink(missing_ok=True)
                         state["engine_handoff"] = engine_lease["lease_id"] if engine_lease else None
-                    guard()
+                    available=guard()
+                    if not available:
+                        if args.coordination_dir and engine_lease:
+                            write_state(ack,{'lease_id':engine_lease['lease_id'],'status':'capacity-wait',
+                                'reason':state['admission_snapshot']['decision']['reasons']})
+                        write_state(root/'resident-state.json',state);stopped.wait(2);continue
+                    if args.coordination_dir and engine_lease:
+                        write_state(ack,{'lease_id':engine_lease['lease_id'],'status':'granted'})
+                    elif state.get('status')=='capacity-wait' or state.get('engine_handoff') is None:
+                        # Acquisition is nonblocking. Competing holders/queue mean wait,
+                        # not a model fault. Never remove their records.
+                        admission.close()
+                        try:shared=admission.enter_context(gpu_admission('m5-flash-next-resident',len(existing)))
+                        except (RuntimeError,BlockingIOError) as error:
+                            state['status']='capacity-wait';state['admission_wait_reason']=str(error)
+                            write_state(args.coordination_dir/'capacity-wait.json',{'supervisor_pid':os.getpid(),
+                                'status':'capacity-wait','reason':str(error),'snapshot':snapshot(args.coordination_dir,baseline)})
+                            write_state(root/'resident-state.json',state);stopped.wait(2);continue
+                    state['status']='engine-handoff' if engine_lease else 'loaded-idle'
+                    if args.coordination_dir:(args.coordination_dir/'capacity-wait.json').unlink(missing_ok=True)
                     if (shared / "PAUSED").exists():
                         raise RuntimeError("Shared GPU protocol paused")
                     healthy = api("/health")
@@ -245,6 +277,8 @@ def main():
                 state["status"] = "stopped-by-request"
             except Exception as exc:
                 state.update(status="stopped-on-fault", error=str(exc), error_type=type(exc).__name__)
+                try:state['stop_snapshot']=snapshot(args.coordination_dir,baseline,engine_lease)
+                except Exception as capture_error:state['stop_snapshot_error']=type(capture_error).__name__+': '+str(capture_error)
             finally:
                 if child is not None and child.poll() is None:
                     child.terminate()

@@ -121,6 +121,8 @@ class LocalModel:
             return json.load(response)
 
     def ready(self):
+        if (Path(self.config['coordination_dir'])/'capacity-wait.json').exists():
+            raise Halt('Capacity wait: inference admission paused; preserve the healthy resident service')
         health = self.api("/health")
         state = self.api("/api/status")
         if health.get("status") != "healthy" or health["engine_pool"]["loaded_count"] != 1:
@@ -149,6 +151,8 @@ class LocalModel:
             self.ready()
             for turn in range(turns):
                 self.guard()
+                if (Path(self.config['coordination_dir'])/'capacity-wait.json').exists():
+                    raise Halt('Capacity wait: inference admission paused; preserve resident service')
                 if (Path(self.config["coordination_dir"]) / "engine-request.json").exists():
                     raise Halt("Engine handoff is active; inference is not admitted")
                 bound = conservative_prompt_bound(messages, tools, self.text_counter)

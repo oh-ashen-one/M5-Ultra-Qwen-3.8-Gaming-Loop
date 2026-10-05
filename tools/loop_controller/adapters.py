@@ -52,7 +52,15 @@ class Machine:
         if (hardware, chip) != ("Mac17,15", "Apple M5 Ultra"):
             raise Halt("Heavy work requires the verified M5 Ultra")
 
+    def snapshot(self):
+        from engine_admission import snapshot
+        return snapshot(self.c['coordination_dir'])
+
     def guard(self):
+        waiting=Path(self.c['coordination_dir'])/'capacity-wait.json'
+        if self.child is not None and waiting.exists():
+            self.store.set(runtime_snapshot=self.snapshot())
+            raise Halt('Capacity wait: supervisor paused engine admission; preserve other jobs')
         if self.store.get('three_day_cap'):
             from .delivery_policy import deadline_guard
             deadline_guard(self.store)
@@ -88,11 +96,13 @@ class Machine:
                  "label": label}
         atomic(request, lease)
         try:
-            deadline = time.monotonic() + 30
-            while not ack.exists() or read_json(ack).get("lease_id") != lease["lease_id"]:
+            deadline = time.monotonic() + 60
+            while (not ack.exists() or read_json(ack).get("lease_id") != lease["lease_id"] or
+                   read_json(ack).get('status')!='granted'):
                 self.guard()
                 if time.monotonic() > deadline:
-                    raise Halt("Resident supervisor did not grant engine handoff")
+                    observed=self.snapshot();self.store.set(runtime_snapshot=observed)
+                    raise Halt('Capacity wait: engine handoff not granted; process/lease snapshot preserved')
                 time.sleep(0.5)
             existing = []
             for process in psutil.process_iter(["pid", "exe", "name", "cmdline"]):
@@ -146,6 +156,10 @@ class Machine:
             self.store.report()
             deadline = time.monotonic()+timeout
             try:
+                lease_path=Path(self.c['coordination_dir'])/'engine-request.json'
+                lease=read_json(lease_path)
+                lease.update(engine_pid=child.pid,engine_start=psutil.Process(child.pid).create_time(),engine_pgid=os.getpgid(child.pid))
+                atomic(lease_path,lease)
                 while child.poll() is None:
                     self.guard()
                     if time.monotonic() > deadline:
@@ -168,6 +182,19 @@ class Machine:
                     os.killpg(child.pid, signal.SIGTERM)
                 except ProcessLookupError:
                     pass
+                # Keep the registered lease until its private group has drained.
+                # Reparented helpers retain the group; unrelated groups are untouched.
+                drain=time.monotonic()+10;remaining=[]
+                while time.monotonic()<drain:
+                    remaining=[]
+                    for p in psutil.process_iter(['pid','status']):
+                        try:
+                            if p.pid!=child.pid and os.getpgid(p.pid)==child.pid and p.info['status']!=psutil.STATUS_ZOMBIE:
+                                remaining.append(p.pid)
+                        except (psutil.NoSuchProcess,ProcessLookupError):pass
+                    if not remaining:break
+                    time.sleep(.1)
+                if remaining:self.store.set(engine_group_drain_pending=remaining,runtime_snapshot=self.snapshot())
                 shutil.rmtree(temp)
                 self.store.report()
             return child.returncode
