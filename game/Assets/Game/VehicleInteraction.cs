@@ -14,6 +14,7 @@ namespace ChicagoGame
         CharacterController _cc;
         Follow _follow;
         Rigidbody _rb;
+        BoxCollider _body;
         bool _driving;
         float _speed;
 
@@ -68,6 +69,7 @@ namespace ChicagoGame
             var v = root.AddComponent<VehicleInteraction>();
             v._player = player;
             v._rb = rb;
+            v._body = root.GetComponent<BoxCollider>();
             v._cc = player.GetComponent<CharacterController>();
             v._walker = player.GetComponent<Walker>();
             v._follow = follow;
