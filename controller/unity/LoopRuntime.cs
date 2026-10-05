@@ -18,13 +18,26 @@ public class LoopRuntime : MonoBehaviour
     [Serializable] public class Sample {
         public float time, dt, health; public string mode, mission, graphics;
         public float[] player, vehicle; public string[] keys;
-        public int frame, shots, hits, pursuit, restarts; public bool camera;
+        public int frame, shots, hits, pursuit, restarts; public bool camera, hasController, grounded;
+        public float[] playerScale, playerUp, playerForward;
     }
+    [Serializable] public class ObjectObservation {
+        public string name, kind; public float[] position, lossyScale, up, forward, boundsCenter, boundsSize;
+    }
+    [Serializable] public class SceneObservation { public ObjectObservation[] objects; }
     [Serializable] public class Final { public string capture_id, unity, graphics; public int samples, errors; public float duration; public bool completed; }
     string output, captureId;
     float started, nextSample;
     int samples, errors, captureIndex;
     bool finished;
+    bool observedScene;
+    static float[] Vec(Vector3 v) { return new [] { v.x, v.y, v.z }; }
+    static string Hierarchy(Transform t) { var n=t.name; while(t.parent != null) {t=t.parent;n=t.name+"/"+n;} return n; }
+    static ObjectObservation Observe(Component c, string kind, Bounds b) {
+        return new ObjectObservation {name=Hierarchy(c.transform), kind=kind, position=Vec(c.transform.position),
+            lossyScale=Vec(c.transform.lossyScale), up=Vec(c.transform.up), forward=Vec(c.transform.forward),
+            boundsCenter=Vec(b.center), boundsSize=Vec(b.size)};
+    }
     static string Arg(string key) {
         var args = Environment.GetCommandLineArgs();
         var i = Array.IndexOf(args, key); return i >= 0 && i + 1 < args.Length ? args[i + 1] : null;
@@ -64,13 +77,27 @@ public class LoopRuntime : MonoBehaviour
     {
         if (output == null || finished || LoopInput.Replay == null) return;
         var elapsed = LoopInput.Elapsed;
+        if (!observedScene) {
+            var renderers=UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None)
+                .Take(150).Select(r => Observe(r,"renderer",r.bounds));
+            var colliders=UnityEngine.Object.FindObjectsByType<Collider>(FindObjectsSortMode.None)
+                .Take(150).Select(c => Observe(c,c.GetType().Name,c.bounds));
+            File.WriteAllText(Path.Combine(output,"scene-transforms.json"),JsonUtility.ToJson(
+                new SceneObservation {objects=renderers.Concat(colliders).ToArray()},true));
+            observedScene=true;
+        }
         if (elapsed >= nextSample) {
             nextSample = elapsed + 0.1f;
+            var actor=LoopSignals.Player;
+            var cc=actor == null ? null : actor.GetComponent<CharacterController>();
             var sample = new Sample {time=elapsed, dt=Time.unscaledDeltaTime, frame=Time.frameCount,
                 player=Position(LoopSignals.Player), vehicle=Position(LoopSignals.Vehicle), keys=LoopInput.ActiveKeys,
                 mode=LoopSignals.Mode, mission=LoopSignals.Mission, health=LoopSignals.Health,
                 shots=LoopSignals.Shots, hits=LoopSignals.Hits, pursuit=LoopSignals.PursuitLevel, restarts=LoopSignals.Restarts,
-                camera=Camera.main != null, graphics=SystemInfo.graphicsDeviceType.ToString()};
+                camera=Camera.main != null, graphics=SystemInfo.graphicsDeviceType.ToString(),
+                hasController=cc != null, grounded=cc != null && cc.isGrounded,
+                playerScale=actor == null ? null : Vec(actor.lossyScale),
+                playerUp=actor == null ? null : Vec(actor.up),playerForward=actor == null ? null : Vec(actor.forward)};
             File.AppendAllText(Path.Combine(output, "trace.jsonl"), JsonUtility.ToJson(sample) + "\n"); samples++;
         }
         var captures = LoopInput.Replay.captures;
