@@ -196,8 +196,9 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
                 pad.y = 0f;
                 int d = Mathf.RoundToInt(Vector3.Distance(me, pad));
                 hud.text =
-                    "COURIER: parcel in hand\n" +
-                    "OBJECTIVE: drive to the GREEN pad  (" + d + " m) | remaining: " + Mathf.CeilToInt(Mathf.Max(0, DEADLINE - (Time.time - missionStartTime))) + " s\n" +
+                    "COURIER: parcel in hand - RIVAL PURSUING\n" +
+                    "OBJECTIVE: reach the GREEN pad  (" + d + " m) | remaining: " + Mathf.CeilToInt(Mathf.Max(0, DEADLINE - (Time.time - missionStartTime))) + " s\n" +
+                    "Aim with the view, MOUSE0 fire the rival, or drive off to break pursuit\n" +
                     "WASD move   E enter/exit coupe   F deliver   R reset";
             }
         }

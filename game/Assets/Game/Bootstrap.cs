@@ -91,6 +91,7 @@ namespace ChicagoGame
             var follow = rig.AddComponent<Follow>(); follow.target = body.transform;
             if (coupe != null) VehicleInteraction.Install(body, coupe, follow);
             CourierMission.Install(body, cam);
+            Combat.Install(body, cam);
 
             var sun = new GameObject("Directional Light").AddComponent<Light>();
             sun.type = LightType.Directional;
