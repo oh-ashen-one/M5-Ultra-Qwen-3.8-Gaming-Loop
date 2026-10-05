@@ -31,7 +31,7 @@ namespace ChicagoGame
             foreach (var r in body.GetComponentsInChildren<Rigidbody>()) UnityEngine.Object.Destroy(r);
 
             var p = body.transform.position;
-            if (p.y < 0.05f) body.transform.position = new Vector3(p.x, 0.05f, p.z);
+            body.transform.position = new Vector3(0f, 0.3f, 1.7f);
 
             var cc = body.AddComponent<CharacterController>();
             cc.center = new Vector3(0f, 0.9f, 0f);
