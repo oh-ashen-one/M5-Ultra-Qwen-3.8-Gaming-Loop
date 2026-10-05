@@ -26,3 +26,9 @@ acceptance tests and probe composition are cloud-authored infrastructure.
 
 The repair passes 81 CPU tests. This does not establish a native failure/retry
 PASS or final game quality; actual evidence must follow execution.
+
+Live verification at 18:06:26 UTC: the sole queue resumed at 18:04:46. All six
+local edits saved through `d68f68d`. Native q0017 rejected incorrect API names in
+the failure latch, before gameplay launch. Local Qwen saved its correction at
+18:06:21; q0018 is active with one model request and none waiting. The new rejection
+is retained (one task failure); accepted `ca12a18` and the fixed cap are unchanged.
