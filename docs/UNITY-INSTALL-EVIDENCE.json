@@ -1,0 +1,41 @@
+{
+  "checked_utc": "2026-10-05T01:57:32.402830+00:00",
+  "host": "Apple M5 Ultra / Mac17,15",
+  "hub": {
+    "installed": true,
+    "version": "3.22.2",
+    "architecture": "arm64",
+    "location": "/Applications/Unity Hub.app",
+    "visible_window_observed": true,
+    "signature_valid": true,
+    "Gatekeeper": "accepted / Notarized Developer ID",
+    "sign_in_and_license": "user controlled; unverified"
+  },
+  "editor": {
+    "selected_version": "6000.3.25f1",
+    "stream": "6.3 LTS",
+    "architecture": "arm64",
+    "installer_sha256": "a1f94dff7106242ff2bf648edc0b039bfc5f5160b6115e9d9de8a52113b8d744",
+    "installer_size": 5186642467,
+    "published_md5_match": true,
+    "Developer_ID_Installer_signature_valid": true,
+    "Gatekeeper": "rejected / Unnotarized Developer ID",
+    "package_auth": "Root",
+    "installed": false,
+    "optional_modules": []
+  },
+  "rosetta_receipt_found": false,
+  "agreement_acceptance_by_agent": false,
+  "security_changes": false,
+  "game_loop": "held",
+  "resident": {
+    "status": "loaded-idle",
+    "memory": {
+      "available_GiB": 189.219,
+      "swap_used_GiB": 0.917,
+      "swap_growth_MiB": 0.0
+    }
+  },
+  "hub_main_processes": 1,
+  "unity_editor_processes": 0
+}

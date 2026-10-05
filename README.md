@@ -40,6 +40,7 @@ The [source references](reference/README.md) include selected MIT diagnostic, in
 | [Dependency pins](docs/DEPENDENCY-PINS.json) | Framework refs only; nothing installed |
 | [Runtime readiness](docs/RUNTIME-READINESS.md) | Pinned BF16, exact settings audit, warm-up and remaining launch gates |
 | [Connector evidence](diagnostics/connector-2026-10-05/README.md) | Actual file/shell, original Blender and vision results; Unity/MCP blockers |
+| [Unity installation](docs/UNITY-INSTALL.md) | Verified Hub installation, selected LTS package and user sign-in/admin/license gates |
 | [NPC architecture](docs/NPC-ARCHITECTURE.md) | Legal async decisions, persistent memory, costs and video evidence |
 | [Horror concept](docs/concepts/TOWERING-MONSTER-INVESTIGATION.md) | Separate original monster-investigation discussion |
 | [Decisions](docs/DECISIONS.md) | Confirmed requirements, recommendations, open decisions |
