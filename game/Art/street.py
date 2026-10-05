@@ -70,6 +70,9 @@ for r, z in enumerate((2.10, 4.55, 6.75)):
         box(t + "_glass", (1.00, 0.08, 1.78), (x, -0.12, z), "glass")
         box(t + "_sill", (1.56, 0.38, 0.14), (x, -0.17, z - 1.08), "stone")
         box(t + "_lintel", (1.50, 0.24, 0.26), (x, -0.10, z + 1.16), "stone")
+        # mullion cross: sits proud of the frame so it throws shadow on the glass
+        box(t + "_mullV", (0.10, 0.07, 1.74), (x, -0.19, z), "trim")
+        box(t + "_mullH", (0.96, 0.07, 0.10), (x, -0.19, z), "trim")
 
 for j, x in enumerate((-3.0, 3.0)):
     box("door%02d_surround" % j, (1.46, 0.22, 2.58), (x, -0.09, 1.29), "stone")
@@ -92,6 +95,17 @@ for bi, x in enumerate((-4.5, -1.5)):
             box(p + "_bal%d" % s, (0.05, 0.05, 0.90), (x - 0.72 + s * 0.36, 0.98, z + 0.50), "steel")
         box(p + "_bracket", (0.10, 1.00, 0.10), (x, 0.50, z - 0.34), "steel", rx=0.35)
         box(p + "_ladder", (0.50, 0.07, 1.90), (x, 0.58, z - 0.95), "steel", rx=0.45)
+
+# ---- facade relief: projecting piers divide the wall into repeated bays and
+#      throw vertical cast shadows; a segmented planter strip anchors the base.
+#      All sit within the near-wall sidewalk strip so the route is unobstructed.
+for pi, px in enumerate((-6.0, 0.0, 6.0)):
+    box("pier%02d" % pi, (0.60, 0.34, H - 0.70), (px, -0.15, (H - 0.70) / 2 + 0.10), "brick")
+    box("pier%02d_cap" % pi, (0.74, 0.46, 0.18), (px, -0.20, H - 0.62), "stone")
+for pxi, px in enumerate((-5.0, 0.0, 5.0)):
+    w = 3.40 if pxi == 1 else 1.70
+    box("planter%02d_curb" % pxi, (w, 0.55, 0.46), (px, -0.42, 0.23), "stone")
+    box("planter%02d_soil" % pxi, (w - 0.22, 0.40, 0.10), (px, -0.42, 0.46), "wood")
 
 box("sidewalk", (W + 2.0, 3.20, 0.14), (0, -1.70, 0.07), "concrete")
 box("curb", (W + 2.0, 0.22, 0.18), (0, -3.32, 0.09), "concrete")
