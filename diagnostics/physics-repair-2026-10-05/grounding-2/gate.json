@@ -1,0 +1,22 @@
+{
+  "build_exit": 0,
+  "build_id": "5bb6a06f0a31f48ebe7ef4cf679c1a7bf157d47c77158772f4def5798296ddc2",
+  "candidate_commit": "43e336c30e90ed5c1ed56f5af3142368dd2586eb",
+  "capture_id": "grounding-2",
+  "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+  "compile_errors": [],
+  "coverage": "foundation",
+  "displacement_axes": "horizontal XZ",
+  "duration": 16.01212501525879,
+  "failure": null,
+  "frame_count": 4,
+  "harness_sha256": "c4c364fee812c5d9fbdcc96f2c55ddd2b638772cb88e3611f060b5c06e5101c5",
+  "passed": true,
+  "performance_claim": "unqualified; shared renderer and capture overhead",
+  "player_displacement": 19.014,
+  "player_exit": 0,
+  "player_vertical_drop": 0.158,
+  "samples": 137,
+  "stationary_grounded": true,
+  "vehicle_displacement": 0
+}

@@ -1,0 +1,5 @@
+{
+  "next_fix": "After movement, the player stands alone in an empty brown void with no structures. Extend street/building facades and grounding along the walked path so the camera always frames the upright player beside a readable building.",
+  "ok": true,
+  "verdict": "FIX"
+}
