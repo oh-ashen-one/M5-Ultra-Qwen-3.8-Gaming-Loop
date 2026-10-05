@@ -18,10 +18,11 @@ public class LoopAimObservation : MonoBehaviour
     }
     [Serializable] public class Shot {
         public int frame, shotsBefore, shotsAfter, hitsBefore, hitsAfter, restarts;
-        public float time;
+        public float time, firstRayDistance;
         public string mode, firstRayCollider;
         public string[] keys, originOverlaps085;
         public float[] cameraPosition, cameraForward;
+        public float[] firstRayPoint, firstRayBoundsCenter, firstRayBoundsSize;
         public Target[] targets;
     }
     Shot before;
@@ -67,6 +68,10 @@ public class LoopAimObservation : MonoBehaviour
             shotsBefore=LoopSignals.Shots,hitsBefore=LoopSignals.Hits,restarts=LoopSignals.Restarts,
             cameraPosition=Vec(ray.origin),cameraForward=Vec(ray.direction),targets=targets,
             firstRayCollider=first!=null?first.name:null,
+            firstRayDistance=first!=null?hits[0].distance:-1f,
+            firstRayPoint=first!=null?Vec(hits[0].point):null,
+            firstRayBoundsCenter=first!=null?Vec(first.bounds.center):null,
+            firstRayBoundsSize=first!=null?Vec(first.bounds.size):null,
             originOverlaps085=Physics.OverlapSphere(ray.origin,.85f,~0,QueryTriggerInteraction.Ignore)
                 .Where(c=>!Within(c.transform,LoopSignals.Player) && !Within(c.transform,actor)).Select(c=>c.name).Distinct().ToArray()};
     }

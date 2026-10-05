@@ -5,6 +5,7 @@ import unittest
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from loop_controller.aim_checks import inspect_aim_contract,require_aim_contracts
 from resume_aim_qualification import validate_aim_pause,SOURCE,ACCEPTED
+from resume_cover_evidence import validate_cover_pause
 from loop_controller.core import Halt
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 
@@ -17,6 +18,14 @@ def shot(hit=False,aligned=False,wall=None):
 
 
 class AimContractTests(unittest.TestCase):
+    def test_cover_recovery_preserves_failed_review_and_counters(self):
+        state=dict(last_playable_checkpoint=ACCEPTED,task_index=6,task_failures=4,failure_streak=2,
+            overall_deadline_epoch=HARD_CAP_EPOCH,blocker='Halt: Requested stop',aim_review={'verdict':'UNVERIFIED'})
+        prior=copy.deepcopy(state);validate_cover_pause(state);self.assertEqual(state,prior)
+        for key,value in [('task_failures',0),('failure_streak',0),('blocker','resource fault'),
+                          ('aim_review',{'verdict':'PASS'}),('task_index',7)]:
+            with self.subTest(key=key),self.assertRaises(Halt):validate_cover_pause({**state,key:value})
+
     def test_recovery_admits_only_the_preserved_boundary(self):
         state=dict(source_checkpoint=SOURCE,last_playable_checkpoint=ACCEPTED,task_index=6,
             task_failures=3,failure_streak=1,overall_deadline_epoch=HARD_CAP_EPOCH,blocker='Halt: Requested stop')
