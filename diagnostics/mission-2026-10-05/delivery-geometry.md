@@ -73,3 +73,16 @@ counters. It requests no new inference, gameplay edit or native retry. Only a
 validated existing PASS can restore the exact tested game tree, promote the
 milestone and advance the authorized queue; counter reset then belongs to normal
 successful promotion. Ninety CPU tests cover these boundaries.
+
+At **19:03:12 UTC**, revalidation succeeded. The original review remained a scoped
+PASS with all five fixes retained. The exact native-tested game tree was restored
+and promoted as **`81659ed`**, and the sole queue advanced to combat/pursuit. There
+was no new inference or gameplay retry. The accepted milestone retains all three
+confirmed private Library image identities.
+
+The review explicitly leaves two additional proof gaps: expiry while carrying
+the parcel, and expiry after displacing the car followed by physical R restoration.
+Current evidence establishes idle expiry, reset, a real pickup/drive/delivery
+retry, and separate motor/courier regressions. It does not establish those combined
+failure conditions or final visual quality. Presentation changes should preserve
+the measured reachable approach unless a replacement is qualified with real input.

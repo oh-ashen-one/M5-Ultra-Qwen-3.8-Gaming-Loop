@@ -73,7 +73,7 @@
   "duration": 52.0,
   "frame_count": 9,
   "evidence": "q0023-7c24fc89",
-  "verified_utc": "2026-10-05T18:55:02.720851+00:00",
+  "verified_utc": "2026-10-05T19:03:31.768288+00:00",
   "regressions": [
     {
       "evidence": "q0023-7c24fc89-regression-courier",
@@ -127,11 +127,35 @@
       "replay_seconds": 47.2
     }
   ],
-  "fresh_local_review": "in progress",
+  "fresh_local_review": {
+    "fixes": [
+      "Prove inventory reset on failure: the replay fails while the player is empty-handed (fail at 30.08s precedes any pickup), so 'R clears carried objective inventory' is never exercised. Make the failure-path replay grab the YELLOW parcel first, let the timer expire while carrying it, then press R and show the HUD reverts to 'grab the parcel' with the cube back in the world.",
+      "Prove actor reset inside the failed path: all vehicle displacement (17.38m) occurs after the reset, so the frames never show a displaced car being restored. In the failure replay, drive the coupe some distance, fail the timer, and confirm the car (and player) snap back to spawn after R, similar to the motor gate's reset_positions_and_state evidence.",
+      "Fix the delivery-pad placement/geometry: at frame-007 the green beam passes straight through the parked coupe's cabin and the car is jammed against the building at the pad (pad at x\u22481.0, z\u224826 hug the wall). Move the pad into open pavement and render it as a flat disc with a thinner/no beam intersecting the vehicle, leaving a clear approach gap.",
+      "Make the deadline legibly predictable: the countdown is small static text; add an escalating cue (color change / larger numerals under ~10s) so a player can see the fail condition approaching, and keep the MISSION FAILED panel visually distinct (e.g., red accent) from the active/completion panels.",
+      "Polish roadmap toward the target: textured brick/facade materials, curbs and sidewalk detail, a sky with warm directional lighting and long shadows, distant skyline silhouette, and street dressing (parked cars, pedestrians, elevated rail) \u2014 the current grey-box with void horizon is the dominant gap versus the reference image, though mechanics-level art is acceptable this phase."
+    ],
+    "ok": true,
+    "summary": "Scoped checks (mission_complete, failure_retry) are supported by both the trace and the native frames. Pre-reset (frame-000, t=3.2s) shows an active courier objective with a live countdown (\"reach the parcel (4 m) [27s]\"). The timer genuinely expires (failure_time 30.08s) while idle, and frame-002 (t=31.0s) shows a readable \"MISSION FAILED \u2014 Ran out of time to grab & deliver the parcel / Press R to retry\" panel, satisfying \"communicate why and how to retry.\" Post-reset frame-003 (t=32.5s, reset at 32.03s) shows the objective back to \"reach the parcel (4 m) [30s]\" with the yellow parcel present, confirming timer and objective state reset. The replay then proceeds via normal input: pickup at 39.4s (frame-005, t=39.9s, \"parcel in hand\", contextual \"F deliver\" hint), drive-to-pad state, and completion at 46.3s (frame-007, t=47.2s, \"DELIVERY COMPLETE\") with restarts=1 in the trace \u2014 no shortcut branch, and the 30s budget is human-usable (retry finished in ~14s of the 30s window). Readability of the HUD panels is adequate. Regressions (walk/world/motor/courier) all pass. Caveats: the two proof gaps below, and the large visual gap to the Chicago target (grey void horizon, flat untextured blocks) is deferred polish, acceptable for early mechanics but far from reference quality. Final game acceptance is not established by this scoped pass.",
+    "verdict": "PASS"
+  },
   "final_visual_quality_accepted": false,
   "visible_problems": [
     "Blockout art and crude character",
     "Flat materials and lighting",
     "Oversized bright beacon obscures completion view"
+  ],
+  "accepted_checkpoint": "81659edb371a6b961d2e09983d88140b9c73d4ff",
+  "accepted_utc": "2026-10-05T19:03:12.121195+00:00",
+  "review_revalidation": {
+    "original_verdict": "pass",
+    "canonical_verdict": "PASS",
+    "new_inference": false,
+    "new_game_attempt": false,
+    "reason": "Verdict casing alone caused original tool validation rejection; original native evidence and image hashes rechecked."
+  },
+  "additional_proof_gaps": [
+    "Timeout while already carrying a parcel has not been exercised.",
+    "Failure after displacing the car, followed by R actor reset, has not been exercised in this failure route."
   ]
 }
