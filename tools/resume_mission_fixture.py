@@ -56,6 +56,7 @@ def main(runner_class=FixtureResume):
         archive=args.run_dir/'replay-stops'/uuid.uuid4().hex;archive.mkdir(parents=True)
         with sqlite3.connect(archive/'state.sqlite3') as saved:store.db.backup(saved)
         atomic(archive/'status.json',state)
+        if hasattr(runner,'prepare_resume'):runner.prepare_resume(state,archive)
         original=runner.machine.guard
         def guard():
             original()
