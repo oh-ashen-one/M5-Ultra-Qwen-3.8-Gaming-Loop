@@ -223,6 +223,8 @@ namespace ChicagoGame
                 Respawn();
             }
 
+            if ((stage == 0 || stage == 1) && Time.time - missionStartTime >= DEADLINE) { stage = 3; Set(Mission, MissionState.Failed); Set(MissionComplete, false); }
+            if (stage == 3) { RefreshHud(); return; }
             // Animate parcel when in world.
             if (stage == 0 && parcel != null)
             {
