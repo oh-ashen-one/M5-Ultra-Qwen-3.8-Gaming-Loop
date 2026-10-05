@@ -24,8 +24,9 @@ class ElementaryRunner(Runner):
             result=files.read(f['path'],f.get('start_line',1),count)
             reads.setdefault(f['path'],[]).append(result);return result
         def submit(_,f):
-            if f['kind'] not in ('replace','create') or len(f['goal'].split())>40:raise ValueError('One replace/create goal, at most 40 words')
-            if f['operation'] not in ('assignment','call','module'):raise ValueError('Choose one assignment, one call, or a tiny new module')
+            if f['kind'] not in ('replace','create'):raise ValueError('kind must be exactly replace or create')
+            if len(f['goal'].split())>40:raise ValueError('goal must contain at most 40 words')
+            if f['operation'] not in ('assignment','call','module'):raise ValueError('operation must be exactly assignment, call, or module')
             files.path(f['path'],write=True)
             if not f['path'].startswith('Assets/Game/') or not f['path'].endswith('.cs'):raise ValueError('Runtime C# only')
             if f['kind']=='replace':
@@ -51,13 +52,15 @@ class ElementaryRunner(Runner):
             if candidate.is_relative_to(self.store.root.resolve()) and candidate.is_file():
                 value=read_json(candidate)
                 observed={k:value.get(k) for k in ('largest_street_renderers','player_visual_bounds','stationary_first','colliders')}
-        self.store.set(stage='local-micro-plan',current_task='Choose one elementary edit for: '+task['outcome']);self.store.report()
+        self.store.set(stage='local-micro-plan',current_micro_plan=None,current_task='Choose one elementary edit for: '+task['outcome']);self.store.report()
         self.c.update(output_tokens=4096,model_timeout_seconds=200)
         plan=self.model.session('planner',round_id+'-micro-plan',
             'You are the local game planner. Select ONE elementary C# change, then call submit_plan. Do not write code or a long design.',
             'Choose exactly one field/property assignment or one method call in at most two selected old lines; '
             'the replacement permits at most four lines. A genuinely new module may have at most 12 lines. '
             'No grids, rings, loops, repeated instantiation, or compound multi-object tasks. '
+            'submit_plan requires literal kind="replace" with operation="assignment" or "call" for existing lines; '
+            'a new file uses kind="create" and operation="module". Use exactly these enum values. '
             'Keep the goal at most 40 words. Prioritize one actual failure below. Preserve verified grounding. '
             'For framing, change one camera parameter or place ONE existing object; no new art. '
             'Existing Resources paths: Generated/street/scene, Generated/player/scene, Generated/coupe/scene, Generated/props/scene. '
@@ -65,9 +68,14 @@ class ElementaryRunner(Runner):
             '\nMeasured world bounds:\n'+json.dumps(observed)+
             '\nSource inventory:\n'+json.dumps(inventory)+'\nExact available excerpts:\n'+json.dumps(excerpts),
             [tool('read_file','Read one exact C# section, at most 80 lines; result includes total_lines.',{'path':S,'start_line':I,'line_count':I},['path']),
-             tool('submit_plan','Select one assignment/call, or a new tiny module; do not return code.',{'kind':S,'operation':S,'path':S,'start_line':I,'end_line':I,'goal':S})],
+             tool('submit_plan','Select one assignment/call, or a new tiny module; do not return code.',
+                  {'kind':{'type':'string','enum':['replace','create']},
+                   'operation':{'type':'string','enum':['assignment','call','module']},
+                   'path':S,'start_line':I,'end_line':I,'goal':S})],
             {'read_file':read,'submit_plan':submit},turns=4)
-        if not plan.get('ok'):return {'bounded_stop':'micro-plan','summary':'No qualified elementary plan; preserve source'}
+        if not plan.get('ok'):
+            self.store.event('micro-plan-format-stopped',outcome=plan,action='Inspect tool schema and errors; no identical automatic retry')
+            raise Halt('Planner submitted no valid tiny plan; inspect tool-format errors before another request')
         self.store.event('local-micro-plan',plan_kind=plan['kind'],operation=plan['operation'],
                          **{k:plan[k] for k in ('path','start_line','end_line','goal')})
         self.store.set(current_micro_plan=plan,stage='local-micro-edit');self.store.report()

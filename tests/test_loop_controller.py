@@ -41,6 +41,9 @@ class ControllerTests(unittest.TestCase):
         def session(role,action,system,prompt,tools,dispatch,turns,**kwargs):
             calls.append(role)
             if role=='planner':
+                schema=next(t for t in tools if t['function']['name']=='submit_plan')['function']['parameters']['properties']
+                self.assertEqual(schema['kind']['enum'],['replace','create'])
+                self.assertEqual(schema['operation']['enum'],['assignment','call','module'])
                 return dispatch['submit_plan'](action,{'kind':'replace','operation':'assignment','path':path,
                     'start_line':11,'end_line':11,'goal':'Change the selected fixture line.'})
             self.assertIn('original line 11',prompt)
@@ -128,6 +131,20 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(result['fields']['content']['tool_open_markers'],1)
         self.assertEqual(result['fields']['reasoning_content']['closing_think_markers'],1)
         self.assertNotIn('private',json.dumps(result));self.assertNotIn('secret',json.dumps(result))
+
+    def test_tool_enum_errors_list_exact_supported_values(self):
+        schema=tool('submit_plan','fixture',{'kind':{'type':'string','enum':['replace','create']}})
+        with self.assertRaisesRegex(ValueError,'replace, create'):
+            typed_arguments({'name':'submit_plan','arguments':{'kind':'edit'}},[schema])
+        self.assertEqual(typed_arguments({'name':'submit_plan','arguments':{'kind':'replace'}},[schema]),{'kind':'replace'})
+
+    def test_invalid_micro_plan_stops_before_editor_or_repeated_job(self):
+        runner=ElementaryRunner.__new__(ElementaryRunner)
+        runner.project=self.project;runner.store=self.store;runner.c={};calls=[]
+        runner.model=SimpleNamespace(session=lambda role,*args,**kwargs:calls.append(role) or {'bounded_stop':'turns'})
+        with self.assertRaisesRegex(Halt,'inspect tool-format errors'):
+            runner.builder({'phase':'foundation','outcome':'Fixture'},'invalid-plan','brief')
+        self.assertEqual(calls,['planner'])
 
     def test_stationary_preflight_rejects_unstable_scaled_or_tilted_physics(self):
         bundle=self.root/'observed';capture=bundle/'captures';capture.mkdir(parents=True)

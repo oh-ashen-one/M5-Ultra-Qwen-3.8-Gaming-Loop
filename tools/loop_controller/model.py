@@ -48,6 +48,8 @@ def typed_arguments(function, tools):
         if kind == "string" and not isinstance(value, str): raise ValueError(field + " requires text")
         if kind == "integer" and (isinstance(value, bool) or not isinstance(value, int)): raise ValueError(field + " requires an integer")
         if kind == "number" and (isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value)): raise ValueError(field + " requires a finite number")
+        if "enum" in schema and value not in schema["enum"]:
+            raise ValueError(field + " must be one of: " + ", ".join(map(str, schema["enum"])))
         return value
     return convert(function["arguments"], definition["parameters"], function["name"])
 
