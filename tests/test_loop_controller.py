@@ -40,6 +40,27 @@ class ControllerTests(unittest.TestCase):
         with self.assertRaises(ValueError):self.files.edit("b","Assets/Game/A.cs",sha(b""),content="second")
         self.assertEqual((self.project/"Assets/Game/A.cs").read_text(),"first")
 
+    def test_create_needs_no_hash_and_never_overwrites_existing_paths(self):
+        result=self.files.create("new","Assets/Game/A.cs","original")
+        self.assertTrue(result["ok"])
+        for path in ("Assets/Game/A.cs","Assets/Game/Empty.cs"):
+            if path.endswith("Empty.cs"):(self.project/path).write_text("")
+            before=(self.project/path).read_bytes()
+            with self.assertRaises(ValueError):self.files.create(path,path,"replacement")
+            self.assertEqual((self.project/path).read_bytes(),before)
+
+    def test_create_reconciles_committed_bytes_after_interruption(self):
+        path="Assets/Game/A.cs";content="created before crash"
+        self.store.begin_action("new","source-create",{"path":path,"before":"absent","after":sha(content.encode())})
+        atomic(self.project/path,content.encode(),raw=True,exclusive_target=True)
+        result=self.files.create("new",path,content)
+        self.assertTrue(result["reconciled"]);self.assertFalse(self.store.incomplete())
+
+    def test_atomic_creation_refuses_concurrent_target_and_cleans_its_temp(self):
+        p=self.project/"existing.cs";p.write_text("preserve")
+        with self.assertRaises(FileExistsError):atomic(p,b"overwrite",raw=True,exclusive_target=True)
+        self.assertEqual(p.read_text(),"preserve");self.assertFalse(list(self.project.glob("*.tmp")))
+
     def test_crash_between_write_and_action_commit_reconciles(self):
         path="Assets/Game/A.cs";after="result"
         self.store.begin_action("a","source-edit",{"path":path,"before":sha(b""),"after":sha(after.encode())})
@@ -202,7 +223,8 @@ class ControllerTests(unittest.TestCase):
             self.assertNotIn("run_blender",dispatch)
             self.assertNotIn("run_blender",[t["function"]["name"] for t in tools])
             with self.assertRaises(ValueError):dispatch["write_file"]("art",{"path":"Art/new.py","expected_sha256":sha(b""),"content":"bad"})
-            result=dispatch["write_file"]("runtime",{"path":"Assets/Game/Bootstrap.cs","expected_sha256":sha(b""),"content":"// runtime fixture"})
+            with self.assertRaises(ValueError):dispatch["create_file"]("art-create",{"path":"Art/new.py","content":"bad"})
+            result=dispatch["create_file"]("runtime",{"path":"Assets/Game/Bootstrap.cs","content":"// runtime fixture"})
             self.assertTrue(result["ok"])
             return {"ok":True}
         runner.model=SimpleNamespace(session=session)
