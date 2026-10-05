@@ -63,6 +63,22 @@ class ControllerTests(unittest.TestCase):
         obj['enabled']=False;self.assertFalse(evaluate()['passed'])
         obj['enabled']=True;obj['boundsCenter'][1]=4;self.assertFalse(evaluate()['passed'])
 
+    def test_recover_exact_local_proposal_without_new_inference(self):
+        runner=self.source_runner();runner.guard=lambda:None
+        files=Files(runner.project,self.store);path='Assets/Game/Bootstrap.cs'
+        original='before\nselected fixture\nafter\n';files.create('seed-proposal',path,original)
+        before=runner.checkpoint_source('prior exact source')
+        proposal='selected fixture\n'+''.join('local proposal %d\n'%i for i in range(14))
+        atomic(self.store.root/'private/sessions/corridor-direct/response-000.json',
+            {'choices':[{'message':{'tool_calls':[{'function':{'name':'edit_selected_span','arguments':json.dumps({'content':proposal})}}]}}]})
+        self.store.set(recover_local_proposal=True,source_checkpoint=before)
+        runner.model=SimpleNamespace(session=lambda *a,**k:self.fail('Recovery must not request inference'))
+        candidate=DirectRunner.edit(runner,'corridor','Recover exact local proposal',anchor='selected fixture')
+        self.assertNotEqual(candidate,before)
+        self.assertEqual((runner.project/path).read_text(),original.replace('selected fixture\n',proposal))
+        self.assertFalse(self.store.get('recover_local_proposal'))
+        self.assertIsNone(self.store.get('accepted_checkpoint'))
+
     def test_subfeature_does_not_promote_final_quality_or_repeat_progress_credit(self):
         gate={'passed':True,'stationary_grounded':True,'frame_count':4,'player_displacement':19}
         review={'ok':True,'verdict':'PASS','camera_readable':True,'car_visible':True,'continuous_paving':True}

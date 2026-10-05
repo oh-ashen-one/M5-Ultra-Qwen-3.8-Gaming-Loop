@@ -10,7 +10,7 @@ import time
 from inspect_and_repair_grounding import grounding_scenario, summarize
 from loop_controller.core import Files,Halt,atomic,exclusive,now,read_json,seal,sha,verify_seal
 from loop_controller.features import accept_subfeature,pavement_coverage
-from loop_controller.model import tool
+from loop_controller.model import tool,typed_arguments
 from loop_controller.runner import Runner,git
 from loop_controller.small_edits import SelectedEdit
 
@@ -52,10 +52,26 @@ class DirectRunner(Runner):
                 '\nEXACT SELECTED SPAN:\n'+selected+'\nCURRENT BOOTSTRAP CONTEXT:\n'+context)
         if ident=='vehicle-install':
             prompt+='\nEXACT NEW MODULE:\n'+files.read('Assets/Game/VehicleInteraction.cs',line_count=100)['content']
-        outcome=self.model.session('builder',ident+'-direct',
-            'You are local Qwen, the substantive C# author. Save the one concrete mechanical edit first.',prompt,
-            [tool('edit_selected_span','Save the exact selected span or designated new module; hash/scope are enforced.',{'content':S})],
-            {'edit_selected_span':dispatch},turns=1,reasoning_effort='low')
+        schema=tool('edit_selected_span','Save the exact selected span or designated new module; hash/scope are enforced.',{'content':S})
+        if ident=='corridor' and self.store.get('recover_local_proposal'):
+            # The first save was rejected solely for 15 lines versus 14. Reuse
+            # only its submitted tool argument, never its private reasoning.
+            response=read_json(self.store.root/'private/sessions/corridor-direct/response-000.json')
+            calls=response['choices'][0]['message'].get('tool_calls',[])
+            if len(calls)!=1 or calls[0]['function']['name']!='edit_selected_span':raise Halt('Expected one local selected-edit proposal')
+            fields=typed_arguments(calls[0]['function'],[schema])
+            if len(fields['content'].splitlines())!=15:raise Halt('Recovery applies only to the diagnosed fifteen-line proposal')
+            edit=SelectedEdit(files,path,matches[0]+1,matches[0]+1,16)
+            if git(self.repo,'rev-parse','HEAD')!=self.store.get('source_checkpoint'):raise Halt('Source checkpoint changed before recovery')
+            if git(self.repo,'show','HEAD:game/'+path)!=files.path(path).read_text().strip():raise Halt('Uncommitted source changed before proposal recovery')
+            outcome=edit.apply('corridor-recover-local-proposal',fields['content'])
+            self.store.event('local-proposal-recovered',original_session='corridor-direct',lines=15,
+                exact_tool_payload=True,new_inference=False,hash_check_preserved=True)
+            self.store.set(recover_local_proposal=False)
+        else:
+            outcome=self.model.session('builder',ident+'-direct',
+                'You are local Qwen, the substantive C# author. Save the one concrete mechanical edit first.',prompt,
+                [schema],{'edit_selected_span':dispatch},turns=1,reasoning_effort='low')
         if not files.path(path).exists() or sha(files.path(path).read_bytes())==before:
             self.store.event('direct-edit-stopped',task_id=ident,bounded_stop=outcome.get('bounded_stop'),saved=False)
             raise Halt('Direct local edit saved no change; diagnose before any retry')
@@ -121,8 +137,7 @@ class DirectRunner(Runner):
             'commit','-m','Record limited verified subfeature: '+ident+'\n\nEvidence metadata: cloud controller; game source: local Qwen. Final game acceptance remains open.')
         self.store.set(source_checkpoint=git(self.repo,'rev-parse','HEAD'),stage='subfeature-accepted');self.store.report()
 
-    def work(self):
-        self.model.ready();self.guard()
+    def corridor(self):
         self.edit('corridor',
             'Preserve this street-position assignment, then instance ONLY an existing sidewalk mesh with its material as a '
             'continuous visible pavement/road apron. Existing two Street modules coverZ0..28 but sidewalk width is onlyX-0.8..2.4. '
@@ -131,8 +146,22 @@ class DirectRunner(Runner):
             'building. Preserve imported FBX basis when cloning, and account for its world/local scale axes when fitting bounds. '
             'Name the rendered clone Pavement. Do not alter existing colliders, player, camera, car or props. No new primitive/art. '
             'A small bounded search of child renderers is allowed. This must immediately instantiate a visible surface; no unused helper.',
-            anchor='street.transform.position = new Vector3(-0.9f, 0f, 7f);',max_lines=14)
-        bundle,gate=self.native('corridor',grounding_scenario())
+            anchor='street.transform.position = new Vector3(-0.9f, 0f, 7f);',max_lines=20)
+        return self.native('corridor',grounding_scenario())
+
+    def work(self):
+        self.model.ready();self.guard()
+        if self.store.get('repair_pavement_axis'):
+            self.edit('corridor-axis',
+                'Change only this local-scale assignment. Actual native Pavement bounds are worldX0.140002,Y7,Z32 metres; '
+                'it is vertical instead of flat. The imported mesh localX maps to worldZ, localY maps to negative worldX, '
+                'and localZ maps to worldY (measured up=-X,forward=+Y). Required bounds are worldX7,Y0.14,Z32. '
+                'Use these measured axis mappings and existing sharedMesh bounds to correct the one scale assignment. '
+                'Preserve position, imported rotation, mesh/material, camera, colliders and all other code.',
+                anchor='var ls = new Vector3(',max_lines=1)
+            self.store.set(repair_pavement_axis=False)
+            bundle,gate=self.native('corridor-axis',grounding_scenario())
+        else:bundle,gate=self.corridor()
         coverage=pavement_coverage(bundle);atomic(bundle/'pavement-coverage.json',coverage)
         self.store.set(pavement_coverage=coverage);self.store.report()
         if not coverage['passed']:raise Halt('Rendered pavement bounds do not cover the unchanged full route with clearance')
@@ -172,24 +201,47 @@ def main():
     parser.add_argument('--previous-run',type=Path,required=True)
     parser.add_argument('--run-dir',type=Path,required=True)
     parser.add_argument('--authorize-bounded-continuation',action='store_true')
+    parser.add_argument('--recover-local-proposal',action='store_true')
+    parser.add_argument('--repair-pavement-axis',action='store_true')
     a=parser.parse_args()
     if not a.authorize_bounded_continuation:parser.error('Current parent authorization required')
     os.umask(0o077)
-    if a.run_dir.exists():raise Halt('Fresh attempt requires a new ledger; preserve every previous run')
+    recovering=a.recover_local_proposal or a.repair_pavement_axis
+    if a.run_dir.exists() and not recovering:raise Halt('Fresh attempt requires a new ledger; preserve every previous run')
     old=read_json(a.previous_run/'status.json')
     if old.get('controller_pid') or old['status']!='paused':raise Halt('Previous sole owner must be stopped')
     c=read_json(a.previous_run/'private-config.json')
     known=read_json(a.previous_run/old['latest_evidence']/'grounding-gate.json')
-    if not known.get('stationary_grounded') or known['candidate_commit']!=git(Path(c['game_repository']),'rev-parse','HEAD'):
+    if not known.get('stationary_grounded') or (not recovering and known['candidate_commit']!=git(Path(c['game_repository']),'rev-parse','HEAD')):
         raise Halt('Current source must match the previous grounded candidate')
     hashes={name:sha((a.previous_run/name).read_bytes()) for name in ('state.sqlite3','status.json')}
     started=time.time();deadline=min(started+3600,old['overall_deadline_epoch'])
     if deadline<=started:raise Halt('Overall authorization ceiling expired')
     c.update(wall_hours=1,verified_progress_minutes=20,output_tokens=8192,planner_output_tokens=16384,
              planner_timeout_seconds=600,model_timeout_seconds=300,csharp_only=True)
-    a.run_dir.mkdir(mode=0o700);atomic(a.run_dir/'private-config.json',c)
+    if not recovering:
+        a.run_dir.mkdir(mode=0o700);atomic(a.run_dir/'private-config.json',c)
+    else:c=read_json(a.run_dir/'private-config.json')
     r=DirectRunner(a.run_dir,c);s=r.store
-    s.set(started_epoch=started,started_utc=now(),attempt_deadline_epoch=deadline,
+    if recovering:
+        if s.get('controller_pid') or s.get('status')!='paused' or s.get('source_checkpoint')!=git(r.repo,'rev-parse','HEAD'):
+            raise Halt('Expected the stopped current candidate')
+        if a.recover_local_proposal and s.get('source_checkpoint')!=known['candidate_commit']:
+            raise Halt('Exact proposal recovery requires the original unchanged source')
+        if a.repair_pavement_axis:
+            latest=read_json(a.run_dir/s.get('latest_evidence')/'grounding-gate.json')
+            if not latest.get('stationary_grounded') or latest['candidate_commit']!=s.get('source_checkpoint'):
+                raise Halt('Axis correction requires current native grounding evidence')
+        started=s.get('started_epoch');deadline=s.get('attempt_deadline_epoch')
+        if time.time()>=min(deadline,started+1200):raise Halt('Original fresh-attempt bounds expired')
+        s.set(recover_local_proposal=a.recover_local_proposal,repair_pavement_axis=a.repair_pavement_axis,
+              controller_pid=os.getpid(),status='running',blocker=None)
+        s.event('bounded-diagnosed-recovery',reason=('Measured native pavement axes require one scale assignment' if a.repair_pavement_axis
+                else 'Exact local tool proposal has15lines; allow16 preserving hash and source scope'),
+                original_deadline_unchanged=True,original_inference_record_unchanged=True)
+        if a.repair_pavement_axis:
+            bounds=s.get('bounds');bounds['diagnosed_axis_correction_edits']=1;s.set(bounds=bounds)
+    else:s.set(started_epoch=started,started_utc=now(),attempt_deadline_epoch=deadline,
           overall_deadline_epoch=old['overall_deadline_epoch'],previous_run=a.previous_run.name,
           previous_record_sha256=hashes,source_checkpoint=known['candidate_commit'],
           final_acceptance_tasks=old['tasks'],accepted_checkpoint=None,accepted_subfeatures={},
