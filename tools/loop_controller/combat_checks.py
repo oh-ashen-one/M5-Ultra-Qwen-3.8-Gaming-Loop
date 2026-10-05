@@ -24,6 +24,21 @@ def inspect_combat_contract(rows,kind):
             changes.append(dict(time=r['time'],distance=v['actorDistance'],mode=r.get('mode'),
                                 blocked=not v.get('attackUnobstructed'),collider=v.get('firstAttackCollider')))
     facts['damage_events']=changes
+    facts['damage_event_meaning']='Enemy attacks reducing controlled player/vehicle health, not player shots.'
+    hit_events=[];transitions=[];previous_level=None
+    for row,v in samples:
+        state=(row.get('pursuit'),row.get('restarts',0))
+        if state!=previous_level:
+            transitions.append(dict(time=row['time'],level=row.get('pursuit'),mode=row.get('mode'),
+                actor_distance=v['actorDistance'],restarts=row.get('restarts',0)))
+            previous_level=state
+    for (before,v),(row,w) in zip(samples,samples[1:]):
+        if row.get('restarts',0)==before.get('restarts',0) and w.get('hp',3)<v.get('hp',3):
+            hit_events.append(dict(time=row['time'],keys=row.get('keys',[]),rival_hp_before=v.get('hp'),
+                rival_hp_after=w.get('hp'),hits_before=before.get('hits',0),hits_after=row.get('hits',0),
+                first_aim_collider=w.get('firstAimCollider'),rival=w.get('name','Rival')))
+    facts['player_shot_rival_damage_events']=hit_events
+    facts['pursuit_transitions']=transitions
     if any(v['distance']>16.25 for v in changes):failed.append('damage-outside-actual-controlled-actor-range')
     if kind=='driving':
         driving=[(r,v) for r,v in samples if r.get('mode')=='vehicle']
@@ -58,6 +73,8 @@ def inspect_combat_contract(rows,kind):
     elif kind=='foot':
         facts['shots']=max(r.get('shots',0) for r in rows);facts['hits']=max(r.get('hits',0) for r in rows)
         if facts['hits']<1:failed.append('unoccluded-real-hit-not-exercised')
+        if not any('Mouse0' in e['keys'] and e['hits_after']>e['hits_before'] for e in hit_events):
+            failed.append('actual-rival-hp-damage-not-exercised')
         if not any(r.get('pursuit',0)>0 for r,v in samples):failed.append('foot-pursuit-not-exercised')
         if not changes:failed.append('unoccluded-enemy-attack-not-exercised')
     elif kind=='wall':

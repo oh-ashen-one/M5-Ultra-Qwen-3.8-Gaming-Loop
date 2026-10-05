@@ -18,6 +18,7 @@ from loop_controller.features import pavement_coverage, references_capture
 from loop_controller.model import tool
 from loop_controller.runner import API_GUIDE, Runner, git, target_for
 from loop_controller.replay_contract import finish_tool, replay_guide, validate_submission
+from loop_controller.review_summary import critic_evidence,require_combat_contracts
 
 S={'type':'string'}; I={'type':'integer'}
 STEPS={'type':'array','items':{'type':'object','properties':{
@@ -216,7 +217,7 @@ class ContinuousRunner(Runner):
         images.insert(0,('AI-GENERATED CHICAGO TARGET; not the build',self.refs/target_for(task)))
         result=self.model.session('critic',ident+'-critic',
             'You are a fresh local visual critic. Judge actual evidence and only the stated current scope.',
-            'TASK:'+json.dumps(task)+'\nNATIVE OBSERVATIONS:'+json.dumps(gate)+
+            'TASK:'+json.dumps(task)+'\nCOMPACT ACTUAL NATIVE OBSERVATIONS:'+json.dumps(critic_evidence(gate))+
             '\nFILES:'+json.dumps(names)+'\nAUTHORITATIVE CAPTURE SCHEDULE, seconds:'+json.dumps(capture_times)+
             '\nFrame numbers refer to the complete replay sequence, not their order in this selected image set. '
             'Use these supplied times; do not invent a different timing or call post-reset captures pre-reset. '
@@ -225,9 +226,15 @@ class ContinuousRunner(Runner):
             '\nRequire readable actors, coherent controls/route evidence, and no visible '
             'blocking regression. Early mechanics may retain rough development art; reserve reference-quality judgment '
             'for polish. A scoped PASS is not final game acceptance. Audio RMS establishes a mixer signal, not good sound. '
+            'Use FIX when only part of the scope passes; partial is not a supported verdict. '
+            'Enemy damage_events describe player/vehicle health loss; player_shot_rival_damage_events separately '
+            'show actual rival HP changes from Mouse0. Use pursuit_transitions to assess arming before the clear interval. '
+            'For presentation fixes, preserve verified mission anchor positions and interaction reach unless a new '
+            'physical defect is measured. '
             'Report missing proof honestly and prioritize three to five fixes when needed. Do not infer completion from source.',
             [tool('submit_review','Return a scoped evidence-based verdict.',
-                {'verdict':S,'summary':S,'fixes':{'type':'array','items':S}})],
+                {'verdict':{'type':'string','enum':['PASS','FIX','UNVERIFIED','pass','fix','unverified']},
+                 'summary':S,'fixes':{'type':'array','items':S}})],
             {'submit_review':submit},images=images,turns=3,reasoning_effort='xhigh')
         verify_seal(bundle/'captures',expected);atomic(bundle/'critic.json',result)
         return result
@@ -263,6 +270,19 @@ class ContinuousRunner(Runner):
                 atomic(bundle/'scoped-gate.json',gate)
             results.append({'test':name,'gate':gate})
             if not gate.get('passed'):return {'passed':False,'failure':['accepted-baseline-regression'], 'regressions':results}
+        if 'combat' in task.get('checks',[]):
+            from loop_controller.combat_checks import FOOT_PROBE,WALL_PROBE,DRIVE_PROBE,inspect_combat_contract
+            for kind,probe in [('foot',FOOT_PROBE),('wall',WALL_PROBE),('driving',DRIVE_PROBE)]:
+                bundle=self.store.root/'evidence'/(ident+'-regression-combat-'+kind)
+                gate=self.engines.unity(self.project,bundle,probe,candidate)
+                if gate.get('passed'):
+                    rows=[json.loads(line) for line in (bundle/'captures/trace.jsonl').read_text().splitlines()]
+                    contract=inspect_combat_contract(rows,kind)
+                    contract.update(candidate=candidate,evidence=str(bundle.relative_to(self.store.root)),build_id=gate['build_id'])
+                    gate.update(combat_contract=contract,passed=contract['passed'],failure=contract.get('failure'))
+                atomic(bundle/'combat-regression-gate.json',gate)
+                results.append({'test':'combat-'+kind,'gate':gate})
+                if not gate.get('passed'):return {'passed':False,'failure':['accepted-combat-regression'],'regressions':results}
         return {'passed':True,'regressions':results}
 
     def promote(self,task,candidate,bundle,gate,review):
@@ -270,6 +290,8 @@ class ContinuousRunner(Runner):
         if not gate.get('passed') or not review.get('ok') or review.get('verdict')!='PASS':raise Halt('Cannot promote unverified candidate')
         if 'mission_complete' in task.get('checks',[]) and not gate.get('scoped_facts',{}).get('mission_anchors',{}).get('passed'):
             raise Halt('Mission promotion requires the automatic world-anchor and input-transition gate')
+        if 'combat' in task.get('checks',[]) and not require_combat_contracts(gate):
+            raise Halt('Combat promotion requires current-source foot/wall/driving contracts and sustained escape')
         records=self.store.get('accepted_queue_features',{})
         record={'candidate':candidate,'scope':task['id'],'accepted_utc':now(),
                 'evidence':str(bundle.relative_to(self.store.root)),'review':review,'final_game_accepted':False}
