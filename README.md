@@ -1,6 +1,6 @@
 # M5 Ultra Qwen 3.8 Gaming Loop
 
-**Status: Qwen3.8 Flash-Next is loaded, warmed and idle on the M5. Image recognition and a tool-call round trip pass. The overnight game controller is not implemented; game development remains held.**
+**Status: the Chicago overnight run is authorized. The durable local controller is implemented and undergoing native adapter qualification before launch. No playable Chicago result is claimed yet.**
 
 An open-source plan for a local-first coding loop that aims to produce a polished, roughly ten-minute playable urban action/driving game. The M5 Ultra was verified with 256 GB memory and 80 GPU cores. The selected model is now `mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp`, pinned and loaded through isolated oMLX 0.6.4. See [current readiness](docs/FLASH-NEXT-READINESS.md) for exact settings, evidence and launch blockers. Earlier 27B BF16 records are historical.
 
@@ -8,9 +8,9 @@ The game should evoke the movement, driving, camera, atmosphere, and mission flo
 
 ## Start boundary
 
-The existing M5 tests are closed. The owner authorized model preparation and a short warm-up, while requiring review of the launch plan before the game/agent loop starts. The initial 8–72-hour window is a planning range, subject to an agreed budget and stop conditions. Time alone is never a completion criterion.
+The existing M5 tests are closed. The owner subsequently authorized implementing the controller, qualifying it, and starting the full Chicago run autonomously. [The consolidated brief](docs/CHICAGO-BRIEF.md) is authoritative. The initial controller has a 12-hour wall-clock bound with bounded failure recovery; time and round counts never imply completion. Parent dot supplies the existing 30-minute oversight schedule.
 
-This repository contains documentation, bounded preparation/diagnostic tools and a small attributed set of unintegrated source references. There is no runnable game or development loop. The owner authorized model replacement, permanent deletion of 15 old variants, compatible runtime setup, warm-up and readiness review, following earlier Unity and connector qualification. Game-generation and paid production services remain separate from this preparation.
+This repository contains documentation, a durable serial controller, native Unity/Blender adapters, bounded diagnostic tools, generated Chicago visual targets and a small attributed set of source references. Actual game code/art comes from local Qwen on a separate game branch. Public progress must distinguish controller qualification, generated targets and actual game evidence.
 
 ## What success should mean
 

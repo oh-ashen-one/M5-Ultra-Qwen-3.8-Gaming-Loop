@@ -1,0 +1,18 @@
+{
+  "endpoint": "http://127.0.0.1:8027/v1",
+  "token_file": "REPLACE_WITH_PRIVATE_TOKEN_PATH",
+  "coordination_dir": "REPLACE_WITH_OWNED_HANDOFF_DIRECTORY",
+  "game_repository": "REPLACE_WITH_OWNED_GAME_CHECKOUT",
+  "unity": "REPLACE_WITH_VERIFIED_UNITY_EXECUTABLE",
+  "blender": "REPLACE_WITH_VERIFIED_BLENDER_EXECUTABLE",
+  "working_context_tokens": 65536,
+  "output_tokens": 8192,
+  "model_timeout_seconds": 900,
+  "wall_hours": 12,
+  "max_rounds": 96,
+  "no_accepted_progress_minutes": 120,
+  "identical_failure_limit": 3,
+  "rollback_limit": 1,
+  "minimum_disk_GiB": 100,
+  "push_checkpoints": true
+}

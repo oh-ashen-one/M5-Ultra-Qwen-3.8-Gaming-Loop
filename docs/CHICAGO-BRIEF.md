@@ -1,0 +1,19 @@
+# Chicago local game brief
+
+The owner authorized the full run after controller qualification on 2026-10-05. Parent dot manages direction through the existing 30-minute oversight schedule. This controller is the sole execution owner; other game and benchmark threads are outside its scope.
+
+Build an exceptionally polished, approximately ten-minute playable GTA V-inspired original urban crime game set in Chicago, running natively in Unity. Deliver one coherent finished slice with satisfying third-person movement, vehicle entry/driving/exit, readable combat and pursuit, a connected mission, failure/retry and an ending. Make it compelling to record for a video about what a local model built. Do not claim Rockstar-equivalent quality without evidence.
+
+Chicago is mandatory: brick two-flats and greystones, alleys, steel elevated L infrastructure, downtown density, and a river/bridge vista where feasible. Use the five supplied [visual targets](../reference/visual-targets/chicago/README.md). They are AI-generated aspirations, not game output. Use one original cobalt-blue coupe design with consistent silhouette/materials and an original five-slot pursuit HUD. Do not copy brand badges, plates or inconsistent details. Complete the core route before optional rain/night variants; no LA or California setting.
+
+Local Qwen performs substantive game planning, C# coding, original Blender Python/modeling/material creation, rigging/animation and iteration. Every 3D game asset originates in its Blender work. No Meshy, Tripo, premade asset packs or downloaded game art. Preserve .blend sources, scripts, exports, asset manifests and model-session provenance. Cloud infrastructure, management and any rescue game edits are disclosed separately.
+
+Start with one visually strong street and a satisfying controllable interaction. Split subsequent work into small independently buildable outcomes. After edits, compile/build, run the actual native candidate with input, capture immutable images and play traces, then ask a fresh critic to inspect those actual outputs alongside relevant targets. Preserve reasoning within each private role session; never give builder reasoning or self-assessment to the critic.
+
+Critics return PASS, FIX or UNVERIFIED, with concrete evidence and the largest gap. A screenshot cannot establish playability, collision, sound or a complete mission. Fix prioritized problems and repeat within the recorded budgets. Repeated identical failures or lack of accepted progress trigger bounded recovery and a report to parent dot. Do not turn retry exhaustion into success.
+
+Between major waves, use a fresh whole-game reviewer to assess coherence, pacing, controls, driving, collision, combat, progression, death/restart, audio and performance. Once the route works, prioritize regressions, whole-route evidence and a runnable handoff over more scope. Keep a known playable checkpoint with explicitly stated coverage. Preserve failed evidence before restoring only this controller's owned game source.
+
+Use the verified Flash-Next non-MTP route, thinking/xhigh, preserved role reasoning and official sampling. Default working context bound is 65,536 tokens including an intentionally conservative prompt/image allowance and at most 8,192 output tokens; native runtime context remains 262,144. Queue roles serially and record actual reported usage. No benchmark campaign.
+
+The initial authorized overnight budget is implemented as a 12-hour wall-clock ceiling, 96 candidate rounds, three identical failures before diagnosis/recovery, one rollback, and a 120-minute window without accepted progress. These are stop bounds, not quality or completion criteria. The parent can review status, evidence and blockers without interrupting healthy work; the controller does not create another cloud schedule.

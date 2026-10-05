@@ -1,5 +1,7 @@
 # Project handoff
 
+**Latest task, 2026-10-05:** full Chicago run authorized after native controller qualification. Implementation is on `feat/durable-game-controller-20261005`; five Library Chicago targets are materialized, visually inspected, hashed and verified on the M5. Ten CPU state/edit/evidence tests and the actual macOS sandbox boundary probe pass. Native Unity green/red fixture and coordinated model/engine handoff are under qualification. Do not mistake the existing targets or disposable fixture for actual Chicago output. Parent dot already owns the 30-minute cloud oversight schedule; no duplicate schedule or owner is needed. The previous hold and missing-controller statements below are historical. The rolling machine-local status is the authority for actual launch/process/artifact state.
+
 Updated 2026-10-05. **Current: Flash-Next is pinned, warmed and resident; the overnight game controller is not implemented. Game generation remains held.**
 
 The owner approved replacing the old models and directly confirmed permanent deletion of the 15 variants in their scoped Trash bundle. Exactly 360 inventoried files were removed, reclaiming about 667.1 GB. The new 39-file Flash-Next download was preserved. Private deletion receipts retain the exact scope; no other Trash contents were emptied.

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Explicitly authorized Flash-Next load and idle supervision; no game runner."""
 import argparse
+import contextlib
 import fcntl
 import importlib.metadata
 import json
@@ -25,6 +26,8 @@ def main():
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--work-dir", required=True, type=Path)
     parser.add_argument("--token-file", required=True, type=Path)
+    parser.add_argument("--coordination-dir", type=Path,
+                        help="Owned controller handoff directory; loaded idle model yields engine slots")
     parser.add_argument("--allow-load", action="store_true")
     parser.add_argument("--allow-one-existing-renderer", action="store_true")
     args = parser.parse_args()
@@ -54,6 +57,9 @@ def main():
         raise RuntimeError("Use a fresh task directory; no automatic relaunch")
     token = session_token(args.token_file, resume=True)
     with socket.socket() as probe:
+        # A clean server shutdown can leave accepted TCP connections in TIME_WAIT.
+        # SO_REUSEADDR permits that reuse but still rejects an active listener.
+        probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         probe.bind(("127.0.0.1", 8027))
 
     def renderers():
@@ -71,6 +77,7 @@ def main():
         return found
 
     child = None
+    engine_lease = None
     existing = renderers()
     if len(existing) > (1 if args.allow_one_existing_renderer else 0):
         raise RuntimeError("Renderer count exceeds admitted capacity")
@@ -117,12 +124,26 @@ def main():
             raise RuntimeError("Desktop session lost")
         if child is not None and child.poll() is not None:
             raise RuntimeError("Owned model server exited")
-        if len(renderers()) > 1:
+        active = renderers()
+        if engine_lease:
+            owner = psutil.Process(engine_lease["controller_pid"])
+            if abs(owner.create_time() - engine_lease["controller_start"]) > 0.01:
+                raise RuntimeError("Engine handoff owner identity changed")
+            owned = {p.pid for p in owner.children(recursive=True)}
+            if len(active) > 2 or any(pid not in existing and pid not in owned for pid in active):
+                raise RuntimeError("Engine handoff exceeded renderer ownership/capacity")
+            if time.time() > engine_lease["expires_epoch"]:
+                raise RuntimeError("Engine handoff expired")
+            status = api("/api/status")
+            if status.get("active_requests", 0) or status.get("waiting_requests", 0):
+                raise RuntimeError("Inference overlapped an engine handoff")
+        elif len(active) > 1:
             raise RuntimeError("Additional renderer exceeds shared capacity")
 
     with (root / "resident.lock").open("a+") as mutex:
         fcntl.flock(mutex, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        with gpu_admission("m5-flash-next-resident", len(existing)) as shared:
+        with contextlib.ExitStack() as admission:
+            shared = admission.enter_context(gpu_admission("m5-flash-next-resident", len(existing)))
             try:
                 env = os.environ.copy()
                 for key in list(env):
@@ -184,10 +205,34 @@ def main():
                     raise RuntimeError("Model load interrupted or timed out")
                 state["status"] = "loaded-idle"
                 while not stopped.is_set():
+                    if args.coordination_dir:
+                        args.coordination_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
+                        request = args.coordination_dir / "engine-request.json"
+                        ack = args.coordination_dir / "engine-ack.json"
+                        if request.exists() and engine_lease is None:
+                            proposal = json.loads(request.read_text())
+                            if proposal["expires_epoch"] > time.time() + 1500:
+                                raise RuntimeError("Engine handoff deadline is not bounded")
+                            owner = psutil.Process(proposal["controller_pid"])
+                            if abs(owner.create_time() - proposal["controller_start"]) > 0.01:
+                                raise RuntimeError("Invalid engine handoff owner")
+                            status = api("/api/status")
+                            if not status.get("active_requests", 0) and not status.get("waiting_requests", 0):
+                                admission.close()
+                                engine_lease = proposal
+                                write_state(ack, {"lease_id": proposal["lease_id"], "status": "granted"})
+                        elif not request.exists() and engine_lease is not None:
+                            # The controller closes its slot locks before withdrawing the request.
+                            shared = admission.enter_context(gpu_admission("m5-flash-next-resident", len(existing)))
+                            engine_lease = None
+                            ack.unlink(missing_ok=True)
+                        state["engine_handoff"] = engine_lease["lease_id"] if engine_lease else None
                     guard()
                     if (shared / "PAUSED").exists():
                         raise RuntimeError("Shared GPU protocol paused")
                     healthy = api("/health")
+                    if healthy.get("status") != "healthy":
+                        raise RuntimeError("Model health failed")
                     models = api("/v1/models/status").get("models", [])
                     loaded = [m for m in models if m.get("is_loaded") or m.get("loaded") or m.get("status") == "loaded"]
                     if len(loaded) != 1 or loaded[0].get("id") != model.name:
@@ -196,7 +241,7 @@ def main():
                     state["loaded_model_status"] = loaded[0]
                     state["server_RSS_GiB"] = round(psutil.Process(child.pid).memory_info().rss / 1024**3, 3)
                     write_state(root / "resident-state.json", state)
-                    stopped.wait(10)
+                    stopped.wait(2 if args.coordination_dir else 10)
                 state["status"] = "stopped-by-request"
             except Exception as exc:
                 state.update(status="stopped-on-fault", error=str(exc), error_type=type(exc).__name__)

@@ -15,6 +15,8 @@ Updated 2026-10-05. Apply the owner's current instruction and ancestor safety ru
 
 ## Latest model authorization and state
 
+**Subsequent full-run authorization, 2026-10-05:** the owner approved implementing the controller, qualifying it, and then autonomously starting the entire Chicago game under parent dot's existing oversight. This supersedes the earlier full-game holds below. The execution controller is the sole owner; do not create another owner or cloud schedule. See [the consolidated brief](docs/CHICAGO-BRIEF.md). Preserve genuine resource/security failures and other projects. Cloud code here is controller/acceptance infrastructure; substantive game C#/Blender work belongs to local Flash-Next and must retain provenance. Publish only task branches and draft PRs; no main merge.
+
 The owner subsequently selected `mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp`, approved replacing the older models, directly confirmed permanent deletion of the 15 scoped Trash variants, and requested a short warm-up plus an overnight-readiness audit. Those actions are complete. The earlier BF16-only/no-substitution clauses above describe the historical baseline and are superseded by this selection. Do not restore deleted models or relaunch their old services.
 
 Flash-Next is resident through isolated official oMLX 0.6.4 with thinking/xhigh, preserved reasoning, official sampling, serial requests, MTP off and KV quantization off. Its two-request image/tool round trip passed. Preserve the running service and use authenticated read-only status for monitoring. A game runner, durable recovery, protected acceptance promotion and continuous management/alerting are not implemented. A model warm-up or readiness audit does not authorize the full game loop.
