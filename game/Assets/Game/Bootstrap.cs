@@ -15,7 +15,7 @@ namespace ChicagoGame
                 ? UnityEngine.Object.Instantiate(streetPrefab)
                 : new GameObject("Street");
             street.name = "Street";
-            static GameObject Coupe() { var p = Resources.Load<GameObject>("Generated/vehicle/coupe"); return p ? UnityEngine.Object.Instantiate(p) : null; }
+            static GameObject Coupe() { var p = Resources.Load<GameObject>("Generated/coupe/scene"); return p ? UnityEngine.Object.Instantiate(p) : null; }
             var coupe = Coupe(); if (coupe != null) { coupe.name = "Coupe"; coupe.transform.position = new Vector3(0f, 0f, 6f); }
             GameObject body = new GameObject("Player");
             body.name = "Player";
