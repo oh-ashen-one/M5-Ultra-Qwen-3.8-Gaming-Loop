@@ -141,7 +141,7 @@ namespace ChicagoGame
     public class Follow : MonoBehaviour
     {
         public Transform target;
-        public Vector3 offset = new Vector3(0f, 3.4f, -3.8f);
+        public Vector3 offset = new Vector3(0f, 3.4f, 3.8f);
         public float damping = 7f;
 
         void LateUpdate()
