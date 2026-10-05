@@ -202,6 +202,10 @@ class Runner:
         integration_only = task["phase"] == "foundation" and not self.store.get("latest_evidence") and all(
             (self.project/"Assets/Resources/Generated"/name/"scene.fbx").exists() for name in ("street","coupe","props","player"))
         def read(_, f): return files.read(**f)
+        def create(a,f):
+            if integration_only and not f.get("path", "").startswith("Assets/Game/"):
+                raise ValueError("This integration job creates C# under Assets/Game only")
+            return files.create(a,**f)
         def write(a,f):
             if integration_only and not f.get("path", "").startswith("Assets/Game/"):
                 raise ValueError("This integration job writes C# under Assets/Game only; reuse the existing exported art")
@@ -216,16 +220,17 @@ class Runner:
             "required":["start","end","keys"],"additionalProperties":False}}
         tools=[tool("list_files","List all relevant source paths and sizes; no silent scripts exclusion.",{}),
                tool("read_file","Read exact current source range and full-file hash.",{"path":STRING,"start_line":INT,"line_count":INT},["path"]),
-               tool("write_file","Create/replace scoped UTF-8 source with full-file SHA256 precondition; empty file hash for new paths.",{"path":STRING,"expected_sha256":STRING,"content":STRING}),
+               tool("create_file","Create a NEW scoped source file atomically. Requires only path/content; refuses every existing path.",{"path":STRING,"content":STRING}),
+               tool("write_file","Replace existing scoped UTF-8 source with its full-file SHA256 precondition. Prefer create_file for new paths.",{"path":STRING,"expected_sha256":STRING,"content":STRING}),
                tool("replace_text","Replace one exact unique source span with a full-file hash precondition.",{"path":STRING,"expected_sha256":STRING,"old":STRING,"new":STRING}),
                tool("run_blender","Execute one original Art/*.py in isolated Blender; save .blend and export FBX.",{"script":STRING}),
                tool("finish_task","Finish this bounded task with facts/uncertainties and replay steps using the real input path.",{"summary":STRING,"input_steps":steps})]
         prompt=brief+"\n\nCURRENT TASK:\n"+json.dumps(task)+"\n\n"+API_GUIDE
         prompt+="\nLast gate/critic findings (facts, not permission to weaken tests):\n"+json.dumps(self.store.get("feedback",{}))[:10000]
         prompt+="\nCurrent source inventory:\n"+json.dumps(files.tree())[:18000]
-        prompt+="\nNew empty-file SHA256: "+sha(b"")+"\nYou have at most 16 tool-response turns; implement this small outcome and finish."
+        prompt+="\nUse create_file for new paths: only path/content, no hash. For existing source, read its exact hash before write_file/replace_text.\nYou have at most 16 tool-response turns; implement this small outcome and finish."
         prompt+=("\nINCREMENTAL EXECUTION: make one small tool call per response. Do not design or write the whole game in one response. "
-                 "For an empty project, your very next response must call write_file to create one small original Art/street.py "
+                 "For an empty project, your very next response must call create_file to create one small original Art/street.py "
                  "of at most 120 lines: a single detailed street facade or compact street module, not the complete scene. "
                  "Then call run_blender on the following turn. Add the remaining original art and modular C# in later tool turns. "
                  "For existing files, inspect only the exact source needed for your next small action. "
@@ -239,14 +244,14 @@ class Runner:
         if integration_only:
             tools=[t for t in tools if t["function"]["name"] != "run_blender"]
             prompt+=("\nCURRENT JOB IS C# INTEGRATION ONLY. All street/coupe/props/player models already exist and are exported. "
-                     "Do not author or revise art, and do not inspect every Blender script. Your next action is write_file for "
+                     "Do not author or revise art, and do not inspect every Blender script. Your next action is create_file for "
                      "Assets/Game/Bootstrap.cs implementing public static ChicagoGame.Bootstrap.Create(). "
                      "Reuse Resources prefabs Generated/street/scene, Generated/coupe/scene, Generated/props/scene and Generated/player/scene. "
                      "Implement the smallest coherent ground/collision, player movement and following camera using LoopInput and actual registered transforms. "
                      "Split other C# into small files if needed. Finish with the real walking input scenario so the external native build/capture can run. "
                      "This first runtime is a development candidate; report missing polish and never claim it is a finished game. "
                      "You cannot call Blender or edit Art in this focused job.")
-        dispatch={"list_files":lambda *_:{"files":files.tree()},"read_file":read,"write_file":write,"replace_text":patch,
+        dispatch={"list_files":lambda *_:{"files":files.tree()},"read_file":read,"create_file":create,"write_file":write,"replace_text":patch,
                   "finish_task":finish}
         if not integration_only: dispatch["run_blender"]=blender
         return self.model.session("builder", round_id+"-builder",

@@ -25,7 +25,7 @@ def encode(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2).encode()
 
 
-def atomic(path, value, raw=False):
+def atomic(path, value, raw=False, exclusive_target=False):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     temp = path.with_name(path.name + "." + uuid.uuid4().hex + ".tmp")
@@ -33,7 +33,15 @@ def atomic(path, value, raw=False):
         out.write(value if raw else encode(value) + b"\n")
         out.flush()
         os.fsync(out.fileno())
-    temp.replace(path)
+    if exclusive_target:
+        try:
+            # Same-filesystem hard-link publication is atomic and fails if the
+            # target exists, including an empty file or a concurrent creator.
+            os.link(temp, path)
+        finally:
+            temp.unlink(missing_ok=True)
+    else:
+        temp.replace(path)
     fd = os.open(path.parent, os.O_RDONLY)
     try:
         os.fsync(fd)
@@ -184,6 +192,33 @@ class Files:
             raise ValueError("Range too large; request a narrower exact range")
         return {"path": path, "sha256": sha(raw), "total_lines": len(lines),
                 "start_line": start_line, "content": selected, "complete": start_line == 1 and line_count >= len(lines)}
+
+    def create(self, action_id, path, content):
+        p = self.path(path, write=True)
+        if not isinstance(content, str) or len(content.encode()) > 100000:
+            raise ValueError("Source must be text at most 100 KB; split large modules")
+        desired = content.encode()
+        request = {"path": path, "before": "absent", "after": sha(desired)}
+        status, saved = self.store.begin_action(action_id, "source-create", request)
+        if status == "complete":
+            if saved.get("ok") and (not p.is_file() or sha(p.read_bytes()) != request["after"]):
+                raise Halt("Completed creation no longer matches its recorded output")
+            return saved
+        if p.exists():
+            if status == "pending" and p.is_file() and sha(p.read_bytes()) == request["after"]:
+                result = {"ok": True, "path": path, "sha256": request["after"], "reconciled": True}
+            else:
+                self.store.finish_action(action_id, {"ok": False, "error": "Path already exists; use hash-checked editing"})
+                raise ValueError("Path already exists; read its exact hash and use write_file or replace_text")
+        else:
+            try: atomic(p, desired, raw=True, exclusive_target=True)
+            except FileExistsError as error:
+                self.store.finish_action(action_id, {"ok": False, "error": "Concurrent creation; no overwrite"})
+                raise ValueError("Path was created concurrently; no overwrite occurred") from error
+            result = {"ok": True, "path": path, "sha256": request["after"]}
+        self.store.finish_action(action_id, result)
+        self.store.event("local-source-edit", **request)
+        return result
 
     def edit(self, action_id, path, expected_sha256, content=None, old=None, new=None):
         p = self.path(path, write=True)
