@@ -1,0 +1,5 @@
+{
+  "next_fix": "Reduce post-walk pullback slightly so the building's upper floors aren't cropped at the top edge and the empty ground occupies less of the frame.",
+  "ok": true,
+  "verdict": "PASS"
+}

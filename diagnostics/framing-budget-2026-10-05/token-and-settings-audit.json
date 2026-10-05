@@ -1,0 +1,266 @@
+{
+  "scope": "CPU-only; local counts and public template/settings checks; no inference or private text exported",
+  "caveat": "Server completion_tokens is authoritative total. Retokenized fields/arguments are diagnostics, not an exact server-side reasoning/output split.",
+  "model": "Qwen3.8-Flash-Next-oQ6e-mtp",
+  "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+  "runtime_sources": {
+    "api/utils.py": "009ca414afe2ae488b51a1a24bc4b4ea0498929a2ed8824d3d53e6bfaded455f",
+    "model_settings.py": "b26777fc4775dcd3f007a3e6cfca05f6806a8cf45720184eeb7bd37e6f200a63"
+  },
+  "resident_default_effort": "xhigh",
+  "forced_template_keys": [],
+  "effective_request_checks": [
+    {
+      "effort": "low",
+      "request_overrides_resident_default": true,
+      "thinking_prefix_open": true,
+      "preserve_thinking": true
+    },
+    {
+      "effort": "medium",
+      "request_overrides_resident_default": true,
+      "thinking_prefix_open": true,
+      "preserve_thinking": true
+    },
+    {
+      "effort": "xhigh",
+      "request_overrides_resident_default": true,
+      "thinking_prefix_open": true,
+      "preserve_thinking": true
+    }
+  ],
+  "requests": [
+    {
+      "session": "framing-budget-camera",
+      "response_index": 0,
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 2111,
+        "completion_tokens": 1102,
+        "total_tokens": 3213,
+        "total_time": 27.89
+      },
+      "accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 3387,
+            "retokenized_tokens": 1050,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      },
+      "tool_argument_retokenized_tokens": 28
+    },
+    {
+      "session": "framing-budget-camera-review",
+      "response_index": 0,
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 1451,
+        "completion_tokens": 1029,
+        "total_tokens": 2480,
+        "total_time": 25.06
+      },
+      "accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 4385,
+            "retokenized_tokens": 957,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      },
+      "tool_argument_retokenized_tokens": 43
+    },
+    {
+      "session": "r0002-ae86e639-micro-edit-1",
+      "response_index": 0,
+      "finish_reason": "length",
+      "usage": {
+        "prompt_tokens": 590,
+        "completion_tokens": 2048,
+        "total_tokens": 2638,
+        "total_time": 46.83
+      },
+      "accounting": {
+        "fields": {
+          "content": {
+            "characters": 8607,
+            "retokenized_tokens": 2048,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning_content": {
+            "present": false
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 0
+      },
+      "tool_argument_retokenized_tokens": 0
+    },
+    {
+      "session": "r0002-ae86e639-micro-edit-2",
+      "response_index": 0,
+      "finish_reason": "length",
+      "usage": {
+        "prompt_tokens": 590,
+        "completion_tokens": 4096,
+        "total_tokens": 4686,
+        "total_time": 95.96
+      },
+      "accounting": {
+        "fields": {
+          "content": {
+            "characters": 16385,
+            "retokenized_tokens": 4096,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning_content": {
+            "present": false
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 0
+      },
+      "tool_argument_retokenized_tokens": 0
+    },
+    {
+      "session": "r0003-4c2a592d-micro-edit-1",
+      "response_index": 0,
+      "finish_reason": "length",
+      "usage": {
+        "prompt_tokens": 518,
+        "completion_tokens": 2048,
+        "total_tokens": 2566,
+        "total_time": 46.38
+      },
+      "accounting": {
+        "fields": {
+          "content": {
+            "characters": 8941,
+            "retokenized_tokens": 2048,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning_content": {
+            "present": false
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 0
+      },
+      "tool_argument_retokenized_tokens": 0
+    },
+    {
+      "session": "r0003-4c2a592d-micro-edit-2",
+      "response_index": 0,
+      "finish_reason": "length",
+      "usage": {
+        "prompt_tokens": 518,
+        "completion_tokens": 4096,
+        "total_tokens": 4614,
+        "total_time": 94.25
+      },
+      "accounting": {
+        "fields": {
+          "content": {
+            "characters": 18129,
+            "retokenized_tokens": 4096,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning_content": {
+            "present": false
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 0
+      },
+      "tool_argument_retokenized_tokens": 0
+    },
+    {
+      "session": "r0004-d2c23a29-micro-edit-1",
+      "response_index": 0,
+      "finish_reason": "length",
+      "usage": {
+        "prompt_tokens": 525,
+        "completion_tokens": 2048,
+        "total_tokens": 2573,
+        "total_time": 46.4
+      },
+      "accounting": {
+        "fields": {
+          "content": {
+            "characters": 8807,
+            "retokenized_tokens": 2048,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning_content": {
+            "present": false
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 0
+      },
+      "tool_argument_retokenized_tokens": 0
+    },
+    {
+      "session": "r0004-d2c23a29-micro-edit-2",
+      "response_index": 0,
+      "finish_reason": "length",
+      "usage": {
+        "prompt_tokens": 525,
+        "completion_tokens": 4096,
+        "total_tokens": 4621,
+        "total_time": 94.99
+      },
+      "accounting": {
+        "fields": {
+          "content": {
+            "characters": 17447,
+            "retokenized_tokens": 4096,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning_content": {
+            "present": false
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 0
+      },
+      "tool_argument_retokenized_tokens": 0
+    }
+  ]
+}
