@@ -17,6 +17,7 @@ from loop_controller.model import LocalModel, conservative_prompt_bound, tool, t
 from loop_controller.runner import Runner, git, scenario_for
 from inspect_and_repair_grounding import summarize, grounding_scenario
 from loop_controller.small_edits import SelectedEdit
+from continue_small_game import ElementaryRunner
 
 
 class ControllerTests(unittest.TestCase):
@@ -29,6 +30,28 @@ class ControllerTests(unittest.TestCase):
 
     def tearDown(self):
         self.store.db.close();self.tmp.cleanup()
+
+    def test_local_micro_plan_hands_off_to_hash_checked_edit(self):
+        path='Assets/Game/Bootstrap.cs'
+        original=''.join('original line %d\n'%i for i in range(1,31))
+        self.files.create('seed',path,original)
+        runner=ElementaryRunner.__new__(ElementaryRunner)
+        runner.project=self.project;runner.store=self.store;runner.c={}
+        calls=[]
+        def session(role,action,system,prompt,tools,dispatch,turns):
+            calls.append(role)
+            if role=='planner':
+                return dispatch['submit_plan'](action,{'kind':'replace','path':path,
+                    'start_line':11,'end_line':11,'goal':'Change the selected fixture line.'})
+            self.assertIn('original line 11',prompt)
+            return dispatch['edit_selected_span'](action,{'content':'replacement line 11'})
+        runner.model=SimpleNamespace(session=session)
+        result=runner.builder({'phase':'foundation','outcome':'Fixture handoff'},'round-fixture','brief')
+        self.assertTrue(result['ok']);self.assertEqual(calls,['planner','builder'])
+        self.assertEqual((self.project/path).read_text(),original.replace('original line 11\n','replacement line 11\n'))
+        row=self.store.db.execute("SELECT data FROM events WHERE kind='local-micro-plan'").fetchone()
+        self.assertEqual(json.loads(row[0])['plan_kind'],'replace')
+        self.assertEqual(self.store.get('stage'),'local-micro-edit')
 
     def test_selected_edit_preserves_other_lines_and_rejects_stale_source(self):
         self.files.create('seed','Assets/Game/A.cs','before\nselected\nafter\n')

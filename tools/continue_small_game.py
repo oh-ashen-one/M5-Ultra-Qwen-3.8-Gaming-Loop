@@ -56,7 +56,8 @@ class ElementaryRunner(Runner):
              tool('submit_plan','Select one tiny edit; do not return code.',{'kind':S,'path':S,'start_line':I,'end_line':I,'goal':S})],
             {'read_file':read,'submit_plan':submit},turns=4)
         if not plan.get('ok'):return {'bounded_stop':'micro-plan','summary':'No qualified elementary plan; preserve source'}
-        self.store.event('local-micro-plan',**{k:plan[k] for k in ('kind','path','start_line','end_line','goal')})
+        self.store.event('local-micro-plan',plan_kind=plan['kind'],
+                         **{k:plan[k] for k in ('path','start_line','end_line','goal')})
         self.store.set(current_micro_plan=plan,stage='local-micro-edit');self.store.report()
         if plan['kind']=='replace':
             edit=SelectedEdit(files,plan['path'],plan['start_line'],plan['end_line'],12)
@@ -112,8 +113,15 @@ def main():
         return result
     r.engines.unity=grounded
     with exclusive(a.run_dir/'controller.lock'):
+        conditions=dict(s.get('stop_conditions',{}))
+        previous_requirement=conditions.get('continuation_requires')
+        conditions['continuation_requires']='measured stationary grounded control; framing FIX remains required game work'
+        if previous_requirement!=conditions['continuation_requires']:
+            s.event('continuation-condition-clarified',previous=previous_requirement,
+                    current=conditions['continuation_requires'],
+                    authorization='Once basic grounded control passes, continue the authorized game loop')
         s.set(controller_pid=os.getpid(),status='running',blocker=None,mechanical_grounded_checkpoint=gate['candidate_commit'],
-              mechanical_grounded_evidence='evidence/grounding-3',continuation_started_utc=now())
+              mechanical_grounded_evidence='evidence/grounding-3',continuation_started_utc=now(),stop_conditions=conditions)
         s.event('cloud-infrastructure-intervention',action='Continue authorized game after proven grounded control; framing FIX remains first task',
                 authorization='Once basic grounded control passes, continue the authorized game loop',accepted_game_checkpoint_unchanged=True,
                 overall_deadline_unchanged=True,local_planner_and_coder=True)
