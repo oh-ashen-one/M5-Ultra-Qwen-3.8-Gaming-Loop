@@ -185,7 +185,7 @@ namespace ChicagoGame
                 int d = Mathf.RoundToInt(Vector3.Distance(me, target));
                 hud.text =
                     "COURIER: grab the YELLOW parcel\n" +
-                    "OBJECTIVE: reach the parcel  (" + d + " m)\n" +
+                    "OBJECTIVE: reach the parcel  (" + d + " m) [" + Mathf.CeilToInt(Mathf.Max(0, DEADLINE - (Time.time - missionStartTime))) + "s]\n" +
                     "WASD move   E enter/exit coupe   F grab/deliver   R reset";
             }
             else // stage 1 – carrying
