@@ -157,6 +157,7 @@ namespace ChicagoGame
         void RefreshHud()
         {
             if (hud == null) return;
+            if (stage == 3) { hud.text = "DELIVERY FAILED\nDelivery window expired\nR to retry"; return; }
             if (stage == 2)
             {
                 hud.text =
