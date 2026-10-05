@@ -1,0 +1,50 @@
+{
+  "commit": "d73f4b1ad90194d53e37beac6e9eef76976aadc5",
+  "files": [
+    {
+      "path": "mlx_vlm/server/cli.py",
+      "sha256": "15d49f41caea3acba6238e4ac8e0839279f4d0a0c9c620ac56370aab1262b597",
+      "upstream_match": true
+    },
+    {
+      "path": "mlx_vlm/server/generation.py",
+      "sha256": "c9b7a5468d4cc2660458792f4829f711f02c3c357125c29fbe78a46f881396d4",
+      "upstream_match": true
+    },
+    {
+      "path": "mlx_vlm/server/request_normalization.py",
+      "sha256": "37eb0727a61eb8a647cf010af20098f388688336d0e9df9f217c2409fc3a00e5",
+      "upstream_match": true
+    },
+    {
+      "path": "mlx_vlm/server/openai.py",
+      "sha256": "a1a202cc01cf91e6e661af29a4ecba94e97ce62f3aab4e83b502a6a53b9fa021",
+      "upstream_match": true
+    },
+    {
+      "path": "mlx_vlm/server/schemas.py",
+      "sha256": "80c863e32dd543ca878876e3b183559adfa1a27848d44599ae0852efe74fea68",
+      "upstream_match": true
+    },
+    {
+      "path": "mlx_vlm/prompt_utils.py",
+      "sha256": "65358f17a932cab2a0f69ff949adc2cbee22acd05b56975b65fb232ceb8804f5",
+      "upstream_match": true
+    },
+    {
+      "path": "mlx_vlm/tools/registry.py",
+      "sha256": "1309bcdf77854e3faf9135e4d6b8d3dec4433152b10829080b3dba0ffa7281ad",
+      "upstream_match": true
+    },
+    {
+      "path": "mlx_vlm/tools/parsers/qwen3_coder.py",
+      "sha256": "28584fbef4c44d80753fbd1dbcda00cfd4248f0d99c40deb85b02b9b110c0bc1",
+      "upstream_match": true
+    },
+    {
+      "path": "mlx_vlm/utils.py",
+      "sha256": "2045e18d1a16222d07b157251e4a5108b2b12bf740b885f9682a071c8dc59134",
+      "upstream_match": true
+    }
+  ]
+}

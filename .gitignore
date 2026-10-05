@@ -10,3 +10,10 @@ node_modules/
 .opencode/
 private/
 logs/private/
+.venv/
+.venv-*/
+hf-cache/
+*.safetensors
+server-access-token.txt
+model-server.log
+resident-supervisor.log

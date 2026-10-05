@@ -1,10 +1,10 @@
 # Architecture
 
-This is a proposed design, not an implemented or qualified system.
+Updated 2026-10-05. The game loop is proposed and held. Model download, settings fixtures and one short warm-up are implemented; see [runtime readiness](RUNTIME-READINESS.md).
 
 ## Roles and flow
 
-Use one controller and mostly sequential local-model contexts. Planner, coder, and tester are roles with separate context and permissions; they need not be three simultaneously loaded models. Keep expensive generation and rendering bounded and session-owned.
+Use this Codex management thread as the intelligent cloud supervisor, with serial local Qwen planner, coder, tester and fresh visual-critic contexts. It reviews real artifacts, prioritizes gaps and redirects stalled work. A process watchdog supplies liveness/resource alarms. One BF16 model is resident; roles have separate histories and permissions. Keep generation and rendering bounded and task-owned.
 
 ```mermaid
 flowchart TD
@@ -17,12 +17,12 @@ flowchart TD
     G -- No --> H[Sanitized failure packet and bounded retry]
     H --> B
     G -- Yes --> I[Known-good Git checkpoint]
-    I --> J[Rendered playthrough and frontier critic]
+    I --> J[Rendered playthrough and fresh local Qwen critic]
     J --> K[Three to five prioritized fix stories]
     K --> B
 ```
 
-The cloud critic assesses evidence and proposes fixes. Any cloud-authored gameplay repair is explicitly labeled rescue coding. It does not count as local coding. A tester's self-assessment cannot promote a candidate.
+Codex supervision can spot-review evidence and escalate genuine blockers. Record those interventions separately from local Qwen's substantive game work. Any separately approved cloud-authored gameplay repair is labeled rescue coding. A tester's self-assessment cannot promote a candidate.
 
 ## Exact source context
 
@@ -42,7 +42,7 @@ Keep the external acceptance harness and its configuration outside the coder's w
 
 ## Acceptance and visual evidence
 
-Use a layered gate: import/parse → controlled input/physics checks → full mission state checks → rendered input-driven playthrough → visual/audio/performance review. Headless tests validate logic; they cannot establish camera feel, final appearance, sound balance, or rendered frame rate. Fixed seeds/ticks do not guarantee deterministic Godot physics. Use tolerances, repeated native runs, pinned-runtime scenarios and renderer-specific baselines, and qualify one version-matched test framework such as GdUnit4 or GUT.
+Use a layered Unity gate: import/C# compile → controlled input/physics checks → full mission state checks → rendered input-driven playthrough → visual/audio/performance review. Headless tests validate logic; they cannot establish camera feel, final appearance, sound balance or rendered frame rate. Fixed seeds/ticks do not guarantee deterministic engine physics. Use tolerances, repeated native runs, pinned-runtime scenarios and renderer-specific baselines; qualify the chosen Unity test/capture adapter. GdUnit4/GUT references apply only if a later Godot option is approved.
 
 Run checks against the exact candidate commit and build. Preserve structured exit status, diagnostics, measured assertions, harness hash, seed, settings, and evidence IDs. Parse/autoload/resource errors, missing assertions, unknown test operations, timeouts, and missing outputs fail the gate even if a success string appears. A grep, self-score, screenshot alone, or stale recording cannot prove completion.
 
@@ -52,7 +52,7 @@ Rendered playthroughs must use the real input path and cover launch, foot/vehicl
 
 ## Critique and checkpoint promotion
 
-Give the frontier critic the approved brief, candidate commit, complete playthrough, representative captures, performance evidence, and known defects. Ask for three to five prioritized, observable fixes with impact and a verification method. Convert each into a small story; do not let criticism expand the approved scope automatically.
+Give a fresh local Qwen visual critic the approved brief, candidate commit, complete playthrough, immutable representative captures, performance evidence and known defects. It must not inherit the builder's self-assessment. Ask for three to five prioritized, observable fixes with impact and a verification method. Codex management reviews that evidence and progress before redirecting work. Convert fixes into small stories; criticism cannot expand the approved scope automatically.
 
 Maintain a candidate branch and an immutable known-good checkpoint. Promotion requires the complete protected gate and required presentation review. Store the commit and evidence bundle together. Recovery returns a new session-owned candidate to the known-good state while preserving failed candidates and evidence for diagnosis; it must not reset another collaborator's work.
 
@@ -62,7 +62,7 @@ Record run/story IDs, role session IDs, input commit/context hashes, proposed ed
 
 Session persistence, fork/revert features, or a workflow library do **not** prove exactly-once side effects. Avoid automatic replay of a generation, file mutation, paid request, or engine launch whose outcome is unknown. A stopped controller must not leave a respawner continuing the run.
 
-Watchdogs observe useful progress, budgets, memory/disk pressure, resource ownership, and output freshness—not only process liveness. Set explicit timeouts and retry caps. Pause on repeated failures, invalid evidence, exhausted budget, unavailable desktop/renderer, or conflicting ownership. Stop owned driver scripts before stopping their engine. No automatic relaunch after two crashes. Future renderer use must follow the verified host's shared cap, never raise it automatically, and never take over existing benchmark/game jobs.
+Watchdogs measure progress signals, budgets, memory/disk pressure, resource ownership and output freshness. Codex management supplies judgment about repeated failures, scope and quality. Set explicit deadlines and retry caps. Pause on invalid evidence, exhausted budgets, unavailable desktop/renderer or conflicting ownership. Stop owned drivers before their engine. No automatic relaunch after two engine crashes; the current model supervisor stops on its first new fault. Follow the verified host's shared cap and preserve other benchmark/game jobs. The closed benchmark's historical stop counter remains unchanged and scoped to that campaign.
 
 ## Provenance and local coding share
 

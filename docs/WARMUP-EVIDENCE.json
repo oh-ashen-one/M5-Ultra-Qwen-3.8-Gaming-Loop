@@ -1,0 +1,69 @@
+{
+  "status": "loaded-idle",
+  "updated_utc": "2026-10-05T01:03:38.609048+00:00",
+  "host_role": "verified-M5-Ultra",
+  "hardware": "Mac17,15",
+  "chip": "Apple M5 Ultra",
+  "model_revision": "6f265714824f3c38d4452baa1628aef3d9b9aae9",
+  "precision": "BF16",
+  "runtime": "mlx-vlm 0.7.4",
+  "endpoint": "http://127.0.0.1:8027/v1",
+  "game_loop": "held",
+  "engine_launches": 0,
+  "automatic_restarts": 0,
+  "limits": {
+    "minimum_available_GiB": 64,
+    "maximum_swap_growth_MiB": 512,
+    "max_num_seqs": 1,
+    "max_kv_size": 32768,
+    "prefill_step_size": 2048
+  },
+  "memory": {
+    "available_GiB": 183.648,
+    "swap_used_GiB": 1.112,
+    "swap_growth_MiB": 0.0
+  },
+  "health": {
+    "status": "healthy",
+    "loaded_context_size": 262144,
+    "configured_context_limit": 32768,
+    "effective_context_limit": 32768,
+    "loaded_tool_parser": "qwen3_coder",
+    "continuous_batching_enabled": true,
+    "apc_enabled": false
+  },
+  "warmup": {
+    "answer": "READY",
+    "thinking_enabled": true,
+    "reasoning_effort": "xhigh",
+    "thinking_budget": 256,
+    "max_tokens": 512,
+    "reasoning_content_returned": true,
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 57,
+      "completion_tokens": 30,
+      "total_tokens": 87,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "prompt_n": 57,
+      "cache_n": 0,
+      "predicted_n": 30,
+      "prompt_ms": 1260.7392499339767,
+      "prompt_per_token_ms": 22.118232454982046,
+      "prompt_per_second": 45.211569325683335,
+      "predicted_ms": 1558.6390520911664,
+      "predicted_per_token_ms": 51.954635069705546,
+      "predicted_per_second": 19.24756085108361,
+      "peak_memory": 54.990502562,
+      "draft_kind": null,
+      "draft_rounds": null,
+      "draft_n": null,
+      "draft_n_accepted": null
+    }
+  },
+  "server_RSS_GiB": 51.497
+}
