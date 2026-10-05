@@ -34,16 +34,15 @@ namespace ChicagoGame
             coupe.transform.SetParent(root.transform, true);
             coupe.transform.rotation = Quaternion.Euler(0f, 180f, 0f) * coupe.transform.rotation;
 
-            var boxCol = root.AddComponent<BoxCollider>();
-            // Collider bottom raised clear of pavement top (~0.14) so the body
+            // Body collider: bottom lifted above pavement top (~0.14) so the body
             // never starts ground-penetrating (friction lock under throttle).
             var boxCol = root.AddComponent<BoxCollider>();
             boxCol.center = new Vector3(0f, 0.75f, 0f);
             boxCol.size = new Vector3(VEHICLE_WIDTH - 0.1f, 1.2f, VEHICLE_LENGTH - 0.2f);
-            var pm = new PhysicMaterial("VehicleLowFriction");
+            var pm = new PhysicsMaterial("VehicleLowFriction");
             pm.dynamicFriction = 0.05f;
             pm.staticFriction = 0.05f;
-            pm.frictionCombine = PhysicMaterialCombine.Minimum;
+            pm.frictionCombine = PhysicsMaterialCombine.Minimum;
             pm.bounciness = 0f;
             boxCol.material = pm;
 
@@ -167,25 +166,32 @@ namespace ChicagoGame
             // Reset car state
             _rb.linearVelocity = Vector3.zero;
             _rb.angularVelocity = Vector3.zero;
+            _speed = 0f;
+            _driving = false;
             transform.position = CarResetPos;
             transform.rotation = CarResetRot;
             _rb.position = CarResetPos;
             _rb.rotation = CarResetRot;
-            _speed = 0f;
-            _driving = false;
 
-            // Reset player
+            // An ENABLED CharacterController clamps its own transform, so a
+            // direct position write is silently ignored. Disable it (and the
+            // Walker that drives it) before teleporting, then re-enable so the
+            // controller re-seeds from the spawn point and gravity settles it.
+            if (_cc != null) _cc.enabled = false;
+            if (_walker != null) _walker.enabled = false;
+
             _player.transform.position = PlayerResetPos;
             _player.transform.rotation = Quaternion.identity;
-            _walker.enabled = true;
-            _cc.enabled = true;
+
             if (_pv) _pv.gameObject.SetActive(true);
+            if (_cc != null) _cc.enabled = true;
+            if (_walker != null) _walker.enabled = true;
             _follow.target = _player.transform;
             Set("Mode", "foot");
             Set("Vehicle", transform);
             Set("Health", 100);
 
-            // Increment restart count
+            // Increment restart count only on this real reset.
             int current = 0;
             var f = typeof(LoopSignals).GetField("Restarts", St);
             var p = typeof(LoopSignals).GetProperty("Restarts", St);
