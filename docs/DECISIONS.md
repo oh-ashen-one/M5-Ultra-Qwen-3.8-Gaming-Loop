@@ -7,13 +7,14 @@ Updated 2026-10-05. Requirement, recommendation, and unresolved choice are separ
 | Requirement | Interpretation |
 | --- | --- |
 | New public open-source repository | Owner `oh-ashen-one`; display title **M5 Ultra Qwen 3.8 Gaming Loop**; publish original research/planning and appropriately attributed reuse |
-| Planning first | Benchmarks are closed; game/agent loop held for launch-plan and settings review; download/load/short warm-up authorized separately |
+| Planning first | Benchmarks are closed; game/agent loop held for readiness review; model preparation and small disposable connector tests authorized separately |
 | Local model goal | Qwen3.8 27B BF16 on verified M5 Ultra 256 GB / 80 GPU; one resident model, serial roles and explicit thinking |
 | Sustained future iteration | Initial 8–72-hour planning window or further agreed time needed; bounded budgets and stop criteria |
 | Majority of gameplay coding local | About 90% goal; substantive planning/coding/fresh visual critique local; intelligent Codex supervision and disclosed spot reviews; separately approved rescue code accounted independently |
 | Playable quality | Roughly ten-minute GTA5-style urban action/driving experience with original content; no AAA parity promise |
 | Native engine priority | Unity CLI/C# selected for initial game; browser fallback only |
-| Custom art pipeline | Meshy 3D assets plus Blender MCP cleanup, rigging and animation; polished movement, driving, camera, art, lighting and audio |
+| Original local art pipeline | All eventual 3D models, materials, rigs and animation authored from scratch by local Qwen through Blender; no Meshy, Tripo or premade asset packs; polished movement, driving, camera, art, lighting and audio |
+| Management | Parent midir manages project direction and approvals; execution lead performs approved work and reports evidence/blockers |
 | Reuse prior work | Learn from and selectively reuse authorized Ralph/game projects; do not copy private repositories wholesale |
 | Persistent model-powered NPCs | Distinct identity, permitted observations, factual memories and player relationships per NPC; cheap Chinese/GPT models or Jev candidates may share one backend |
 | Honest video claims | Disclose local development versus cloud NPC runtime inference; record observed state, actions, memory changes, latency, costs and fallbacks |
@@ -24,7 +25,7 @@ Updated 2026-10-05. Requirement, recommendation, and unresolved choice are separ
 - **Engine: Unity CLI/C# selected by the owner on October 5.** Exact release, render pipeline, license and adapters remain open. The earlier Godot recommendation is historical.
 - **Harness: OpenCode for qualification**, Blender MCP, and one engine adapter. Use mediated edits, external acceptance and Git checkpoints. Do not adopt a second orchestration framework without a concrete need.
 - **Gameplay foundation:** third-person code, arcade vehicle physics, authored roads, built-in navigation, small mission state machine. Add optional camera/AI/quest packages only after identifying the integration need.
-- **Quality loop:** serial local roles and fresh local visual criticism; Codex management reviews evidence and progress; bounded retries and known-good promotion.
+- **Quality loop:** serial local roles and fresh local visual criticism; parent midir manages direction, execution lead reports evidence/progress; bounded retries and known-good promotion.
 - **Licensing:** MIT for original project material; per-component/asset/model licensing remains separate.
 
 ## Open choices
@@ -56,6 +57,8 @@ The [towering-monster investigation note](concepts/TOWERING-MONSTER-INVESTIGATIO
 
 The owner retired the closed benchmark campaign's automatic-inference prohibition for future local-model work. Historical counters, actual errors and closeout remain untouched. New errors and the shared renderer/security rules still apply.
 
-The exact BF16 revision, hardware, installed runtime and settings were audited. The owner then authorized one model load and a short warm-up, which completed with `READY` and returned reasoning content. The model remains idle; the separate game/agent-loop review hold remains in force. No TensorFold, DFlash, quantized replacement, Unity launch, Blender launch, paid generation or main merge was performed.
+The exact BF16 revision, hardware, installed runtime and settings were audited. One authorized load/short warm-up completed with `READY` and returned reasoning content. Later disposable connector requests qualify tools and Blender; the separate game/agent-loop review hold remains in force. No TensorFold, DFlash, quantized replacement, Unity launch, external asset generation or main merge was performed.
 
-This Codex thread owns intelligent cloud supervision. Its exact model identifier is not exposed in the task context; do not assume Astra. Local Qwen remains the substantive game worker and fresh critic after start. See [runtime evidence](RUNTIME-READINESS.md).
+The later owner instruction assigns project management to parent midir and approved execution/reporting to the execution lead. This supersedes the earlier autonomous cloud-owner description. Exact execution-model identifier is unavailable; do not assume Astra. Local Qwen remains the substantive game worker and fresh critic after start. See [runtime evidence](RUNTIME-READINESS.md).
+
+The owner authorized a small disposable end-to-end connector check without starting the game loop. All eventual 3D assets are now required to come from local Qwen's original Blender work, including materials, rigs and animation; Meshy, Tripo and premade asset packs are excluded. These requirements supersede earlier provider recommendations, including separate concept notes. Missing installation/license/auth prerequisites are reported, never bypassed.

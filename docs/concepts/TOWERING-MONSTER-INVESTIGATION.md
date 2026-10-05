@@ -6,7 +6,7 @@ The reference is cooperative investigation tension associated with Phasmophobia,
 
 ## Physical threat changes the design
 
-Build an original creature with its own silhouette, anatomy, equipment, animation and identity through the future custom Meshy/Blender pipeline. Its scale should alter gameplay rather than merely replace a humanoid skin. Agree on dimensions first: height, shoulder width, reach, turning space, step height and which doors/passages it can use. The environment must support those constraints.
+Build an original creature with its own silhouette, anatomy, equipment, animation and identity through local Qwen's original Blender authoring pipeline. No Meshy, Tripo or premade asset packs. Its scale should alter gameplay rather than merely replace a humanoid skin. Agree on dimensions first: height, shoulder width, reach, turning space, step height and which doors/passages it can use. The environment must support those constraints. This remains a separate discussion concept, not authorized game development.
 
 - **Footprint:** a large body cannot fit through every door. Rooms, ceiling height, cover, line of sight and escape routes create different risks. Collision and navigation must agree with the visible silhouette.
 - **Sound:** heavy footfalls, scraping horns/gear, breathing and impacts communicate distance and direction. Acoustic occlusion and material response matter; visual size alone does not create dread.

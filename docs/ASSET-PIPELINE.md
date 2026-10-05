@@ -1,20 +1,20 @@
 # Asset pipeline
 
-Proposed workflow only. No assets have been generated, downloaded, rigged, animated, or imported for this project.
+Production workflow remains held for the explicit game start. A separately authorized disposable connector scene tests original mesh/material authoring and export; it is not production art or evidence of final rig/animation quality.
 
 ## Direction and provenance
 
-Start from an approved art brief: environment/story tone, palette, character/vehicle silhouettes, measured proportions, materials, plausible lighting, and representative gameplay-camera compositions. Custom Meshy assets and Blender MCP cleanup/rigging/animation are user requirements. The precise visual theme is still open.
+Start from an approved art brief: environment/story tone, palette, character/vehicle silhouettes, measured proportions, materials, plausible lighting, and representative gameplay-camera compositions. **All eventual 3D assets must be authored by local Qwen using Blender from scratch**, including models, materials, rigs and animation. The precise visual theme is still open.
 
-Meshy is a separate generation step; the proposed Blender MCP adapter is not assumed to include a Meshy connector. Before a future paid batch, verify the actual service terms, plan, output rights, commercial use, redistribution, and approved cost. A generated asset is not automatically covered by this repository's MIT license.
+Meshy, Tripo and premade asset packs are excluded. Older assisted-generation recommendations are superseded. A Blender adapter must not silently call external asset services or import demo art. Original test material is MIT; third-party tool/model licenses remain separate.
 
-For each asset, record source/provider, creator, approved reference/prompt, generation/job ID where publishable, rights/license, edit history, content hash, intended use, and final engine resource. Retain original exports and editable Blender sources when rights permit. Never use ripped Rockstar content or unreviewed demo art.
+For each asset, record local model/runtime/settings, approved brief, authoring script and edit history, source/export hashes, rights/license, intended use and final engine resource. Preserve editable `.blend` files and reproducible scripts. Log any cloud or human intervention separately rather than attributing it to local Qwen. Never use ripped Rockstar content or unreviewed demo art.
 
-## Meshy → Blender → engine
+## Local Qwen → Blender → Unity
 
 | Stage | Checks and deliverables |
 | --- | --- |
-| Generation pilot | One representative asset per important class; silhouette and proportions match the brief; topology/material output inspected before a batch |
+| Original authoring pilot | Local Qwen creates one representative asset per important class from an empty Blender scene; measured silhouette, topology and materials match the approved brief before a batch |
 | Geometry cleanup | Remove broken/duplicate geometry; check normals, manifold needs, smoothing, mesh density, and deformation topology |
 | Scale and orientation | Real dimensions, consistent units/axes, applied transforms, meaningful names, stable origin/pivots; wheel/door/character roots placed deliberately |
 | UVs and materials | Inspect UV coverage/seams, texture resolution and color space, PBR maps, material slots, and engine shader compatibility |
@@ -23,7 +23,7 @@ For each asset, record source/provider, creator, approved reference/prompt, gene
 | Runtime packaging | Appropriate LODs, texture/memory budgets, simple colliders, collision layers, navigation relevance, export settings, and asset manifest |
 | Engine validation | Reimport in the selected engine; compare gameplay views; test animation/IK, collision, camera clearance, lighting response, and real rendered performance |
 
-Choose the export format only after the engine/version is selected. GLB/glTF is a candidate where supported; preserve the editable `.blend` source rather than treating an export as the only source of truth.
+Choose the export format after the exact Unity version/import adapter is qualified. FBX is a native-import candidate; GLB/glTF requires a compatible selected importer. A successful Blender export proves neither Unity import nor material fidelity. Preserve editable `.blend` sources.
 
 ## Engine acceptance
 
@@ -35,4 +35,4 @@ Temporary primitives may establish gameplay foundations. They must be replaced b
 
 ## Future adapter controls
 
-Pin the Blender MCP release and verify the Blender/Python compatibility after start. Keep its bridge local and project-scoped; constrain Python/file/network access and export paths. Consider the documented safe mode and `DISABLE_TELEMETRY=true` during qualification. No Blender process, adapter installation, or configuration has been started or changed by this planning commit.
+Pin and qualify the actual Blender control adapter. Keep a future MCP bridge local and project-scoped; constrain Python/file/network access and export paths. Consider upstream safe mode and `DISABLE_TELEMETRY=true` during qualification. The M5 inventory found Blender 5.2.0 but no installed MCP addon/server; the disposable test uses existing headless CLI control. No adapter installation is authorized by that test.

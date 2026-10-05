@@ -1,0 +1,307 @@
+{
+  "started_utc": "2026-10-05T01:24:02.887999+00:00",
+  "host": {
+    "chip": "Apple M5 Ultra",
+    "model": "Mac17,15",
+    "memory_GiB": 256,
+    "GPU_cores": 80
+  },
+  "runtime": "MLX-VLM 0.7.4",
+  "model": "Qwen3.8-27B BF16",
+  "model_revision": "6f265714824f3c38d4452baa1628aef3d9b9aae9",
+  "request_settings": {
+    "enable_thinking": true,
+    "reasoning_effort": "xhigh",
+    "thinking_budget": 1024,
+    "max_tokens": 4096,
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "repetition_penalty": 1.0
+  },
+  "game_loop": "held",
+  "stages": {
+    "qwen_tool_file_shell": {
+      "status": "PASS",
+      "host": "M5 Ultra",
+      "tool": "qwen3_coder -> allowlist/hash edit -> zsh/Python immutable test",
+      "source_sha256": "6b76a1ccb7572119a50be116cf091b215bbe08ec54c62b343b84cfd579f3c98c"
+    },
+    "blender_cli": {
+      "status": "PASS",
+      "host": "M5 Ultra",
+      "tool": "existing Blender CLI",
+      "author": "local Qwen from scratch",
+      "source_sha256": "db4bb2305f5643f1fcaafa18fa22d04be1931d686b0b6ca75f3ee4e392d3aaa7"
+    },
+    "blender_mcp": {
+      "status": "NOT RUN",
+      "reason": "No installed MCP addon/server found; no installation authorized"
+    },
+    "unity_import_compile_render": {
+      "status": "NOT RUN",
+      "reason": "M5 Unity editor/Hub and license directory absent in live inventory",
+      "required_action": "Owner selects/installs a Unity release and activates appropriate license on M5, then authorizes rerun"
+    },
+    "qwen_vision_blender_frame": {
+      "status": "PASS",
+      "host": "M5 Ultra",
+      "image_sha256": "1bbb1181e88885cc2a1ca55047668916053f087916cbf690d0a0e4c78ac567d6",
+      "image_unchanged": true,
+      "observed": {
+        "left_object": {
+          "shape": "cube",
+          "color": "red"
+        },
+        "right_object": {
+          "shape": "sphere",
+          "color": "blue"
+        }
+      },
+      "source": "actual Blender render; Unity frame unavailable"
+    },
+    "qwen_vision_unity_frame": {
+      "status": "NOT RUN",
+      "reason": "No Unity rendered frame exists; the independent Blender-image check is recorded separately"
+    }
+  },
+  "requests": [
+    {
+      "stage": "file_shell",
+      "usage": {
+        "prompt_tokens": 544,
+        "completion_tokens": 444,
+        "total_tokens": 988,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_content_returned": true,
+      "tool_names": [
+        "write_file"
+      ]
+    },
+    {
+      "stage": "file_shell",
+      "usage": {
+        "prompt_tokens": 1080,
+        "completion_tokens": 30,
+        "total_tokens": 1110,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_content_returned": true,
+      "tool_names": [
+        "run_test"
+      ]
+    },
+    {
+      "stage": "blender",
+      "usage": {
+        "prompt_tokens": 692,
+        "completion_tokens": 2313,
+        "total_tokens": 3005,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_content_returned": true,
+      "tool_names": [
+        "write_file"
+      ]
+    },
+    {
+      "stage": "blender",
+      "usage": {
+        "prompt_tokens": 3094,
+        "completion_tokens": 48,
+        "total_tokens": 3142,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_content_returned": true,
+      "tool_names": [
+        "run_blender"
+      ]
+    },
+    {
+      "stage": "vision",
+      "usage": {
+        "prompt_tokens": 347,
+        "completion_tokens": 118,
+        "total_tokens": 465,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "finish_reason": "stop",
+      "reasoning_content_returned": true,
+      "tool_names": []
+    }
+  ],
+  "tool_actions": [
+    {
+      "stage": "file_shell",
+      "tool": "write_file",
+      "result": {
+        "ok": true,
+        "path": "diagnostic.py",
+        "sha256": "6b76a1ccb7572119a50be116cf091b215bbe08ec54c62b343b84cfd579f3c98c"
+      }
+    },
+    {
+      "stage": "file_shell",
+      "tool": "run_test",
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": "PASS: 4 numeric cases",
+        "stderr": ""
+      }
+    },
+    {
+      "stage": "blender",
+      "tool": "write_file",
+      "result": {
+        "ok": true,
+        "path": "asset_scene.py",
+        "sha256": "db4bb2305f5643f1fcaafa18fa22d04be1931d686b0b6ca75f3ee4e392d3aaa7"
+      }
+    },
+    {
+      "stage": "blender",
+      "tool": "run_blender",
+      "result": {
+        "version": "5.2.0 LTS",
+        "renderer": "Cycles CPU",
+        "resolution": [
+          512,
+          512
+        ],
+        "samples": 8,
+        "objects": [
+          {
+            "name": "Camera",
+            "type": "CAMERA",
+            "vertices": null,
+            "materials": []
+          },
+          {
+            "name": "AreaLight",
+            "type": "LIGHT",
+            "vertices": null,
+            "materials": []
+          },
+          {
+            "name": "RedCube",
+            "type": "MESH",
+            "vertices": 8,
+            "materials": [
+              "RedCubeMat"
+            ]
+          },
+          {
+            "name": "BlueSphere",
+            "type": "MESH",
+            "vertices": 482,
+            "materials": [
+              "BlueSphereMat"
+            ]
+          },
+          {
+            "name": "GroundPlane",
+            "type": "MESH",
+            "vertices": 4,
+            "materials": [
+              "GroundGrayMat"
+            ]
+          }
+        ],
+        "ok": true,
+        "artifacts": [
+          {
+            "name": "scene.blend",
+            "bytes": 117640,
+            "sha256": "020960742d82f0b53c6de255f88717c8294090159d604d432b6c591aad28c221"
+          },
+          {
+            "name": "scene.glb",
+            "bytes": 27704,
+            "sha256": "c8e116a21d3a709778c557c9943f3c69467bab5a9c1596cce36ca5242c0c411f"
+          },
+          {
+            "name": "scene.fbx",
+            "bytes": 39020,
+            "sha256": "63167a35e395b529eecfefe3c50e1bcd430c7d3f669b70bf2f68c729763a5b51"
+          },
+          {
+            "name": "frame.png",
+            "bytes": 269631,
+            "sha256": "1bbb1181e88885cc2a1ca55047668916053f087916cbf690d0a0e4c78ac567d6"
+          }
+        ],
+        "GPU_slot": 1,
+        "control": "Blender CLI --background --factory-startup --python"
+      }
+    }
+  ],
+  "resource_snapshot": {
+    "available_GiB": 184.047,
+    "swap_growth_MiB": 0.0
+  },
+  "boundary_fixtures": {
+    "broken_test_exit": 1,
+    "outside_path_rejected": true
+  },
+  "setup_recovery": {
+    "prior_error": {
+      "type": "ValueError",
+      "message": "Blender operator outside mesh/scene allowlist"
+    },
+    "change": "Allow normal shade_smooth and named shader-node removal; preserve local Qwen source",
+    "resumed_utc": "2026-10-05T01:29:37.282677+00:00"
+  },
+  "pixel_fixture": {
+    "red_pixels": 8910,
+    "blue_pixels": 3726,
+    "red_centroid_x": 172.92,
+    "blue_centroid_x": 338.24,
+    "pass": true
+  },
+  "finished_utc": "2026-10-05T01:29:54.144029+00:00",
+  "publication": {
+    "original_model_input_image_sha256": "1bbb1181e88885cc2a1ca55047668916053f087916cbf690d0a0e4c78ac567d6",
+    "published_image_sha256": "1ab52decde26fb868459849729afe4ec6a1103f435149d1ab7a720329fab9f57",
+    "unchanged_IDAT_sha256": "4a244325302fb1e7899fdff1bc8527a0028f0ff8f30d90488a4ac7c10a8ad52f",
+    "removed_metadata_chunk_types": [
+      "eXIf",
+      "tEXt"
+    ],
+    "pixels_changed": false,
+    "note": "Remove private Blender path metadata; identical compressed image pixels. FBX and blend save/export hashes prove actual outputs; those containers are reproducible and are omitted to avoid embedded private paths."
+  },
+  "prerequisites": {
+    "checked_on": "2026-10-05",
+    "Unity_editor_found_in_app_directories_or_Spotlight": false,
+    "Unity_Hub_found": false,
+    "Unity_license_directory_present": false,
+    "Blender_MCP_addon_or_server_found": false,
+    "visible_permission_windows": 0,
+    "Blender_quarantine_attribute_present": false
+  },
+  "setup_harness": {
+    "author": "cloud preparation, excluded from gameplay coding",
+    "initial_executed_sha256": "0f242f2c925ac526f83cc0c2460ffa519bb748b4405773e9fda042697246ef4e",
+    "recovery_executed_sha256": "a75485f207a45dd558fac10b2cbd20129d52c3d554e2ecaffa4bffcda43ce06a",
+    "published_sha256": "e44e75c6fae19ca1631c79ee004662dc37bf502dd9d233224f66dbd463a75a15",
+    "publication_delta": "Post-test version adds private workspace permissions and explicit NOT RUN Unity-frame stage; no Qwen scene changes or repeated inference."
+  }
+}

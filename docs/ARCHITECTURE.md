@@ -4,7 +4,7 @@ Updated 2026-10-05. The game loop is proposed and held. Model download, settings
 
 ## Roles and flow
 
-Use this Codex management thread as the intelligent cloud supervisor, with serial local Qwen planner, coder, tester and fresh visual-critic contexts. It reviews real artifacts, prioritizes gaps and redirects stalled work. A process watchdog supplies liveness/resource alarms. One BF16 model is resident; roles have separate histories and permissions. Keep generation and rendering bounded and task-owned.
+Parent midir manages project direction and approvals. The execution lead performs approved work, coordinates serial local Qwen planner, coder, tester and fresh visual-critic contexts, and reports real artifacts, gaps and blockers to management. A process watchdog supplies liveness/resource alarms. One BF16 model is resident; roles have separate histories and permissions. Keep generation and rendering bounded and task-owned. The disposable connector test does not authorize the game loop.
 
 ```mermaid
 flowchart TD
@@ -52,7 +52,7 @@ Rendered playthroughs must use the real input path and cover launch, foot/vehicl
 
 ## Critique and checkpoint promotion
 
-Give a fresh local Qwen visual critic the approved brief, candidate commit, complete playthrough, immutable representative captures, performance evidence and known defects. It must not inherit the builder's self-assessment. Ask for three to five prioritized, observable fixes with impact and a verification method. Codex management reviews that evidence and progress before redirecting work. Convert fixes into small stories; criticism cannot expand the approved scope automatically.
+Give a fresh local Qwen visual critic the approved brief, candidate commit, complete playthrough, immutable representative captures, performance evidence and known defects. It must not inherit the builder's self-assessment. Ask for three to five prioritized, observable fixes with impact and a verification method. The execution lead reports evidence and progress to parent midir for direction. Convert fixes into approved small stories; criticism cannot expand the scope automatically.
 
 Maintain a candidate branch and an immutable known-good checkpoint. Promotion requires the complete protected gate and required presentation review. Store the commit and evidence bundle together. Recovery returns a new session-owned candidate to the known-good state while preserving failed candidates and evidence for diagnosis; it must not reset another collaborator's work.
 
@@ -66,7 +66,7 @@ Watchdogs measure progress signals, budgets, memory/disk pressure, resource owne
 
 ## Provenance and local coding share
 
-For each accepted story, record model artifact/hash, runtime and quantization, actual context/settings, role, commit/diff, elapsed time, tool actions, tests, and author class: local, cloud rescue, human, or mixed. Record generated assets and paid-service contributions separately from gameplay coding.
+For each accepted story, record model artifact/hash, runtime and quantization, actual context/settings, role, commit/diff, elapsed time, tool actions, tests, and author class: local, cloud rescue, human, or mixed. Record local Qwen's original Blender models/materials/rigs/animation separately from gameplay coding. No Meshy, Tripo or premade art is permitted; tool/model licenses and any interventions remain explicit.
 
 The local coding target is about 90% of actual accepted gameplay work. Before start, choose a primary attribution metric and audit mixed edits; track accepted tasks and code contributions alongside it. Changed-line counts alone can be inflated by rewrites, and tokens/time are not gameplay authorship. Report the observed share and exceptions honestly rather than assigning cloud repairs to the local model.
 

@@ -10,7 +10,7 @@ Verified 2026-10-05. **Model warmed and resident; game/agent loop held for the o
 - One authenticated loopback endpoint on the **M5**: `http://127.0.0.1:8027/v1`. The private token and connection adapter remain outside Git. This URL refers to M5 localhost, not controller localhost.
 - Warm-up: one short request returned `READY`, a normal stop and nonempty `reasoning_content`, with explicit thinking and `xhigh`. Request: 57 prompt tokens, 30 generated tokens, maximum 512 generation tokens and a 256-token thinking budget. Raw reasoning is not published.
 - Immediate post-warm-up snapshot: 183.536 GiB available, 51.497 GiB server RSS, 1.112 GiB existing swap and **zero positive swap growth**. These are a small functional snapshot, not a sustained workload measurement.
-- No Unity editor/license installation was found. Blender 5.2.0 exists, but was not launched. No game, engine, model agent loop, TensorFold, drafter, paid asset generation or main merge started.
+- No Unity editor/Hub/license installation was found. Blender 5.2.0 is installed. The separately authorized [connector diagnostic](../tools/connector_smoke.py) qualifies scoped tools and headless Blender control; its actual results are recorded separately. No game-generation loop, TensorFold, drafter, external asset generation or main merge started.
 
 ## Exact supported settings
 
@@ -42,10 +42,12 @@ TensorFold's M5 tensor kernels do not establish BF16-checkpoint compatibility. I
 
 The [warm-up supervisor](../tools/warmup_resident.py) holds the existing shared GPU slot, owns only its server, enforces at least 64 GiB available and at most 512 MiB positive swap growth, checks desktop/health/model identity, and stops on a new fault. It never launches an engine, generates another request automatically or restarts a failed server. The model is deliberately left loaded and idle.
 
-This Codex thread owns intelligent supervision: inspect actual artifacts, progress, repeated failures, scope and quality, then redirect local Qwen work when needed. The watchdog supplies signals. Parent assistance is for genuine blockers. Cloud judgments/interventions must be logged separately from local game authorship; the management model's exact ID is not exposed here and is not assumed to be Astra.
+Parent midir manages project direction and approvals. The execution lead performs approved work and reports actual artifacts, progress, failures and blockers. The watchdog supplies resource/liveness signals. Cloud judgments/interventions are logged separately from local game authorship; the execution model's exact ID is not exposed here and is not assumed to be Astra.
 
-The preparation/downloader/audit/resident tools were authored by Codex and are recorded as cloud preparation work, not local gameplay coding. No substantive game code has been authored. A scheduled Codex heartbeat could not be created because this delegated cloud thread does not support that local-thread feature; no scheduled AI follow-up is claimed. Active game supervision will remain in this thread after approval.
+The preparation/downloader/audit/resident/diagnostic tools were authored by Codex and are cloud preparation work, not local gameplay coding. Diagnostic scene code is authored by local Qwen. No substantive game code has been authored. A scheduled Codex heartbeat could not be created because this delegated cloud thread does not support that local-thread feature; no scheduled AI follow-up is claimed. Future game supervision remains under parent management after explicit approval.
 
 The closed benchmark's two-event stop remains historical and campaign-scoped. Its counters, failures and closeout were not changed. Shared renderer limits, real new faults, permissions, security controls and other task ownership remain enforced.
 
 Before the game start: review this configuration and the acceptance/design plan; qualify actual tool edits and immutable-image criticism; resolve Unity release/pipeline/license and capture adapters; prove protected red/green acceptance and last-playable checkpoint recovery. The one-request warm-up does not clear those gates.
+
+The separately authorized [disposable connector check](../diagnostics/connector-2026-10-05/README.md) passed real Qwen tool edits/shell tests, original Blender CLI mesh/material save/export/render and fresh image recognition. Unity import/compile/render and Blender MCP remain **NOT RUN** because prerequisites are absent. One simple image is functional vision evidence, not proof of reliable game criticism. No production game generation began.
