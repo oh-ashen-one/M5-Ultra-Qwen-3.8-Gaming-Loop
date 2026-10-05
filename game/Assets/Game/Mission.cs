@@ -97,7 +97,7 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
             var beaconGo = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             beaconGo.name = "Beacon";
             beaconGo.transform.SetParent(missionRoot, false);
-            beaconGo.transform.position = new Vector3(laneX, PAV_TOP + 3.5f, 26.0f);
+            beaconGo.transform.position = new Vector3(1.0f, PAV_TOP + 3.5f, 26.0f);
             beaconGo.transform.localScale = new Vector3(1.1f, 3.5f, 1.1f); // 7 m tall
             var bcol = beaconGo.GetComponent<Collider>();
             if (bcol != null) Destroy(bcol);
