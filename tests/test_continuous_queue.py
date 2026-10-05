@@ -13,6 +13,7 @@ from loop_controller.core import Files,Halt,Store,atomic
 from loop_controller.continuous_checks import evaluate_step,validate_proposed
 from continue_game_queue import ContinuousRunner,ReadBoundEdits,review_captures
 from recover_vehicle_entry import EntryRecovery,ENTRY_ANCHOR
+from resume_inspected_queue import validate_resume
 
 
 class QueueTests(unittest.TestCase):
@@ -24,6 +25,23 @@ class QueueTests(unittest.TestCase):
 
     def tearDown(self):
         self.store.db.close();self.tmp.cleanup()
+
+    def test_inspection_resume_preserves_queue_and_rejects_unsafe_restart(self):
+        state={'status':'paused','source_checkpoint':'verified','overall_deadline_epoch':200,
+               'task_index':2,'failure_streak':2,'rounds':8}
+        before=copy.deepcopy(state)
+        marker='User requested live Unity GUI inspection. Preserve this pause; do not auto-restart.'
+        pending=[{'kind':'model-request','id':'interrupted-planner'}]
+        validate_resume(state,'verified','',marker,pending,100)
+        self.assertEqual(state,before)
+        cases=[({**state,'controller_pid':123},'verified','',marker,pending,100),
+               (state,'changed','',marker,pending,100),
+               (state,'verified',' M game/file.cs',marker,pending,100),
+               (state,'verified','','unrelated pause',pending,100),
+               (state,'verified','',marker,[{'kind':'edit'}],100),
+               (state,'verified','',marker,pending,201)]
+        for args in cases:
+            with self.subTest(args=args),self.assertRaises(Halt):validate_resume(*args)
 
     def gate(self,checks,rows,objects=None):
         (self.bundle/'captures/trace.jsonl').write_text('\n'.join(json.dumps(r) for r in rows))

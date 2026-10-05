@@ -139,7 +139,7 @@ class Store:
                  "Blocker: " + str(data.get("blocker", "none")), "",
                  "Actual evidence: " + str(data.get("latest_evidence", "none")),
                  "Reference images are aspirational targets, not game output.", "",
-                 "Cloud manager: parent dot; existing 30-minute oversight. No duplicate schedule."]
+                 "Cloud manager: parent dot; existing ten-minute oversight. No duplicate schedule."]
         atomic(self.root / "PROGRESS.md", ("\n".join(lines) + "\n").encode(), raw=True)
         pictures = "".join('<figure><img width="640" src="' + html.escape(p, quote=True) +
                            '"><figcaption>Actual Unity capture</figcaption></figure>'
