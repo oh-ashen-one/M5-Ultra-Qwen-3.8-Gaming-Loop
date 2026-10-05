@@ -26,7 +26,7 @@ namespace ChicagoGame
             if (sw != null) {
                 var smr = sw.GetComponent<MeshRenderer>(); var smf = sw.GetComponent<MeshFilter>();
                 var b = smf.sharedMesh.bounds; var wb = smr.bounds;
-                var ls = new Vector3(32f / b.size.x, wb.size.y / b.size.y, 7f / b.size.z);
+                var ls = new Vector3(32f / b.size.x, 7f / b.size.y, 0.14f / b.size.z);
                 var pv = new GameObject("Pavement");
                 pv.transform.rotation = sw.rotation;
                 pv.transform.localScale = ls;
