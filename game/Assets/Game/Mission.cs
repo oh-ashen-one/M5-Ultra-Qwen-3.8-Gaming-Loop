@@ -56,7 +56,11 @@ namespace ChicagoGame
 
         void Build()
         {
-            laneX = ProbeLane();
+            // Deterministic lane aligned with the parked coupe (X=3.6) so the
+            // parcel, pad and beacon all sit directly on the drivable centreline
+            // of the block. ProbeLane stays available but we pin the value so the
+            // objective/destination geometry is reproducible for a route test.
+            laneX = 3.6f;
 
             // Stationary world root: the objective, destination and beacon must
             // stay fixed on the block regardless of the courier's transform.
