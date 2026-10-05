@@ -1,0 +1,431 @@
+{
+  "candidate": "f965eaecf19d0aa56600c3249af81282dcdabd10",
+  "last_playable_checkpoint": "81659edb371a6b961d2e09983d88140b9c73d4ff",
+  "before": [
+    {
+      "acceptance_fixture": null,
+      "build_id": "c11924e2a7e9a5b8463ad02a46885dae55bb75083fb9cc97ced06261ada2b655",
+      "candidate": "2d6648196b32c225009e2f9545b9b60947ed1ceb",
+      "evidence": "evidence/combat-focus-5299ca0e-before-foot",
+      "facts": {
+        "damage_events": [
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 3.0298216342926025,
+            "mode": "foot",
+            "time": 4.0333333015441895
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 4.366585731506348,
+            "mode": "foot",
+            "time": 5.633333206176758
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.0648066997528076,
+            "mode": "foot",
+            "time": 7.333333492279053
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.0648066997528076,
+            "mode": "foot",
+            "time": 8.899999618530273
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.0648066997528076,
+            "mode": "foot",
+            "time": 10.5
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.0648066997528076,
+            "mode": "foot",
+            "time": 12.100000381469727
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.0648066997528076,
+            "mode": "foot",
+            "time": 13.716666221618652
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.0648066997528076,
+            "mode": "foot",
+            "time": 15.416666984558105
+          }
+        ],
+        "hits": 2,
+        "shots": 2,
+        "visible_height_range": [
+          0.004044999834150076,
+          0.016031913459300995
+        ]
+      },
+      "failure": [
+        "rival-import-basis-or-visible-scale-invalid"
+      ],
+      "final_game_accepted": false,
+      "passed": false,
+      "scope": "foot"
+    },
+    {
+      "acceptance_fixture": "combat-wall",
+      "build_id": "ec499a651fdf3a0d0e680976df1d5b943340b142d49d95ee89912b282bbeaef7",
+      "candidate": "2d6648196b32c225009e2f9545b9b60947ed1ceb",
+      "evidence": "evidence/combat-focus-5299ca0e-before-wall",
+      "facts": {
+        "blocked_attack_samples": 84,
+        "blocked_shot_samples": 6,
+        "damage_events": [
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 3.0298216342926025,
+            "mode": "foot",
+            "time": 4.0333333015441895
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 4.366585731506348,
+            "mode": "foot",
+            "time": 5.633333206176758
+          },
+          {
+            "blocked": true,
+            "collider": "CombatValidationWall",
+            "distance": 2.0648066997528076,
+            "mode": "foot",
+            "time": 7.333333492279053
+          },
+          {
+            "blocked": true,
+            "collider": "CombatValidationWall",
+            "distance": 2.0648066997528076,
+            "mode": "foot",
+            "time": 8.899999618530273
+          },
+          {
+            "blocked": true,
+            "collider": "CombatValidationWall",
+            "distance": 2.0648066997528076,
+            "mode": "foot",
+            "time": 10.5
+          },
+          {
+            "blocked": true,
+            "collider": "CombatValidationWall",
+            "distance": 2.0648066997528076,
+            "mode": "foot",
+            "time": 12.100000381469727
+          },
+          {
+            "blocked": true,
+            "collider": "CombatValidationWall",
+            "distance": 2.0648066997528076,
+            "mode": "foot",
+            "time": 13.716666221618652
+          },
+          {
+            "blocked": true,
+            "collider": "CombatValidationWall",
+            "distance": 2.0648066997528076,
+            "mode": "foot",
+            "time": 15.416666984558105
+          }
+        ],
+        "visible_height_range": [
+          0.004044999834150076,
+          0.016031913459300995
+        ]
+      },
+      "failure": [
+        "rival-import-basis-or-visible-scale-invalid",
+        "enemy-damages-through-nearer-wall",
+        "player-damages-rival-through-nearer-wall"
+      ],
+      "final_game_accepted": false,
+      "passed": false,
+      "scope": "wall"
+    }
+  ],
+  "after": [
+    {
+      "acceptance_fixture": null,
+      "build_id": "062d68ef5e6187ff04ac0a660c5a2e59f3476bfb2d86b620aed455bb0d7dee46",
+      "candidate": "f965eaecf19d0aa56600c3249af81282dcdabd10",
+      "evidence": "evidence/combat-focus-5e8dc8b8-after-foot",
+      "facts": {
+        "damage_events": [
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 3.0268166065216064,
+            "mode": "foot",
+            "time": 4.0333333015441895
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 4.364501476287842,
+            "mode": "foot",
+            "time": 5.633333206176758
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.060394763946533,
+            "mode": "foot",
+            "time": 7.333333492279053
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.060394763946533,
+            "mode": "foot",
+            "time": 8.899999618530273
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.060394763946533,
+            "mode": "foot",
+            "time": 10.5
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.060394763946533,
+            "mode": "foot",
+            "time": 12.100000381469727
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.060394763946533,
+            "mode": "foot",
+            "time": 13.716666221618652
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.060394763946533,
+            "mode": "foot",
+            "time": 15.416666984558105
+          }
+        ],
+        "hits": 2,
+        "shots": 2,
+        "visible_height_range": [
+          1.5699999332427979,
+          1.5699999332427979
+        ]
+      },
+      "failure": null,
+      "final_game_accepted": false,
+      "passed": true,
+      "scope": "foot"
+    },
+    {
+      "acceptance_fixture": "combat-wall",
+      "build_id": "908701192e660ab3f9a1da13ef439ae618fbde47138b46e3684b2fde17b5516c",
+      "candidate": "f965eaecf19d0aa56600c3249af81282dcdabd10",
+      "evidence": "evidence/combat-focus-5e8dc8b8-after-wall",
+      "facts": {
+        "blocked_attack_samples": 84,
+        "blocked_shot_samples": 6,
+        "damage_events": [
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 3.0268166065216064,
+            "mode": "foot",
+            "time": 4.0333333015441895
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 4.364501476287842,
+            "mode": "foot",
+            "time": 5.633333206176758
+          }
+        ],
+        "visible_height_range": [
+          1.5699999332427979,
+          1.5699999332427979
+        ]
+      },
+      "failure": null,
+      "final_game_accepted": false,
+      "passed": true,
+      "scope": "wall"
+    },
+    {
+      "acceptance_fixture": null,
+      "build_id": "f760e41bc2be2cc3bdcbc4ae42cca86ab173f00915994dbcb17b961b00e1a46e",
+      "candidate": "f965eaecf19d0aa56600c3249af81282dcdabd10",
+      "correction": "Use unchanged actual18m escape rule, not an extra0.25m coverage margin. Escape is brief; no sustained-escape claim.",
+      "evidence": "evidence/combat-focus-9b15f344-after-driving",
+      "facts": {
+        "damage_events": [
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.985109567642212,
+            "mode": "foot",
+            "time": 4.0333333015441895
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 3.6497011184692383,
+            "mode": "foot",
+            "time": 5.633333206176758
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 5.9241862297058105,
+            "mode": "vehicle",
+            "time": 7.333333492279053
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 14.929883003234863,
+            "mode": "vehicle",
+            "time": 8.899999618530273
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 15.790912628173828,
+            "mode": "vehicle",
+            "time": 10.716666221618652
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 12.588677406311035,
+            "mode": "vehicle",
+            "time": 12.316666603088379
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 9.38888931274414,
+            "mode": "vehicle",
+            "time": 13.916666984558105
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 6.156188488006592,
+            "mode": "vehicle",
+            "time": 15.533333778381348
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 2.9887938499450684,
+            "mode": "vehicle",
+            "time": 17.133333206176758
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 2.988889217376709,
+            "mode": "vehicle",
+            "time": 18.733333587646484
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 2.9888806343078613,
+            "mode": "vehicle",
+            "time": 20.33333396911621
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 2.991734743118286,
+            "mode": "vehicle",
+            "time": 21.950000762939453
+          }
+        ],
+        "escape_samples": [
+          {
+            "distance": 18.109935760498047,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 9.533333778381348
+          }
+        ],
+        "far_pursuit_levels": [
+          0
+        ],
+        "maximum_vehicle_distance": 18.109935760498047,
+        "rival_motion_during_driving": 22.102996835678603,
+        "visible_height_range": [
+          1.5699999332427979,
+          1.5699999332427979
+        ]
+      },
+      "failure": null,
+      "final_game_accepted": false,
+      "original_rejection_preserved": true,
+      "passed": true,
+      "scope": "driving"
+    }
+  ],
+  "final_game_accepted": false,
+  "limits": [
+    "Driving escape is brief: one10Hz sample beyond18m before the boundary allows reacquisition. No sustained escape claim.",
+    "Combined route and walking regression PASS. World runtime, motor, courier, failure/retry and fresh scoped review remain pending after resident renderer ownership/capacity fault.",
+    "Blockout visuals and missing combat HUD are not final quality."
+  ],
+  "qualification_stop": {
+    "reported_utc": "2026-10-05T20:03:04.644252+00:00",
+    "error": "Halt: Resident supervisor did not grant engine handoff",
+    "resident_error": "Engine handoff exceeded renderer ownership/capacity",
+    "resident_status": "stopped-on-fault",
+    "server_alive": false,
+    "resident_memory": {
+      "available_GiB": 148.14,
+      "swap_used_GiB": 0.006,
+      "swap_growth_MiB": 2.875
+    },
+    "task_failures": 3,
+    "failure_streak": 3,
+    "automatic_restart": false,
+    "cause_status": "Exact renderer/ownership process snapshot was not recorded; cause not yet established."
+  },
+  "completed_additional_gates": {
+    "combined": {
+      "passed": true,
+      "failure": null,
+      "candidate_commit": "f965eaecf19d0aa56600c3249af81282dcdabd10",
+      "build_id": "fc1f1dcb498d664baa84b5caddc1a40d356d69582d7f318d2dca4e03815ea731",
+      "scope": "mission-combat-pursuit"
+    },
+    "combined-regression-walk": {
+      "passed": true,
+      "failure": null,
+      "candidate_commit": "f965eaecf19d0aa56600c3249af81282dcdabd10",
+      "build_id": "6aa65465096b8a1c6551432ed92cf1c5f5fb86f66cb38e3ff69776c9013812b7",
+      "scope": "walking-regression"
+    }
+  }
+}
