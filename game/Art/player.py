@@ -58,7 +58,7 @@ def box(nm, dims, loc, m, parent, rz=0.0, rx=0.0):
     return ob
 
 
-def球(nm, r, loc, m, parent, scale=(1, 1, 1)):
+def ball(nm, r, loc, m, parent, scale=(1, 1, 1)):
     bpy.ops.mesh.primitive_uv_sphere_add(radius=r, location=loc, segments=14, ring_count=10)
     ob = bpy.context.active_object
     ob.name = nm
@@ -75,8 +75,8 @@ box("shirt_strip", (0.30, 0.275, 0.14), (0, 0.005, -0.06), "shirt", body)
 box("shoulders", (0.50, 0.24, 0.16), (0, 0, 0.52), "jacket", body)
 box("collar", (0.28, 0.22, 0.10), (0, 0, 0.63), "jacket", body)
 box("belt", (0.40, 0.27, 0.10), (0, 0, 0.00), "shoe", body)
-球("head", 0.125, (0, 0.01, 0.80), "skin", body)
-球("hair", 0.132, (0, -0.005, 0.845), "hair", body, scale=(1, 1, 0.72))
+ball("head", 0.125, (0, 0.01, 0.80), "skin", body)
+ball("hair", 0.132, (0, -0.005, 0.845), "hair", body, scale=(1, 1, 0.72))
 box("neck", (0.11, 0.11, 0.10), (0, 0, 0.66), "skin", body)
 head = pivot("head_root", (0, 0, 1.55), root)
 head.parent = body
@@ -86,7 +86,7 @@ for s, tag in ((-1, "L"), (1, "R")):
     a.parent = body
     box("arm%s_upper" % tag, (0.115, 0.125, 0.34), (0, 0, -0.17), "jacket", a)
     box("arm%s_fore" % tag, (0.105, 0.115, 0.30), (0, 0.015, -0.48), "jacket", a)
-    球("arm%s_hand" % tag, 0.058, (0, 0.02, -0.65), "skin", a)
+    ball("arm%s_hand" % tag, 0.058, (0, 0.02, -0.65), "skin", a)
     l = pivot("leg%s_root" % tag, (s * 0.115, 0, 0.90), root)
     l.parent = body
     box("leg%s_thigh" % tag, (0.165, 0.180, 0.44), (0, 0, -0.22), "jeans", l)
