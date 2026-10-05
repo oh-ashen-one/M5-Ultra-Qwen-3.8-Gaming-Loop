@@ -1,0 +1,35 @@
+{
+  "build_exit": 0,
+  "build_id": "a11c7c262f31c0913f1a50f6150e247e3ffb644ab8e1d1a763dca120258b88db",
+  "candidate_commit": "754dd5956cb5a24c18507aef638c29c4781baa53",
+  "capture_id": "q0001-983b69e5",
+  "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+  "compile_errors": [],
+  "coverage": "foundation",
+  "displacement_axes": "horizontal XZ",
+  "duration": 26.015342712402344,
+  "failure": [
+    "visible-world-colliders-missing",
+    "held-input-does-not-stop-at-world-obstacle",
+    "player-left-bounded-pavement"
+  ],
+  "final_game_accepted": false,
+  "frame_count": 4,
+  "harness_sha256": "c51014a2d252970d73a3e1e6e0d2f955f6806db87b735aca79b33cfb027051e8",
+  "passed": false,
+  "performance_claim": "unqualified; shared renderer and capture overhead",
+  "player_displacement": 41.137,
+  "player_exit": 0,
+  "player_vertical_drop": 0.158,
+  "samples": 219,
+  "scope": "world-collision",
+  "scoped_checks": [
+    "world_collision"
+  ],
+  "scoped_facts": {
+    "collider_count": 2,
+    "forward_stop_motion": 3.9158020019531268,
+    "side_stop_motion": 3.6643142700195312
+  },
+  "vehicle_displacement": 0
+}

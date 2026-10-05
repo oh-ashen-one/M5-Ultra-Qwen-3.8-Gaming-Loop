@@ -1,0 +1,115 @@
+{
+  "build_exit": 0,
+  "build_id": "e78ba700ff85cbdee0a77021f7d254423c8c7465b1ae5e04825b36bbfe39005b",
+  "candidate_commit": "54580a0eb03160d4d68a2cf576351c83f65c2756",
+  "capture_id": "q0002-7c289d53",
+  "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+  "compile_errors": [],
+  "coverage": "foundation",
+  "displacement_axes": "horizontal XZ",
+  "duration": 26.005733489990234,
+  "failure": null,
+  "final_game_accepted": false,
+  "frame_count": 4,
+  "harness_sha256": "70c37a3891fa4e80677c50cc044f4833c47cb574e478bc6611023d6184f1bb91",
+  "passed": true,
+  "performance_claim": "unqualified; shared renderer and capture overhead",
+  "player_displacement": 27.968,
+  "player_exit": 0,
+  "player_vertical_drop": 0.158,
+  "regressions": {
+    "passed": true,
+    "regressions": [
+      {
+        "gate": {
+          "build_exit": 0,
+          "build_id": "910f61bb1c1e96a06adaccad5cdcc92df133665eb343e2910929e99ba4fdadde",
+          "candidate_commit": "54580a0eb03160d4d68a2cf576351c83f65c2756",
+          "capture_id": "q0002-7c289d53-regression-walk",
+          "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+          "compile_errors": [],
+          "coverage": "foundation",
+          "displacement_axes": "horizontal XZ",
+          "duration": 16.00718116760254,
+          "failure": null,
+          "final_game_accepted": false,
+          "frame_count": 4,
+          "harness_sha256": "091ea16b105e9b5032e753cb9ac59d02f430a590a5ea4acee229ff16f0f1bcba",
+          "passed": true,
+          "pavement": {
+            "first_uncovered": [],
+            "passed": true,
+            "radius_m": 0.32,
+            "samples": 124,
+            "scope": "Flat rendered-surface bounds support the route; actual frame review is also required.",
+            "surfaces": [
+              {
+                "max": [
+                  2.4000000953674316,
+                  0.14000078290700912,
+                  14.0
+                ],
+                "min": [
+                  -0.7999999523162842,
+                  2.2351741790771484e-08,
+                  0.0
+                ],
+                "name": "Street/sidewalk"
+              },
+              {
+                "max": [
+                  6.0,
+                  0.14000045508146286,
+                  30.0
+                ],
+                "min": [
+                  -1.0,
+                  -1.214444637298584e-06,
+                  -2.0
+                ],
+                "name": "Pavement"
+              },
+              {
+                "max": [
+                  2.4000000953674316,
+                  0.14000078290700912,
+                  28.0
+                ],
+                "min": [
+                  -0.7999999523162842,
+                  2.2351741790771484e-08,
+                  14.0
+                ],
+                "name": "Street/sidewalk"
+              }
+            ],
+            "uncovered_samples": 0
+          },
+          "performance_claim": "unqualified; shared renderer and capture overhead",
+          "player_displacement": 18.979,
+          "player_exit": 0,
+          "player_vertical_drop": 0.158,
+          "samples": 129,
+          "scope": "walking-regression",
+          "scoped_checks": [],
+          "scoped_facts": {},
+          "stationary_grounded": true,
+          "vehicle_displacement": 0
+        },
+        "test": "walk"
+      }
+    ]
+  },
+  "samples": 229,
+  "scope": "world-collision",
+  "scoped_checks": [
+    "world_collision"
+  ],
+  "scoped_facts": {
+    "collider_count": 23,
+    "forward_stop_motion": 0.0,
+    "side_stop_motion": 1.1920928955078125e-07
+  },
+  "stationary_grounded": true,
+  "vehicle_displacement": 0
+}
