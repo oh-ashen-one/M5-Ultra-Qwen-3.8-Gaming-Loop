@@ -126,12 +126,14 @@ class Store:
         data["elapsed_seconds"] = round(time.time() - data.get("started_epoch", time.time()))
         last_progress = data.get("last_accepted_epoch", data.get("started_epoch", time.time()))
         data["seconds_since_accepted_progress"] = round(time.time() - last_progress)
+        data["seconds_since_verified_subfeature"] = round(time.time() - data.get("last_verified_progress_epoch",data.get("started_epoch",time.time())))
         # Private role histories, tokens, responses and absolute paths never enter this view.
         atomic(self.root / "status.json", data)
         lines = ["# Chicago local game loop", "", "Status: " + str(data.get("status", "prepared")),
                  "Updated: " + data["reported_utc"], "Phase: " + str(data.get("phase", "preparation")),
                  "Current task: " + str(data.get("current_task", "none")),
                  "Accepted checkpoint: " + str(data.get("accepted_checkpoint", "none")),
+                 "Verified limited subfeatures: " + ", ".join(data.get("accepted_subfeatures", {})),
                  "Playable coverage: " + str(data.get("playable_coverage", "unverified")),
                  "Next: " + str(data.get("next_task", "none")),
                  "Blocker: " + str(data.get("blocker", "none")), "",

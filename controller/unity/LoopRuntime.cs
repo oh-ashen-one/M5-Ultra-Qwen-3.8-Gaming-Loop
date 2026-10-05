@@ -23,6 +23,7 @@ public class LoopRuntime : MonoBehaviour
     }
     [Serializable] public class ObjectObservation {
         public string name, kind; public float[] position, lossyScale, up, forward, boundsCenter, boundsSize;
+        public bool enabled;
     }
     [Serializable] public class SceneObservation { public ObjectObservation[] objects; }
     [Serializable] public class Final { public string capture_id, unity, graphics; public int samples, errors; public float duration; public bool completed; }
@@ -36,7 +37,8 @@ public class LoopRuntime : MonoBehaviour
     static ObjectObservation Observe(Component c, string kind, Bounds b) {
         return new ObjectObservation {name=Hierarchy(c.transform), kind=kind, position=Vec(c.transform.position),
             lossyScale=Vec(c.transform.lossyScale), up=Vec(c.transform.up), forward=Vec(c.transform.forward),
-            boundsCenter=Vec(b.center), boundsSize=Vec(b.size)};
+            boundsCenter=Vec(b.center), boundsSize=Vec(b.size),
+            enabled=c.gameObject.activeInHierarchy && (!(c is Renderer) || ((Renderer)c).enabled)};
     }
     static string Arg(string key) {
         var args = Environment.GetCommandLineArgs();
@@ -79,7 +81,7 @@ public class LoopRuntime : MonoBehaviour
         var elapsed = LoopInput.Elapsed;
         if (!observedScene) {
             var renderers=UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None)
-                .Take(150).Select(r => Observe(r,"renderer",r.bounds));
+                .Take(2048).Select(r => Observe(r,"renderer",r.bounds));
             var colliders=UnityEngine.Object.FindObjectsByType<Collider>(FindObjectsSortMode.None)
                 .Take(150).Select(c => Observe(c,c.GetType().Name,c.bounds));
             File.WriteAllText(Path.Combine(output,"scene-transforms.json"),JsonUtility.ToJson(

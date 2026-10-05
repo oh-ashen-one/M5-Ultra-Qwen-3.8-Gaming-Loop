@@ -18,6 +18,8 @@ from loop_controller.runner import Runner, git, scenario_for
 from inspect_and_repair_grounding import summarize, grounding_scenario
 from loop_controller.small_edits import SelectedEdit
 from continue_small_game import ElementaryRunner
+from direct_feature_attempt import DirectRunner
+from loop_controller.features import accept_subfeature,pavement_coverage
 
 
 class ControllerTests(unittest.TestCase):
@@ -31,6 +33,48 @@ class ControllerTests(unittest.TestCase):
     def tearDown(self):
         self.store.db.close();self.tmp.cleanup()
 
+    def test_direct_known_edit_bypasses_planner_and_preserves_unselected_source(self):
+        path='Assets/Game/Bootstrap.cs';original='before\nselected fixture\nafter\n'
+        self.files.create('seed',path,original)
+        runner=DirectRunner.__new__(DirectRunner)
+        runner.project=self.project;runner.store=self.store;runner.c={};runner.guard=lambda:None
+        runner.checkpoint_source=lambda label:'saved-local-commit'
+        roles=[]
+        def session(role,ident,system,prompt,tools,dispatch,**kwargs):
+            roles.append(role);self.assertEqual(kwargs['reasoning_effort'],'low')
+            self.assertEqual(runner.c['output_tokens'],8192)
+            return dispatch['edit_selected_span'](ident,{'content':'replacement fixture'})
+        runner.model=SimpleNamespace(session=session)
+        self.assertEqual(runner.edit('corridor','Known fixture repair',anchor='selected fixture'),'saved-local-commit')
+        self.assertEqual(roles,['builder'])
+        self.assertEqual((self.project/path).read_text(),'before\nreplacement fixture\nafter\n')
+        self.assertIsNone(self.store.get('accepted_checkpoint'))
+
+    def test_pavement_requires_visible_full_width_and_radius_clearance(self):
+        bundle=self.root/'surface';capture=bundle/'captures';capture.mkdir(parents=True)
+        obj={'kind':'renderer','name':'Street/sidewalk','enabled':True,'boundsCenter':[.8,.07,14],'boundsSize':[3.2,.14,28]}
+        rows=[{'time':i/10+1,'mode':'foot','player':[3.2,.135,2+i/2]} for i in range(25)]
+        (capture/'trace.jsonl').write_text('\n'.join(json.dumps(r) for r in rows))
+        def evaluate():
+            atomic(capture/'scene-transforms.json',{'objects':[obj]});return pavement_coverage(bundle)
+        self.assertFalse(evaluate()['passed'])
+        obj.update(boundsCenter=[2.5,.07,14],boundsSize=[7,.14,32])
+        self.assertTrue(evaluate()['passed'])
+        obj['enabled']=False;self.assertFalse(evaluate()['passed'])
+        obj['enabled']=True;obj['boundsCenter'][1]=4;self.assertFalse(evaluate()['passed'])
+
+    def test_subfeature_does_not_promote_final_quality_or_repeat_progress_credit(self):
+        gate={'passed':True,'stationary_grounded':True,'frame_count':4,'player_displacement':19}
+        review={'ok':True,'verdict':'PASS','camera_readable':True,'car_visible':True,'continuous_paving':True}
+        with self.assertRaises(Halt):accept_subfeature(self.store,'foundation-short-walk','commit','evidence',gate,review,{'passed':False})
+        self.assertIsNone(self.store.get('last_verified_progress_epoch'))
+        record=accept_subfeature(self.store,'foundation-short-walk','commit','evidence',gate,review,{'passed':True})
+        self.assertFalse(record['final_game_accepted']);self.assertIsNone(self.store.get('accepted_checkpoint'))
+        self.assertIsNone(self.store.get('last_accepted_epoch'))
+        when=self.store.get('last_verified_progress_epoch')
+        with self.assertRaises(Halt):accept_subfeature(self.store,'foundation-short-walk','commit','evidence',gate,review,{'passed':True})
+        self.assertEqual(when,self.store.get('last_verified_progress_epoch'))
+
     def test_local_micro_plan_hands_off_to_hash_checked_edit(self):
         path='Assets/Game/Bootstrap.cs'
         original=''.join('original line %d\n'%i for i in range(1,31))
@@ -41,6 +85,7 @@ class ControllerTests(unittest.TestCase):
         def session(role,action,system,prompt,tools,dispatch,turns,**kwargs):
             calls.append(role)
             if role=='planner':
+                self.assertEqual(runner.c['output_tokens'],16384)
                 schema=next(t for t in tools if t['function']['name']=='submit_plan')['function']['parameters']['properties']
                 self.assertEqual(schema['kind']['enum'],['replace','create'])
                 self.assertEqual(schema['operation']['enum'],['assignment','call','module'])

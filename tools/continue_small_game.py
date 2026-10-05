@@ -53,7 +53,11 @@ class ElementaryRunner(Runner):
                 value=read_json(candidate)
                 observed={k:value.get(k) for k in ('largest_street_renderers','player_visual_bounds','stationary_first','colliders')}
         self.store.set(stage='local-micro-plan',current_micro_plan=None,current_task='Choose one elementary edit for: '+task['outcome']);self.store.report()
-        self.c.update(output_tokens=4096,model_timeout_seconds=200)
+        # Reserve genuine planning for a sufficient thinking/tool-call budget.
+        # Known mechanical repairs bypass this planner via direct_feature_attempt.
+        planning_tokens=self.c.get('planner_output_tokens',16384)
+        if not 8192<=planning_tokens<=16384:raise Halt('Planner budget must be 8192..16384')
+        self.c.update(output_tokens=planning_tokens,model_timeout_seconds=self.c.get('planner_timeout_seconds',600))
         plan=self.model.session('planner',round_id+'-micro-plan',
             'You are the local game planner. Select ONE elementary C# change, then call submit_plan. Do not write code or a long design.',
             'Choose exactly one field/property assignment or one method call in at most two selected old lines; '
@@ -75,6 +79,8 @@ class ElementaryRunner(Runner):
             {'read_file':read,'submit_plan':submit},turns=4)
         if not plan.get('ok'):
             self.store.event('micro-plan-format-stopped',outcome=plan,action='Inspect tool schema and errors; no identical automatic retry')
+            if plan.get('bounded_stop')=='output':
+                raise Halt('Planner exhausted its output budget without submitting a plan; no identical retry')
             raise Halt('Planner submitted no valid tiny plan; inspect tool-format errors before another request')
         self.store.event('local-micro-plan',plan_kind=plan['kind'],operation=plan['operation'],
                          **{k:plan[k] for k in ('path','start_line','end_line','goal')})

@@ -1,0 +1,13 @@
+# Limited subfeatures and final game acceptance
+
+The parent authorized a fresh bounded continuation after the preserved corridor run stopped on a 4,096-token planning limit. A measured mechanical repair goes directly to local Qwen's thinking-enabled `low` editor with an 8,192-token ceiling. No cloud gameplay code replaces it. Genuinely necessary planning retains `xhigh`, with a configurable 8,192–16,384-token budget (default 16,384) and a 600-second timeout; output exhaustion stops explicitly rather than being labelled a tool-format defect.
+
+The fresh attempt is bounded to 60 minutes, capped by the original overall ceiling, and stops after 20 minutes without a newly verified subfeature. There are three direct editing tasks and no identical automatic retry: pavement, vehicle module, and vehicle integration. Failed source and evidence are preserved. Previous run ledgers and deadlines are unchanged.
+
+The first milestone is deliberately limited: grounded control, readable camera, an actually visible coupe, and a continuously paved approximately 19-metre walk. Native compilation/execution, stationary grounding, at least four captures and 17 metres of movement must pass. Every sampled walking position must have a flat enabled pavement renderer under the player's 0.32-metre radius; an independent fresh visual critic must also confirm the actual start/middle/end images. Bounds are supporting measurements, not a substitute for visual inspection. The observer records up to 2,048 renderers so props cannot silently crowd the pavement out of its old 150-item sample; it records renderer enablement. Existing gate requirements remain intact.
+
+Only then does the same sole owner proceed to local-Qwen-authored vehicle entry/driving/exit microtasks, with native walking regression after creating the module and input-driven vehicle testing after integration. An invoked component and observed state transitions are required; an unused helper is not integrated progress.
+
+`accepted_subfeatures` and `last_verified_progress_epoch` track limited verified results separately from `accepted_checkpoint` and final-quality acceptance. A repeated milestone cannot refresh the clock. Source edits alone receive no acceptance credit. Milestone commits contain explicitly scoped evidence metadata and attribute gameplay code to local Qwen.
+
+Chicago-target visual quality, finished movement/driving feel, HUD, sound, performance, collisions, combat, pursuit and the continuous ten-minute mission keep their original acceptance standards. Neither milestone establishes those broader results. Consult the current handoff and actual captures for which milestones, if any, have run and passed.
