@@ -1,0 +1,22 @@
+{
+  "build_exit": 0,
+  "build_id": "11eccabde6e97eb3fefb79ba228109bdcfdb4cda26a54c98aa58a4b5155c0965",
+  "candidate_commit": "47bc04266b0e88ecd21eede5ade269b1a0b0b038",
+  "capture_id": "r0012-66e746f1",
+  "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+  "compile_errors": [],
+  "coverage": "foundation",
+  "displacement_axes": "horizontal XZ",
+  "duration": 16.016159057617188,
+  "failure": null,
+  "frame_count": 4,
+  "harness_sha256": "47a2680cea2192d2d9da25b4616966779ed124f517e693dd28cbdf7d717eaa7d",
+  "passed": true,
+  "performance_claim": "unqualified; shared renderer and capture overhead",
+  "player_displacement": 18.909,
+  "player_exit": 0,
+  "player_vertical_drop": 0.158,
+  "samples": 130,
+  "stationary_grounded": true,
+  "vehicle_displacement": 0
+}
