@@ -77,6 +77,9 @@ namespace ChicagoGame
             Set("Mode", "foot");
             body.AddComponent<Walker>();
 
+            var fencePrefab = Resources.Load<GameObject>("Generated/props/scene");
+            WorldColliders.Install(new UnityEngine.Object[] { street, streetExt, props }, fencePrefab);
+
             var rig = new GameObject("MainCamera");
             rig.tag = "MainCamera";
             rig.AddComponent<AudioListener>();
