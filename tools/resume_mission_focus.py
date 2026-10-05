@@ -4,7 +4,10 @@ import json
 
 from recover_mission_replay import MissionRecovery
 from resume_mission_fixture import main
-from loop_controller.core import Halt
+from loop_controller.core import Files, Halt, sha
+from loop_controller.model import tool
+from loop_controller.small_edits import SelectedEdit
+from recover_mission_replay import MISSION
 from loop_controller.replay_contract import finish_tool, validate_submission
 
 
@@ -19,28 +22,51 @@ def observed_route(previous):
 
 
 class MissionFocus(MissionRecovery):
+    recovery_prefixes=('Halt: Replay-only role supplied no valid finish_task',
+                       'Halt: Selected mission microtask saved no edit: compact-facing-hud')
+    recovery_description='One-line local edits after the whole HUD block exhausted8192 tokens; same observed route'
+
+    def line_edit(self,ident,label,needle,instruction):
+        done=self.store.get('mission_line_edits',[])
+        if label in done:return
+        files=Files(self.project,self.store);lines=files.path(MISSION).read_text().splitlines()
+        matches=[i+1 for i,line in enumerate(lines) if needle in line]
+        if len(matches)!=1:raise Halt('Expected one exact local line: '+label)
+        edit=SelectedEdit(files,MISSION,matches[0],matches[0],max_lines=3)
+        self.c.update(output_tokens=4096,model_timeout_seconds=240)
+        self.store.set(stage='selected-mission-line',recovery_microtask=label);self.store.report()
+        self.model.session('builder',ident+'-'+label,
+            'You are the local Qwen C# author. Make one edit_selected_span call now. This is one mechanical line edit.',
+            instruction+' Preserve indentation. Return only the replacement line through the tool.\nCURRENT LINE:\n'+edit.old,
+            [tool('edit_selected_span','Replace this one exact source line.',{'content':{'type':'string'}})],
+            {'edit_selected_span':lambda action,f:edit.apply(action,f['content'])},turns=1,reasoning_effort='low')
+        if sha(files.path(MISSION).read_bytes())==edit.before:raise Halt('Selected mission line saved no edit: '+label)
+        candidate=self.checkpoint_source('Local Qwen: mission line '+label)
+        self.store.set(source_checkpoint=candidate,mission_line_edits=done+[label])
+        self.store.event('selected-mission-edit-saved',microtask=label,candidate=candidate,game_author='local Qwen')
+        self.store.report()
+
     def edit(self,task,ident):
         if task['id']!='connected-mission' or self.store.get('mission_focus_saved'):
             return super().edit(task,ident)
         # Instructions and exact source selection are supervision. All C# bytes
         # come from the authenticated local Qwen edit_selected_span response.
-        self.selected(ident,'compact-facing-hud','void BuildHud()',
-            'Correct the observed backwards, oversized native HUD. Camera-child TextMesh should face the camera '
-            'without the current Y180 mirror. Use identity local rotation, compact character size about .008 '
-            'and a narrow dark backing at positive local Z behind the text. Position near the top of the '
-            'view, keep the three lines inside a normal camera view, and leave most of the game unobscured. '
-            'Keep LegacyRuntime.ttf, actual RefreshHud stage logic and the same controls. Only replace this block.',45)
-        self.selected(ident,'reachable-delivery-location','void Build()',
-            'The current destination is obstructed on the east side. Native ordinary driving reaches the paved '
-            'west loading area around X.48,Z25.0; the visible pavement is X-1..6,Z-2..30. Place a distinct '
-            'stationary delivery bay centered at X1,Z26, with the existing pad wholly on that pavement and '
-            'the beacon vertically above the same world point. This is a persistent human-playable location, '
-            'never conditional on a replay or clock. Preserve laneX3.6 and the parcel X3.6,Z3.2, missionRoot, '
-            'materials and other setup. Do not alter vehicle physics, spawn or the real2.6m delivery radius.',100)
-        self.selected(ident,'destination-from-world-pad','void Start()',
-            'Initialize padPos from the actual fixed padRend.transform.position created by Build, so the '
-            'delivery proximity checks the visible destination rather than the old laneX/Z27.5 coordinates. '
-            'Preserve lastRestarts. Do not move the pad or change gameplay signals.',12)
+        for label,needle,instruction in [
+            ('hud-facing','go.transform.localRotation = Quaternion.Euler',
+             'Set the camera-child HUD localRotation to Quaternion.identity to remove the observed mirrored text.'),
+            ('hud-character-size','tm.characterSize =',
+             'Change only TextMesh characterSize from0.08 to0.008 to fit the three HUD lines in the native camera.'),
+            ('hud-top-position','go.transform.localPosition = new Vector3(0f, 0.34f, 1.6f)',
+             'Move this camera-child HUD local position up to Y0.70, preserving X0 and Z1.6.'),
+            ('hud-card-height','card.transform.localScale =',
+             'Shrink only the HUD backing card height from1.1 to0.28, preserving width1.7 and thickness0.01.'),
+            ('fixed-pad-location','pad.transform.position =',
+             'Place the stationary delivery pad at world X1, Y PAV_TOP+0.01, Z26. This is the reachable west loading bay on the existing pavement. Keep its real delivery reach unchanged.'),
+            ('fixed-beacon-location','beaconGo.transform.position =',
+             'Place the stationary beacon vertically above the delivery bay at world X1, Y PAV_TOP+3.5, Z26.'),
+            ('actual-pad-position','padPos = new Vector3',
+             'Set padPos to padRend.transform.position, the visible fixed destination already created in Build. Do not move actors or modify the real distance gate.')]:
+            self.line_edit(ident,label,needle,instruction)
         self.store.set(mission_focus_saved=True)
         fixture=observed_route(self.store.get('last_valid_replay'))
         validate_submission(fixture,task)

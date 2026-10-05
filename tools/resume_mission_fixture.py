@@ -45,7 +45,8 @@ def main(runner_class=FixtureResume):
         runner=runner_class(args.run_dir,config);store=runner.store;state=store.status()
         if (state.get('controller_pid') or state.get('owned_process') or state['status']!='paused'
                 or not state.get('mission_selected_repairs_done') or state['task_index']!=2
-                or not state.get('blocker','').startswith('Halt: Replay-only role supplied no valid finish_task')):
+                or not state.get('blocker','').startswith(getattr(runner,'recovery_prefixes',
+                    ('Halt: Replay-only role supplied no valid finish_task',)))):
             raise Halt('Expected only the evidenced post-edit replay output-limit stop')
         if git(runner.repo,'rev-parse','HEAD')!=state['source_checkpoint'] or git(runner.repo,'status','--porcelain'):
             raise Halt('Source changed; preserve it')
@@ -66,7 +67,7 @@ def main(runner_class=FixtureResume):
         store.set(status='running',controller_pid=os.getpid(),blocker=None,provided_fixture_pending=True,
                   fixture_resume_utc=now())
         store.event('replay-output-limit-recovery',previous_stop=str(archive.relative_to(args.run_dir)),
-                    cause='8192 output tokens; no parsed tool call',change='Serialization-only provided fixture',
+                    cause=state.get('blocker'),change=getattr(runner,'recovery_description','Serialization-only provided fixture'),
                     game_edits_preserved=state['source_checkpoint'],deadline_unchanged=True)
         store.report()
         try:runner.work()
