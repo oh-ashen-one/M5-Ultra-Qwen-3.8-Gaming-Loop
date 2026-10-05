@@ -35,7 +35,7 @@ namespace ChicagoGame
 
         void Update()
         {
-            bool e = LoopInput.E;
+            bool e = LoopInput.Pressed(KeyCode.E);
             if (!_driving)
             {
                 if (e && Vector3.Distance(_player.transform.position, transform.position) < 2.5f)
