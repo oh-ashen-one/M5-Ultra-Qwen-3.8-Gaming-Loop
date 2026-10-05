@@ -85,6 +85,9 @@ namespace ChicagoGame
             _rb.linearVelocity = Vector3.zero;
         }
 
+        float _throttle;
+        float _steer;
+
         void Update()
         {
             bool e = LoopInput.Pressed(KeyCode.E);
@@ -103,30 +106,55 @@ namespace ChicagoGame
                 return;
             }
 
-            // Driving: physics-based swept movement
-            float throttle = LoopInput.MoveY;
-            float steer = LoopInput.MoveX;
+            _throttle = LoopInput.MoveY;
+            _steer = LoopInput.MoveX;
 
-            _speed += throttle * 6f * Time.deltaTime;
-            _speed = Mathf.Clamp(_speed, -3f, 8f);
+            if (e) Exit();
+        }
+
+        void FixedUpdate()
+        {
+            if (!_driving) return;
+
+            float throttle = _throttle;
+            float steer = _steer;
+
+            Vector3 fwd = transform.forward;
+            fwd.y = 0f;
+            fwd.Normalize();
+
+            // Forward propulsion via AddForce (respects collision response)
+            if (Mathf.Abs(throttle) > 0.01f)
+                _rb.AddForce(fwd * throttle * 8000f, ForceMode.Force);
+
+            // Lateral lock: kill sideways velocity to prevent sliding
+            Vector3 rt = transform.right;
+            rt.y = 0f;
+            rt.Normalize();
+            _rb.linearVelocity -= Vector3.Project(_rb.linearVelocity, rt);
+
+            // Speed cap
+            float fSpd = Vector3.Dot(_rb.linearVelocity, fwd);
+            if (Mathf.Abs(fSpd) > 8f)
+            {
+                var v = _rb.linearVelocity;
+                v -= fwd * (fSpd - Mathf.Sign(fSpd) * 8f);
+                _rb.linearVelocity = v;
+            }
+
+            // Rolling resistance when no throttle
             if (Mathf.Abs(throttle) < 0.01f)
-                _speed = Mathf.MoveTowards(_speed, 0f, 4f * Time.deltaTime);
+            {
+                float fs = Vector3.Dot(_rb.linearVelocity, fwd);
+                float brake = Mathf.Min(Mathf.Abs(fs), 3f * Time.fixedDeltaTime);
+                _rb.linearVelocity -= fwd * Mathf.Sign(fs) * brake;
+            }
 
-            // Steering: set Y rotation via physics
-            float turn = 90f * Mathf.Clamp01(Mathf.Abs(_speed) / 4f) * Mathf.Sign(_speed);
-            float newYaw = transform.eulerAngles.y + steer * turn * Time.deltaTime;
-            Quaternion rot = Quaternion.Euler(0f, newYaw, 0f);
-            _rb.MoveRotation(rot);
-
-            // Desired velocity in car forward (horizontal only)
-            Vector3 forward = rot * Vector3.forward;
-            forward.y = 0f;
-            Vector3 targetVel = forward * _speed;
-            targetVel.y = _rb.linearVelocity.y;
-
-            // No artificial speed-kill: rely on the collider/wall contact and
-            // real drag to stop the car under held throttle.
-            _rb.linearVelocity = targetVel;
+            // Steering: set yaw via angular velocity
+            float curSpeed = Vector3.Dot(_rb.linearVelocity, fwd);
+            float turnRate = steer * 90f * Mathf.Clamp01(Mathf.Abs(curSpeed) / 4f)
+                             * Mathf.Sign(curSpeed + 0.001f);
+            _rb.angularVelocity = new Vector3(0f, turnRate, 0f);
 
             // Ground snap: raycast down skipping own collider
             if (GroundRaycast(transform.position, out var hit))
@@ -135,13 +163,16 @@ namespace ChicagoGame
                 float diff = groundY - transform.position.y;
                 if (diff > 0.02f && diff < 0.5f)
                 {
-                    Vector3 vel = _rb.linearVelocity;
-                    vel.y = diff / Time.deltaTime;
-                    _rb.linearVelocity = vel;
+                    var v = _rb.linearVelocity;
+                    v.y = diff / Time.fixedDeltaTime * 0.5f;
+                    _rb.linearVelocity = v;
+                }
+                else if (diff <= 0f)
+                {
+                    var v = _rb.linearVelocity;
+                    if (v.y < 0f) { v.y = 0f; _rb.linearVelocity = v; }
                 }
             }
-
-            if (e) Exit();
         }
 
         void Enter()
