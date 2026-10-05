@@ -146,7 +146,7 @@ namespace ChicagoGame
             var tm = go.AddComponent<TextMesh>();
             tm.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             tm.fontSize = 40;
-            tm.characterSize = 0.08f;
+            tm.characterSize = 0.008f;
             tm.anchor = TextAnchor.UpperCenter;
             tm.alignment = TextAlignment.Center;
             tm.color = Color.white;
