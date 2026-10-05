@@ -19,7 +19,7 @@ namespace ChicagoGame
             street.transform.position = new Vector3(-0.9f, 0f, 7f);
             static GameObject Coupe() { var p = Resources.Load<GameObject>("Generated/coupe/scene"); return p ? UnityEngine.Object.Instantiate(p) : null; }
             static GameObject Props() { var p = Resources.Load<GameObject>("Generated/props/scene"); return p ? UnityEngine.Object.Instantiate(p) : null; }
-            var props = Props(); if (props != null) { props.name = "Props"; props.transform.position = new Vector3(-4.5f, 0f, 10.3f); props.transform.eulerAngles = new Vector3(0f, 90f, 0f); }
+            var props = Props(); if (props != null) { props.name = "Props"; props.transform.position = new Vector3(-4.5f, 0f, 10.3f); props.transform.rotation = Quaternion.Euler(0f, 90f, 0f) * props.transform.rotation; }
             var coupe = Coupe(); if (coupe != null) { coupe.name = "Coupe"; coupe.transform.position = new Vector3(3.6f, 0f, 8f); }
             GameObject body = new GameObject("Player");
             body.name = "Player";
