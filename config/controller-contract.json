@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "engine": "Unity 6000.6.4f1 native macOS / Metal",
   "required_setting": "Chicago",
   "game_art_author": "local Qwen through original Blender work",
@@ -14,7 +14,8 @@
     "native build",
     "Metal runtime",
     "camera",
-    "input-driven player displacement >= 1.5m",
+    "input-driven horizontal XZ player displacement >= 1.5m",
+    "foundation player descent from initial height <= 5m; falling is not walking",
     "changing actual frames"
   ],
   "driving": [

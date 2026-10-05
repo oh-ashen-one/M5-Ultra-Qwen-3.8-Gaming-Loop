@@ -113,6 +113,18 @@ class ControllerTests(unittest.TestCase):
         (path/"frame-001.png").unlink()
         self.assertFalse(evaluate_runtime(path,scenario,0,"test")["passed"])
 
+    def test_falling_is_rejected_with_and_without_horizontal_input_motion(self):
+        path,scenario=self.runtime_fixture(True)
+        for horizontal in (False,True):
+            rows=[{"time":i/10,"camera":True,"player":[i/5 if horizontal else 0,-i*18,0],
+                   "vehicle":None,"keys":["W"]} for i in range(21)]
+            (path/"trace.jsonl").write_text("\n".join(json.dumps(r) for r in rows))
+            result=evaluate_runtime(path,scenario,0,"test")
+            self.assertFalse(result["passed"])
+            self.assertIn("foundation-fall-below-start",result["failure"])
+            if not horizontal:self.assertIn("input-driven-player-movement",result["failure"])
+            self.assertEqual(result["player_vertical_drop"],360)
+
     def test_critic_context_budget_counts_real_images_separately(self):
         messages=[{"role":"user","content":[{"type":"text","text":"target and actual"},{"type":"image_url","image_url":{"url":"data:image/png;base64,"+"a"*100000}}]}]
         result=conservative_prompt_bound(messages,[])

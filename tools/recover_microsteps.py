@@ -21,15 +21,17 @@ def main():
     p.add_argument('--previous-run',type=Path,required=True)
     p.add_argument('--brief',type=Path,required=True)
     p.add_argument('--authorize-micro-recovery',action='store_true')
+    p.add_argument('--repair-physics',action='store_true')
     a=p.parse_args()
     if not a.authorize_micro_recovery or not (a.run_dir/'state.sqlite3').is_file():
         p.error('Explicit recovery authorization and the existing bounded ledger are required')
     os.umask(0o077)
     c=read_json(a.run_dir/'private-recovery-config.json')
     r=Runner(a.run_dir,c);s=r.store
-    if s.get('controller_pid') or s.get('status')!='paused' or s.get('micro_recovery_started_utc'):
+    marker='physics_recovery_started_utc' if a.repair_physics else 'micro_recovery_started_utc'
+    if s.get('controller_pid') or s.get('status')!='paused' or s.get(marker):
         raise Halt('Expected this stopped recovery; do not duplicate or replay microsteps')
-    if not str(s.get('blocker','')).startswith('Halt: Two bounded real create requests saved no Bootstrap'):
+    if not a.repair_physics and not str(s.get('blocker','')).startswith('Halt: Two bounded real create requests saved no Bootstrap'):
         raise Halt('This correction applies only to the evidenced two-create failure')
     deadline=s.get('started_epoch')+45*60
     remaining=int(deadline-time.time())
@@ -38,13 +40,14 @@ def main():
     if not all(sha((a.previous_run/n).read_bytes())==h for n,h in preserved.items()):
         raise Halt('Original failure record changed; diagnose before continuing')
     files=Files(r.project,s);target='Assets/Game/Bootstrap.cs'
-    if (r.project/target).exists(): raise Halt('A Bootstrap already exists; do not overwrite with a seed')
+    if (r.project/target).exists() != a.repair_physics:
+        raise Halt('Expected an existing Bootstrap only for the explicit physics repair')
     def stop(*_): raise Halt('Original recovery deadline or explicit stop reached')
     signal.signal(signal.SIGALRM,stop);signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
     signal.alarm(remaining)
     with exclusive(a.run_dir/'controller.lock'):
-        s.set(controller_pid=os.getpid(),status='recovering',blocker=None,micro_recovery_started_utc=now(),
-              micro_request_limit=3,original_recovery_deadline_epoch=deadline)
+        s.set(controller_pid=os.getpid(),status='recovering',blocker=None,**{marker:now()},
+              micro_request_limit=1 if a.repair_physics else 3,original_recovery_deadline_epoch=deadline)
         s.event('cloud-infrastructure-intervention',action='Decompose capped Bootstrap request into three small local writes',
                 previous_requests_preserved=True,deadline_unchanged=True,game_code_authorship='local Qwen')
         try:
@@ -67,13 +70,26 @@ def main():
                 'No driving, combat, mission, cursor lock, new assets or extra polish yet. This is Unity 6000.6.4f1 '
                 'Built-in. Call edit_bootstrap with the complete replacement file now.'
             ]
+            if a.repair_physics:
+                instructions=[
+                    'Fix only the evidenced grounding/scale/orientation failure in this existing Unity C# file. '
+                    'It compiled and ran, but the native trace shows the player falling from y=0.043 to y=-359.968 '
+                    'over 16 seconds. The final frame shows an inverted tiny character against an empty background. '
+                    'Reuse existing original assets. Put gameplay colliders and movement on world-meter, unscaled roots; '
+                    'keep imported visual models as children and handle their imported scale/orientation explicitly. '
+                    'Ground collision must exist at the visible street surface in world coordinates, independent of '
+                    'the FBX root transform. Ensure the player starts above that surface, stays grounded during WASD '
+                    'and is upright and visible with a following camera. Do not change speed to fake evidence. '
+                    'Keep the correction compact, no new features/art. Global LoopSignals.Player is Transform and Mode '
+                    'is string; direct assignment is supported. Call edit_bootstrap once with the full corrected file.'
+                ]
             for i,instruction in enumerate(instructions):
                 r.machine.guard()
-                before=(r.project/target).read_bytes() if i else None
-                c.update(output_tokens=2048 if i==0 else 4096,model_timeout_seconds=180)
+                before=(r.project/target).read_bytes() if (r.project/target).is_file() else None
+                c.update(output_tokens=2048 if before is None else 4096,model_timeout_seconds=180)
                 s.set(stage='micro-write',current_task='Local Qwen microstep '+str(i+1),micro_step=i+1)
                 s.report()
-                if i==0:
+                if before is None:
                     def dispatch(action,fields):
                         if fields.get('path')!=target: raise ValueError('Only the Bootstrap path is admitted')
                         return files.create(action,**fields)
@@ -91,7 +107,7 @@ def main():
                                 {'content':{'type':'string'}})]
                     handlers={'edit_bootstrap':dispatch}
                     prompt=instruction+'\nCurrent complete file:\n'+before.decode()
-                result=r.model.session('builder','micro-'+str(i+1),
+                result=r.model.session('builder',('physics-' if a.repair_physics else 'micro-')+str(i+1),
                     'Perform exactly the one tiny C# edit requested. Your next response is one tool call. '
                     'Do not explain, plan, expand scope or write markdown. The external controller tests afterward.',
                     prompt,tools,handlers,turns=1)

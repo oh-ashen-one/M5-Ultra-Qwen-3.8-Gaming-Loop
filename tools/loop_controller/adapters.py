@@ -305,11 +305,17 @@ def evaluate_runtime(captures, scenario, player_exit, capture_id):
         if any(not math.isfinite(v) for row in values for v in row):
             failed.append("nonfinite-"+key)
             return 0
-        return max(math.dist(values[0], v) for v in values)
+        # Grounded input motion is horizontal; falling must never count as walking.
+        return max(math.hypot(v[0]-values[0][0], v[2]-values[0][2]) for v in values)
     movement, driving = distance("player"), distance("vehicle")
     coverage = scenario["coverage"]
     if not any("W" in t.get("keys", []) for t in trace) or movement < 1.5:
         failed.append("input-driven-player-movement")
+    player_positions = [t["player"] for t in trace if t.get("player") and len(t["player"]) == 3
+                        and all(math.isfinite(v) for v in t["player"])]
+    vertical_drop = max(0, player_positions[0][1]-min(v[1] for v in player_positions)) if player_positions else 0
+    if coverage == "foundation" and vertical_drop > 5:
+        failed.append("foundation-fall-below-start")
     if len({sha(p.read_bytes()) for p in frames}) < 2:
         failed.append("unchanging-captures")
     if coverage in ("driving", "combat", "mission", "polish", "whole-route"):
@@ -334,6 +340,7 @@ def evaluate_runtime(captures, scenario, player_exit, capture_id):
     return {"passed": not failed, "failure": failed or None, "player_exit": player_exit,
             "coverage": coverage, "samples": len(trace), "duration": final["duration"],
             "player_displacement": round(movement, 3), "vehicle_displacement": round(driving, 3),
+            "displacement_axes": "horizontal XZ", "player_vertical_drop": round(vertical_drop, 3),
             "frame_count": len(frames), "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
             "performance_claim": "unqualified; shared renderer and capture overhead"}
 
