@@ -1,0 +1,13 @@
+{
+  "accepted_utc": "2026-10-05T21:14:48.347609+00:00",
+  "candidate": "7fd7bf26ce7eb68bd91bae171d57af013b674cc9",
+  "evidence": "evidence/q0027-7212e64b",
+  "final_game_accepted": false,
+  "review": {
+    "fixes": [],
+    "ok": true,
+    "summary": "Scoped checks pass on the actual native frames plus the input/state trace. HUD is rendered in-camera and readable in all three actual frames: frame-002 (t=8s) shows HEALTH 88, WANTED ***, \"COURIER: grab the YELLOW parcel / OBJECTIVE: reach the parcel (4 m) [23s]\" with the full controls line; frame-004 (t=17.2s) shows the post-reset state (HEALTH 100, WANTED cleared, [30s] timer) matching restarts=1 in the anchor trace; frame-005 (t=24.4s) correctly switches to \"parcel in hand – RIVAL PURSUING\", GREEN pad (24 m), remaining 23 s, and adds the MOUSE0-fire/drive-off guidance; frame-008 (t=31.7s) shows the ending panel \"★ DELIVERY COMPLETE ★ / The parcel has been delivered. / R to reset\" at the green pad, consistent with the delivery input edge at 30.83 s (1.21 m XZ). Mission anchors, combat (2 Mouse0 shots → 2 rival HP decrements, plus separate enemy damage_events), and pursuit (arming at level 3, graduated downgrades, 5.78 s continuous driving escape to level 0) are all evidenced. Audio is present as an actual mixer signal (peak RMS 0.185), but the trace supplies no per-effect breakdown, so footprint/engine/combat/cue level balance is asserted-only and not verifiable from the supplied evidence — an honest proof gap, not a measured defect. The greybox look versus the Chicago target is acceptable at this phase and the instruction explicitly forbids adding art volume; minor transient issues (held-parcel cube floating beside the blocky player, rival partially cropping the bottom edge, car nose overlapping the pad/wall by ~0.003 m) do not block input or readability.",
+    "verdict": "PASS"
+  },
+  "scope": "mission-hud-audio"
+}
