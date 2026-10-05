@@ -2,7 +2,7 @@
 
 The first native integrated pass is **q0035-e5f1e32d**, using unchanged local-Qwen source **1295417**. Its 52-second replay exercises walking, two centered hits, driving and sustained escape, exit, a genuine mission timeout, R retry, pickup, delivery and ending. This is mechanical integration evidence, not ten-minute pacing or final visual acceptance. See the [native proof](native-proof.json) for exact build and observed transitions.
 
-At **22:59 UTC**, all five baseline regressions pass. The existing owner is completing five combat/aim regressions, then a fresh local visual review. Accepted **c32cfeb** remains the known playable checkpoint until those checks pass; the next queued task is Chicago polish and ten-minute pacing.
+At **23:06 UTC**, all ten regressions and fresh local-Qwen visual criticism pass. The accepted playable checkpoint is **102a2095**, retaining **c32cfeb** and the original failure archives. The same owner has advanced to **q0036-d977ca0e / chicago-polish-whole-route**, and its local builder is active. This promotion establishes a working rough route; Chicago visuals and meaningful ten-minute pacing remain unfinished.
 
 The earlier q0033 and q0034 builds compiled and ran but failed `combat-input-and-hit`: both shots hit the barrier instead of the rival. q0033 reached its ending; q0034 did not. The bounded q0034 diagnosis exhausted its tool turns without submitting a plan. Its paused ledger, six task failures, failure streak of two, accepted **c32cfeb**, and subsequent evidence are preserved.
 
