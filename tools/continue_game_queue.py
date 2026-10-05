@@ -198,13 +198,15 @@ class ContinuousRunner(Runner):
             if f['verdict']!='PASS' and not f['fixes']:raise ValueError('State an actionable evidence-based fix or missing proof')
             return {'ok':True,**f}
         images=[('ACTUAL NATIVE UNITY '+p.name+'; scheduled t='+str(capture_times[p.name])+' seconds',p) for p in chosen]
-        if task.get('polish'):images.insert(0,('AI-GENERATED CHICAGO TARGET; not the build',self.refs/target_for(task)))
+        images.insert(0,('AI-GENERATED CHICAGO TARGET; not the build',self.refs/target_for(task)))
         result=self.model.session('critic',ident+'-critic',
             'You are a fresh local visual critic. Judge actual evidence and only the stated current scope.',
             'TASK:'+json.dumps(task)+'\nNATIVE OBSERVATIONS:'+json.dumps(gate)+
             '\nFILES:'+json.dumps(names)+'\nAUTHORITATIVE CAPTURE SCHEDULE, seconds:'+json.dumps(capture_times)+
             '\nFrame numbers refer to the complete replay sequence, not their order in this selected image set. '
             'Use these supplied times; do not invent a different timing or call post-reset captures pre-reset. '
+            'Use the separate target as visual direction for the existing plan. Prioritize concrete improvements '
+            'within the current scope; a mechanical PASS never establishes target visual quality. '
             '\nRequire readable actors, coherent controls/route evidence, and no visible '
             'blocking regression. Early mechanics may retain rough development art; reserve reference-quality judgment '
             'for polish. A scoped PASS is not final game acceptance. Audio RMS establishes a mixer signal, not good sound. '

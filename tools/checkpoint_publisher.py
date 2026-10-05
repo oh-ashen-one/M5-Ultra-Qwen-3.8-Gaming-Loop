@@ -25,8 +25,8 @@ def main():
     root=Path(c["mirror"])
     if not root.exists():subprocess.run(["git","init","--bare",str(root)],check=True,stdout=subprocess.DEVNULL)
     env={**os.environ,"GIT_SSH_COMMAND":shlex.join(c["ssh_command"])}
-    deadline=time.monotonic()+c.get("wall_hours",13)*3600
-    while time.monotonic()<deadline and not (root.parent/"PUBLISHER_STOP").exists():
+    deadline=c.get("absolute_deadline_epoch",time.time()+c.get("wall_hours",13)*3600)
+    while time.time()<deadline and not (root.parent/"PUBLISHER_STOP").exists():
         try:
             subprocess.run(["git","--git-dir",str(root),"fetch",c["source_url"],
                             c["branch"]+":refs/heads/"+c["branch"]],env=env,check=True,capture_output=True,timeout=60)

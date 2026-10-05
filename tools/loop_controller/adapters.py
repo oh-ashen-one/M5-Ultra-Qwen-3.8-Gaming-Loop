@@ -53,6 +53,9 @@ class Machine:
             raise Halt("Heavy work requires the verified M5 Ultra")
 
     def guard(self):
+        if self.store.get('three_day_cap'):
+            from .delivery_policy import deadline_guard
+            deadline_guard(self.store)
         if (self.store.root / "STOP").exists():
             raise Halt("Requested stop")
         if (Path.home() / ".cache/gpu-slot/PAUSED").exists():
