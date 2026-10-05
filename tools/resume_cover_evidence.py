@@ -8,6 +8,8 @@ from resume_three_day_queue import ThreeDayRunner,main
 from loop_controller.core import Halt,atomic,read_json,sha,seal,verify_seal
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 from loop_controller.aim_checks import AIM_PROBES,inspect_aim_contract
+from loop_controller.replay_contract import validate_submission
+from loop_controller.continuous_tasks import TASKS
 from loop_controller.model import tool
 from loop_controller.runner import git
 from loop_controller.review_summary import compact_rows
@@ -28,6 +30,17 @@ def validate_cover_pause(old):
 class CoverEvidenceResume(ThreeDayRunner):
     def validate_recovery(self,old):validate_cover_pause(old)
     def recovery_settings(self):return {'cover_evidence_pending':True}
+
+    def edit(self,task,ident):
+        saved=self.store.get('cover_saved_replay_pending')
+        if saved and task['id']=='rough-whole-route':
+            if git(self.repo,'rev-parse','HEAD')!=QUALIFIED:
+                raise Halt('Preserve saved replay for its actual source; do not silently reuse against different code')
+            self.store.set(cover_saved_replay_pending=None)
+            self.store.event('resume-complete-local-replay',source=QUALIFIED,prior_session='q0032-a64367b9-replay',
+                             success_claimed=False,game_source_mutation=False)
+            return saved
+        return super().edit(task,ident)
 
     def work(self):
         ident='aim-cover-evidence-'+uuid.uuid4().hex[:8]
@@ -99,8 +112,21 @@ class CoverEvidenceResume(ThreeDayRunner):
         if not result.get('ok'):raise Halt('Complete cover review remained incomplete; preserve original and new evidence')
         self.store.event('cover-evidence-review-complete',candidate=QUALIFIED,review=result.get('verdict'),
                          original_review_preserved=True,counters_preserved=True,source_overwritten=False)
+        # The boundary preserved a complete local-authored tool proposal. Validate
+        # its original fields and run it normally; never discard it for a re-plan.
+        proposal=self.store.root/'private/sessions/q0032-a64367b9-replay/response-000.json'
+        if git(self.repo,'rev-parse','HEAD')==QUALIFIED and proposal.exists():
+            response=read_json(proposal);choice=response['choices'][0]
+            if choice.get('finish_reason')=='tool_calls':
+                for call in choice['message'].get('tool_calls',[]):
+                    if call['function']['name']=='finish_task':
+                        fields=json.loads(call['function']['arguments'])
+                        saved=validate_submission(fields,TASKS[6])
+                        self.store.set(cover_saved_replay_pending=saved)
+                        self.store.event('preserved-local-replay-validated',response_sha256=sha(proposal.read_bytes()),
+                                         source=QUALIFIED,success_claimed=False)
+                        break
         return super().work()
 
 
 if __name__=='__main__':raise SystemExit(main(CoverEvidenceResume))
-
