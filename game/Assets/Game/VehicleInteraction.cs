@@ -34,6 +34,16 @@ namespace ChicagoGame
             coupe.transform.SetParent(root.transform, true);
             coupe.transform.rotation = Quaternion.Euler(0f, 180f, 0f) * coupe.transform.rotation;
 
+            // Strip any colliders/rigidbodies carried by the visual coupe mesh.
+            // Child colliders at ground level penetrate the pavement and the
+            // physics solver zeroes the body velocity every step, so held
+            // throttle only produces ~0.2m of creep. The single upright root
+            // box below is the only physical vehicle collider.
+            foreach (var c in coupe.GetComponentsInChildren<Collider>())
+                UnityEngine.Object.Destroy(c);
+            foreach (var r in coupe.GetComponentsInChildren<Rigidbody>())
+                UnityEngine.Object.Destroy(r);
+
             // Body collider: bottom lifted above pavement top (~0.14) so the body
             // never starts ground-penetrating (friction lock under throttle).
             var boxCol = root.AddComponent<BoxCollider>();
