@@ -1,6 +1,7 @@
 """One resident model, bounded private role histories and real image inputs."""
 import base64
 import json
+import math
 from pathlib import Path
 import time
 import urllib.request
@@ -18,6 +19,36 @@ def tool(name, description, fields, required=None):
         "parameters": {"type": "object", "properties": fields,
                        "required": list(fields) if required is None else required,
                        "additionalProperties": False}}}
+
+
+def typed_arguments(function, tools):
+    """Restore schema types when an XML parser returns parameter text.
+
+    The installed generic output parser can omit the tool schema, leaving JSON
+    arrays/objects and numbers as strings. Decode only fields whose declared type
+    requires it; source-code/string arguments remain byte-for-byte text.
+    """
+    definition = next((t["function"] for t in tools if t["function"]["name"] == function["name"]), None)
+    if definition is None: raise ValueError("Unknown tool")
+    def convert(value, schema, field):
+        kind = schema.get("type")
+        if kind != "string" and isinstance(value, str):
+            try: value = json.loads(value)
+            except json.JSONDecodeError as error: raise ValueError(field + " requires valid JSON " + str(kind)) from error
+        if kind == "object":
+            if not isinstance(value, dict): raise ValueError(field + " requires an object")
+            properties = schema.get("properties", {})
+            if not set(schema.get("required", [])) <= set(value): raise ValueError(field + " lacks required fields")
+            if schema.get("additionalProperties") is False and not set(value) <= set(properties): raise ValueError(field + " has unknown fields")
+            return {k: convert(v, properties[k], field + "." + k) for k,v in value.items()}
+        if kind == "array":
+            if not isinstance(value, list): raise ValueError(field + " requires an array")
+            return [convert(v, schema["items"], field + "[]") for v in value]
+        if kind == "string" and not isinstance(value, str): raise ValueError(field + " requires text")
+        if kind == "integer" and (isinstance(value, bool) or not isinstance(value, int)): raise ValueError(field + " requires an integer")
+        if kind == "number" and (isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value)): raise ValueError(field + " requires a finite number")
+        return value
+    return convert(function["arguments"], definition["parameters"], function["name"])
 
 
 def image_part(path):
@@ -116,16 +147,16 @@ class LocalModel:
                 for index, call in enumerate(calls):
                     self.guard()
                     function = call["function"]
-                    fields = function["arguments"]
-                    if isinstance(fields, str):
-                        fields = json.loads(fields)
-                    if not isinstance(fields, dict) or function["name"] not in dispatch:
+                    if function["name"] not in dispatch:
                         raise Halt("Unexpected tool call")
                     action_id = request_id + "-tool-" + str(index)
                     try:
+                        fields = typed_arguments(function, tools)
                         result = dispatch[function["name"]](action_id, fields)
                     except (ValueError, KeyError, TypeError, UnicodeError, FileNotFoundError) as error:
                         result = {"ok": False, "error": str(error)[:1600]}
+                        self.store.event("tool-validation-error", role=role, session_id=session_id,
+                                         tool=function["name"], error_type=type(error).__name__, message=str(error)[:1600])
                     messages.append({"role": "tool", "tool_call_id": call["id"], "content": json.dumps(result)})
                     atomic(private / "history.json", messages)
                     if function["name"] in ("submit_plan", "submit_review", "finish_task") and result.get("ok"):

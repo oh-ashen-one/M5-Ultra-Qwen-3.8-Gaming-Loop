@@ -13,7 +13,7 @@ import zlib
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"tools"))
 from loop_controller.core import Files, Halt, Store, atomic, failure_key, seal, sha, verify_seal
 from loop_controller.adapters import evaluate_runtime, sandbox_profile
-from loop_controller.model import conservative_prompt_bound
+from loop_controller.model import conservative_prompt_bound, tool, typed_arguments
 from loop_controller.runner import Runner, git, scenario_for
 
 
@@ -96,6 +96,15 @@ class ControllerTests(unittest.TestCase):
         messages=[{"role":"user","content":[{"type":"text","text":"target and actual"},{"type":"image_url","image_url":{"url":"data:image/png;base64,"+"a"*100000}}]}]
         result=conservative_prompt_bound(messages,[])
         self.assertGreater(result,8192);self.assertLess(result,14000)
+
+    def test_xml_parameter_strings_restore_nested_schema_types_without_altering_source(self):
+        schema=tool("test","fixture",{"tasks":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"],"additionalProperties":False}},"line":{"type":"integer"},"content":{"type":"string"}})
+        source='["source string remains text"]'
+        fields={"tasks":'[ {"id":"foundation"} ]',"line":"4","content":source}
+        result=typed_arguments({"name":"test","arguments":json.dumps(fields)},[schema])
+        self.assertEqual(result,{"tasks":[{"id":"foundation"}],"line":4,"content":source})
+        fields["tasks"]='[{"unexpected":true}]'
+        with self.assertRaises(ValueError):typed_arguments({"name":"test","arguments":fields},[schema])
 
     def test_replay_rejects_invalid_or_empty_actions(self):
         for steps in ([{"start":0,"end":9999,"keys":["W"]}],[{"start":0,"end":1,"keys":["DeleteEverything"]}]):

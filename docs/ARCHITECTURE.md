@@ -1,6 +1,6 @@
 # Architecture
 
-Updated 2026-10-05. The approved Chicago controller now implements serial role sessions, mediated edits, scoped Blender export, native Unity build/play, fresh criticism, durable state and bounded recovery. Native green/red qualification and twelve CPU fixtures pass. See the [controller runbook](CONTROLLER-RUNBOOK.md) for implementation, operating limits and remaining evidence gaps. The design principles below remain applicable; proposals beyond those implemented capabilities are not completion claims.
+Updated 2026-10-05. The approved Chicago controller now implements serial role sessions, mediated edits, scoped Blender export, native Unity build/play, fresh criticism, durable state and bounded recovery. Native green/red qualification and thirteen CPU fixtures pass. See the [controller runbook](CONTROLLER-RUNBOOK.md) for implementation, operating limits and remaining evidence gaps. The design principles below remain applicable; proposals beyond those implemented capabilities are not completion claims.
 
 ## Roles and flow
 

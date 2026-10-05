@@ -4,7 +4,7 @@ Updated 2026-10-05. Requirement, recommendation, and unresolved choice are separ
 
 ## Latest implementation decision — 2026-10-05
 
-The owner authorized the full Chicago game after qualification. The approved [Chicago brief](CHICAGO-BRIEF.md) and [controller runbook](CONTROLLER-RUNBOOK.md) supersede earlier holds/open choices below. The initial route uses native Unity Built-in rendering, original local Qwen Blender art, fixed CLI adapters, serial role sessions and the recorded 12-hour bounded run. Native green/red and twelve recovery/boundary tests pass. Library reference images remain private; checkpoint publishing uses existing controller authentication without granting a new M5 deploy key. Earlier provider/framework recommendations remain research references, not installed dependencies.
+The owner authorized the full Chicago game after qualification. The approved [Chicago brief](CHICAGO-BRIEF.md) and [controller runbook](CONTROLLER-RUNBOOK.md) supersede earlier holds/open choices below. The initial route uses native Unity Built-in rendering, original local Qwen Blender art, fixed CLI adapters, serial role sessions and the recorded 12-hour bounded run. Native green/red and thirteen recovery/boundary tests pass. Library reference images remain private; checkpoint publishing uses existing controller authentication without granting a new M5 deploy key. Earlier provider/framework recommendations remain research references, not installed dependencies.
 
 ## Confirmed requirements
 

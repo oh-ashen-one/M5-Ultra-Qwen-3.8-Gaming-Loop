@@ -35,7 +35,7 @@ python -B tools/game_loop.py resume --run-dir "$RUN_DIR" --config "$PRIVATE_CONF
 
 ## Qualified and still unverified
 
-Twelve CPU fixtures cover stale/escaping edits, interrupted writes, durable process-exit state, evidence corruption, invalid replay, input-gate red cases, interrupted candidate preservation and bounded rollback. Actual native Unity green/red, scoped Blender export, coordinated model handoff, Flash-Next hash-checked editing and fresh known-failure criticism passed; see the [receipts](../diagnostics/controller-2026-10-05/README.md).
+Thirteen CPU fixtures cover stale/escaping edits, interrupted writes, durable process-exit state, evidence corruption, invalid replay, input-gate red cases, interrupted candidate preservation and bounded rollback. Actual native Unity green/red, scoped Blender export, coordinated model handoff, Flash-Next hash-checked editing and fresh known-failure criticism passed; see the [receipts](../diagnostics/controller-2026-10-05/README.md).
 
 The disposable walking test does not prove a game exists, driving/combat/mission completeness, polished art, rigs/animation, collision correctness, audio, HUD or sustained performance. Runtime camera captures omit screen-space overlay HUD. Game-owned event signals are cooperative instrumentation, not an adversarial proof against arbitrary in-process C#. The external harness and source files are write-protected during execution; their observations still require review. Whole-game critique must disclose missing evidence rather than infer it from screenshots. Parent review and eventual human play remain necessary for final quality claims.
 

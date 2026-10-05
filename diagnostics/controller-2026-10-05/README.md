@@ -2,7 +2,7 @@
 
 These are disposable controller fixtures, not Chicago gameplay or art-quality results.
 
-- Twelve CPU state/edit/evidence/recovery tests pass, including interrupted-edit preservation and restoration of only the owned game directory after repeated failure.
+- Thirteen CPU state/edit/evidence/recovery tests pass, including interrupted-edit preservation and restoration of only the owned game directory after repeated failure.
 - Actual macOS sandbox probe allowed an owned write and denied protected reads/writes.
 - Native Unity 6000.6.4f1 compiled the original prior Qwen Blender fixture and built an ARM64 macOS app. The Metal player ran for 16.017 seconds, recorded 140 samples and four actual frames, and observed 16.094 m displacement from replayed application input.
 - The same app with its movement deliberately disabled exited normally but was rejected: 0 m movement and unchanged captures. A clean exit does not count as a pass. See [exact native receipt](native-green-red.json).
@@ -14,3 +14,5 @@ These are disposable controller fixtures, not Chicago gameplay or art-quality re
 Qualification exposed and corrected scoped preference/cache writes, Darwin IPC paths, excessively long compiler socket paths, redundant Blender auto-import and macOS app-bundle discovery reads. Earlier failed attempts remain private for diagnosis; no failure was relabeled as a passing playthrough. The model guard cleanly stopped one handoff that exceeded engine ownership/capacity, then was explicitly restored after fixing the cause. A native startup crash was diagnosed before relaunch. The final native and model/tool qualifications completed with the separate existing Blender preserved and no positive swap growth reported.
 
 Camera frames and transform traces do not establish HUD, audio, collision completeness, sustained 60fps or a finished game. See the [runbook](../../docs/CONTROLLER-RUNBOOK.md) for limits and recovery commands.
+
+The first full-game planner session paused before writing game code because the installed generic XML output parser omitted tool schemas and returned nested arrays as strings. A CPU fixture against the installed parser reproduced the boundary behavior. The controller now validates and restores only schema-declared JSON types while preserving source strings exactly; a thirteenth regression test covers it. No private planner history was read for this diagnosis. The paused session is retained and the controller resumes with a fresh planner context.

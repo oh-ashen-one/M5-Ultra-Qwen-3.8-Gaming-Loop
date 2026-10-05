@@ -1,6 +1,6 @@
 # M5 Ultra Qwen 3.8 Gaming Loop
 
-**Status: the Chicago overnight run is authorized. The durable local controller passes native Unity green/red qualification and twelve recovery/boundary tests. No playable Chicago result is claimed yet.** See the [controller runbook](docs/CONTROLLER-RUNBOOK.md) and [qualification evidence](diagnostics/controller-2026-10-05/README.md).
+**Status: the Chicago overnight run is authorized. The durable local controller passes native Unity green/red qualification and thirteen recovery/boundary tests. No playable Chicago result is claimed yet.** See the [controller runbook](docs/CONTROLLER-RUNBOOK.md) and [qualification evidence](diagnostics/controller-2026-10-05/README.md).
 
 An open-source plan for a local-first coding loop that aims to produce a polished, roughly ten-minute playable urban action/driving game. The M5 Ultra was verified with 256 GB memory and 80 GPU cores. The selected model is now `mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp`, pinned and loaded through isolated oMLX 0.6.4. See [current readiness](docs/FLASH-NEXT-READINESS.md) for exact settings, evidence and launch blockers. Earlier 27B BF16 records are historical.
 
