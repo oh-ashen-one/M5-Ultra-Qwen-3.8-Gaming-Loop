@@ -213,28 +213,32 @@ namespace ChicagoGame
                     string mode = ReadStr("Mode");
                     if (mode == "vehicle")
                     {
-                        float dz = Vector2.Distance(
-                            new Vector2(player.position.x, player.position.z),
-                            new Vector2(padPos.x, padPos.z));
-                        if (dz <= 2.6f)
+                        Transform veh = typeof(LoopSignals).GetField("Vehicle", St).GetValue(null) as Transform;
+                        if (veh != null)
                         {
-                            stage = 2;
-                            if (parcel != null) Destroy(parcel.gameObject);
-                            parcel = null;
-                            if (padRend != null)
+                            float dz = Vector2.Distance(
+                                new Vector2(veh.position.x, veh.position.z),
+                                new Vector2(padPos.x, padPos.z));
+                            if (dz <= 2.6f)
                             {
-                                var m = padRend.sharedMaterial;
-                                if (m != null) { m.color = Color.green; m.SetColor("_EmissionColor", Color.green); }
+                                stage = 2;
+                                if (parcel != null) Destroy(parcel.gameObject);
+                                parcel = null;
+                                if (padRend != null)
+                                {
+                                    var m = padRend.sharedMaterial;
+                                    if (m != null) { m.color = Color.green; m.SetColor("_EmissionColor", Color.green); }
+                                }
+                                if (beaconRend != null)
+                                {
+                                    var m = beaconRend.sharedMaterial;
+                                    if (m != null) { m.color = Color.green; m.SetColor("_EmissionColor", Color.green); m.SetFloat("_Mode", 0); }
+                                }
+                                if (beacon != null)
+                                    beacon.localScale *= 1.8f;
+                                Set("MissionComplete", true);
+                                Set("Mission", "complete");
                             }
-                            if (beaconRend != null)
-                            {
-                                var m = beaconRend.sharedMaterial;
-                                if (m != null) { m.color = Color.green; m.SetColor("_EmissionColor", Color.green); m.SetFloat("_Mode", 0); }
-                            }
-                            if (beacon != null)
-                                beacon.localScale *= 1.8f;
-                            Set("MissionComplete", true);
-                            Set("Mission", "complete");
                         }
                     }
                 }
