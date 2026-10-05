@@ -34,9 +34,17 @@ The catalog attributes external tool and gameplay candidates to their respective
 | Godot demo projects | MIT code; audit individual asset notices | Candidate only |
 | OpenKCC | MIT | Unity alternative only |
 | SanAndreasUnity | MIT code does not license required GTA game data | Excluded production base |
-| Future Meshy/Blender outputs, audio, model weights/runtime | Exact component/provider terms and rights to be reviewed | None included |
+| oMLX 0.6.4 | Apache-2.0 at pinned upstream commit | Machine-local installation only; no upstream runtime code/binaries bundled |
+| Qwen3.8-Flash-Next-oQ6e-mtp | Model-card metadata: Qwen Community 1.0 (`license: other`); exact pack license applies | Machine-local model only; no weights bundled |
+| Future original Blender outputs and audio | Exact component/provider terms and rights to be reviewed | No production assets included |
 
 ## Before any future import
+
+### Machine-local runtime and model
+
+The preparation tools refer to [oMLX 0.6.4](https://github.com/jundot/omlx/tree/1d7826185c5b5b69b38b27cbe57d7597b7551fd7) and the pinned [Qwen3.8 Flash-Next MLX pack](https://huggingface.co/mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp/tree/e171af86f499f1855b0fb71d781105e8dd609610). Their binaries, upstream runtime code and model weights are installed only on the owner's machine and are not distributed in this repository. Their own licenses/terms apply; the project's MIT license does not cover them. Review those exact component terms before any redistribution or packaged release. Original diagnostic scripts and sanitized receipts in this repository are covered by the root MIT license.
+
+### Import requirements
 
 Record the upstream URL, pinned commit/release, exact files, author/copyright notice, full applicable license text, modifications, dependencies, and asset-specific terms. Preserve upstream attribution and notices in the distributed package. Do not apply this project's MIT notice over another component's license.
 

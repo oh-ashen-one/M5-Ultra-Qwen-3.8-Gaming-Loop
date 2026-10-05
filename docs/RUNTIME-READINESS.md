@@ -1,5 +1,7 @@
 # Qwen BF16 runtime readiness
 
+**Historical record:** this BF16 service was stopped and its model removed during the approved replacement. [Flash-Next readiness](FLASH-NEXT-READINESS.md) describes the current model, runtime, settings and launch blockers. The snapshots and restoration instructions below apply only to the earlier BF16 qualification.
+
 Verified 2026-10-05. **Model warmed and resident; game/agent loop held for the owner's launch-plan review.** This is functional preparation, not another benchmark campaign or proof of game-building quality.
 
 **Current post-reboot state:** Qwen was explicitly restored from its clean stop and is healthy/idle. Unity **6000.6.4f1** native import, C# compilation, Metal rendering and fresh Qwen recognition of the Unity image all passed. [Current qualification and receipts](../diagnostics/unity-2026-10-04/README.md) supersede the earlier Unity-absent/pending entries below. Runtime restoration now requires both `warmup_resident.py` and its `unity_smoke.py` process-classification helper beside it; it has no automatic restart path.

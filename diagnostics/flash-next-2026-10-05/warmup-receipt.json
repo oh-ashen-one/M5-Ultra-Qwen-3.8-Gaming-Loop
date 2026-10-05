@@ -1,0 +1,66 @@
+{
+  "status": "passed",
+  "requests": [
+    {
+      "stage": "image-tool",
+      "usage": {
+        "prompt_tokens": 628,
+        "completion_tokens": 150,
+        "total_tokens": 778,
+        "input_tokens": 628,
+        "output_tokens": 150,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 10.03
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_returned": true,
+      "tool_names": [
+        "record_visual_observation"
+      ]
+    },
+    {
+      "stage": "tool-result-continuation",
+      "usage": {
+        "prompt_tokens": 588,
+        "completion_tokens": 34,
+        "total_tokens": 622,
+        "input_tokens": 588,
+        "output_tokens": 34,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 1.31
+      },
+      "finish_reason": "stop",
+      "reasoning_returned": true
+    }
+  ],
+  "game_loop": "held",
+  "started_utc": "2026-10-05T04:47:46.797599+00:00",
+  "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 20,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "repetition_penalty": 1.0,
+    "reasoning_effort": "xhigh",
+    "chat_template_kwargs": {
+      "enable_thinking": true,
+      "preserve_thinking": true
+    }
+  },
+  "updated_utc": "2026-10-05T04:47:58.273793+00:00",
+  "image_sha256": "45d5d0c0dbb093bec809cd674dad51f3360cded758cb26def6590e5c4610a148",
+  "visual_observation": {
+    "left_object": "blue sphere",
+    "right_object": "red cube"
+  },
+  "visual_pass": true,
+  "reasoning_replayed": true,
+  "answer": "READY",
+  "request_count": 2,
+  "finished_utc": "2026-10-05T04:47:58.273777+00:00"
+}

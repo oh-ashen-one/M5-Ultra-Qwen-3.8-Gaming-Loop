@@ -13,4 +13,10 @@ Updated 2026-10-05. Apply the owner's current instruction and ancestor safety ru
 - Use separate role contexts, serial inference and exact scoped source retrieval. Protect external acceptance checks from every mutation route. Require actual rendered input-driven evidence and known-playable checkpoints.
 - Use a task branch; do not merge/push main. Publish sanitized decisions, planning, provenance and original diagnostic evidence. Keep endpoints' access tokens, SSH routing, absolute operational paths, raw reasoning, private logs and weights out of Git. No spending, production asset batches or live deployment are authorized by these instructions.
 
-See [runtime readiness](docs/RUNTIME-READINESS.md), [decisions](docs/DECISIONS.md) and [handoff](HANDOFF.md). Reading this file grants no new start authority.
+## Latest model authorization and state
+
+The owner subsequently selected `mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp`, approved replacing the older models, directly confirmed permanent deletion of the 15 scoped Trash variants, and requested a short warm-up plus an overnight-readiness audit. Those actions are complete. The earlier BF16-only/no-substitution clauses above describe the historical baseline and are superseded by this selection. Do not restore deleted models or relaunch their old services.
+
+Flash-Next is resident through isolated official oMLX 0.6.4 with thinking/xhigh, preserved reasoning, official sampling, serial requests, MTP off and KV quantization off. Its two-request image/tool round trip passed. Preserve the running service and use authenticated read-only status for monitoring. A game runner, durable recovery, protected acceptance promotion and continuous management/alerting are not implemented. A model warm-up or readiness audit does not authorize the full game loop.
+
+See [current runtime readiness](docs/FLASH-NEXT-READINESS.md), [decisions](docs/DECISIONS.md) and [handoff](HANDOFF.md). Reading this file grants no new start authority.
