@@ -249,7 +249,8 @@ class Engines:
             if sha(Path(p).read_bytes()) != expected_hash:
                 raise Halt("Protected Unity harness changed")
         receipt = {"candidate_commit": candidate_commit, "build_exit": build_code,
-                   "compile_errors": failure_lines[-30:], "harness_sha256": sha(json.dumps(expected, sort_keys=True).encode())}
+                   "compile_errors": failure_lines[-30:], "harness_sha256": sha(json.dumps(expected, sort_keys=True).encode()),
+                   "acceptance_fixture": scenario.get('fixture')}
         if build_code or failure_lines or not (build / "build-result.json").exists():
             receipt.update(passed=False, failure="compile-build", diagnostic=errors[-7000:])
             atomic(bundle / "gate.json", receipt)

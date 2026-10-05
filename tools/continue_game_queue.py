@@ -231,7 +231,7 @@ class ContinuousRunner(Runner):
         checks=[('walk',grounding_scenario(),{'id':'walking-regression','checks':[]})]
         if self.store.get('task_index',0)>=1:checks.append(('world',WORLD_PROBE,TASKS[0]))
         if self.store.get('task_index',0)>=2:checks.append(('motor',MOTOR_PROBE,TASKS[1]))
-        if task['id']=='mission-failure-retry':
+        if self.store.get('task_index',0)>=3:
             accepted=self.store.get('accepted_queue_features',{}).get('connected-mission')
             if not accepted:raise Halt('Failure/retry requires the accepted courier regression receipt')
             evidence=self.store.root/accepted['evidence']
@@ -240,6 +240,14 @@ class ContinuousRunner(Runner):
                 raise Halt('Accepted courier regression provenance mismatch')
             probe=validate_proposed(read_json(evidence/'captures/scenario.json'),TASKS[2]['maximum'],TASKS[2]['coverage'])
             checks.append(('courier',probe,TASKS[2]))
+        if self.store.get('task_index',0)>=4:
+            accepted=self.store.get('accepted_queue_features',{}).get('mission-failure-retry')
+            if not accepted:raise Halt('Combat requires the accepted failure/retry regression receipt')
+            evidence=self.store.root/accepted['evidence'];prior=read_json(evidence/'scoped-gate.json')
+            if not prior.get('passed') or prior.get('candidate_commit')!=accepted['candidate']:
+                raise Halt('Accepted failure/retry regression provenance mismatch')
+            probe=validate_proposed(read_json(evidence/'captures/scenario.json'),TASKS[3]['maximum'],TASKS[3]['coverage'])
+            checks.append(('failure-retry',probe,TASKS[3]))
         results=[]
         for name,probe,contract in checks:
             bundle,gate=self.native(contract,ident+'-regression-'+name,candidate,probe)
@@ -253,6 +261,7 @@ class ContinuousRunner(Runner):
         return {'passed':True,'regressions':results}
 
     def promote(self,task,candidate,bundle,gate,review):
+        if gate.get('acceptance_fixture'):raise Halt('A diagnostic fixture cannot promote a playable game')
         if not gate.get('passed') or not review.get('ok') or review.get('verdict')!='PASS':raise Halt('Cannot promote unverified candidate')
         if 'mission_complete' in task.get('checks',[]) and not gate.get('scoped_facts',{}).get('mission_anchors',{}).get('passed'):
             raise Halt('Mission promotion requires the automatic world-anchor and input-transition gate')

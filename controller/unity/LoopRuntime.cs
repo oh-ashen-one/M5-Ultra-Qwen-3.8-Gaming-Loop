@@ -74,6 +74,7 @@ public class LoopRuntime : MonoBehaviour
         wallStarted = Time.realtimeSinceStartup;
         StartedAt = started;
         gameObject.AddComponent<LoopInputPump>();
+        if(LoopInput.Replay != null && LoopInput.Replay.fixture=="combat-wall") gameObject.AddComponent<LoopCombatFixture>();
     }
     void OnLog(string message, string stack, LogType type)
     {

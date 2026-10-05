@@ -168,6 +168,9 @@ class QueueTests(unittest.TestCase):
         with self.assertRaisesRegex(Halt,'world-anchor'):
             r.promote({'checks':['mission_complete']},'candidate',self.bundle,{'passed':True},
                       {'ok':True,'verdict':'PASS'})
+        with self.assertRaisesRegex(Halt,'fixture'):
+            r.promote({'checks':[]},'candidate',self.bundle,{'passed':True,'acceptance_fixture':'combat-wall'},
+                      {'ok':True,'verdict':'PASS'})
 
     def test_failure_retry_rechecks_the_actual_accepted_courier_route(self):
         r=ContinuousRunner.__new__(ContinuousRunner);r.store=self.store
