@@ -60,9 +60,9 @@ def image_part(path):
     return {"type": "image_url", "image_url": {"url": "data:image/png;base64," + base64.b64encode(raw).decode()}}
 
 
-def conservative_prompt_bound(messages, tools):
-    # UTF-8 byte length is a conservative text-token upper bound for this byte-BPE
-    # tokenizer. Image allowance is separate; live usage remains the actual count.
+def conservative_prompt_bound(messages, tools, text_counter=None):
+    # Use the pinned local tokenizer for serialized text when configured. Keep
+    # separate conservative image/framing allowances; bytes are only a fallback.
     cleaned = json.loads(json.dumps(messages))
     images = 0
     for msg in cleaned:
@@ -71,7 +71,9 @@ def conservative_prompt_bound(messages, tools):
                 if part.get("type") == "image_url":
                     part["image_url"] = {"url": "<immutable PNG>"}
                     images += 1
-    return len(encode([cleaned, tools])) + images * 8192 + 2048
+    serialized = encode([cleaned, tools])
+    text_tokens = text_counter(serialized.decode()) if text_counter else len(serialized)
+    return text_tokens + images * 8192 + 2048
 
 
 class LocalModel:
@@ -84,6 +86,15 @@ class LocalModel:
         if token_path.is_symlink() or token_path.stat().st_mode & 0o077:
             raise Halt("Private token must be a mode-0600 regular file")
         self.token = token_path.read_text().strip()
+        self.text_counter = None
+        if config.get("tokenizer_file"):
+            from tokenizers import Tokenizer
+            tokenizer_path = Path(config["tokenizer_file"])
+            if sha(tokenizer_path.read_bytes()) != config["tokenizer_sha256"]:
+                raise Halt("Pinned context tokenizer changed")
+            self.tokenizer = Tokenizer.from_file(str(tokenizer_path))
+            self.tokenizer.no_truncation(); self.tokenizer.no_padding()
+            self.text_counter = lambda text: len(self.tokenizer.encode(text, add_special_tokens=False).ids)
 
     def api(self, route, payload=None, timeout=10):
         request = urllib.request.Request(self.base + route,
@@ -117,7 +128,7 @@ class LocalModel:
                 self.guard()
                 if (Path(self.config["coordination_dir"]) / "engine-request.json").exists():
                     raise Halt("Engine handoff is active; inference is not admitted")
-                bound = conservative_prompt_bound(messages, tools)
+                bound = conservative_prompt_bound(messages, tools, self.text_counter)
                 if bound + self.config["output_tokens"] > self.config["working_context_tokens"]:
                     self.store.event("role-budget", session_id=session_id, conservative_prompt_bound=bound)
                     return {"bounded_stop": "context", "summary": "Inspect current source and continue in a new bounded task."}
@@ -136,7 +147,10 @@ class LocalModel:
                 self.store.finish_action(request_id, {"usage": usage, "finish_reason": choice.get("finish_reason")})
                 self.store.event("model-usage", role=role, session_id=session_id, usage=usage,
                                  conservative_prompt_bound=bound, settings=SAMPLING,
-                                 output_tokens=self.config["output_tokens"])
+                                 output_tokens=self.config["output_tokens"],
+                                 text_budget_mode="pinned-tokenizer" if self.text_counter else "utf8-byte-fallback")
+                if usage.get("prompt_tokens", 0)+self.config["output_tokens"] > self.config["working_context_tokens"]:
+                    raise Halt("Actual model usage exceeded the configured working-context budget")
                 if choice.get("finish_reason") == "length":
                     return {"bounded_stop": "output", "summary": "Output limit reached; no partial tool call executed."}
                 messages.append({k: msg[k] for k in ("role", "content", "tool_calls", "reasoning_content", "reasoning") if k in msg})

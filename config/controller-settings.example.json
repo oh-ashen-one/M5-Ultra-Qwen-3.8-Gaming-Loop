@@ -14,5 +14,7 @@
   "identical_failure_limit": 3,
   "rollback_limit": 1,
   "minimum_disk_GiB": 100,
-  "push_checkpoints": true
+  "push_checkpoints": true,
+  "tokenizer_file": "/ABSOLUTE/PINNED/MODEL/tokenizer.json",
+  "tokenizer_sha256": "PINNED_TOKENIZER_SHA256"
 }

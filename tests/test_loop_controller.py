@@ -97,6 +97,13 @@ class ControllerTests(unittest.TestCase):
         result=conservative_prompt_bound(messages,[])
         self.assertGreater(result,8192);self.assertLess(result,14000)
 
+    def test_tokenizer_budget_retains_image_allowance_without_base64_or_byte_inflation(self):
+        observed=[]
+        def count(text): observed.append(text); return 500
+        messages=[{"role":"user","content":[{"type":"text","text":"original source"},{"type":"image_url","image_url":{"url":"data:image/png;base64,"+"z"*100000}}]}]
+        self.assertEqual(conservative_prompt_bound(messages,[],count),500+8192+2048)
+        self.assertNotIn("z"*100,observed[0]);self.assertIn("original source",observed[0])
+
     def test_xml_parameter_strings_restore_nested_schema_types_without_altering_source(self):
         schema=tool("test","fixture",{"tasks":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"],"additionalProperties":False}},"line":{"type":"integer"},"content":{"type":"string"}})
         source='["source string remains text"]'
@@ -185,6 +192,21 @@ class ControllerTests(unittest.TestCase):
         self.store.set(feedback={"failure":"compile-build"},failure_streak=2)
         runner.recover()
         self.assertEqual(self.store.get("failure_streak"),2)
+
+    def test_ready_assets_focus_first_integration_on_runtime_code(self):
+        runner=self.source_runner();runner.refs=self.root/"refs"
+        for name in ("street","coupe","props","player"):
+            p=runner.project/"Assets/Resources/Generated"/name/"scene.fbx"
+            p.parent.mkdir(parents=True);p.write_bytes(b"fixture")
+        def session(role,session_id,system,prompt,tools,dispatch,**kwargs):
+            self.assertNotIn("run_blender",dispatch)
+            self.assertNotIn("run_blender",[t["function"]["name"] for t in tools])
+            with self.assertRaises(ValueError):dispatch["write_file"]("art",{"path":"Art/new.py","expected_sha256":sha(b""),"content":"bad"})
+            result=dispatch["write_file"]("runtime",{"path":"Assets/Game/Bootstrap.cs","expected_sha256":sha(b""),"content":"// runtime fixture"})
+            self.assertTrue(result["ok"])
+            return {"ok":True}
+        runner.model=SimpleNamespace(session=session)
+        self.assertTrue(runner.builder({"phase":"foundation","outcome":"walking"},"fixture","brief")["ok"])
 
 
 if __name__=="__main__":unittest.main()
