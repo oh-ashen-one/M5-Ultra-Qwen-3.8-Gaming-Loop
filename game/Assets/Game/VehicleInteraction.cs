@@ -123,55 +123,44 @@ namespace ChicagoGame
             fwd.y = 0f;
             fwd.Normalize();
 
-            // Forward propulsion via AddForce (respects collision response)
+            // Forward motion via direct velocity (bypasses friction lock)
+            float maxSpeed = 12f;
+            float accel = 18f;
+            float fwdSpeed = Vector3.Dot(_rb.linearVelocity, fwd);
+
+            float newSpeed;
             if (Mathf.Abs(throttle) > 0.01f)
-                _rb.AddForce(fwd * throttle * 8000f, ForceMode.Force);
-
-            // Lateral lock: kill sideways velocity to prevent sliding
-            Vector3 rt = transform.right;
-            rt.y = 0f;
-            rt.Normalize();
-            _rb.linearVelocity -= Vector3.Project(_rb.linearVelocity, rt);
-
-            // Speed cap
-            float fSpd = Vector3.Dot(_rb.linearVelocity, fwd);
-            if (Mathf.Abs(fSpd) > 8f)
             {
-                var v = _rb.linearVelocity;
-                v -= fwd * (fSpd - Mathf.Sign(fSpd) * 8f);
-                _rb.linearVelocity = v;
+                float target = throttle * maxSpeed;
+                float step = accel * Time.fixedDeltaTime;
+                if (Mathf.Abs(target) > Mathf.Abs(fwdSpeed))
+                    newSpeed = fwdSpeed + Mathf.Sign(target) * step;
+                else
+                    newSpeed = target;
+                if (Mathf.Abs(newSpeed) > maxSpeed)
+                    newSpeed = Mathf.Sign(newSpeed) * maxSpeed;
+            }
+            else
+            {
+                float decel = 5f * Time.fixedDeltaTime;
+                if (Mathf.Abs(fwdSpeed) <= decel) newSpeed = 0f;
+                else newSpeed = fwdSpeed - Mathf.Sign(fwdSpeed) * decel;
             }
 
-            // Rolling resistance when no throttle
-            if (Mathf.Abs(throttle) < 0.01f)
-            {
-                float fs = Vector3.Dot(_rb.linearVelocity, fwd);
-                float brake = Mathf.Min(Mathf.Abs(fs), 3f * Time.fixedDeltaTime);
-                _rb.linearVelocity -= fwd * Mathf.Sign(fs) * brake;
-            }
+            // Reconstruct velocity: forward axis only + preserve vertical
+            _rb.linearVelocity = fwd * newSpeed + Vector3.up * _rb.linearVelocity.y;
 
-            // Steering: set yaw via angular velocity
-            float curSpeed = Vector3.Dot(_rb.linearVelocity, fwd);
-            float turnRate = steer * 90f * Mathf.Clamp01(Mathf.Abs(curSpeed) / 4f)
-                             * Mathf.Sign(curSpeed + 0.001f);
+            // Steering: yaw angular velocity
+            float turnRate = steer * 90f * Mathf.Clamp01(Mathf.Abs(newSpeed) / 4f)
+                             * Mathf.Sign(newSpeed + 0.001f);
             _rb.angularVelocity = new Vector3(0f, turnRate, 0f);
 
-            // Ground snap: raycast down skipping own collider
-            if (GroundRaycast(transform.position, out var hit))
+            // Ground: prevent falling through only; do NOT push upward
+            if (transform.position.y <= 0f && _rb.linearVelocity.y < 0f)
             {
-                float groundY = hit.point.y;
-                float diff = groundY - transform.position.y;
-                if (diff > 0.02f && diff < 0.5f)
-                {
-                    var v = _rb.linearVelocity;
-                    v.y = diff / Time.fixedDeltaTime * 0.5f;
-                    _rb.linearVelocity = v;
-                }
-                else if (diff <= 0f)
-                {
-                    var v = _rb.linearVelocity;
-                    if (v.y < 0f) { v.y = 0f; _rb.linearVelocity = v; }
-                }
+                var v = _rb.linearVelocity;
+                v.y = 0f;
+                _rb.linearVelocity = v;
             }
         }
 
@@ -204,29 +193,34 @@ namespace ChicagoGame
 
         void DoReset()
         {
-            // Reset car state
-            _rb.linearVelocity = Vector3.zero;
-            _rb.angularVelocity = Vector3.zero;
+            // Reset driving state
             _speed = 0f;
             _driving = false;
-            transform.position = CarResetPos;
-            transform.rotation = CarResetRot;
+
+            // Reset car: stop physics, teleport, sync
+            _rb.linearVelocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
             _rb.position = CarResetPos;
             _rb.rotation = CarResetRot;
+            transform.position = CarResetPos;
+            transform.rotation = CarResetRot;
 
-            // An ENABLED CharacterController clamps its own transform, so a
-            // direct position write is silently ignored. Disable it (and the
-            // Walker that drives it) before teleporting, then re-enable so the
-            // controller re-seeds from the spawn point and gravity settles it.
+            // Disable player controllers before teleport
             if (_cc != null) _cc.enabled = false;
             if (_walker != null) _walker.enabled = false;
+            if (_pv) _pv.gameObject.SetActive(true);
 
+            // Teleport player
             _player.transform.position = PlayerResetPos;
             _player.transform.rotation = Quaternion.identity;
 
-            if (_pv) _pv.gameObject.SetActive(true);
+            // Force physics to acknowledge new positions BEFORE re-enabling CC
+            Physics.SyncTransforms();
+
+            // Re-enable controllers - they seed from current (correct) position
             if (_cc != null) _cc.enabled = true;
             if (_walker != null) _walker.enabled = true;
+
             _follow.target = _player.transform;
             Set("Mode", "foot");
             Set("Vehicle", transform);
