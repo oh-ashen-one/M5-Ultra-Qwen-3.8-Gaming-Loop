@@ -174,9 +174,13 @@ class Runner:
             "id":STRING,"phase":STRING,"outcome":STRING,"acceptance":STRING},
             "required":["id","phase","outcome","acceptance"],"additionalProperties":False}}
         result = self.model.session("planner", "planner-"+uuid.uuid4().hex[:10],
-            "You are local Qwen, substantive game planner. Plan small concrete tasks; never judge unbuilt work.",
-            brief+"\n\n"+API_GUIDE+"\nFirst produce one polished-looking original Chicago street and satisfying walking interaction. "
-            "Avoid an enormous initial asset generator. Submit an ordered, scoped implementation plan with every required phase.",
+            "You are local Qwen, substantive game planner. Produce a compact implementation queue; never judge unbuilt work. "
+            "Call submit_plan as your next response. No code, detailed engineering design or long prose is needed.",
+            brief+"\n\nSubmit exactly five small ordered tasks, one each for foundation, driving, combat, mission, polish. "
+            "Each outcome and acceptance field must be at most 35 words. Choose the concrete game design yourself within the brief. "
+            "The first task is only one visually strong original Chicago street and satisfying walking interaction. "
+            "Keep the first asset script small; additional street detail can come in later iterations. "
+            "The builder receives API/engine integration details separately. Submit the compact plan now.",
             [tool("submit_plan","Submit concrete small ordered tasks.",{"tasks":task_fields})],
             {"submit_plan":submit}, images=[("AI-generated Chicago target; not game output",self.refs/"chicago_01_neighborhood_on_foot.png")],turns=3)
         if not result.get("ok"):
@@ -282,6 +286,7 @@ class Runner:
                                  "output_tokens":self.c["output_tokens"],"effort":"xhigh","preserve_thinking":True,
                                  "mtp":False,"kv_quantization":False,"concurrency":1,"memory_floor_GiB":64,"swap_growth_limit_MiB":512})
         if not self.store.get("tasks"):
+            self.store.set(current_task="Local Qwen: define bounded Chicago implementation tasks",phase="planning",stage="planning")
             self.plan(brief)
         stop_round=self.store.get("rounds",0)+(max_rounds if max_rounds is not None else self.c["max_rounds"])
         while self.store.get("rounds",0)<min(stop_round,self.c["max_rounds"]):
@@ -368,7 +373,7 @@ def main():
     if not args.authorize_game_start:
         parser.error("The current owner's explicit start authorization is required")
     config=read_json(args.config)
-    if config["working_context_tokens"]+0>262144 or not 512<=config["output_tokens"]<=8192:
+    if config["working_context_tokens"]+0>262144 or not 512<=config["output_tokens"]<=16384:
         raise Halt("Unqualified model limits")
     if args.command=="run" and store.get("started_epoch"):
         raise Halt("Existing run requires resume")

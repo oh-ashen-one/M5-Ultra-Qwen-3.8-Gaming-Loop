@@ -13,7 +13,7 @@ SQLite WAL/FULL records actions, role usage, candidates and accepted commits. An
 ## Bounds
 
 - One model request at a time; one task-owned engine at a time. The loaded idle model yields shared engine admission and resumes after the engine exits.
-- 65,536 conservative working-context bound, including image allowance and up to 8,192 output tokens; native runtime context remains 262,144. Output budget includes thinking.
+- 65,536 conservative working-context bound, including image allowance and up to 16,384 output tokens; native runtime context remains 262,144. Output budget includes thinking.
 - Thinking/xhigh and preserved private role reasoning; temperature 1, top-p .95, top-k 20. MTP, DFlash and KV quantization disabled.
 - Initial ceiling: 12 hours, 96 candidates, 16 builder tool-response turns per session, 120 minutes without accepted progress, three identical failures, one rollback.
 - At least 64 GiB available memory, no more than 512 MiB positive swap growth, at least 100 GiB free disk. Genuine runtime faults pause work; no automatic model restart.
