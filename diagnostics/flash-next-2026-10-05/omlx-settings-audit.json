@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "checks": [
+    "top-level xhigh forwarded",
+    "thinking enabled",
+    "preserved reasoning enabled",
+    "official sampling configured",
+    "MTP disabled",
+    "KV quantization disabled",
+    "remote code disabled",
+    "model pinned",
+    "context and output configured",
+    "xhigh instruction rendered",
+    "thinking opener rendered",
+    "reasoning survives tool result and new user turn",
+    "no accelerator imports"
+  ],
+  "versions": {
+    "omlx": "0.6.4",
+    "mlx": "0.32.0",
+    "mlx-metal": "0.32.0",
+    "mlx-lm": "0.31.3",
+    "mlx-vlm": "0.6.3",
+    "transformers": "5.12.1",
+    "python-multipart": "0.0.32"
+  },
+  "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+  "scope": "CPU settings/template fixtures for the installed oMLX runtime; no model inference",
+  "inference": false
+}

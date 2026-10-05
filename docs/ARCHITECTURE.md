@@ -1,10 +1,10 @@
 # Architecture
 
-Updated 2026-10-05. The game loop is proposed and held. Model download, settings fixtures and one short warm-up are implemented; see [runtime readiness](RUNTIME-READINESS.md).
+Updated 2026-10-05. The game controller below is proposed and held. The current implementation supplies a resident Flash-Next service, settings fixtures and a bounded image/tool warm-up; see [runtime readiness](FLASH-NEXT-READINESS.md). Role scheduling, durable recovery, acceptance promotion, fresh gameplay criticism and ongoing manager reporting are not implemented.
 
 ## Roles and flow
 
-Parent midir manages project direction and approvals. The execution lead performs approved work, coordinates serial local Qwen planner, coder, tester and fresh visual-critic contexts, and reports real artifacts, gaps and blockers to management. A process watchdog supplies liveness/resource alarms. One BF16 model is resident; roles have separate histories and permissions. Keep generation and rendering bounded and task-owned. The disposable connector test does not authorize the game loop.
+Parent midir manages project direction and approvals. The planned execution lead will coordinate serial local Qwen planner, coder, tester and fresh visual-critic contexts and report real artifacts, gaps and blockers. One Flash-Next model is currently resident. The proposed roles require separate histories and permissions; the warm-up is not that controller. The existing process supervisor checks resources and service availability and stops its owned server on faults; external alarm delivery remains unimplemented. Keep generation and rendering bounded and task-owned. Disposable connector tests do not authorize the game loop.
 
 ```mermaid
 flowchart TD

@@ -1,6 +1,6 @@
 # Plan
 
-Status: model warm and resident; disposable connector qualification authorized; game/agent loop held for readiness review. Updated 2026-10-05.
+Status: Flash-Next is warm and resident; its image/tool warm-up passed. The overnight game controller, durable recovery and progress/alert manager remain unimplemented. Game generation is held for readiness review. Updated 2026-10-05.
 
 ## Acceptance before implementation
 
@@ -23,7 +23,7 @@ A suggested performance target is 60 fps, subject to the approved resolution, qu
 
 ## Phases and exits
 
-1. **Preparation and readiness review — current phase.** The prior benchmark campaign is closed. Unity CLI/C# and Qwen BF16 are selected. Model download/warm-up and a small isolated connector check are authorized; substantive game generation is held. Parent midir manages direction/approvals and the execution lead reports evidence/blockers. Agree on the brief, settings, acceptance contract and bounded run before the explicit game start.
+1. **Preparation and readiness review — current phase.** The prior benchmark campaign is closed. Unity CLI/C# and Qwen3.8 Flash-Next are selected. Model replacement, compatible runtime setup and a short warm-up are complete; substantive game generation is held. Parent midir manages direction/approvals and the execution lead reports evidence/blockers. Implement and qualify the missing controller/recovery/acceptance/monitoring pieces, and agree on the brief and bounded run before the explicit game start.
 2. **Qualification.** In a session-owned project, pin versions and verify local model identity, edit tools, context retrieval, engine adapter, export path, resource budget, and recovery behavior. Deliberately broken fixtures must make the acceptance harness fail before it is trusted.
 3. **Playable foundation.** Build a small input-driven movement/driving slice with camera handoff and collision. Temporary graybox assets are allowed. Verify behavior and capture actual gameplay before adding more systems.
 4. **Visual target and original asset pilot.** Agree on art direction. Local Qwen authors representative character, vehicle and environment models, materials, rigs and animation from scratch in Blender; validate them in Unity before a larger batch. No Meshy, Tripo or premade asset packs.
@@ -41,8 +41,8 @@ Two repeated failures with the same proven cause trigger diagnosis. After two in
 
 ## Decisions needed before start
 
-- Exact Unity release/render pipeline, native export target, license and physics/test/capture adapters.
-- Approve the [audited BF16 runtime settings](RUNTIME-READINESS.md), working context/output/thinking budgets and functional tools/vision qualification. The loaded artifact and runtime are pinned; no fastest-runtime claim is made.
+- Production render pipeline, native export target and physics/test/capture adapters for the installed Unity 6000.6.4f1 editor. Native import/compile/render and editor licensing passed; live Pipeline/MCP remains unqualified.
+- Review the [current Flash-Next settings and blockers](FLASH-NEXT-READINESS.md), working context/output budgets and actual game-tool qualification. The loaded artifact and runtime are pinned; long-context operation and fastest-runtime claims are unqualified.
 - Approved mission, art direction, controls, camera feel, driving style, audio scope, and content budget.
 - How to measure the local coding share and how to authorize/disclose rescue coding.
 - Exact dependencies and licenses, GPU/process ownership, acceptance-harness location, and stop/recovery policy.

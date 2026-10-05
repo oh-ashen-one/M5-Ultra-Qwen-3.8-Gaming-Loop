@@ -1,8 +1,8 @@
 # M5 Ultra Qwen 3.8 Gaming Loop
 
-**Status: Qwen BF16 restored and resident on the M5. Blender export → Unity import/C# compile/Metal render → fresh Qwen vision passes. Game development remains held for readiness review.**
+**Status: Qwen3.8 Flash-Next is loaded, warmed and idle on the M5. Image recognition and a tool-call round trip pass. The overnight game controller is not implemented; game development remains held.**
 
-An open-source plan for a local-first coding loop that aims to produce a polished, roughly ten-minute playable urban action/driving game. The M5 Ultra was verified with 256 GB memory and 80 GPU cores. Qwen3.8 27B BF16 is pinned and loaded through the installed MLX-VLM 0.7.4 runtime. See [runtime readiness](docs/RUNTIME-READINESS.md) for exact evidence and remaining qualification.
+An open-source plan for a local-first coding loop that aims to produce a polished, roughly ten-minute playable urban action/driving game. The M5 Ultra was verified with 256 GB memory and 80 GPU cores. The selected model is now `mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp`, pinned and loaded through isolated oMLX 0.6.4. See [current readiness](docs/FLASH-NEXT-READINESS.md) for exact settings, evidence and launch blockers. Earlier 27B BF16 records are historical.
 
 The game should evoke the movement, driving, camera, atmosphere, and mission flow of a GTA5-style experience while using original content. Local Qwen must author every eventual 3D model, material, rig and animation from scratch through Blender. No Meshy, Tripo or premade asset packs. This is a small playable slice, with no promise of AAA parity. Native Unity CLI/C# is selected; a browser build is a fallback.
 
@@ -10,7 +10,7 @@ The game should evoke the movement, driving, camera, atmosphere, and mission flo
 
 The existing M5 tests are closed. The owner authorized model preparation and a short warm-up, while requiring review of the launch plan before the game/agent loop starts. The initial 8–72-hour window is a planning range, subject to an agreed budget and stop conditions. Time alone is never a completion criterion.
 
-This repository contains documentation, bounded preparation/diagnostic tools and a small attributed set of unintegrated source references. There is no runnable game or development loop. The owner authorized the BF16 preparation, Unity setup and disposable connector qualification, including original test geometry. Game-generation and paid production services remain separate from this preparation.
+This repository contains documentation, bounded preparation/diagnostic tools and a small attributed set of unintegrated source references. There is no runnable game or development loop. The owner authorized model replacement, permanent deletion of 15 old variants, compatible runtime setup, warm-up and readiness review, following earlier Unity and connector qualification. Game-generation and paid production services remain separate from this preparation.
 
 ## What success should mean
 
@@ -23,7 +23,7 @@ This repository contains documentation, bounded preparation/diagnostic tools and
 
 Parent midir manages project direction and approvals; the execution lead performs approved work and reports evidence and blockers. Separate, serial local Qwen planner, coder, tester and visual-critic contexts receive exact context and mediated tools. Protected acceptance checks govern checkpoint promotion. A fresh local critic returns three to five prioritized fixes from actual gameplay evidence; disclosed cloud supervision can spot-review and escalate. See [Architecture](docs/ARCHITECTURE.md).
 
-The owner selected native Unity CLI/C# for the initial game, with local Blender tools as needed. The exact Unity release, render pipeline, licensing and adapter remain to be qualified; no Unity editor was found on the M5. Godot source references remain useful lessons, not an integrated Unity foundation.
+The owner selected native Unity CLI/C# for the initial game, with local Blender tools as needed. Unity 6000.6.4f1 import, C# compilation and Metal rendering passed with active editor licensing. The production render pipeline, game adapter and live Editor Pipeline/MCP remain unqualified. Godot source references remain useful lessons for the planned Unity implementation.
 
 The [source references](reference/README.md) include selected MIT diagnostic, input, camera and vehicle code with pinned refs, checksums and full notices. They are preparation for later qualification, not an integrated game. The [NPC plan](docs/NPC-ARCHITECTURE.md) specifies distinct persistent NPC memories and relationships on a shared backend, and discloses remote runtime brains separately from local Qwen development.
 
@@ -38,7 +38,9 @@ The [source references](reference/README.md) include selected MIT diagnostic, in
 | [Reuse catalog](docs/REUSE-CATALOG.md) | Prior user projects and external code/tool candidates |
 | [Source references](reference/README.md) | Exact imported files, manifest, notices and integration gaps |
 | [Dependency pins](docs/DEPENDENCY-PINS.json) | Framework refs only; nothing installed |
-| [Runtime readiness](docs/RUNTIME-READINESS.md) | Pinned BF16, exact settings audit, warm-up and remaining launch gates |
+| [Current runtime readiness](docs/FLASH-NEXT-READINESS.md) | Flash-Next/oMLX settings, warm-up, read-only monitoring and overnight launch blockers |
+| [Flash-Next evidence](diagnostics/flash-next-2026-10-05/README.md) | Fresh image/tool round trip and actual oMLX settings fixtures |
+| [Historical BF16 readiness](docs/RUNTIME-READINESS.md) | Earlier model/runtime qualification, superseded by Flash-Next |
 | [Connector evidence](diagnostics/connector-2026-10-05/README.md) | Earlier file/shell, original Blender and vision results |
 | [Post-reboot qualification](diagnostics/unity-2026-10-04/README.md) | Actual Unity/C# import, Metal frame, Qwen recognition and current setup distinctions |
 | [Unity installation](docs/UNITY-INSTALL.md) | Original official installation record and link to the later qualified editor |

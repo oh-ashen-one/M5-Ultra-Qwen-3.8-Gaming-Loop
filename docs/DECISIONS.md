@@ -8,7 +8,7 @@ Updated 2026-10-05. Requirement, recommendation, and unresolved choice are separ
 | --- | --- |
 | New public open-source repository | Owner `oh-ashen-one`; display title **M5 Ultra Qwen 3.8 Gaming Loop**; publish original research/planning and appropriately attributed reuse |
 | Planning first | Benchmarks are closed; game/agent loop held for readiness review; model preparation and small disposable connector tests authorized separately |
-| Local model goal | Qwen3.8 27B BF16 on verified M5 Ultra 256 GB / 80 GPU; one resident model, serial roles and explicit thinking |
+| Local model goal | Qwen3.8 Flash-Next oQ6e pack on verified M5 Ultra 256 GB / 80 GPU; one resident model, serial roles and explicit thinking; replaces the earlier 27B BF16 selection |
 | Sustained future iteration | Initial 8–72-hour planning window or further agreed time needed; bounded budgets and stop criteria |
 | Majority of gameplay coding local | About 90% goal; substantive planning/coding/fresh visual critique local; intelligent Codex supervision and disclosed spot reviews; separately approved rescue code accounted independently |
 | Playable quality | Roughly ten-minute GTA5-style urban action/driving experience with original content; no AAA parity promise |
@@ -22,7 +22,7 @@ Updated 2026-10-05. Requirement, recommendation, and unresolved choice are separ
 
 ## Current recommendations
 
-- **Engine: Unity CLI/C# selected by the owner on October 5.** Exact release, render pipeline, license and adapters remain open. The earlier Godot recommendation is historical.
+- **Engine: Unity CLI/C# selected by the owner on October 5.** Installed Unity 6000.6.4f1 passed native import/compile/render with active editor licensing. The production pipeline and live game/MCP adapters remain open. The earlier Godot recommendation is historical.
 - **Harness: OpenCode for qualification**, Blender MCP, and one engine adapter. Use mediated edits, external acceptance and Git checkpoints. Do not adopt a second orchestration framework without a concrete need.
 - **Gameplay foundation:** third-person code, arcade vehicle physics, authored roads, built-in navigation, small mission state machine. Add optional camera/AI/quest packages only after identifying the integration need.
 - **Quality loop:** serial local roles and fresh local visual criticism; parent midir manages direction, execution lead reports evidence/progress; bounded retries and known-good promotion.
@@ -32,8 +32,8 @@ Updated 2026-10-05. Requirement, recommendation, and unresolved choice are separ
 
 | Choice | Evidence needed to resolve it |
 | --- | --- |
-| Exact Unity version/pipeline/license | Export/adapter compatibility, input/rendered QA and runtime qualification |
-| Working runtime settings/context | Pinned BF16 and installed MLX-VLM audited; native vision/tool execution still requires functional qualification and budget review |
+| Unity pipeline and game adapters | Qualify the production pipeline, export/adapter compatibility and input-driven rendered QA on installed 6000.6.4f1; live Pipeline/MCP remains unqualified |
+| Working runtime settings/context | Pinned Flash-Next/oMLX thinking settings and short image/tool round trip passed; actual game tools, long-context behavior and production budgets remain unqualified |
 | Final game design | User-approved brief and acceptance route; neighborhood/walk-drive-objective-pursuit-ending is only a proposal |
 | Visual/audio direction | Approved references, asset pilot and budget; no default theme or provider silently selected |
 | Local contribution accounting | Defined scope and primary metric, mixed-edit handling, rescue classification and evidence ledger |
@@ -53,7 +53,7 @@ Bounded, attributed source preparation is authorized. The [import manifest](../r
 
 The [towering-monster investigation note](concepts/TOWERING-MONSTER-INVESTIGATION.md) is a separate original horror concept, not a replacement for the local-loop game scope. Other game/video projects are outside this repository's implementation scope. The explicit-start hold remains in force.
 
-## Operational update: 2026-10-05
+## Earlier BF16 operational update: 2026-10-05
 
 The owner retired the closed benchmark campaign's automatic-inference prohibition for future local-model work. Historical counters, actual errors and closeout remain untouched. New errors and the shared renderer/security rules still apply.
 
@@ -62,3 +62,9 @@ The exact BF16 revision, hardware, installed runtime and settings were audited. 
 The later owner instruction assigns project management to parent midir and approved execution/reporting to the execution lead. This supersedes the earlier autonomous cloud-owner description. Exact execution-model identifier is unavailable; do not assume Astra. Local Qwen remains the substantive game worker and fresh critic after start. See [runtime evidence](RUNTIME-READINESS.md).
 
 The owner authorized a small disposable end-to-end connector check without starting the game loop. All eventual 3D assets are now required to come from local Qwen's original Blender work, including materials, rigs and animation; Meshy, Tripo and premade asset packs are excluded. These requirements supersede earlier provider recommendations, including separate concept notes. Missing installation/license/auth prerequisites are reported, never bypassed.
+
+## Current Flash-Next operational update: 2026-10-05
+
+The owner selected Flash-Next, approved model replacement and directly confirmed permanent deletion of the 15 scoped old variants. Deletion, the pinned new download and compatible isolated oMLX 0.6.4 installation are complete. The model remains loaded after a fresh two-request image/tool warm-up. Thinking/xhigh, reasoning preservation and official sampling are configured; MTP and KV quantization are off. See [current readiness](FLASH-NEXT-READINESS.md).
+
+The prelaunch audit found that a real game controller, durable recovery, external acceptance promotion, fresh-critic scheduling and continuous progress/alert management are still unimplemented. A resource supervisor is running, but it cannot establish game progress or deliver the proposed management workflow. The full game-start hold remains; earlier BF16 proofs and setup snapshots do not qualify Flash-Next for arbitrary game tools.

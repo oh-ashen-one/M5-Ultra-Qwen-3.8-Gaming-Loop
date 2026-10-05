@@ -1,6 +1,16 @@
 # Project handoff
 
-Updated 2026-10-05. Status: pinned BF16 verified, warmed and resident on the M5; game/agent loop held for owner review.
+Updated 2026-10-05. **Current: Flash-Next is pinned, warmed and resident; the overnight game controller is not implemented. Game generation remains held.**
+
+The owner approved replacing the old models and directly confirmed permanent deletion of the 15 variants in their scoped Trash bundle. Exactly 360 inventoried files were removed, reclaiming about 667.1 GB. The new 39-file Flash-Next download was preserved. Private deletion receipts retain the exact scope; no other Trash contents were emptied.
+
+The selected pack is `mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp` at `e171af86f499f1855b0fb71d781105e8dd609610`. Existing MLX-VLM failed to load its packed PLE layout and stopped cleanly. An isolated, verified official oMLX 0.6.4 installation now serves it. The fresh two-request warm-up recognized the original Unity frame, produced a parsed inert tool call, retained reasoning through the tool-result continuation, and returned `READY`. Thinking/xhigh and official sampling defaults are applied; MTP and KV quantization are off. See [current settings and blockers](docs/FLASH-NEXT-READINESS.md) and [sanitized evidence](diagnostics/flash-next-2026-10-05/README.md).
+
+One authenticated loopback server remains loaded and idle under resource supervision, preserving the owner's separate Blender. Use existing private routing and token records for read-only status; do not reload or issue inference merely to inspect readiness. There is no durable game runner, acceptance/checkpoint promotion, fresh-critic scheduler or ongoing management/alert loop. The resource supervisor does not implement those features. No new game start is authorized by this handoff. Current work is on `prep/flash-next-runtime-20261005`, based on the unmerged BF16 branch; do not merge main without authorization.
+
+## Historical preparation records
+
+The records below describe earlier stages. Model selections, memory snapshots, setup gaps and process restoration instructions in them are superseded by the current readiness record above.
 
 **Latest verified state (October 4 Eastern / October 5 UTC):** after the owner's reboot and changed LAN address, existing SSH host identity was verified and the ignored connection adapter updated. Unity Hub 3.22.2, owner-installed editor **6000.6.4f1 ARM64**, active local editor licensing, Blender 5.2.0 LTS, Codex app 26.930.51102, Git/Python/Xcode tools were checked. Actual original FBX import, C# compile, Metal render and fresh local Qwen recognition **PASS**; see [post-reboot evidence](diagnostics/unity-2026-10-04/README.md). Earlier Unity-not-installed entries below are historical.
 
