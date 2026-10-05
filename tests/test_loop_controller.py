@@ -16,6 +16,7 @@ from loop_controller.adapters import evaluate_runtime, sandbox_profile
 from loop_controller.model import conservative_prompt_bound, tool, typed_arguments
 from loop_controller.runner import Runner, git, scenario_for
 from inspect_and_repair_grounding import summarize, grounding_scenario
+from loop_controller.small_edits import SelectedEdit
 
 
 class ControllerTests(unittest.TestCase):
@@ -28,6 +29,21 @@ class ControllerTests(unittest.TestCase):
 
     def tearDown(self):
         self.store.db.close();self.tmp.cleanup()
+
+    def test_selected_edit_preserves_other_lines_and_rejects_stale_source(self):
+        self.files.create('seed','Assets/Game/A.cs','before\nselected\nafter\n')
+        edit=SelectedEdit(self.files,'Assets/Game/A.cs',2,2)
+        edit.apply('patch','replacement // comment')
+        self.assertEqual((self.project/'Assets/Game/A.cs').read_text(),'before\nreplacement // comment\nafter\n')
+        with self.assertRaises(ValueError):edit.apply('stale','overwrite')
+        self.assertEqual((self.project/'Assets/Game/A.cs').read_text(),'before\nreplacement // comment\nafter\n')
+
+    def test_selected_edit_rejects_ambiguous_or_oversized_replacements(self):
+        self.files.create('seed','Assets/Game/A.cs','same\nsame\nunique\n')
+        with self.assertRaises(ValueError):SelectedEdit(self.files,'Assets/Game/A.cs',1,1)
+        edit=SelectedEdit(self.files,'Assets/Game/A.cs',3,3,max_lines=2)
+        with self.assertRaises(ValueError):edit.apply('large','one\ntwo\nthree\n')
+        self.assertTrue((self.project/'Assets/Game/A.cs').read_text().endswith('unique\n'))
 
     def test_stationary_preflight_rejects_unstable_scaled_or_tilted_physics(self):
         bundle=self.root/'observed';capture=bundle/'captures';capture.mkdir(parents=True)
