@@ -1,0 +1,32 @@
+[
+  {
+    "acceptance": "Native build runs; controller walking captures >=60fps frames, collision stops at fence, five-slot HUD visible, immutable screenshots compared to Chicago targets.",
+    "id": "f1-street-walk",
+    "outcome": "Build Unity scene with one Chicago block: two-flat/greystone facades, sidewalk, alley mouth, L-track steel pier, parked cobalt coupe; third-person walk with weighty acceleration, footstep audio, minimap/HUD slots.",
+    "phase": "foundation"
+  },
+  {
+    "acceptance": "Play trace shows walk->enter->drive around block->exit; speed/damage values logged; silhouette/materials match one coupe design; no floating or clipping through geometry.",
+    "id": "d2-coupe-drive",
+    "outcome": "Add door-based enter/exit, arcade driving (throttle, speed-steering curve, handbrake drift), lamppost/curb collision with damage, engine and tire-squeal audio, camera blend on entry.",
+    "phase": "driving"
+  },
+  {
+    "acceptance": "Trace kills two rivals then evades pursuit to zero stars; hit feedback, audio and hit-flash readable in captures; dying triggers failure state, not softlock.",
+    "id": "c3-gunfire-pursuit",
+    "outcome": "Add player pistol fire with tracers, hittable rival NPCs with simple cover behaviour, two-star police pursuit: wanted meter, patrol cars ram, health drain, death fall.",
+    "phase": "combat"
+  },
+  {
+    "acceptance": "One continuous 9-11 minute trace from spawn to ending card with all markers resolving; forced-fail then retry completes; waypoint text and HUD slots stay consistent.",
+    "id": "m4-garage-route",
+    "outcome": "String objective chain: reach garage, take courier case, evade pursuers to Wabash bridge overlook, deliver before timer; failure shows retry from last checkpoint, delivery plays ending card.",
+    "phase": "mission"
+  },
+  {
+    "acceptance": "Fresh critic reviews actual captures plus Chicago targets and returns PASS/FIX/UNVERIFIED with largest gap; priority fixes applied; no unproven Rockstar-equivalent claims.",
+    "id": "p5-wholepass-polish",
+    "outcome": "Golden-hour lighting, autumn leaf particles, passing L-train flyover, optional wet asphalt; tune post, audio mix, frame pacing; record whole-route evidence plus known-playable checkpoint handoff notes.",
+    "phase": "polish"
+  }
+]
