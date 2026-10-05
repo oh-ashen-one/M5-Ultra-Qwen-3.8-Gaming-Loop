@@ -166,12 +166,18 @@ namespace ChicagoGame
                 return;
             }
 
-            Vector3 me = (mission == "1" && LoopSignals.Vehicle != null)
-                ? LoopSignals.Vehicle.position
+            // stage is the real integer: 0=uncollected, 1=carrying, 2=delivered.
+            // While driving, display the vehicle's actual position; otherwise the
+            // courier's own position. Never claim "in hand" before stage==1.
+            Transform veh = typeof(LoopSignals).GetField("Vehicle", St)
+                               .GetValue(null) as Transform;
+            bool driving = ReadStr("Mode") == "vehicle" && veh != null;
+            Vector3 me = driving
+                ? veh.position
                 : (player != null ? player.position : Vector3.zero);
             me.y = 0f;
 
-            if (mission == "0")
+            if (stage == 0)
             {
                 Vector3 target = parcel != null ? parcel.position : Vector3.zero;
                 target.y = 0f;
