@@ -84,7 +84,8 @@ namespace ChicagoGame
             cam.nearClipPlane = 0.1f;
             rig.transform.position = body.transform.position + new Vector3(0f, 3f, -4.5f);
             rig.transform.rotation = Quaternion.Euler(15f, body.transform.eulerAngles.y, 0f);
-            rig.AddComponent<Follow>().target = body.transform;
+            var follow = rig.AddComponent<Follow>(); follow.target = body.transform;
+            if (coupe != null) VehicleInteraction.Install(body, coupe, follow);
 
             var sun = new GameObject("Directional Light").AddComponent<Light>();
             sun.type = LightType.Directional;
