@@ -23,6 +23,7 @@ namespace ChicagoGame
             root.transform.position = coupe.transform.position;
             root.transform.rotation = Quaternion.Euler(0f, coupe.transform.eulerAngles.y, 0f);
             coupe.transform.SetParent(root.transform, true);
+            coupe.transform.rotation = Quaternion.Euler(0f, 180f, 0f) * coupe.transform.rotation;
             var v = root.AddComponent<VehicleInteraction>();
             v._player = player;
             v._cc = player.GetComponent<CharacterController>();
