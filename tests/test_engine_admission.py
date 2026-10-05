@@ -6,6 +6,13 @@ from engine_admission import ownership
 
 
 class EngineAdmissionTests(unittest.TestCase):
+    def test_native_player_is_counted_alongside_editor_and_blender(self):
+        from unity_smoke import renderer_process
+        self.assertTrue(renderer_process('/tmp/ChicagoLocalSlice.app/Contents/MacOS/Chicago Local Slice',
+            'chicago local slice',['-force-metal']))
+        self.assertFalse(renderer_process('/Applications/Unity.app/Contents/MacOS/Unity','unity',
+            ['-nographics','-parentPid','11','-name','AssetImportWorkerHW0']))
+
     def setUp(self):
         self.blender=dict(pid=3,ppid=1,start=10,pgid=3,renderer=True)
         self.owner=dict(pid=10,ppid=1,start=20,pgid=10,renderer=False)

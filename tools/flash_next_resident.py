@@ -79,6 +79,7 @@ def main():
 
     child = None
     engine_lease = None
+    resident_admitted = False
     existing = renderers()
     baseline=snapshot(args.coordination_dir)['processes']
     baseline=[p for p in baseline if p.get('renderer')]
@@ -115,6 +116,7 @@ def main():
             return json.load(response)
 
     def guard():
+        nonlocal resident_admitted
         memory, swap = psutil.virtual_memory(), psutil.swap_memory()
         state["memory"] = {
             "available_GiB": round(memory.available / 1024**3, 3),
@@ -141,6 +143,7 @@ def main():
                 'reason':decision['reasons'],'snapshot':observed})
             # An idle loaded model needs no renderer slot. Preserve other jobs.
             admission.close()
+            resident_admitted=False
             return False
         if engine_lease:
             if time.time() > engine_lease["expires_epoch"]:
@@ -154,6 +157,7 @@ def main():
         fcntl.flock(mutex, fcntl.LOCK_EX | fcntl.LOCK_NB)
         with contextlib.ExitStack() as admission:
             shared = admission.enter_context(gpu_admission("m5-flash-next-resident", len(existing)))
+            resident_admitted=True
             try:
                 env = os.environ.copy()
                 for key in list(env):
@@ -233,12 +237,12 @@ def main():
                             status = api("/api/status")
                             if guard() and not status.get("active_requests", 0) and not status.get("waiting_requests", 0):
                                 admission.close()
+                                resident_admitted=False
                                 engine_lease = proposal
                                 write_state(ack, {"lease_id": proposal["lease_id"], "status": "granted"})
                         elif not request.exists() and engine_lease is not None:
                             # The controller closes its slot locks before withdrawing the request.
                             engine_lease = None
-                            ack.unlink(missing_ok=True)
                         state["engine_handoff"] = engine_lease["lease_id"] if engine_lease else None
                     available=guard()
                     if not available:
@@ -248,11 +252,13 @@ def main():
                         write_state(root/'resident-state.json',state);stopped.wait(2);continue
                     if args.coordination_dir and engine_lease:
                         write_state(ack,{'lease_id':engine_lease['lease_id'],'status':'granted'})
-                    elif state.get('status')=='capacity-wait' or state.get('engine_handoff') is None:
+                    elif not resident_admitted:
                         # Acquisition is nonblocking. Competing holders/queue mean wait,
                         # not a model fault. Never remove their records.
                         admission.close()
-                        try:shared=admission.enter_context(gpu_admission('m5-flash-next-resident',len(existing)))
+                        try:
+                            shared=admission.enter_context(gpu_admission('m5-flash-next-resident',len(existing)))
+                            resident_admitted=True
                         except (RuntimeError,BlockingIOError) as error:
                             state['status']='capacity-wait';state['admission_wait_reason']=str(error)
                             write_state(args.coordination_dir/'capacity-wait.json',{'supervisor_pid':os.getpid(),
@@ -260,6 +266,7 @@ def main():
                             write_state(root/'resident-state.json',state);stopped.wait(2);continue
                     state['status']='engine-handoff' if engine_lease else 'loaded-idle'
                     if args.coordination_dir:(args.coordination_dir/'capacity-wait.json').unlink(missing_ok=True)
+                    if args.coordination_dir and not engine_lease and not request.exists():ack.unlink(missing_ok=True)
                     if (shared / "PAUSED").exists():
                         raise RuntimeError("Shared GPU protocol paused")
                     healthy = api("/health")
