@@ -42,6 +42,7 @@ def changed_span(current, accepted):
 
 
 class VisualFocusResume(ThreeDayRunner):
+    before_evidence = 'evidence/q0037-9ec6dbea/captures/frame-000.png'
     def validate_recovery(self, old): validate_visual_pause(old)
     def recovery_settings(self): return {'visual_focus_attempted': True}
 
@@ -145,7 +146,7 @@ class VisualFocusResume(ThreeDayRunner):
         ident = 'v%04d-%s' % (self.store.get('rounds', 0) + 1, uuid.uuid4().hex[:8])
         self.store.set(current_round=ident, rounds=self.store.get('rounds', 0)+1,
                        current_task='One image-led original Blender improvement; preserve integrated mechanics')
-        before = self.store.root/'evidence/q0037-9ec6dbea/captures/frame-000.png'
+        before = self.store.root/self.before_evidence
         self.restore_mechanics(ident)
         focus = self.choose_focus(ident, before)
         self.improve_asset(ident, focus, before)
@@ -173,7 +174,7 @@ class VisualFocusResume(ThreeDayRunner):
                   {'verdict': {'type': 'string', 'enum': ['PASS', 'FIX', 'UNVERIFIED']}, 'summary': S,
                    'fixes': {'type': 'array', 'items': S}})],
             {'submit_review': lambda _, f: validate_scoped_review(f, ['before.png', 'after.png', 'drive.png'])},
-            images=[('before.png ACTUAL q0037, t3.0', before), ('after.png ACTUAL current build, t3.2', captures/'frame-000.png'),
+            images=[('before.png ACTUAL prior native spawn view, '+self.before_evidence, before), ('after.png ACTUAL current build, t3.2', captures/'frame-000.png'),
                     ('drive.png ACTUAL current build, t15.5', captures/'frame-005.png'),
                     ('Chicago target reference, not game output', self.refs/'chicago_01_neighborhood_on_foot.png')],
             turns=2, reasoning_effort='xhigh')
