@@ -1,0 +1,876 @@
+{
+  "verified_utc": "2026-10-05T22:59:42.532008+00:00",
+  "scope": "rough integrated route; final quality and ten-minute pacing not accepted",
+  "candidate": "1295417194c0f2cdf9716982df06afebd6336c57",
+  "prior_accepted_checkpoint": "c32cfeb7c512a1ce231eb2c7c29d9738c92ab004",
+  "controller_revision": "74791f8",
+  "gameplay_author": "local Qwen",
+  "cloud_contribution": "Controller-only composition of ordinary replay inputs; no game source or asset edits",
+  "prior_attempts": {
+    "q0033-4392aa43": {
+      "passed": false,
+      "build_id": "010d729cf79b12ddf46e2cd9852cd841414deac36099c7aef9c64878d04c46b7",
+      "failure": [
+        "combat-input-and-hit"
+      ],
+      "shots": 2,
+      "hits": 0,
+      "mission_states": [
+        "active",
+        "complete",
+        "failed"
+      ],
+      "shot_observations": [
+        {
+          "shotsAfter": 1,
+          "hitsAfter": 0,
+          "time": 9.899999618530273,
+          "firstRayCollider": "Barrier"
+        },
+        {
+          "shotsAfter": 2,
+          "hitsAfter": 0,
+          "time": 10.300000190734863,
+          "firstRayCollider": "Barrier"
+        }
+      ]
+    },
+    "q0034-bc0e1a6f": {
+      "passed": false,
+      "build_id": "930f1f5ddb0b2d8317b599cd2b59c956af40726bdbf6f6462fadf7130b65af04",
+      "failure": [
+        "combat-input-and-hit"
+      ],
+      "shots": 2,
+      "hits": 0,
+      "mission_states": [
+        "active",
+        "failed"
+      ],
+      "shot_observations": [
+        {
+          "shotsAfter": 1,
+          "hitsAfter": 0,
+          "time": 10,
+          "firstRayCollider": "Barrier"
+        },
+        {
+          "shotsAfter": 2,
+          "hitsAfter": 0,
+          "time": 10.600000381469727,
+          "firstRayCollider": "Barrier"
+        }
+      ]
+    }
+  },
+  "native_gate": {
+    "acceptance_fixture": null,
+    "build_exit": 0,
+    "build_id": "db7cd31bca461c69bf5991ce1e347543f88ec6088faec7797b29cf5d9ae13fd3",
+    "candidate_commit": "1295417194c0f2cdf9716982df06afebd6336c57",
+    "capture_id": "q0035-e5f1e32d",
+    "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+    "compile_errors": [],
+    "coverage": "combat",
+    "displacement_axes": "horizontal XZ",
+    "duration": 52,
+    "failure": null,
+    "final_game_accepted": false,
+    "frame_count": 14,
+    "harness_sha256": "ef4646fbef6b3a0f5b96022103118939ca5b1aded16cf29061687394aedf6803",
+    "integrated_aim": {
+      "facts": {
+        "cover_blocked_shot_count": 0,
+        "damage_events": [
+          {
+            "first_ray_collider": "Rival",
+            "hp_after": 2,
+            "hp_before": 3,
+            "target": "Rival",
+            "time": 7.5,
+            "viewport_contains_center": true,
+            "visual_bounds_ray_hit": true
+          },
+          {
+            "first_ray_collider": "Rival",
+            "hp_after": 1,
+            "hp_before": 2,
+            "target": "Rival",
+            "time": 9.199999809265137,
+            "viewport_contains_center": true,
+            "visual_bounds_ray_hit": true
+          }
+        ],
+        "intentional_miss_count": 0,
+        "off_aim_damage": [],
+        "shot_count": 2
+      },
+      "failure": null,
+      "final_game_accepted": false,
+      "passed": true,
+      "scope": "aligned"
+    },
+    "integrated_driving": {
+      "facts": {
+        "damage_event_meaning": "Enemy attacks reducing controlled player/vehicle health, not player shots.",
+        "damage_events": [
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 3.0601487159729004,
+            "mode": "foot",
+            "time": 4.0333333015441895
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 5.953707695007324,
+            "mode": "foot",
+            "time": 5.633333206176758
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 3.1870005130767822,
+            "mode": "foot",
+            "time": 7.333333492279053
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.987001419067383,
+            "mode": "foot",
+            "time": 8.899999618530273
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 3.9268178939819336,
+            "mode": "foot",
+            "time": 10.5
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 5.350204944610596,
+            "mode": "vehicle",
+            "time": 12.100000381469727
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 15.674999237060547,
+            "mode": "vehicle",
+            "time": 13.716666221618652
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 15.872397422790527,
+            "mode": "vehicle",
+            "time": 19.066667556762695
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 14.25549030303955,
+            "mode": "vehicle",
+            "time": 20.683332443237305
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 12.655343055725098,
+            "mode": "vehicle",
+            "time": 22.28333282470703
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 11.055277824401855,
+            "mode": "vehicle",
+            "time": 23.883333206176758
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 1.8522812128067017,
+            "mode": "foot",
+            "time": 37.63333511352539
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 2.924738883972168,
+            "mode": "foot",
+            "time": 39.233333587646484
+          },
+          {
+            "blocked": false,
+            "collider": "Player",
+            "distance": 4.837163925170898,
+            "mode": "foot",
+            "time": 40.93333435058594
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 6.390557289123535,
+            "mode": "vehicle",
+            "time": 42.53333282470703
+          },
+          {
+            "blocked": false,
+            "collider": "Vehicle",
+            "distance": 14.298355102539062,
+            "mode": "vehicle",
+            "time": 44.13333511352539
+          }
+        ],
+        "escape_samples": [
+          {
+            "distance": 18.62541389465332,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 14.149999618530273
+          },
+          {
+            "distance": 19.314682006835938,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 14.25
+          },
+          {
+            "distance": 20.004501342773438,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 14.350000381469727
+          },
+          {
+            "distance": 20.409120559692383,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 14.466666221618652
+          },
+          {
+            "distance": 20.33388328552246,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 14.566666603088379
+          },
+          {
+            "distance": 20.27201271057129,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 14.666666984558105
+          },
+          {
+            "distance": 20.158241271972656,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 14.783333778381348
+          },
+          {
+            "distance": 20.041099548339844,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 14.899999618530273
+          },
+          {
+            "distance": 19.940765380859375,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 15
+          },
+          {
+            "distance": 19.84056282043457,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 15.100000381469727
+          },
+          {
+            "distance": 19.72376823425293,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 15.216666221618652
+          },
+          {
+            "distance": 19.623701095581055,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 15.316666603088379
+          },
+          {
+            "distance": 19.52364158630371,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 15.416666984558105
+          },
+          {
+            "distance": 19.406909942626953,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 15.533333778381348
+          },
+          {
+            "distance": 19.29018211364746,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 15.649999618530273
+          },
+          {
+            "distance": 19.19013023376465,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 15.75
+          },
+          {
+            "distance": 19.090078353881836,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 15.850000381469727
+          },
+          {
+            "distance": 18.973350524902344,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 15.966666221618652
+          },
+          {
+            "distance": 18.8732967376709,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 16.066667556762695
+          },
+          {
+            "distance": 18.75657081604004,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 16.183332443237305
+          },
+          {
+            "distance": 18.656522750854492,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 16.28333282470703
+          },
+          {
+            "distance": 18.556476593017578,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 16.383333206176758
+          },
+          {
+            "distance": 18.456432342529297,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 16.483333587646484
+          },
+          {
+            "distance": 18.35638999938965,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 16.58333396911621
+          },
+          {
+            "distance": 18.23967742919922,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 16.700000762939453
+          },
+          {
+            "distance": 18.122966766357422,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 16.816667556762695
+          },
+          {
+            "distance": 18.006261825561523,
+            "pursuit": 0,
+            "restarts": 0,
+            "time": 16.933332443237305
+          },
+          {
+            "distance": 18.278406143188477,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 44.83333206176758
+          },
+          {
+            "distance": 18.623371124267578,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 44.93333435058594
+          },
+          {
+            "distance": 18.909666061401367,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 45.03333282470703
+          },
+          {
+            "distance": 19.133710861206055,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 45.13333511352539
+          },
+          {
+            "distance": 19.296207427978516,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 45.233333587646484
+          },
+          {
+            "distance": 19.40060806274414,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 45.33333206176758
+          },
+          {
+            "distance": 19.462331771850586,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 45.43333435058594
+          },
+          {
+            "distance": 19.485990524291992,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 45.53333282470703
+          },
+          {
+            "distance": 19.470975875854492,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 45.63333511352539
+          },
+          {
+            "distance": 19.417274475097656,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 45.733333587646484
+          },
+          {
+            "distance": 19.328073501586914,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 45.83333206176758
+          },
+          {
+            "distance": 19.232990264892578,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 45.93333435058594
+          },
+          {
+            "distance": 19.180561065673828,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 46.03333282470703
+          },
+          {
+            "distance": 19.184207916259766,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 46.13333511352539
+          },
+          {
+            "distance": 19.240516662597656,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 46.233333587646484
+          },
+          {
+            "distance": 19.282686233520508,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 46.33333206176758
+          },
+          {
+            "distance": 19.288190841674805,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 46.43333435058594
+          },
+          {
+            "distance": 19.259235382080078,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 46.53333282470703
+          },
+          {
+            "distance": 19.191301345825195,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 46.63333511352539
+          },
+          {
+            "distance": 19.093690872192383,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 46.733333587646484
+          },
+          {
+            "distance": 18.992380142211914,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 46.83333206176758
+          },
+          {
+            "distance": 18.888530731201172,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 46.93333435058594
+          },
+          {
+            "distance": 18.784137725830078,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 47.03333282470703
+          },
+          {
+            "distance": 18.68224334716797,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 47.13333511352539
+          },
+          {
+            "distance": 18.582529067993164,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 47.233333587646484
+          },
+          {
+            "distance": 18.483211517333984,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 47.33333206176758
+          },
+          {
+            "distance": 18.38306427001953,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 47.43333435058594
+          },
+          {
+            "distance": 18.28234100341797,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 47.53333282470703
+          },
+          {
+            "distance": 18.182222366333008,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 47.63333511352539
+          },
+          {
+            "distance": 18.082744598388672,
+            "pursuit": 0,
+            "restarts": 1,
+            "time": 47.733333587646484
+          }
+        ],
+        "far_pursuit_levels": [
+          0
+        ],
+        "longest_continuous_escape_seconds": 2.9,
+        "maximum_vehicle_distance": 20.409120559692383,
+        "player_shot_rival_damage_events": [
+          {
+            "first_aim_collider": "Rival",
+            "hits_after": 1,
+            "hits_before": 0,
+            "keys": [
+              "Mouse0"
+            ],
+            "rival": "Rival",
+            "rival_hp_after": 2,
+            "rival_hp_before": 3,
+            "time": 7.5333333015441895
+          },
+          {
+            "first_aim_collider": "Rival",
+            "hits_after": 2,
+            "hits_before": 1,
+            "keys": [
+              "Mouse0"
+            ],
+            "rival": "Rival",
+            "rival_hp_after": 1,
+            "rival_hp_before": 2,
+            "time": 9.216666221618652
+          }
+        ],
+        "pursuit_transitions": [
+          {
+            "actor_distance": 2.9772512912750244,
+            "level": 0,
+            "mode": "foot",
+            "restarts": 0,
+            "time": 0.01666666753590107
+          },
+          {
+            "actor_distance": 3.0601487159729004,
+            "level": 3,
+            "mode": "foot",
+            "restarts": 0,
+            "time": 4.0333333015441895
+          },
+          {
+            "actor_distance": 5.097860336303711,
+            "level": 2,
+            "mode": "foot",
+            "restarts": 0,
+            "time": 5.133333206176758
+          },
+          {
+            "actor_distance": 4.984659194946289,
+            "level": 3,
+            "mode": "foot",
+            "restarts": 0,
+            "time": 6.333333492279053
+          },
+          {
+            "actor_distance": 5.350204944610596,
+            "level": 2,
+            "mode": "vehicle",
+            "restarts": 0,
+            "time": 12.100000381469727
+          },
+          {
+            "actor_distance": 10.549406051635742,
+            "level": 1,
+            "mode": "vehicle",
+            "restarts": 0,
+            "time": 12.966666221618652
+          },
+          {
+            "actor_distance": 18.62541389465332,
+            "level": 0,
+            "mode": "vehicle",
+            "restarts": 0,
+            "time": 14.149999618530273
+          },
+          {
+            "actor_distance": 17.906227111816406,
+            "level": 1,
+            "mode": "vehicle",
+            "restarts": 0,
+            "time": 17.03333282470703
+          },
+          {
+            "actor_distance": 9.905896186828613,
+            "level": 2,
+            "mode": "foot",
+            "restarts": 0,
+            "time": 25.383333206176758
+          },
+          {
+            "actor_distance": 4.972317218780518,
+            "level": 3,
+            "mode": "foot",
+            "restarts": 0,
+            "time": 30.316667556762695
+          },
+          {
+            "actor_distance": 2.974245548248291,
+            "level": 0,
+            "mode": "foot",
+            "restarts": 1,
+            "time": 32.03333282470703
+          },
+          {
+            "actor_distance": 2.856855869293213,
+            "level": 3,
+            "mode": "foot",
+            "restarts": 1,
+            "time": 36.03333282470703
+          },
+          {
+            "actor_distance": 5.058278560638428,
+            "level": 2,
+            "mode": "foot",
+            "restarts": 1,
+            "time": 41.13333511352539
+          },
+          {
+            "actor_distance": 4.969738483428955,
+            "level": 3,
+            "mode": "foot",
+            "restarts": 1,
+            "time": 41.233333587646484
+          },
+          {
+            "actor_distance": 7.081600189208984,
+            "level": 2,
+            "mode": "vehicle",
+            "restarts": 1,
+            "time": 41.53333282470703
+          },
+          {
+            "actor_distance": 10.199604034423828,
+            "level": 1,
+            "mode": "vehicle",
+            "restarts": 1,
+            "time": 43.53333282470703
+          },
+          {
+            "actor_distance": 18.278406143188477,
+            "level": 0,
+            "mode": "vehicle",
+            "restarts": 1,
+            "time": 44.83333206176758
+          },
+          {
+            "actor_distance": 17.98311424255371,
+            "level": 1,
+            "mode": "vehicle",
+            "restarts": 1,
+            "time": 47.83333206176758
+          },
+          {
+            "actor_distance": 2.974245548248291,
+            "level": 0,
+            "mode": "foot",
+            "restarts": 2,
+            "time": 49.03333282470703
+          }
+        ],
+        "required_continuous_escape_seconds": 2,
+        "rival_motion_during_driving": 4.472596586976809,
+        "visible_height_range": [
+          1.5699999332427979,
+          1.5699999332427979
+        ]
+      },
+      "failure": null,
+      "final_game_accepted": false,
+      "passed": true,
+      "scope": "driving"
+    },
+    "passed": true,
+    "performance_claim": "unqualified; shared renderer and capture overhead",
+    "player_displacement": 26.215,
+    "player_exit": 0,
+    "player_vertical_drop": 0.16,
+    "samples": 503,
+    "scope": "rough-whole-route",
+    "scoped_checks": [
+      "mission_complete",
+      "failure_retry",
+      "combat",
+      "pursuit",
+      "hud_audio"
+    ],
+    "scoped_facts": {
+      "audio_peak_rms": 0.20624493062496185,
+      "failure_retry": {
+        "failure_time": 30.08333396911621,
+        "reset_time": 32.03333282470703,
+        "retry_completion_time": 46.33333206176758
+      },
+      "mission_anchors": {
+        "away_seconds": 5.5333333015441895,
+        "closest_driving_approach": {
+          "collision_enabled": true,
+          "distance_xz_m": 0.6793398840213197,
+          "mission": "active",
+          "pad": [
+            1,
+            0.15000000596046448,
+            26
+          ],
+          "penetration_m": 0.0003800392150878906,
+          "restarts": 0,
+          "time": 14.149999618530273,
+          "vehicle": [
+            0.39391160011291504,
+            0.2586762607097626,
+            25.693145751953125
+          ]
+        },
+        "delivery_input_edges": [
+          {
+            "collision_enabled": true,
+            "distance_xz_m": 1.2084652978630757,
+            "mission": "complete",
+            "pad": [
+              1,
+              0.15000000596046448,
+              26
+            ],
+            "penetration_m": 0.0026426315307617188,
+            "restarts": 1,
+            "time": 46.33333206176758,
+            "vehicle": [
+              0.4866139888763428,
+              0.12424647808074951,
+              24.906005859375
+            ]
+          }
+        ],
+        "delivery_seconds": 46.33333206176758,
+        "failure": [],
+        "final_visual_acceptance": false,
+        "passed": true,
+        "pickup_seconds": 39.43333435058594,
+        "returned_seconds": 39.03333282470703,
+        "sample_count": 503,
+        "scope": "fixed-world-objectives-and-input-transitions"
+      },
+      "mission_states": [
+        "active",
+        "complete",
+        "failed"
+      ]
+    },
+    "stationary_grounded": true,
+    "vehicle_displacement": 20.134
+  },
+  "acceptance": {
+    "regressions": [
+      {
+        "test": "courier",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "failure-retry",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "motor",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "walk",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "world",
+        "passed": true,
+        "failure": null
+      }
+    ],
+    "fresh_local_critique": "pending",
+    "promoted": false
+  },
+  "visible_problems": [
+    "Delivery beacon obscures the coupe.",
+    "Camera crowds the facade and clips surrounding geometry.",
+    "Flat blockout architecture/materials, bare horizon and crude vehicle silhouette."
+  ],
+  "deadline_utc": "2026-10-08T06:33:12Z",
+  "live_queue": {
+    "round": "q0035-e5f1e32d",
+    "status": "running",
+    "stage": "integrated-regressions",
+    "activity": "unity-play",
+    "accepted_checkpoint": "c32cfeb7c512a1ce231eb2c7c29d9738c92ab004",
+    "remaining": "Five combat/aim regressions and fresh local review, then automatic advance to Chicago polish."
+  }
+}
