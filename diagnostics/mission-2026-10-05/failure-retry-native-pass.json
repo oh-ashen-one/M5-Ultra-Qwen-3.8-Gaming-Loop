@@ -1,0 +1,137 @@
+{
+  "passed": true,
+  "candidate_commit": "9eeda604c64be6da33e0f566c7e8bc523dbf8251",
+  "build_id": "382b061d6b32c1ff1993ea80a23a145abe3d1206f5a866825218423f2ccd1652",
+  "scope": "mission-failure-retry",
+  "failure": null,
+  "scoped_checks": [
+    "mission_complete",
+    "failure_retry"
+  ],
+  "scoped_facts": {
+    "failure_retry": {
+      "failure_time": 30.08333396911621,
+      "reset_time": 32.03333282470703,
+      "retry_completion_time": 46.33333206176758
+    },
+    "mission_anchors": {
+      "away_seconds": 36.63333511352539,
+      "closest_driving_approach": {
+        "collision_enabled": true,
+        "distance_xz_m": 1.0390332142236514,
+        "mission": "complete",
+        "pad": [
+          1.0,
+          0.15000000596046448,
+          26.0
+        ],
+        "penetration_m": 0.0,
+        "restarts": 1,
+        "time": 48.83333206176758,
+        "vehicle": [
+          0.47208529710769653,
+          0.17688506841659546,
+          25.105072021484375
+        ]
+      },
+      "delivery_input_edges": [
+        {
+          "collision_enabled": true,
+          "distance_xz_m": 1.2084652978630757,
+          "mission": "complete",
+          "pad": [
+            1.0,
+            0.15000000596046448,
+            26.0
+          ],
+          "penetration_m": 0.0026426315307617188,
+          "restarts": 1,
+          "time": 46.33333206176758,
+          "vehicle": [
+            0.4866139888763428,
+            0.12424647808074951,
+            24.906005859375
+          ]
+        }
+      ],
+      "delivery_seconds": 46.33333206176758,
+      "failure": [],
+      "final_visual_acceptance": false,
+      "passed": true,
+      "pickup_seconds": 39.43333435058594,
+      "returned_seconds": 39.03333282470703,
+      "sample_count": 503,
+      "scope": "fixed-world-objectives-and-input-transitions"
+    },
+    "mission_states": [
+      "active",
+      "complete",
+      "failed"
+    ]
+  },
+  "harness_sha256": "154ae3874ecdf0daa6819ee92d48f23d03c92974f6b5a8da243b0c385cb4c85f",
+  "duration": 52.0,
+  "frame_count": 9,
+  "evidence": "q0023-7c24fc89",
+  "verified_utc": "2026-10-05T18:55:02.720851+00:00",
+  "regressions": [
+    {
+      "evidence": "q0023-7c24fc89-regression-courier",
+      "passed": true,
+      "failure": null,
+      "scope": "connected-mission",
+      "candidate": "9eeda604c64be6da33e0f566c7e8bc523dbf8251"
+    },
+    {
+      "evidence": "q0023-7c24fc89-regression-motor",
+      "passed": true,
+      "failure": null,
+      "scope": "vehicle-collision-reset",
+      "candidate": "9eeda604c64be6da33e0f566c7e8bc523dbf8251"
+    },
+    {
+      "evidence": "q0023-7c24fc89-regression-walk",
+      "passed": true,
+      "failure": null,
+      "scope": "walking-regression",
+      "candidate": "9eeda604c64be6da33e0f566c7e8bc523dbf8251"
+    },
+    {
+      "evidence": "q0023-7c24fc89-regression-world",
+      "passed": true,
+      "failure": null,
+      "scope": "world-collision",
+      "candidate": "9eeda604c64be6da33e0f566c7e8bc523dbf8251"
+    }
+  ],
+  "actual_captures": [
+    {
+      "label": "failure",
+      "name": "frame-002.png",
+      "sha256": "1f6cd489a31a835d9446f195aeb3cabd784aae2b10f405cda589b6a8a6be9ae2",
+      "capture_utc": "2026-10-05T18:50:36.815680+00:00",
+      "replay_seconds": 31.0
+    },
+    {
+      "label": "reset",
+      "name": "frame-003.png",
+      "sha256": "9c7382824271e61f3042f49ba13a33dc26aa7495a6d0119f23a9fac2627d4cd4",
+      "capture_utc": "2026-10-05T18:50:38.574506+00:00",
+      "replay_seconds": 32.5
+    },
+    {
+      "label": "retry-complete",
+      "name": "frame-007.png",
+      "sha256": "a146dc041e478235588f998017a004fee383e53281fa7d7a3ad6c514ea00c784",
+      "capture_utc": "2026-10-05T18:50:55.117090+00:00",
+      "replay_seconds": 47.2
+    }
+  ],
+  "fresh_local_review": "in progress",
+  "final_visual_quality_accepted": false,
+  "visible_problems": [
+    "Blockout art and crude character",
+    "Flat materials and lighting",
+    "Oversized bright beacon obscures completion view"
+  ]
+}

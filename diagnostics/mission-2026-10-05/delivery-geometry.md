@@ -37,3 +37,20 @@ collision observations at delivery F edges. Replay validation rejects failure/re
 submissions without R followed by later interaction. The fixed project cap and
 individual failure protections remain unchanged. CPU tests qualify this controller
 change; a new native PASS is still required.
+
+## Recovery result, 18:55 UTC
+
+Local Qwen saved the three corrections as `9eeda60`. The current 30-second deadline
+was preserved. Native q0023 **passes**: actual failure at 30.08 s, ordinary R reset
+at 32.03 s, pickup at 39.43 s and completion at 46.33 s. At the successful F edge,
+the vehicle was X0.487/Z24.906, **1.21 m** from the pad at X1/Z26; collision was
+enabled and penetration was 0.0026 m.
+
+Walking, world collision, motor reset and the accepted courier replay all pass.
+The courier regression again delivers at 14.35 s and 1.19 m, reproducing the
+accepted route without loosening its reach. See [native evidence](failure-retry-native-pass.json).
+The source is published; fresh local visual review is running, so promotion is
+not yet claimed. Actual failure, reset and successful-retry frames from
+18:50:36–18:50:55 UTC are privately saved to Library for the owner's milestone
+update. The art remains a blockout with flat lighting and an oversized bright
+beacon. This scoped success does not establish final visual quality.
