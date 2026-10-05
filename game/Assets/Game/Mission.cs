@@ -258,36 +258,37 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
                 }
                 else if (stage == 1)
                 {
+                    // Delivery accepts either the car (drive onto the pad) or
+                    // the courier on foot (run the last metres in). Both are
+                    // real gameplay positions read from the live player/vehicle
+                    // transform; the threshold is wider for the car since it is
+                    // larger and harder to place exactly.
                     string mode = ReadStr("Mode");
-                    if (mode == "vehicle")
+                    Transform veh = typeof(LoopSignals).GetField("Vehicle", St).GetValue(null) as Transform;
+                    bool inCar = mode == "vehicle" && veh != null;
+                    Vector3 at = inCar ? veh.position : player.position;
+                    float dz = Vector2.Distance(new Vector2(at.x, at.z),
+                                                new Vector2(padPos.x, padPos.z));
+                    float thr = inCar ? 2.6f : 2.0f;
+                    if (dz <= thr)
                     {
-                        Transform veh = typeof(LoopSignals).GetField("Vehicle", St).GetValue(null) as Transform;
-                        if (veh != null)
+                        stage = 2;
+                        if (parcel != null) Destroy(parcel.gameObject);
+                        parcel = null;
+                        if (padRend != null)
                         {
-                            float dz = Vector2.Distance(
-                                new Vector2(veh.position.x, veh.position.z),
-                                new Vector2(padPos.x, padPos.z));
-                            if (dz <= 2.6f)
-                            {
-                                stage = 2;
-                                if (parcel != null) Destroy(parcel.gameObject);
-                                parcel = null;
-                                if (padRend != null)
-                                {
-                                    var m = padRend.sharedMaterial;
-                                    if (m != null) { m.color = Color.green; m.SetColor("_EmissionColor", Color.green); }
-                                }
-                                if (beaconRend != null)
-                                {
-                                    var m = beaconRend.sharedMaterial;
-                                    if (m != null) { m.color = Color.green; m.SetColor("_EmissionColor", Color.green); m.SetFloat("_Mode", 0); }
-                                }
-                                if (beacon != null)
-                                    beacon.localScale *= 1.8f;
-                                Set("MissionComplete", true);
-                                Set("Mission", "complete");
-                            }
+                            var m = padRend.sharedMaterial;
+                            if (m != null) { m.color = Color.green; m.SetColor("_EmissionColor", Color.green); }
                         }
+                        if (beaconRend != null)
+                        {
+                            var m = beaconRend.sharedMaterial;
+                            if (m != null) { m.color = Color.green; m.SetColor("_EmissionColor", Color.green); m.SetFloat("_Mode", 0); }
+                        }
+                        if (beacon != null)
+                            beacon.localScale *= 1.8f;
+                        Set("MissionComplete", true);
+                        Set("Mission", "complete");
                     }
                 }
             }

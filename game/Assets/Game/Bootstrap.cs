@@ -115,12 +115,12 @@ namespace ChicagoGame
             RenderSettings.fogColor = new Color(0.86f, 0.72f, 0.56f);
             RenderSettings.fogDensity = 0.010f;
 
-            // Warm sky / cool ground ambient so shadowed brick keeps colour and
-            // the scene never reads as flat grey.
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
-            RenderSettings.ambientSky = new Color(0.62f, 0.70f, 0.85f);
-            RenderSettings.ambientEquator = new Color(0.45f, 0.40f, 0.36f);
-            RenderSettings.ambientGround = new Color(0.22f, 0.19f, 0.16f);
+            // Warm hazy flat ambient so shadowed brick keeps colour and the scene
+            // never reads as flat grey. Unity 6 Built-in exposes only ambientLight
+            // (Flat) reliably; a warm dusk tone matches the sky glow behind the
+            // skyline and lifts the shadow interiors under the rowhouses.
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight = new Color(0.46f, 0.42f, 0.40f);
         }
 
         static void Set(string name, object value)
