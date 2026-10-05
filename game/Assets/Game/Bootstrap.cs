@@ -95,10 +95,32 @@ namespace ChicagoGame
             AudioFX.Install(rig.transform);
             HudStatus.Install(cam);
 
+            // Golden-hour Chicago key light: low warm sun casting long raking
+            // shadows across the brick rowhouses, matching the supplied visual
+            // target (autumn dusk, sky glow behind the skyline).
             var sun = new GameObject("Directional Light").AddComponent<Light>();
             sun.type = LightType.Directional;
-            sun.intensity = 1.1f;
-            sun.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
+            sun.intensity = 1.35f;
+            sun.color = new Color(1.0f, 0.82f, 0.60f);
+            sun.shadows = LightShadows.Soft;
+            sun.shadowStrength = 0.75f;
+            // Low elevation (~18 deg) for long shadows; azimuth down the block.
+            sun.transform.rotation = Quaternion.Euler(18f, -34f, 0f);
+
+            // Warm hazy dusk fog fades the far skyline into the sky glow so the
+            // tiled blocks dissolve like the reference photo instead of hard-
+            // ending at the tile boundary.
+            RenderSettings.fog = true;
+            RenderSettings.fogMode = FogMode.Exponential;
+            RenderSettings.fogColor = new Color(0.86f, 0.72f, 0.56f);
+            RenderSettings.fogDensity = 0.010f;
+
+            // Warm sky / cool ground ambient so shadowed brick keeps colour and
+            // the scene never reads as flat grey.
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
+            RenderSettings.ambientSky = new Color(0.62f, 0.70f, 0.85f);
+            RenderSettings.ambientEquator = new Color(0.45f, 0.40f, 0.36f);
+            RenderSettings.ambientGround = new Color(0.22f, 0.19f, 0.16f);
         }
 
         static void Set(string name, object value)

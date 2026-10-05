@@ -14,7 +14,10 @@ namespace ChicagoGame
         static readonly BindingFlags St = BindingFlags.Public | BindingFlags.Static;
         TextMesh tm;
         Renderer cardRend;
+        Transform barFill;          // scales horizontally with Health/100
+        TextMesh money;             // cash readout (matches reference top-right)
         int lastHp = -1, lastWanted = -1;
+        const float BAR_W = 0.50f;  // full-width bar in camera-space units
 
         public static void Install(Camera cam)
         {
