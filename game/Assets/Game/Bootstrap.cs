@@ -85,8 +85,9 @@ namespace ChicagoGame
             rig.AddComponent<AudioListener>();
             var cam = rig.AddComponent<Camera>();
             cam.nearClipPlane = 0.1f;
-            rig.transform.position = body.transform.position + new Vector3(0f, 3f, -4.5f);
-            rig.transform.rotation = Quaternion.Euler(15f, body.transform.eulerAngles.y, 0f);
+            cam.fieldOfView = 64f;
+            rig.transform.position = body.transform.position + new Vector3(0f, 3.1f, -5.2f);
+            rig.transform.rotation = Quaternion.Euler(10f, body.transform.eulerAngles.y, 0f);
             var follow = rig.AddComponent<Follow>(); follow.target = body.transform;
             if (coupe != null) VehicleInteraction.Install(body, coupe, follow);
             CourierMission.Install(body, cam);
@@ -142,15 +143,24 @@ namespace ChicagoGame
     public class Follow : MonoBehaviour
     {
         public Transform target;
-        public Vector3 offset = new Vector3(0f, 3.4f, 3.8f);
-        public float damping = 7f;
+        // Third-person BEHIND-the-target rig: negative Z keeps the camera on the
+        // courier's back so the forward route (parcel, coupe lane, green pad) is
+        // framed ahead instead of shoved to a corner or hidden behind the lens.
+        public Vector3 offset = new Vector3(0f, 3.1f, -5.2f);
+        public float damping = 8f;
+        public float lookAhead = 4.0f;
 
         void LateUpdate()
         {
             if (target == null) return;
-            var want = target.position + Quaternion.Euler(0f, target.eulerAngles.y, 0f) * offset;
+            var yaw = Quaternion.Euler(0f, target.eulerAngles.y, 0f);
+            var want = target.position + yaw * offset;
             transform.position = Vector3.Lerp(transform.position, want, Mathf.Clamp01(damping * Time.deltaTime));
-            transform.LookAt(target.position + Vector3.up * 1.2f);
+            // Aim slightly down the route so the horizon sits high and the
+            // destination (green pad / parcel) reads in the upper-centre frame
+            // while the hood stays near the bottom edge.
+            var look = target.position + Vector3.up * 1.1f + yaw * Vector3.forward * lookAhead;
+            transform.LookAt(look);
         }
     }
 }
