@@ -10,15 +10,28 @@ from loop_controller.core import Files,Halt,atomic,exclusive,now,read_json,sha
 from loop_controller.model import tool
 from loop_controller.runner import Runner,scenario_for
 
+def grounding_scenario():
+    scenario=scenario_for('foundation')
+    # Keep capture readback outside the stationary measurement window.
+    scenario['steps']=[{'start':4,'end':7,'keys':['W']},{'start':7,'end':8,'keys':['D']},
+                       {'start':8,'end':9,'keys':['S']},{'start':10,'end':14,'keys':['W']}]
+    scenario['captures']=[3.2,6,10,15]
+    return scenario
+
 def summarize(bundle):
     rows=[json.loads(l) for l in (bundle/'captures/trace.jsonl').read_text().splitlines()]
-    idle=[r for r in rows if .5<=r['time']<1.8 and not r.get('keys')]
+    idle=[r for r in rows if .5<=r['time']<3 and not r.get('keys')]
     objects=read_json(bundle/'captures/scene-transforms.json')['objects']
     streets=[o for o in objects if o['kind']=='renderer' and o['name'].startswith('Street/')]
+    visuals=[o for o in objects if o['kind']=='renderer' and o['name'].startswith('Player/')]
+    player_bounds=({'min':[min(o['boundsCenter'][i]-o['boundsSize'][i]/2 for o in visuals) for i in range(3)],
+                    'max':[max(o['boundsCenter'][i]+o['boundsSize'][i]/2 for o in visuals) for i in range(3)]}
+                   if visuals else None)
     colliders=[o for o in objects if o['kind']!='renderer']
     selected=sorted(streets,key=lambda o:o['boundsSize'][0]*o['boundsSize'][2],reverse=True)[:4]
     result={'stationary_samples':len(idle),'stationary_first':idle[0] if idle else None,
-            'stationary_last':idle[-1] if idle else None,'colliders':colliders,'largest_street_renderers':selected}
+            'stationary_last':idle[-1] if idle else None,'colliders':colliders,'largest_street_renderers':selected,
+            'player_visual_bounds':player_bounds}
     result['stationary_grounded']=bool(len(idle)>=6 and all(r.get('hasController') for r in idle)
         and sum(bool(r.get('grounded')) for r in idle)/len(idle)>=.8
         and max(r['player'][1] for r in idle)-min(r['player'][1] for r in idle)<.15
@@ -38,13 +51,13 @@ def main():
     def stop(*_):raise Halt('Original recovery deadline or explicit stop reached')
     signal.signal(signal.SIGALRM,stop);signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop);signal.alarm(remaining)
     with exclusive(a.run_dir/'controller.lock'):
-        s.set(controller_pid=os.getpid(),status='running',stage='transform-probe',transform_probe_started_utc=now())
+        s.set(controller_pid=os.getpid(),status='running',blocker=None,stage='transform-probe',transform_probe_started_utc=now())
         s.event('cloud-infrastructure-intervention',action='Parent-requested read-only world transform probe and local correction',deadline_unchanged=True)
         try:
             r.recover();s.set(stage='transform-probe');s.report()
             candidate=r.checkpoint_source('Preserve local source before world-transform inspection')
             before=a.run_dir/'evidence/transform-probe-before'
-            gate=r.engines.unity(r.project,before,scenario_for('foundation'),candidate)
+            gate=r.engines.unity(r.project,before,grounding_scenario(),candidate)
             if gate.get('compile_errors') or not (before/'captures/scene-transforms.json').exists():raise Halt('Native transform inspection did not complete')
             observed=summarize(before);atomic(before/'world-observations.json',observed)
             files=Files(r.project,s);path='Assets/Game/Bootstrap.cs';source=files.read(path,line_count=300);expected=source['sha256']
@@ -61,7 +74,7 @@ def main():
                 prompt,[tool('edit_bootstrap','Replace the supplied file; exact original hash is enforced by the controller.',{'content':{'type':'string'}})],{'edit_bootstrap':edit},turns=1)
             if sha((r.project/path).read_bytes())==expected:raise Halt('Measured grounding request saved no change; inspect finish/tool metadata')
             candidate=r.checkpoint_source('Local Qwen: repair measured grounding and street framing')
-            after=a.run_dir/'evidence/transform-probe-after';gate=r.engines.unity(r.project,after,scenario_for('foundation'),candidate)
+            after=a.run_dir/'evidence/transform-probe-after';gate=r.engines.unity(r.project,after,grounding_scenario(),candidate)
             observed=summarize(after) if (after/'captures/scene-transforms.json').exists() else {'stationary_grounded':False}
             atomic(after/'world-observations.json',observed)
             gate['stationary_grounded']=observed['stationary_grounded']

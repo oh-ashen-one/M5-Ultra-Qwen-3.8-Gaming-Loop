@@ -15,6 +15,7 @@ from loop_controller.core import Files, Halt, Store, atomic, failure_key, seal, 
 from loop_controller.adapters import evaluate_runtime, sandbox_profile
 from loop_controller.model import conservative_prompt_bound, tool, typed_arguments
 from loop_controller.runner import Runner, git, scenario_for
+from inspect_and_repair_grounding import summarize, grounding_scenario
 
 
 class ControllerTests(unittest.TestCase):
@@ -27,6 +28,22 @@ class ControllerTests(unittest.TestCase):
 
     def tearDown(self):
         self.store.db.close();self.tmp.cleanup()
+
+    def test_stationary_preflight_rejects_unstable_scaled_or_tilted_physics(self):
+        bundle=self.root/'observed';capture=bundle/'captures';capture.mkdir(parents=True)
+        atomic(capture/'scene-transforms.json',{'objects':[]})
+        base=[dict(time=.6+i*.1,keys=[],player=[0,1,0],hasController=True,grounded=True,
+                   playerScale=[1,1,1],playerUp=[0,1,0]) for i in range(12)]
+        cases=[{}, {'grounded':False},{'playerScale':[100,100,100]},{'playerUp':[0,0,-1]}]
+        for fields in cases:
+            (capture/'trace.jsonl').write_text('\n'.join(json.dumps({**r,**fields}) for r in base))
+            self.assertEqual(summarize(bundle)['stationary_grounded'],not fields)
+        falling=[{**r,'player':[0,1-i*.1,0]} for i,r in enumerate(base)]
+        (capture/'trace.jsonl').write_text('\n'.join(json.dumps(r) for r in falling))
+        self.assertFalse(summarize(bundle)['stationary_grounded'])
+        scenario=grounding_scenario()
+        self.assertGreaterEqual(min(s['start'] for s in scenario['steps']),4)
+        self.assertGreater(min(scenario['captures']),3)
 
     def test_edit_escape_and_protected_paths_are_rejected(self):
         for name in ("../state.sqlite3","/tmp/escape.cs","Assets/Editor/Cheat.cs","Packages/manifest.json",".git/config","Assets/Game/../bad.cs"):
