@@ -48,6 +48,8 @@ class DirectRunner(Runner):
         prompt=('Implement this measured, already-selected task and SAVE through the tool now. Thinking is enabled at low effort. '
                 'Do not re-plan the game. No new art, assets, cameras, acceptance changes or physics changes outside the stated task. '
                 'Preserve all unselected code. The next response should be a complete tool call. '
+                'Input API: LoopInput.Pressed(KeyCode) is edge-triggered; Held(KeyCode), MoveX and MoveY also exist. '
+                'There are no per-key E/W/S properties.\n'
                 f'Maximum {max_lines} replacement/new-file lines.\nTASK:\n'+goal+
                 '\nEXACT SELECTED SPAN:\n'+selected+'\nCURRENT BOOTSTRAP CONTEXT:\n'+context)
         if ident=='vehicle-install':
@@ -68,6 +70,17 @@ class DirectRunner(Runner):
             self.store.event('local-proposal-recovered',original_session='corridor-direct',lines=15,
                 exact_tool_payload=True,new_inference=False,hash_check_preserved=True)
             self.store.set(recover_local_proposal=False)
+        elif ident=='vehicle-module' and self.store.get('recover_vehicle_proposal'):
+            response=read_json(self.store.root/'private/sessions/vehicle-module-direct/response-000.json')
+            calls=response['choices'][0]['message'].get('tool_calls',[])
+            if len(calls)!=1 or calls[0]['function']['name']!='edit_selected_span':raise Halt('Expected one local module proposal')
+            fields=typed_arguments(calls[0]['function'],[schema])
+            if len(fields['content'].splitlines())!=92 or len(fields['content'].encode())!=3659:
+                raise Halt('Recovery applies only to the diagnosed submitted vehicle module')
+            outcome=files.create('vehicle-recover-local-proposal',path,fields['content'])
+            self.store.event('local-proposal-recovered',original_session='vehicle-module-direct',lines=92,
+                exact_tool_payload=True,new_inference=False,existing_file_protection=True)
+            self.store.set(recover_vehicle_proposal=False)
         else:
             outcome=self.model.session('builder',ident+'-direct',
                 'You are local Qwen, the substantive C# author. Save the one concrete mechanical edit first.',prompt,
@@ -151,6 +164,8 @@ class DirectRunner(Runner):
 
     def work(self):
         self.model.ready();self.guard()
+        if 'foundation-short-walk' in self.store.get('accepted_subfeatures',{}):
+            return self.vehicle()
         if self.store.get('repair_pavement_axis'):
             self.edit('corridor-axis',
                 'Change only this local-scale assignment. Actual native Pavement bounds are worldX0.140002,Y7,Z32 metres; '
@@ -167,6 +182,9 @@ class DirectRunner(Runner):
         if not coverage['passed']:raise Halt('Rendered pavement bounds do not cover the unchanged full route with clearance')
         review=self.scoped_review('foundation-short-walk',bundle,gate,coverage)
         self.milestone('foundation-short-walk',bundle,gate,review,coverage)
+        return self.vehicle()
+
+    def vehicle(self):
         self.edit('vehicle-module',
             'Create a small ChicagoGame.VehicleInteraction MonoBehaviour with public static Install(GameObject player, '
             'GameObject importedCoupe, Follow follow). It is called once after existing Follow setup. Implement ordinary LoopInput '
@@ -178,7 +196,13 @@ class DirectRunner(Runner):
             'and ground-respecting collision. Preserve original mesh/materials, no new art. This is an early entry/driving microtask, '
             'not finished vehicle physics, audio or final quality. No harness/replay detection or artificial telemetry. '
             'No public/private APIs outside Unity/LoopInput/LoopSignals and current game classes. Save a complete compact module.',
-            path='Assets/Game/VehicleInteraction.cs',max_lines=90)
+            path='Assets/Game/VehicleInteraction.cs',max_lines=120)
+        module=self.project/'Assets/Game/VehicleInteraction.cs'
+        if 'bool e = LoopInput.E;' in module.read_text():
+            self.edit('vehicle-input-api',
+                'Correct this one input read to use the actual edge-triggered LoopInput.Pressed(KeyCode) API for E. '
+                'LoopInput.E does not exist. Preserve all other module code; save one replacement line.',
+                anchor='bool e = LoopInput.E;',path='Assets/Game/VehicleInteraction.cs',max_lines=1)
         self.native('vehicle-module-walk-regression',grounding_scenario())
         self.edit('vehicle-install',
             'Preserve the existing Follow target assignment, then invoke the new VehicleInteraction.Install exactly once with '
@@ -203,10 +227,11 @@ def main():
     parser.add_argument('--authorize-bounded-continuation',action='store_true')
     parser.add_argument('--recover-local-proposal',action='store_true')
     parser.add_argument('--repair-pavement-axis',action='store_true')
+    parser.add_argument('--recover-vehicle-proposal',action='store_true')
     a=parser.parse_args()
     if not a.authorize_bounded_continuation:parser.error('Current parent authorization required')
     os.umask(0o077)
-    recovering=a.recover_local_proposal or a.repair_pavement_axis
+    recovering=a.recover_local_proposal or a.repair_pavement_axis or a.recover_vehicle_proposal
     if a.run_dir.exists() and not recovering:raise Halt('Fresh attempt requires a new ledger; preserve every previous run')
     old=read_json(a.previous_run/'status.json')
     if old.get('controller_pid') or old['status']!='paused':raise Halt('Previous sole owner must be stopped')
@@ -233,14 +258,19 @@ def main():
             if not latest.get('stationary_grounded') or latest['candidate_commit']!=s.get('source_checkpoint'):
                 raise Halt('Axis correction requires current native grounding evidence')
         started=s.get('started_epoch');deadline=s.get('attempt_deadline_epoch')
-        if time.time()>=min(deadline,started+1200):raise Halt('Original fresh-attempt bounds expired')
+        if time.time()>=min(deadline,s.get('last_verified_progress_epoch',started)+1200):raise Halt('Original fresh-attempt bounds expired')
+        if a.recover_vehicle_proposal and 'foundation-short-walk' not in s.get('accepted_subfeatures',{}):
+            raise Halt('Vehicle work requires the verified limited foundation')
         s.set(recover_local_proposal=a.recover_local_proposal,repair_pavement_axis=a.repair_pavement_axis,
+              recover_vehicle_proposal=a.recover_vehicle_proposal,
               controller_pid=os.getpid(),status='running',blocker=None)
-        s.event('bounded-diagnosed-recovery',reason=('Measured native pavement axes require one scale assignment' if a.repair_pavement_axis
+        s.event('bounded-diagnosed-recovery',reason=('Exact92-line local vehicle proposal plus one measured input API correction' if a.recover_vehicle_proposal else 'Measured native pavement axes require one scale assignment' if a.repair_pavement_axis
                 else 'Exact local tool proposal has15lines; allow16 preserving hash and source scope'),
                 original_deadline_unchanged=True,original_inference_record_unchanged=True)
         if a.repair_pavement_axis:
             bounds=s.get('bounds');bounds['diagnosed_axis_correction_edits']=1;s.set(bounds=bounds)
+        if a.recover_vehicle_proposal:
+            bounds=s.get('bounds');bounds['diagnosed_input_api_edits']=1;s.set(bounds=bounds)
     else:s.set(started_epoch=started,started_utc=now(),attempt_deadline_epoch=deadline,
           overall_deadline_epoch=old['overall_deadline_epoch'],previous_run=a.previous_run.name,
           previous_record_sha256=hashes,source_checkpoint=known['candidate_commit'],
