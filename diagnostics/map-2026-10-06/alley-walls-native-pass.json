@@ -1,0 +1,54 @@
+{
+  "observed_utc": "2026-10-06T06:53:06.344096+00:00",
+  "candidate": "ab3a64ef8cb3511dc02ab3c31a88162f6efe76f9",
+  "build_id": "a6d75c6f4d50bc27ecf8fe15e95ca2149e3b81608257582a6893f8cd2a49b796",
+  "native_round": "q0072-b5de47c6",
+  "traversal": {
+    "foot": {
+      "outside_m": 6.533334732055664,
+      "return_seconds": 15.966666221618652
+    },
+    "vehicle": {
+      "outside_m": 13.76791000366211,
+      "return_seconds": 33.63333511352539
+    }
+  },
+  "rendered_walking_support": {
+    "samples": 188,
+    "uncovered": 0
+  },
+  "current_regressions": "In progress; four passed at observation time",
+  "fresh_critic": "Pending at observation time",
+  "promoted": false,
+  "accepted_checkpoint": "d269dc43ac66c39afca4cb98ea53f9e7ed36806f",
+  "cloud_pixel_review": {
+    "progress": "Defined entrance, matching asphalt and visible enclosing walls replace the bare exterior.",
+    "remaining": [
+      "Large plain walls dominate the alley.",
+      "Shadowed walking character is difficult to see.",
+      "Interior captures face the end wall; the return route needs clearer visual guidance."
+    ],
+    "next_focus": "Readable lighting and route, then limited modular wall/scenery detail while preserving gameplay."
+  },
+  "captures": [
+    {
+      "frame": "frame-000.png",
+      "capture_utc": "2026-10-06T06:49:02.014474+00:00",
+      "sha256": "6b29e3ac77a1ab2801fc0b5c79f9fff5c70d80071199b47d4ad15cadc57c84e6",
+      "replay_seconds": 8.58125
+    },
+    {
+      "frame": "frame-002.png",
+      "capture_utc": "2026-10-06T06:49:08.025861+00:00",
+      "sha256": "47c62609b20bc43391cd5e2fc3e656c4d47815311e9ff017d5d1fa07c39d7be7",
+      "replay_seconds": 13.69791
+    },
+    {
+      "frame": "frame-006.png",
+      "capture_utc": "2026-10-06T06:49:24.666399+00:00",
+      "sha256": "23e7ea4e6294adcffada113478491ce448aacb543e44de587c6c8a71b10d6ed9",
+      "replay_seconds": 27.84647
+    }
+  ],
+  "hard_cap_utc": "2026-10-08T06:33:12+00:00"
+}
