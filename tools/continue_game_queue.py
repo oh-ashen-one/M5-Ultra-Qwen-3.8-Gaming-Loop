@@ -52,7 +52,14 @@ def review_captures(task,bundle):
                 if (abs(near['time']-when)<=.25 and near.get('mode')==mode
                         and near.get(key) and outside_distance(near[key])>=6):
                     selected.append(frame);break
-        chosen=sorted(set([frames[0],*selected,frames[-1]]))
+        junction=[]
+        for frame in frames:
+            when=scenario['captures'][int(frame.stem.split('-')[-1])]
+            near=min(rows,key=lambda row:abs(row['time']-when))
+            if (abs(near['time']-when)<=.25 and near.get('mode')=='foot' and near.get('player')
+                    and 0<outside_distance(near['player'])<=2):
+                junction=[frame];break
+        chosen=sorted(set([frames[0],*junction,*selected,frames[-1]]))
     if 'mission_complete' in task.get('checks',[]) and trace.exists():
         rows=[json.loads(line) for line in trace.read_text().splitlines()]
         observed=[]

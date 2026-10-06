@@ -1,0 +1,72 @@
+{
+  "observed_utc": "2026-10-06T07:13:00.893578+00:00",
+  "review": {
+    "fixes": [
+      "Light the new extension so its pavement is visibly legible: in both outside captures (t=12.90 and t=26.85) the alley floor is near-black and curbs/edges are indistinguishable. Add a modest fill light, raise ambient/indirect contribution, or use a slightly lighter asphalt albedo in the X 6-22 zone while keeping the golden-hour mood, so 'support surfaces visibly rendered' reads on camera, not just in the collider probe.",
+      "Make the east junction (opening at X≈6, Z 8-20) legible from the corridor side: none of the four captures shows the connector mouth. Reuse existing original meshes (bollards, lamp, dumpster) to frame the opening and mark the transition from corridor road_asphalt to alley pavement, so the junction reads as an intentional side-alley entrance rather than a dead-end corner.",
+      "Populate the alley with 2-3 existing street/prop assets (e.g., tire stack, dumpster, bollard row, like the corridor's) and confirm the pavement depth beyond ~14 m (mesh extends to X=22 while observed traversal only reached 13.77 m) is either bounded by a collidable building/closed end or clearly purposeful, so the extension looks compact and coherent instead of an empty void.",
+      "Optional trace strengthening: capture one frame at the junction boundary (X just past 6, e.g., around t=10-11 walking and t=24-25 driving) so the out-and-back evidence visually includes the old-boundary crossing, not only the far corner."
+    ],
+    "ok": true,
+    "summary": "The connected extension is functionally correct: foot traversal reached 6.53 m beyond the old X=6 boundary (15 outside samples, ~1.6 s) and returned by ~16 s; the driven leg reached 13.77 m beyond (48 outside samples, ~5 s) and returned inside by ~33.6 s, all within budget and with no R reset during either leg. The new AlleyPavement/road_asphalt surfaces are rendered meshes with 0/188 uncovered support probes, stationary opening is grounded, and all regressions (walk, world-collision, motor, courier, failure-retry, combat-foot/wall/driving, aim tests) pass. The MISSION FAILED banner in frame-008 is the expected result of the traversal script consuming the courier timer, not a regression. However, with polish/design enabled the captures fail the visual half of the scope: both outside frames (t=12.90 walking, t=26.85 driving) show the connector as a near-black, empty corner where pavement, curbs, and walls are barely legible, the junction itself is never shown, and the alley lacks any props relative to the furnished old corridor. Mechanical PASS does not establish the target quality, so this is a partial pass requiring polish fixes.",
+    "verdict": "FIX"
+  },
+  "review_file_utc": "2026-10-06T07:00:47.051483+00:00",
+  "regressions": [
+    {
+      "test": "walk",
+      "passed": true,
+      "build_id": "807d1ebb0002ea590075803cd930d5325047ed1b24187c00e92f46298973877e"
+    },
+    {
+      "test": "world",
+      "passed": true,
+      "build_id": "a467cc0d04ae7f12bc6021757e5a6b2ff9bbc3f6e2544be207b07ac80204e1ef"
+    },
+    {
+      "test": "motor",
+      "passed": true,
+      "build_id": "cbd7d9bf8e7c23edf08fa9bad1ddc1b529199d340819967de0c0131f1aa52aa0"
+    },
+    {
+      "test": "courier",
+      "passed": true,
+      "build_id": "226c7f2f36231d4ceeda24f3a79b433bea5d5f3e0f78b57d3bdca80784b7109b"
+    },
+    {
+      "test": "failure-retry",
+      "passed": true,
+      "build_id": "e7048d3a399924412cf77dcd2a1338eafb29be575e57a3827a8b203672a123ac"
+    },
+    {
+      "test": "combat-foot",
+      "passed": true,
+      "build_id": "55647a16b7c6530a65a31543bbe5c8aeb0b38c4d10563e4504b3ee2363fa84fe"
+    },
+    {
+      "test": "combat-wall",
+      "passed": true,
+      "build_id": "a6016e7343c44bfcadbb633e32e43df802dc3fe018f63d9f4a136d44170f40c1"
+    },
+    {
+      "test": "combat-driving",
+      "passed": true,
+      "build_id": "a17901178d85be2e9205f1510a7addb9f5a76be605ca1c32fe1c5a3917595e78"
+    },
+    {
+      "test": "aim-miss",
+      "passed": true,
+      "build_id": "2cc2185de8ab53d5de50b2d5c79e1263b99d017eb0e2a41cfd1eb54dd878dbcd"
+    },
+    {
+      "test": "aim-near-cover",
+      "passed": true,
+      "build_id": "1e3862123ede0419883130c5a6099239d41e220abe092a483af2785e31492931"
+    }
+  ],
+  "candidate": "ab3a64ef8cb3511dc02ab3c31a88162f6efe76f9",
+  "promoted": false,
+  "accepted_checkpoint": "d269dc43ac66c39afca4cb98ea53f9e7ed36806f",
+  "preserved_fallback": "340c32fc550e123f5bf73e605ce0a6d3a47c7e2b",
+  "next_scope": "Local fill lighting, alley-only material readability, existing prop framing and closed service-door wall details; same physical replay with added observed junction captures."
+}
