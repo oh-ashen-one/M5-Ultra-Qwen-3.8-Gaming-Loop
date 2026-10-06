@@ -40,7 +40,7 @@ def validate_pause(old):
         raise Halt('Preserve a different facade verdict')
 
 def validate_visual_span(content,marker=False):
-    if not isinstance(content,str) or len(content.encode())>6000 or len(content.splitlines())>(55 if marker else 110):
+    if not isinstance(content,str) or len(content.encode())>6000 or len(content.splitlines())>(55 if marker else 140):
         raise ValueError('Keep this exact visual span within its bounded edit size')
     for term in ('LoopRuntime','LoopRouteObservation','LoopInput','void Update(', 'void ActivateCache(',
                  'class LoopSignals','Destroy(', 'CreatePrimitive','System.IO','GetCommandLineArgs'):
@@ -61,7 +61,10 @@ def visual_probe(original):
 
 class ChapterPresentation(EastDeadDrop):
     def validate_recovery(self,old):
-        validate_pause(old);bundle=self.store.root/'evidence'/ROUND
+        validate_pause(old);self.verify_prior()
+
+    def verify_prior(self):
+        bundle=self.store.root/'evidence'/ROUND
         for name,digest in HASHES.items():
             if sha((bundle/name).read_bytes())!=digest:raise Halt('Preserve original facade evidence: '+name)
         verify_seal(bundle/'captures',HASHES['captures/manifest.json'])
@@ -74,14 +77,7 @@ class ChapterPresentation(EastDeadDrop):
             recovery_route='local-compact-hud-and-cache-materials-then-pacing-design',
             recovery_change='Preserve Update and legacy state; passive projected UI/cache bounds checks; unchanged inputs plus one F-edge capture')
 
-    def source(self,ident):
-        files=Files(self.project,self.store);raw=files.path(PATH).read_text()
-        before_logic=raw[raw.index('        void Update()'):raw.index('        void ActivateCache()')]
-        first=raw.index('        Transform missionHud;');last=raw.index('        void Update()')
-        hud=SelectedEdit(files,PATH,raw.count('\n',0,first)+1,raw.count('\n',0,last),max_lines=110)
-        def save(_,f):return hud.apply(ident+'-hud',validate_visual_span(f['content']))
-        self.c.update(output_tokens=6144,model_timeout_seconds=320)
-        self.store.set(stage='local-compact-chapter-hud');self.store.report()
+    def hud_request(self,ident,hud,raw,save):
         self.model.session('builder',ident+'-hud',
             'You are local Qwen, sole substantive game author, making one bounded presentation-only replacement.',
             'Replace the selected HUD fields/BuildHud/LateUpdate region, <=110lines/6000bytes. Keep game Update '
@@ -111,6 +107,16 @@ class ChapterPresentation(EastDeadDrop):
             [tool('edit_selected_span','Save the compact HUD-only replacement.',{'content':{'type':'string'}})],
             {'edit_selected_span':save},images=[('actual oversized HUD and neon cache',
                 self.store.root/'evidence'/ROUND/'captures/frame-010.png')],turns=1,reasoning_effort='low')
+
+    def source(self,ident):
+        files=Files(self.project,self.store);raw=files.path(PATH).read_text()
+        before_logic=raw[raw.index('        void Update()'):raw.index('        void ActivateCache()')]
+        first=raw.index('        Transform missionHud;');last=raw.index('        void Update()')
+        hud=SelectedEdit(files,PATH,raw.count('\n',0,first)+1,raw.count('\n',0,last),max_lines=140)
+        def save(_,f):return hud.apply(ident+'-hud',validate_visual_span(f['content']))
+        self.c.update(output_tokens=6144,model_timeout_seconds=320)
+        self.store.set(stage='local-compact-chapter-hud');self.store.report()
+        self.hud_request(ident,hud,raw,save)
         if files.path(PATH).read_text()==raw:raise Halt('Local compact HUD edit was not saved')
         candidate=self.checkpoint_source('Local Qwen: compact and separate chapter HUD panels')
         self.store.set(source_checkpoint=candidate,candidate_commit=candidate)

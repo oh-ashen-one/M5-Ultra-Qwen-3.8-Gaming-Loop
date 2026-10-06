@@ -50,6 +50,22 @@ class ChapterPresentationTests(unittest.TestCase):
         self.assertEqual(old,before);self.assertEqual(new['steps'],old['steps']);self.assertEqual(new['duration'],old['duration'])
         self.assertEqual(new['captures'],[3,31,32.55,33,35])
 
+    def test_only_hash_pinned_complete_hud_can_be_recovered_inside_visual_bound(self):
+        import json
+        from unittest.mock import patch
+        from loop_controller.core import sha
+        import resume_saved_compact_hud as saved
+        content='// local visual line\n'*130
+        value={'choices':[{'finish_reason':'tool_calls','message':{'tool_calls':[
+            {'function':{'name':'edit_selected_span','arguments':json.dumps({'content':content})}}]}}]}
+        raw=json.dumps(value).encode()
+        with patch.object(saved,'RESPONSE_SHA',sha(raw)):
+            self.assertEqual(saved.saved_proposal(raw),content)
+            with self.assertRaises(Halt):saved.saved_proposal(raw+b' ')
+        value['choices'][0]['finish_reason']='length';raw=json.dumps(value).encode()
+        with patch.object(saved,'RESPONSE_SHA',sha(raw)),self.assertRaises(Halt):saved.saved_proposal(raw)
+        with self.assertRaises(ValueError):validate_visual_span('// line\n'*141)
+
     def test_scope_resume_preserves_exact_baseline_budget_and_prior_verdict(self):
         state=dict(source_checkpoint=SOURCE,last_playable_checkpoint=ACCEPTED,current_round=ROUND,
             task_index=7,task_failures=24,failure_streak=1,diagnosis_used=True,second_street_attempts=4,
