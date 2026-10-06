@@ -1,0 +1,74 @@
+{
+  "accepted_utc": "2026-10-06T02:45:14.283782+00:00",
+  "camera_clearance": {
+    "acceptance_fixture": "camera-clearance",
+    "build_id": "07ace4dff43abb3923d8a857399bf489356832b6f3a24855e1f4974f5f8ed3d8",
+    "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+    "evidence": "evidence/camera-floor-ffe6fdbe-walls",
+    "failure": [],
+    "final_game_accepted": false,
+    "passed": true,
+    "phases": [
+      {
+        "camera_beyond_wall_samples": 0,
+        "camera_inside_samples": 0,
+        "camera_inside_world_samples": 0,
+        "legacy_endpoint_predicate_samples": 0,
+        "minimum_actor_samples_in_frame": 2,
+        "minimum_actor_samples_unobstructed": 2,
+        "near_plane_intersection_samples": 0,
+        "phase": "near",
+        "probe_distance_max": 0.6499999165534973,
+        "probe_distance_min": 0.6499999165534973,
+        "samples": 15
+      },
+      {
+        "camera_beyond_wall_samples": 0,
+        "camera_inside_samples": 0,
+        "camera_inside_world_samples": 0,
+        "legacy_endpoint_predicate_samples": 0,
+        "minimum_actor_samples_in_frame": 9,
+        "minimum_actor_samples_unobstructed": 5,
+        "near_plane_intersection_samples": 0,
+        "phase": "middle",
+        "probe_distance_max": 3.0,
+        "probe_distance_min": 3.0,
+        "samples": 14
+      },
+      {
+        "camera_beyond_wall_samples": 0,
+        "camera_inside_samples": 0,
+        "camera_inside_world_samples": 0,
+        "legacy_endpoint_predicate_samples": 14,
+        "minimum_actor_samples_in_frame": 9,
+        "minimum_actor_samples_unobstructed": 5,
+        "near_plane_intersection_samples": 0,
+        "phase": "endpoint",
+        "probe_distance_max": 5.403923511505127,
+        "probe_distance_min": 5.403923511505127,
+        "samples": 14
+      }
+    ],
+    "scope": "disposable-camera-clearance-diagnostic",
+    "visibility_note": "At least one actor bounds sample must remain visible and camera must be outside foreign colliders; useful framing still needs actual images"
+  },
+  "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+  "capture_manifest_sha256": "3442598cda2cea0ad3b00f5d0f97e40db76a46f0e7188a5e8dee36949f11e3ba",
+  "evidence": "evidence/q0047-bdab27ce",
+  "final_game_accepted": false,
+  "focus": {
+    "decision": "Measured camera collision repair and unobstructed beacon/car view"
+  },
+  "review": {
+    "fixes": [
+      "Player actor (after-spawn.png, after-near.png): the courier reads as a floating gray box torso with stubby arms, a tiny brown head, and no distinct legs — add leg/foot geometry contacting the sidewalk, defined shoulders, and a larger head so the character silhouette reads at chase distance.",
+      "Blue coupe shape (after-drive.png, after-near.png): the body is stacked disconnected slabs (roof, trunk lid, bumper) with dark wheels partly swallowed by the body and flat red taillight quads floating on the rear; rebuild as one hood-to-trunk volume with a tapered nose, wheel arches, and inset taillights.",
+      "Sidewalk composition (after-near.png): near-black boxes crowd the bottom-left and bottom-right corners and a lone pale post/hydrant sits mid-walk; snap props to a consistent sidewalk grid, delete the intruding dark cubes, and keep the camera corridor and framing clean.",
+      "World edge / horizon (before-drive.png, after-drive.png, after-spawn.png): the street dissolves into an infinite flat tan plane at the horizon; add distant skyline massing or an aerial-fog band to hide the playfield boundary.",
+      "Beacon and parcel finish (after-drive.png, after-spawn.png): the beam is a hard-edged additive slab that still grazes the right taillight — taper it, soften the base ring, and nudge it right so it never overlaps the vehicle outline; give the yellow parcel a contact shadow or low pedestal instead of hovering. "
+    ],
+    "ok": true,
+    "summary": "The beacon fix is confirmed in actual images. At the identical accepted replay t15.5, before-drive.png shows the tall green beam swallowing the blue coupe, while after-drive.png shows the car fully readable (roofline, rear window, both taillights) with the beam reduced to a thin sliver at the car's right edge plus a ground patch — the exact failure is gone. At the identical disposable wall-fixture t6.5, before-near.png is an unusable blank gray wall-in-face, and after-near.png is a usable street view with the player, coupe, and objective lane clearly framed; diagnostics report 0 camera-inside and 0 near-plane-intersection samples across all phases, matching the images (no clipping pierces the frame). after-spawn.png shows a readable ordinary chase view: player on sidewalk, coupe and yellow parcel visible, HUD legible. All ten mechanics/regression checks pass independently, and displacement/anchor facts are consistent. Remaining issues are art-quality only and outside this camera/beacon scope; the fixture does not accept the game.",
+    "verdict": "PASS"
+  }
+}
