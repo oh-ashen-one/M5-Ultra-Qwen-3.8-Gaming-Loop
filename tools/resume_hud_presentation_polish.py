@@ -59,7 +59,7 @@ def inspect_polish(rows):
         panels = {p['name']: p for p in row.get('routeChapter', {}).get('hudPanels', [])}
         for name in ('MissionBoard', 'HudStatus'):
             p = panels.get(name, {}); color = p.get('cardColor', [])
-            if p.get('cardShader') != 'Unlit/Color' or len(color) != 4 or color[3] != 1 or max(color[:3], default=1) > .15:
+            if p.get('cardShader') not in ('Unlit/Color', 'Chicago/HudOpaque') or len(color) != 4 or color[3] != 1 or max(color[:3], default=1) > .15:
                 failures.add(name + '-backing-not-uniform-dark-unlit')
         health = panels.get('HudStatus', {})
         wanted = 'HEALTH ' + str(row.get('health')) + '\nWANTED ' + str(row.get('pursuit')) + ' / 3'

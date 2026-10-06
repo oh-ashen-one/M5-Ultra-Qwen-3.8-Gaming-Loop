@@ -169,6 +169,9 @@ class Machine:
                 atomic(lease_path,lease)
                 while child.poll() is None:
                     self.guard()
+                    runtime_errors = output / 'runtime-errors.txt'
+                    if label == 'unity-play' and runtime_errors.exists() and runtime_errors.stat().st_size:
+                        raise Halt('Native player reported runtime errors; evidence preserved')
                     if time.monotonic() > deadline:
                         raise Halt("Owned engine deadline exceeded: " + label)
                     self.store.report()
