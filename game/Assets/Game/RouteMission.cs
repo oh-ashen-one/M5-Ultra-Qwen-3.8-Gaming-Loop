@@ -38,6 +38,11 @@ namespace ChicagoGame
         bool missionCached;
         Transform card;
 
+        Transform missionCard;
+        Vector3 mcPos0 = Vector3.zero;
+        Vector3 mcScale0 = Vector3.one;
+        bool mcCached;
+
         Transform hudStatus;
         Vector3 hsPos0 = Vector3.zero;
         Vector3 hsScale0 = Vector3.one;
@@ -65,6 +70,14 @@ namespace ChicagoGame
                 missionPos0 = mh.transform.localPosition;
                 hudScale0 = mh.transform.localScale;
                 missionCached = true;
+                Transform mc = mh.transform.Find("HudCard");
+                if (mc != null)
+                {
+                    missionCard = mc;
+                    mcPos0 = mc.localPosition;
+                    mcScale0 = mc.localScale;
+                    mcCached = true;
+                }
             }
 
             Transform c = Find("HudCard");
@@ -74,7 +87,7 @@ namespace ChicagoGame
                 card = clone.transform;
                 card.localPosition = new Vector3(0f, -0.06f, 0.025f);
                 card.localRotation = Quaternion.identity;
-                card.localScale = new Vector3(1.75f, 0.23f, 0.01f);
+                card.localScale = new Vector3(1.40f, 0.23f, 0.01f);
                 var col = card.GetComponent<Collider>(); if (col != null) col.enabled = false;
             }
             if (card != null) card.gameObject.SetActive(false);
@@ -101,7 +114,7 @@ namespace ChicagoGame
             {
                 if (chapter)
                 {
-                    missionHud.localPosition = new Vector3(-1.05f, -0.70f, 1.6f);
+                    missionHud.localPosition = new Vector3(-0.68f, -0.70f, 1.6f);
                     missionHud.localScale = hudScale0 * 0.9f;
                 }
                 else
@@ -111,9 +124,23 @@ namespace ChicagoGame
                 }
             }
 
+            if (mcCached)
+            {
+                if (chapter)
+                {
+                    missionCard.localPosition = new Vector3(0f, -0.075f, 0.025f);
+                    missionCard.localScale = new Vector3(1.20f, 0.24f, 0.01f);
+                }
+                else
+                {
+                    missionCard.localPosition = mcPos0;
+                    missionCard.localScale = mcScale0;
+                }
+            }
+
             if (hsCached)
             {
-                if (chapter) hudStatus.localPosition = new Vector3(-1.55f, 0.85f, 1.6f);
+                if (chapter) hudStatus.localPosition = new Vector3(-1.20f, 0.85f, 1.6f);
                 else hudStatus.localPosition = hsPos0;
                 hudStatus.localScale = hsScale0;
             }
