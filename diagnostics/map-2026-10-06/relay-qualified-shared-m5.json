@@ -1,0 +1,83 @@
+{
+  "utc": "2026-10-06T16:18:39.850215+00:00",
+  "state": {
+    "status": "paused",
+    "controller_pid": null,
+    "owned_process": null,
+    "blocker": "Halt: Relay qualification recorded; continue measured gameplay and broad visual work under existing authority",
+    "source_checkpoint": "8ef71373663d49349ce8a74827b27e64036614e1",
+    "last_playable_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "task_failures": 24,
+    "failure_streak": 1,
+    "overall_deadline_epoch": 1791441192
+  },
+  "relay_outcome": {
+    "accepted": true,
+    "candidate": "8ef71373663d49349ce8a74827b27e64036614e1",
+    "evidence": "evidence/q0111-673150bb-positive",
+    "final_game_accepted": false,
+    "native_pass": true,
+    "review": {
+      "fixes": [],
+      "ok": true,
+      "summary": "The ordered relay passes its scoped mission_complete check. frame-004.png shows the numbered \"1\" prop at the north site with \"RELAY 1/3. 39s / 2 SOUTH 21m F\"; frame-005.png shows \"2\" with \"RELAY 2/3. 29s / 3 NORTHWEST 21m F\"; frame-006.png shows \"3\" with \"RELAY COMPLETE / Three relays online\". The trace confirms fresh, ordered, nearby foot F interactions at (53.6,26.0)\u2192(41.1,9.9)\u2192(28.6,26.0) matching the declared north/south/northwest sites, completed in 27.1s inside the 45s window, with correct countdown on HUD. The east dead-drop chapter-complete and delivery banners persist throughout, per spec. frame-008.png (post-reset, t=80.6) shows a fully reset courier start (HEALTH 100, yellow parcel objective, no relay HUD), confirming R resets. Separate red proofs (wrong-timeout case: wrong order then timeout/reset with no completion; inactive case: no activations or interactions) support wrong-order progress reset and that held/remote F cannot progress. HUD panels are adjacent without text overlap and no relay art floats or collides. The striped lower-window/transom artifacts remain a pre-existing open architecture item outside this scope; no route-choice or final-game claim is made.",
+      "verdict": "PASS",
+      "verified_capture_time_citations": {
+        "frame-004.png": 38.7,
+        "frame-008.png": 80.6
+      }
+    }
+  },
+  "regressions": [
+    {
+      "test": "walk",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "world",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "motor",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "courier",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "failure-retry",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "combat-foot",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "combat-wall",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "combat-driving",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "aim-miss",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "aim-near-cover",
+      "passed": true,
+      "failure": null
+    }
+  ]
+}
