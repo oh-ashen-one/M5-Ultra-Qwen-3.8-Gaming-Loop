@@ -90,6 +90,10 @@ namespace ChicagoGame
                     Quaternion.identity, new Vector3((SX1 - SX0) / 18f, 1f, 1f));
                 WorldColliders.PlaceFence(fenceSrc, parent, new Vector3(SX1 - 0.3f, 0f, (SZ0 + SZ1) * 0.5f),
                     Quaternion.Euler(0f, 90f, 0f), new Vector3((SZ1 - SZ0) / 18f, 1f, 1f));
+                // Interior junction north-outer corner (X22, Z20..28): close the
+                // west-nub visually so the X22 opening reads as a passage, not a void.
+                WorldColliders.PlaceFence(fenceSrc, parent, new Vector3(SX0 + 0.3f, 0f, (20f + SZ1) * 0.5f),
+                    Quaternion.Euler(0f, 90f, 0f), new Vector3((SZ1 - 20f) / 18f, 1f, 1f));
             }
 
             // --- Warm fill light so the longer street reads (no new art). ---
