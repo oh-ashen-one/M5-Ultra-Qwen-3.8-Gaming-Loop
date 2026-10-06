@@ -34,12 +34,12 @@ namespace ChicagoGame
             var card = GameObject.CreatePrimitive(PrimitiveType.Cube);
             card.name = "StatusCard";
             card.transform.SetParent(transform, false);
-            card.transform.localPosition = new Vector3(0.42f, -0.045f, 0.03f);
-            card.transform.localScale = new Vector3(0.92f, 0.15f, 0.01f);
+            card.transform.localPosition = new Vector3(0.26f, -0.065f, 0.03f);
+            card.transform.localScale = new Vector3(0.60f, 0.22f, 0.01f);
             var col = card.GetComponent<Collider>();
             if (col != null) Destroy(col);
-            var mat = new Material(Shader.Find("Standard"));
-            mat.color = new Color(0f, 0f, 0f, 0.72f);
+            var mat = new Material(Shader.Find("Unlit/Color"));
+            mat.color = new Color(0.06f, 0.07f, 0.085f, 1f);
             card.GetComponent<Renderer>().sharedMaterial = mat;
             cardRend = card.GetComponent<Renderer>();
 
