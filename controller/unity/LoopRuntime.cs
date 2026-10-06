@@ -25,6 +25,7 @@ public class LoopRuntime : MonoBehaviour
         public string[] visibleText;
         public LoopObservation.MissionObject[] missionObjects;
         public LoopCombatObservation.Rival[] rivals;
+        public LoopCameraObservation.Observation cameraGeometry;
     }
     [Serializable] public class ObjectObservation {
         public string name, kind; public float[] position, lossyScale, up, forward, boundsCenter, boundsSize;
@@ -76,6 +77,7 @@ public class LoopRuntime : MonoBehaviour
         gameObject.AddComponent<LoopInputPump>();
         gameObject.AddComponent<LoopAimObservation>();
         if(LoopInput.Replay != null && (LoopInput.Replay.fixture=="combat-wall" || LoopInput.Replay.fixture=="combat-near-cover")) gameObject.AddComponent<LoopCombatFixture>();
+        if(LoopInput.Replay != null && LoopInput.Replay.fixture=="camera-clearance") gameObject.AddComponent<LoopCameraFixture>();
     }
     void OnLog(string message, string stack, LogType type)
     {
@@ -119,7 +121,8 @@ public class LoopRuntime : MonoBehaviour
                 playerPenetration=LoopObservation.HorizontalPenetration(actor),
                 vehiclePenetration=LoopObservation.HorizontalPenetration(LoopSignals.Vehicle),
                 visibleText=LoopObservation.VisibleText(),audioRms=LoopObservation.AudioRms(),
-                missionObjects=LoopObservation.MissionObjects(actor),rivals=LoopCombatObservation.Capture()};
+                missionObjects=LoopObservation.MissionObjects(actor),rivals=LoopCombatObservation.Capture(),
+                cameraGeometry=LoopCameraObservation.Capture()};
             File.AppendAllText(Path.Combine(output, "trace.jsonl"), JsonUtility.ToJson(sample) + "\n"); samples++;
         }
         var captures = LoopInput.Replay.captures;
