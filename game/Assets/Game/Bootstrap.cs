@@ -302,6 +302,7 @@ namespace ChicagoGame
                 float step = Mathf.Min(clearance, d);
                 Vector3 candidate = pos + toT / d * step;
                 candidate.y = Mathf.Max(candidate.y, floorY + 0.08f);
+                if (candidate.y < origin.y + camY) cramped = true;
                 pos = candidate;
             }
             // Absolute floor guard: camera lens must remain above walkable surface.
