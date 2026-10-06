@@ -149,7 +149,10 @@ namespace ChicagoGame
                     dgo.AddComponent<MeshFilter>().sharedMesh = dmf.sharedMesh;
                     var dR = dgo.AddComponent<MeshRenderer>(); dR.sharedMaterial = dmr.sharedMaterial;
                     var db = dR.bounds;
-                    dgo.transform.position += new Vector3(16f - db.center.x, 0.14f - db.min.y, 19.92f - db.center.z);
+                    // Pull the wood panel 0.07m OUTWARD (toward -Z, the alley
+                    // interior) from the stone surround centre (Z19.92) so the
+                    // solid stone backing no longer hides the wood door face.
+                    dgo.transform.position += new Vector3(16f - db.center.x, 0.14f - db.min.y, 19.85f - db.center.z);
                 }
             }
             {
