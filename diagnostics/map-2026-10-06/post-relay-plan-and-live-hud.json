@@ -36,8 +36,9 @@
     "Fresh local scoped image review"
   ],
   "publication": {
-    "game_source": "8ef71373663d49349ce8a74827b27e64036614e1",
-    "broad_accepted": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188"
+    "broad_accepted": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "qualified_relay_source": "8ef71373663d49349ce8a74827b27e64036614e1",
+    "hud_candidate": "a64f4bbd5f56b0c15bc105664b04ad60c1a4e283"
   },
   "scope": {
     "cap_utc": "2026-10-08T06:33:12Z",
@@ -45,5 +46,5 @@
     "new_native_capture_available": false
   },
   "evidence_date": "2026-10-06",
-  "research_status": "Corrected local plan saved; local HUD authoring started; no new native HUD proof yet."
+  "research_status": "Local consolidated HUD source saved and installed; native build succeeded and positive relay playthrough started. Acceptance remains pending."
 }
