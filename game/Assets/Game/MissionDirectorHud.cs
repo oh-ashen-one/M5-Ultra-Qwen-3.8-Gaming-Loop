@@ -74,8 +74,11 @@ namespace ChicagoGame
             if (!_route) _route = FindAny<RouteMission>();
             if (!_courier) _courier = FindAny<CourierMission>();
 
+            var _interception = FindAny<InterceptionMission>();
             string s = null;
-            if (_relay != null && _relay.Active)
+            if (_interception != null && _interception.Active)
+                s = _interception.Objective;
+            else if (_relay != null && _relay.Active)
             {
                 string two = _relay.Objective ?? "OBJECTIVE UNAVAILABLE";
                 string foot = "\nDelivery complete / Dead-drop complete";
