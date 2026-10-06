@@ -104,6 +104,38 @@ namespace ChicagoGame
             }
 
             // 3) Understandable end barriers using the original fence mesh.
+            var fw = GameObject.Find("facade_wall");
+            if (fw != null)
+            {
+                var omf = fw.GetComponent<MeshFilter>(); var omr = fw.GetComponent<MeshRenderer>();
+                if (omf != null && omr != null)
+                {
+                    var b = omf.sharedMesh.bounds;
+                    var srcRot = fw.transform.rotation;
+                    var r90 = Quaternion.Euler(0f, 90f, 0f) * srcRot;
+                    var names = new[] { "AlleySouthWall", "AlleyNorthWall", "AlleyEndWall" };
+                    var centers = new[] { new Vector3(14f, 4.4f, 7.75f), new Vector3(14f, 4.4f, 20.25f), new Vector3(22.25f, 4.4f, 14f) };
+                    var rots = new[] { r90, r90, srcRot };
+                    var scales = new[]
+                    {
+                        new Vector3(16f / b.size.x, 0.5f / b.size.y, 8.8f / b.size.z),
+                        new Vector3(16f / b.size.x, 0.5f / b.size.y, 8.8f / b.size.z),
+                        new Vector3(12f / b.size.x, 0.5f / b.size.y, 8.8f / b.size.z)
+                    };
+                    for (int i = 0; i < 3; i++)
+                    {
+                        var o = new GameObject(names[i]);
+                        o.transform.SetParent(go.transform, false);
+                        o.transform.rotation = rots[i];
+                        o.transform.localScale = scales[i];
+                        o.transform.position = centers[i] - rots[i] * Vector3.Scale(b.center, scales[i]);
+                        o.AddComponent<MeshFilter>().sharedMesh = omf.sharedMesh;
+                        o.AddComponent<MeshRenderer>().sharedMaterial = omr.sharedMaterial;
+                        var bc = o.AddComponent<BoxCollider>();
+                        bc.center = b.center; bc.size = b.size;
+                    }
+                }
+            }
             if (fenceSourcePrefab != null)
             {
                 // North (forward, +Z) end: fence runs across pavement width.
