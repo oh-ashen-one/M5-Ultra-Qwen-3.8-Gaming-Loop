@@ -1,5 +1,7 @@
 # Connected-map stage
 
+**06:47:51 UTC continuation:** matching asphalt is saved at `73f8efb8`; the exact complete local entrance proposal is saved at `9587c2d3` after a narrowly bounded recovery from a 14-line validation limit. The sole queue is actively requesting visible alley walls from local Qwen. Controller `51de56b` has 199 passing CPU tests on both hosts. New scenery remains pending native traversal, regressions and fresh critique; prior all-ten PASS / visual FIX is unchanged. See [recovery evidence](alley-presentation-recovery.json). Deadline: October 8, 2026 at 06:33:12 UTC.
+
 ## Latest measured outcome — 2026-10-06 06:35 UTC
 
 **All ten regressions pass; fresh local visual verdict is FIX.** The critic confirms physical walking/driving out-and-back, collider continuity and clean support, but rejects the unreadable entrance and bare tan slab without visible alley boundaries. It requests a clear fence opening, visible original-mesh walls, matching street material and later limited prop dressing. See [complete independent verdict](rival-repair-visual-fix.json) and [all ten receipts](rival-repair-regressions.json). No map promotion occurred: the prior baseline and rejected candidate remain preserved.

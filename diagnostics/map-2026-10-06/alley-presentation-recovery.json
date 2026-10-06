@@ -1,0 +1,29 @@
+{
+  "observed_utc": "2026-10-06T06:47:51.737876+00:00",
+  "hard_cap_utc": "2026-10-08T06:33:12+00:00",
+  "prior_candidate": "d526046537d456bb224a247e88d190157286e2d2",
+  "prior_all_ten_regressions_passed": true,
+  "prior_fresh_critic_verdict": "FIX",
+  "accepted_checkpoint": "d269dc43ac66c39afca4cb98ea53f9e7ed36806f",
+  "controller_revision": "51de56b0c27e7683fe43119724d08b86125f97f2",
+  "cpu_tests_passing_per_host": 199,
+  "saved_matching_asphalt": "73f8efb81a173ea4f7f5fdb19f363c4db4d63ba6",
+  "saved_visible_entrance": "9587c2d3688c7a896a69907e6a98ae92a20d9314",
+  "entrance_proposal": {
+    "lines": 16,
+    "bytes": 789,
+    "original_line_limit": 14,
+    "recovery_line_limit": 18,
+    "proposal_sha256": "6d59104f9fe96ba61ae9d2ee62bb15f7bcf1e61463128df36264b40ba7f062c3",
+    "local_content_changed": false
+  },
+  "current_round": "q0072-b5de47c6",
+  "current_activity": "Local Qwen authoring visible alley walls from the existing original facade mesh",
+  "actual_model_active_requests": 1,
+  "actual_model_waiting_requests": 0,
+  "new_scenery_native_qualification": "Pending",
+  "promoted": false,
+  "failure_history_preserved": true,
+  "new_driver_created": false,
+  "duplicate_images_delivered": false
+}
