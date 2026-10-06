@@ -7,6 +7,7 @@ from loop_controller.camera_checks import inspect_camera
 from loop_controller.core import Halt
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 from probe_camera_clearance import validate_camera_pause,SOURCE,ACCEPTED,BLOCKER
+from repair_camera_clearance import validate_repair_pause,validate_follow_replacement,PROBE,BUILD
 
 def observations():
     return [dict(time=start+i*.1,cameraGeometry=dict(available=True,probeHit=True,
@@ -53,5 +54,21 @@ class CameraTests(unittest.TestCase):
         for key,value in [('source_checkpoint','other'),('task_failures',0),('diagnosis_used',False),
                           ('camera_probe_attempted',True),('overall_deadline_epoch',HARD_CAP_EPOCH+1),('blocker','resource fault')]:
             with self.assertRaises(Halt):validate_camera_pause({**state,key:value})
+
+    def test_repair_requires_measured_failure_and_preserves_original_counters(self):
+        state=dict(source_checkpoint=SOURCE,last_playable_checkpoint=ACCEPTED,task_index=7,
+            task_failures=6,failure_streak=1,diagnosis_used=True,overall_deadline_epoch=HARD_CAP_EPOCH,
+            blocker='Scoped camera close-wall evidence recorded; original full-route stop preserved',
+            camera_before_probe=dict(candidate=SOURCE,build_id=BUILD,evidence=PROBE,passed=False,
+                failure=['near-camera-crosses-obstacle','endpoint-camera-crosses-obstacle']))
+        original=copy.deepcopy(state);validate_repair_pause(state);self.assertEqual(state,original)
+        for key,value in [('camera_repair_attempted',True),('task_failures',0),('camera_before_probe',{}),('blocker','different fault')]:
+            with self.assertRaises(Halt):validate_repair_pause({**state,key:value})
+
+    def test_repair_tool_rejects_fixture_hacks_or_other_source(self):
+        span='public class Follow : MonoBehaviour { public Transform target; public Vector3 offset; }\n}'
+        validate_follow_replacement(span)
+        for text in ['public class Other {}',span+'LoopInput',span+'CameraClearanceWall',span+'.enabled=false',span+'x'*21000]:
+            with self.assertRaises(ValueError):validate_follow_replacement(text)
 
 if __name__=='__main__':unittest.main()
