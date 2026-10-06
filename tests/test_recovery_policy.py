@@ -33,6 +33,7 @@ class RecoveryPolicyTests(unittest.TestCase):
             self.assertEqual(report['delivery_status'],'pending-existing-parent-oversight')
             self.assertFalse(report['approval_wait'])
             self.assertEqual(runner.store.get('recovery_route'),'report-blocker')
+            runner.store.db.close()
 
     def test_only_measured_native_traversal_failures_recover_within_cap(self):
         gate=dict(passed=False,build_exit=0,player_exit=0,compile_errors=[],
