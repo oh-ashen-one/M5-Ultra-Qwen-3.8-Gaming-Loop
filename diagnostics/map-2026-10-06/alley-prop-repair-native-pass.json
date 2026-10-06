@@ -1,0 +1,190 @@
+{
+  "observed_utc": "2026-10-06T07:59:38.514198+00:00",
+  "candidate": "2ab467692d10a715500bf89e0d8982694fa5eb80",
+  "build_id": "ef87b934fede019b2996efb7feebb9f7e490b0db7330a8c842f4c6bfa6b05497",
+  "extension": {
+    "passed": true,
+    "failure": [],
+    "old_bounds_xz": [
+      -1,
+      6,
+      -2,
+      30
+    ],
+    "traversal": {
+      "foot": {
+        "outside_samples": 15,
+        "maximum_distance_beyond_old_boundary_m": 6.533334732055664,
+        "physical_return_seconds": 15.966666221618652
+      },
+      "vehicle": {
+        "outside_samples": 48,
+        "maximum_distance_beyond_old_boundary_m": 13.76791000366211,
+        "physical_return_seconds": 33.63333511352539
+      }
+    },
+    "area_claim": "Only observed connected traversal; no gross map-area acceptance"
+  },
+  "support": {
+    "passed": true,
+    "samples": 188,
+    "uncovered_samples": 0
+  },
+  "prop_clone_parity": {
+    "components": [
+      {
+        "clone_size": [
+          0.2400001883506775,
+          1.0499999523162842,
+          0.23999999463558197
+        ],
+        "kind": "renderer",
+        "name": "WorldCollision/AlleyBollardS",
+        "orientation_matches": true,
+        "size_matches": true,
+        "source_size": [
+          0.2400001883506775,
+          1.0499999523162842,
+          0.23999999463558197
+        ]
+      },
+      {
+        "clone_size": [
+          0.2400001883506775,
+          1.0499999523162842,
+          0.23999999463558197
+        ],
+        "kind": "renderer",
+        "name": "WorldCollision/AlleyBollardN",
+        "orientation_matches": true,
+        "size_matches": true,
+        "source_size": [
+          0.2400001883506775,
+          1.0499999523162842,
+          0.23999999463558197
+        ]
+      },
+      {
+        "clone_size": [
+          1.4677366018295288,
+          0.16000033915042877,
+          2.534715414047241
+        ],
+        "kind": "renderer",
+        "name": "WorldCollision/AlleyDumpster/dumpster_a_lid",
+        "orientation_matches": true,
+        "size_matches": true,
+        "source_size": [
+          1.4677366018295288,
+          0.16000033915042877,
+          2.534715414047241
+        ]
+      },
+      {
+        "clone_size": [
+          0.3200000524520874,
+          0.31197699904441833,
+          0.12000001221895218
+        ],
+        "kind": "renderer",
+        "name": "WorldCollision/AlleyDumpster/dumpster_a_wheel_0.9",
+        "orientation_matches": true,
+        "size_matches": true,
+        "source_size": [
+          0.3200000524520874,
+          0.31197699904441833,
+          0.12000001221895218
+        ]
+      },
+      {
+        "clone_size": [
+          0.08000001311302185,
+          0.08000002056360245,
+          2.450000047683716
+        ],
+        "kind": "renderer",
+        "name": "WorldCollision/AlleyDumpster/dumpster_a_rail",
+        "orientation_matches": true,
+        "size_matches": true,
+        "source_size": [
+          0.08000001311302185,
+          0.08000002056360245,
+          2.450000047683716
+        ]
+      },
+      {
+        "clone_size": [
+          1.2500001192092896,
+          1.1500000953674316,
+          2.4000000953674316
+        ],
+        "kind": "renderer",
+        "name": "WorldCollision/AlleyDumpster/dumpster_a_body",
+        "orientation_matches": true,
+        "size_matches": true,
+        "source_size": [
+          1.2500001192092896,
+          1.1500000953674316,
+          2.4000000953674316
+        ]
+      },
+      {
+        "clone_size": [
+          0.3200000524520874,
+          0.31197699904441833,
+          0.12000001221895218
+        ],
+        "kind": "renderer",
+        "name": "WorldCollision/AlleyDumpster/dumpster_a_wheel_-0.9",
+        "orientation_matches": true,
+        "size_matches": true,
+        "source_size": [
+          0.3200000524520874,
+          0.31197699904441833,
+          0.12000001221895218
+        ]
+      },
+      {
+        "clone_size": [
+          1.25,
+          1.1500000953674316,
+          2.3999996185302734
+        ],
+        "kind": "BoxCollider",
+        "name": "WorldCollision/AlleyDumpster/dumpster_a_body",
+        "orientation_matches": true,
+        "size_matches": true,
+        "source_size": [
+          1.25,
+          1.1500000953674316,
+          2.3999996185302734
+        ]
+      }
+    ],
+    "failure": [],
+    "passed": true,
+    "scope": "Native clone dimensions, world axes, component continuity and grounded placement only; visual quality needs rendered review"
+  },
+  "capture": {
+    "capture_utc": "2026-10-06T07:56:57.863775+00:00",
+    "sha256": "7b14007581a3a65f946cd8aa0c10f89de67f807d089a08a18594c12604650f97",
+    "replay_seconds": 13.69791
+  },
+  "regressions": [
+    {
+      "round": "q0076-3b01e800-regression-walk",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "round": "q0076-3b01e800-regression-world",
+      "passed": true,
+      "failure": null
+    }
+  ],
+  "fresh_critic": "Pending",
+  "promoted": false,
+  "accepted_checkpoint": "d269dc43ac66c39afca4cb98ea53f9e7ed36806f",
+  "visual_status": "Actual frame shows full-size dumpster and new closed door detail. Door reads as a bright flat panel; walls remain plain. Final visual quality is not accepted.",
+  "hard_cap_utc": "2026-10-08T06:33:12+00:00"
+}
