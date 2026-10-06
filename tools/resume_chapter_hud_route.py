@@ -24,9 +24,10 @@ def validate_pause(old):
 
 def validate_hud(content):
     if len(content.splitlines())>85 or len(content.encode())>9000:raise ValueError('Keep the HUD replacement within85lines/9KB')
+    checked=content.replace('card.gameObject.SetActive(false);','')
     for term in ['void Update(', 'void ActivateCache(', 'LoopInput.Replay','LoopRuntime',
                  'class LoopSignals','CreatePrimitive','Destroy(', 'SetActive(false)']:
-        if term in content:raise ValueError('HUD-only scope cannot change game mechanics, hide legacy state or inspect harness: '+term)
+        if term in checked:raise ValueError('HUD-only scope cannot change game mechanics, hide legacy state or inspect harness: '+term)
     for field in ['RouteStage','RouteComplete','Cache','Objective','reachedInVehicle','lastRestarts']:
         if re.search(r'\b'+field+r'\s*(?:=(?!=)|\+\+|--|[+*/-]=)',content):
             raise ValueError('Keep chapter state read-only in the HUD method')

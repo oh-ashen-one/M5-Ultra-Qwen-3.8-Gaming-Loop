@@ -56,5 +56,21 @@ class ChapterRouteProbeTests(unittest.TestCase):
         selected=chapter_capture_selection(frames,{'captures':list(range(7))},rows)
         self.assertEqual(selected,[frames[i] for i in [1,2,3,5,6]])
 
-if __name__=='__main__':unittest.main()
 
+    def test_complete_hud_recovery_requires_original_finished_tool_call(self):
+        import json
+        from unittest.mock import patch
+        import resume_saved_chapter_hud as saved
+        from loop_controller.core import sha
+        content='if (card != null) card.gameObject.SetActive(false);'
+        value={'choices':[{'finish_reason':'tool_calls','message':{'tool_calls':[
+            {'function':{'name':'edit_selected_span','arguments':json.dumps({'content':content})}}]}}]}
+        raw=json.dumps(value).encode()
+        with patch.object(saved,'RESPONSE_SHA',sha(raw)):
+            self.assertEqual(saved.saved_proposal(raw),content)
+            with self.assertRaises(Halt):saved.saved_proposal(raw+b' ')
+        value['choices'][0]['finish_reason']='length';raw=json.dumps(value).encode()
+        with patch.object(saved,'RESPONSE_SHA',sha(raw)),self.assertRaises(Halt):saved.saved_proposal(raw)
+        with self.assertRaises(ValueError):validate_hud('missionHud.gameObject.SetActive(false);')
+
+if __name__=='__main__':unittest.main()
