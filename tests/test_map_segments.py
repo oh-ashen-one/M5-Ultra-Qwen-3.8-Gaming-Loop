@@ -5,9 +5,21 @@ import unittest
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from resume_map_walk_first import combine_driving,inspect_walking_prefix
 from loop_controller.replay_contract import MISSION_EXAMPLE,validate_submission
+from loop_controller.core import Halt
+import resume_map_prefix_budget as budget
 
 
 class MapSegmentTests(unittest.TestCase):
+    def test_larger_output_allowance_is_exact_once_and_does_not_erase_failures(self):
+        state=dict(source_checkpoint=budget.SOURCE,last_playable_checkpoint=budget.ACCEPTED,
+            current_round=budget.ROUND,task_index=7,task_failures=10,failure_streak=1,diagnosis_used=True,
+            overall_deadline_epoch=budget.HARD_CAP_EPOCH,blocker=budget.BLOCKER,
+            map_segment_recovery_attempted=True,map_prefix_attempts=0,map_walking_prefix=None)
+        old=copy.deepcopy(state);budget.validate_budget_pause(state);self.assertEqual(state,old)
+        for key,value in [('map_prefix_budget_attempted',True),('map_prefix_attempts',1),
+                          ('task_failures',0),('blocker','resource fault')]:
+            with self.subTest(key=key),self.assertRaises(Halt):budget.validate_budget_pause({**state,key:value})
+
     def test_driving_suffix_preserves_all_native_verified_prefix_inputs(self):
         prefix=validate_submission(MISSION_EXAMPLE,{'maximum':150,'coverage':'foundation'})['scenario']
         old=copy.deepcopy(prefix)

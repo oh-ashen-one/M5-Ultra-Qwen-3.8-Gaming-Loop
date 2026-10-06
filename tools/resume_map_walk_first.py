@@ -66,7 +66,9 @@ class MapWalkFirst(MapTraversalRecovery):
         walker=bootstrap[bootstrap.index('    public class Walker'):bootstrap.index('    public class Follow')]
         vehicle=(self.project/'Assets/Game/VehicleInteraction.cs').read_text()
         boarding=vehicle[vehicle.index('        void Update()'):vehicle.index('            // Driving:')]
-        self.c.update(output_tokens=8192,model_timeout_seconds=400)
+        output_tokens=self.store.get('walking_prefix_output_tokens',8192)
+        if output_tokens not in (8192,16384):raise Halt('Unqualified walking output budget')
+        self.c.update(output_tokens=output_tokens,model_timeout_seconds=700 if output_tokens==16384 else 400)
         self.store.set(stage='local-walking-boarding-prefix');self.store.report()
         prompt=('Solve ONLY walking around the measured dumpster and then boarding. Do not plan driving yet. '
             'Submit finish_task promptly: summary (one-sentence cause/repair), duration16..45, input_steps '
