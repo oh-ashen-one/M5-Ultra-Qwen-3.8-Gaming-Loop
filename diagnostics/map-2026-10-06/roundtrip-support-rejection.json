@@ -1,0 +1,154 @@
+{
+  "observed_utc": "2026-10-06T06:03:30.981341+00:00",
+  "round": "q0063-6b7c8ebe",
+  "candidate": "1c68cc752e653129196cfec1c2aa153d8445ca87",
+  "build_id": "30e15327f7b636d246877fa5c30b7b9baa7856f898315935bbd0ed1d854e15b2",
+  "passed": false,
+  "failure": [
+    "vehicle-rendered-support",
+    "rendered-pavement-support"
+  ],
+  "physical_traversal": {
+    "foot": {
+      "maximum_distance_beyond_old_boundary_m": 6.533334732055664,
+      "outside_samples": 38,
+      "physical_return_seconds": 16.700000762939453
+    },
+    "vehicle": {
+      "maximum_distance_beyond_old_boundary_m": 13.772119522094727,
+      "outside_samples": 47,
+      "physical_return_seconds": 34.33333206176758
+    }
+  },
+  "rendered_walking_support": {
+    "first_uncovered": [
+      {
+        "player": [
+          4.000000476837158,
+          0.694999635219574,
+          11.033334732055664
+        ],
+        "time": 8.149999618530273
+      },
+      {
+        "player": [
+          4.320000171661377,
+          0.694999635219574,
+          11.033334732055664
+        ],
+        "time": 8.25
+      },
+      {
+        "player": [
+          4.640000343322754,
+          0.6949998736381531,
+          11.033334732055664
+        ],
+        "time": 8.350000381469727
+      }
+    ],
+    "passed": false,
+    "radius_m": 0.32,
+    "samples": 194,
+    "scope": "Flat rendered-surface bounds support the route; actual frame review is also required.",
+    "surfaces": [
+      {
+        "max": [
+          2.4000000953674316,
+          0.14000078290700912,
+          28
+        ],
+        "min": [
+          -0.7999999523162842,
+          2.2351741790771484e-8,
+          14
+        ],
+        "name": "Street/sidewalk"
+      },
+      {
+        "max": [
+          13.649999618530273,
+          0.05000346805900335,
+          28
+        ],
+        "min": [
+          2.6499996185302734,
+          -0.06999915186315775,
+          14
+        ],
+        "name": "Street/road_asphalt"
+      },
+      {
+        "max": [
+          22,
+          0.1400010734796524,
+          20
+        ],
+        "min": [
+          6,
+          -0.0000027418136596679688,
+          8
+        ],
+        "name": "WorldCollision/AlleyPavement"
+      },
+      {
+        "max": [
+          2.4000000953674316,
+          0.14000078290700912,
+          14
+        ],
+        "min": [
+          -0.7999999523162842,
+          2.2351741790771484e-8,
+          0
+        ],
+        "name": "Street/sidewalk"
+      },
+      {
+        "max": [
+          13.649999618530273,
+          0.05000346805900335,
+          14
+        ],
+        "min": [
+          2.6499996185302734,
+          -0.06999915186315775,
+          0
+        ],
+        "name": "Street/road_asphalt"
+      },
+      {
+        "max": [
+          6,
+          0.14000045508146286,
+          30
+        ],
+        "min": [
+          -1,
+          -0.000001214444637298584,
+          -2
+        ],
+        "name": "Pavement"
+      }
+    ],
+    "uncovered_samples": 11
+  },
+  "diagnosis": {
+    "walking": "The initial outward crossing at Z11 climbs the pier base; the earlier prefix test checked roundtrip/boarding but did not prove complete rendered pavement support.",
+    "vehicle": "Before any driving input, the car root rises from -0.01 to about1.378 after boarding. Existing ground correction compares pavement height to the root, ignoring collider bottom offset, and injects upward velocity. A source repair still requires native proof.",
+    "retry": "q0064 changed only outward driving time from0.8 to0.5 seconds and failed the same two support gates; those later inputs cannot fix earlier faults."
+  },
+  "acceptance": {
+    "regressions_run": false,
+    "fresh_critic_run": false,
+    "accepted_checkpoint": "d269dc43ac66c39afca4cb98ea53f9e7ed36806f",
+    "extension_accepted": false
+  },
+  "recovery": {
+    "controller": "c7039b4fe2db05cd60f1f946830726d489e6925d",
+    "cpu_tests": 193,
+    "status": "Exact local source edit and revised walking arithmetic started; native result pending at this snapshot.",
+    "prior_native_attempts_preserved": 2,
+    "maximum_native_strategies": 3
+  }
+}
