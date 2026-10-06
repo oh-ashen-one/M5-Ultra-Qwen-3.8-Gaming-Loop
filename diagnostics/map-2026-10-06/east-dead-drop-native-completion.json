@@ -1,0 +1,652 @@
+{
+  "observed_utc": "2026-10-06T12:46:09.144898+00:00",
+  "source": "3f5a0ef117c20fabf75d72495831ed75997af25b",
+  "accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+  "scope": "Short native East Dead-Drop chapter completion; not the ten-minute game",
+  "native_proof": {
+    "observed_utc": "2026-10-06T12:44:10.342938+00:00",
+    "gate": {
+      "acceptance_fixture": null,
+      "build_exit": 0,
+      "build_id": "07eb770071e6d941e9016fa33d4234f15db7ff3f8c5fc9d7cce8dd91b7f15321",
+      "candidate_commit": "3f5a0ef117c20fabf75d72495831ed75997af25b",
+      "capture_id": "q0098-2198d5a1",
+      "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+      "chapter_contract": {
+        "activations": [
+          14.350000381469727
+        ],
+        "arrivals": [
+          30.200000762939453
+        ],
+        "completions": [
+          32.53333282470703
+        ],
+        "exits": [
+          30.633333206176758
+        ],
+        "failure": null,
+        "final_game_accepted": false,
+        "passed": true,
+        "resets": [
+          34.03333282470703
+        ],
+        "scope": "chapter-completion"
+      },
+      "compile_errors": [],
+      "coverage": "mission-core",
+      "displacement_axes": "horizontal XZ",
+      "duration": 36.016666412353516,
+      "failure": null,
+      "final_game_accepted": false,
+      "frame_count": 14,
+      "harness_sha256": "5a8e6689086e2d9d7fbd1f13e7fa2a69cd0857ae9f535ce6fd6eec4774a92a1f",
+      "passed": true,
+      "performance_claim": "unqualified; shared renderer and capture overhead",
+      "player_displacement": 52.278,
+      "player_exit": 0,
+      "player_vertical_drop": 0.16,
+      "samples": 343,
+      "scene_inventory": {
+        "declared_counts": {
+          "colliderRecorded": 48,
+          "colliderTotal": 48,
+          "rendererRecorded": 2772,
+          "rendererTotal": 2772
+        },
+        "failure": [],
+        "observed_at_seconds": 0.5,
+        "observed_counts": {
+          "collider": 48,
+          "renderer": 2772
+        },
+        "passed": true,
+        "scope": "Complete point-in-time scene component inventory; gameplay and rendered support criteria are unchanged"
+      },
+      "scope": "east-dead-drop",
+      "scoped_checks": [
+        "mission_complete"
+      ],
+      "scoped_facts": {
+        "chapter_contract": {
+          "activations": [
+            14.350000381469727
+          ],
+          "arrivals": [
+            30.200000762939453
+          ],
+          "completions": [
+            32.53333282470703
+          ],
+          "exits": [
+            30.633333206176758
+          ],
+          "failure": null,
+          "final_game_accepted": false,
+          "passed": true,
+          "resets": [
+            34.03333282470703
+          ],
+          "scope": "chapter-completion"
+        },
+        "mission_anchors": {
+          "away_seconds": 4.633333206176758,
+          "closest_driving_approach": {
+            "collision_enabled": true,
+            "distance_xz_m": 1.1030194203987889,
+            "mission": "complete",
+            "pad": [
+              1,
+              0.15000000596046448,
+              26
+            ],
+            "penetration_m": 1.7881393432617188e-7,
+            "restarts": 0,
+            "time": 15.216666221618652,
+            "vehicle": [
+              0.49259865283966064,
+              -0.009999990463256836,
+              25.020614624023438
+            ]
+          },
+          "delivery_input_edges": [
+            {
+              "collision_enabled": true,
+              "distance_xz_m": 1.2562199632348348,
+              "mission": "complete",
+              "pad": [
+                1,
+                0.15000000596046448,
+                26
+              ],
+              "penetration_m": 0.0015720725059509277,
+              "restarts": 0,
+              "time": 14.350000381469727,
+              "vehicle": [
+                0.49830305576324463,
+                -0.010000616312026978,
+                24.848310470581055
+              ]
+            },
+            {
+              "collision_enabled": true,
+              "distance_xz_m": 1.112554935472967,
+              "mission": "complete",
+              "pad": [
+                1,
+                0.15000000596046448,
+                26
+              ],
+              "penetration_m": 0,
+              "restarts": 0,
+              "time": 16.066667556762695,
+              "vehicle": [
+                0.4941350221633911,
+                -0.010000348091125488,
+                25.00910186767578
+              ]
+            },
+            {
+              "collision_enabled": true,
+              "distance_xz_m": 43.41155311337611,
+              "mission": "complete",
+              "pad": [
+                1,
+                0.15000000596046448,
+                26
+              ],
+              "penetration_m": 0,
+              "restarts": 0,
+              "time": 30.08333396911621,
+              "vehicle": [
+                43.53402328491211,
+                -0.010000189766287804,
+                17.315542221069336
+              ]
+            }
+          ],
+          "delivery_seconds": 14.350000381469727,
+          "failure": [],
+          "final_visual_acceptance": false,
+          "initial_world_positions": {
+            "Beacon": [
+              1,
+              0.7400000095367432,
+              26
+            ],
+            "BeaconRing": [
+              1,
+              0.17000000178813934,
+              26
+            ],
+            "DropPad": [
+              1,
+              0.15000000596046448,
+              26
+            ],
+            "Parcel": [
+              3.5999999046325684,
+              0.45012494921684265,
+              3.200000047683716
+            ]
+          },
+          "maximum_marker_target_xz_gap_m": 0,
+          "passed": true,
+          "pickup_seconds": 7.433333396911621,
+          "returned_seconds": 7.0333333015441895,
+          "sample_count": 343,
+          "scope": "fixed-world-objectives-and-input-transitions"
+        },
+        "mission_states": [
+          "active",
+          "complete"
+        ]
+      },
+      "stationary_grounded": true,
+      "vehicle_displacement": 45.086
+    },
+    "hashes": {
+      "chapter-gate.json": "251822ddc48becd5db96acdfa4898f2d6517aed5b77ca0b993be5725d06d8112",
+      "captures/scenario.json": "d310895282f0f435ff78fe14f8c43a64534820180688c37f76e3824a9dc788d9",
+      "captures/trace.jsonl": "05c6628ae4b1cbc8c62f66cc808b0da107e76d81b7ebe306b0aedcb38eb001f2"
+    },
+    "captures": [
+      {
+        "frame": "frame-000.png",
+        "scheduled_seconds": 3.2,
+        "stage": 0,
+        "mode": "foot",
+        "sha256": "a4d0afe1d7f75d79202f4951bdd315296fff554fd2fb996007ff6340fc954a74",
+        "file_mtime_utc": "2026-10-06T12:41:34.270989+00:00"
+      },
+      {
+        "frame": "frame-001.png",
+        "scheduled_seconds": 7.9,
+        "stage": 0,
+        "mode": "foot",
+        "sha256": "5444b3d8ce58c978471cf67ac82fe65572747ca52efbe3ecb19f1c1e4167c331",
+        "file_mtime_utc": "2026-10-06T12:41:39.892396+00:00"
+      },
+      {
+        "frame": "frame-002.png",
+        "scheduled_seconds": 14,
+        "stage": 0,
+        "mode": "vehicle",
+        "sha256": "3ade068be7cf2e24ca99e09b242ca85d10726cb62adfb93f268e774baee10a05",
+        "file_mtime_utc": "2026-10-06T12:41:47.294552+00:00"
+      },
+      {
+        "frame": "frame-003.png",
+        "scheduled_seconds": 15.2,
+        "stage": 1,
+        "mode": "vehicle",
+        "sha256": "b7e32aed28b61d5982664435ec67d7752d87eb7900840860fcad8e0944c4b11d",
+        "file_mtime_utc": "2026-10-06T12:41:48.806415+00:00"
+      },
+      {
+        "frame": "frame-004.png",
+        "scheduled_seconds": 19.6,
+        "stage": 1,
+        "mode": "vehicle",
+        "sha256": "81d039d3cfc4de077a54f4db8e204bd2c509c4b75f4584f428e6654669be5b87",
+        "file_mtime_utc": "2026-10-06T12:41:54.172313+00:00"
+      },
+      {
+        "frame": "frame-005.png",
+        "scheduled_seconds": 22.9734,
+        "stage": 1,
+        "mode": "vehicle",
+        "sha256": "3f462389bc7695cebd33289a691dead7a988d865aaa98c3432b7697516b80fec",
+        "file_mtime_utc": "2026-10-06T12:41:58.400699+00:00"
+      },
+      {
+        "frame": "frame-006.png",
+        "scheduled_seconds": 24.0234,
+        "stage": 1,
+        "mode": "foot",
+        "sha256": "23d0b41a47a1fc47b75db1ad8659532165e9a736335676d256662e1fb4208734",
+        "file_mtime_utc": "2026-10-06T12:41:59.772182+00:00"
+      },
+      {
+        "frame": "frame-007.png",
+        "scheduled_seconds": 25.0234,
+        "stage": 1,
+        "mode": "vehicle",
+        "sha256": "85d1d6f58d566fd9afb018808fdbbe4b6e4fbd525b13e7f557d1b9e6bec3e6af",
+        "file_mtime_utc": "2026-10-06T12:42:01.069013+00:00"
+      },
+      {
+        "frame": "frame-008.png",
+        "scheduled_seconds": 27.3234,
+        "stage": 1,
+        "mode": "vehicle",
+        "sha256": "1c1fe4f007677e58ea6580925ba7a265f9c63f5347dbc3a2e5ad414ca98df341",
+        "file_mtime_utc": "2026-10-06T12:42:03.890155+00:00"
+      },
+      {
+        "frame": "frame-009.png",
+        "scheduled_seconds": 30.268277809980393,
+        "stage": 1,
+        "mode": "vehicle",
+        "sha256": "f7d48a88020f269e793b9924547fc072a4164d7446a216511083e2699e8cc763",
+        "file_mtime_utc": "2026-10-06T12:42:07.667743+00:00"
+      },
+      {
+        "frame": "frame-010.png",
+        "scheduled_seconds": 30.968277809980393,
+        "stage": 1,
+        "mode": "foot",
+        "sha256": "fe0c4ca5a2c00d916b945b440de37805573f7c8f614df362ec965d559a98f5e3",
+        "file_mtime_utc": "2026-10-06T12:42:08.548475+00:00"
+      },
+      {
+        "frame": "frame-011.png",
+        "scheduled_seconds": 33.10206129914633,
+        "stage": 2,
+        "mode": "foot",
+        "sha256": "063ab2424eebd6a44f2ab01f17e97ab00c728413d9832de8670bcf1a7f6ed737",
+        "file_mtime_utc": "2026-10-06T12:42:11.224047+00:00"
+      },
+      {
+        "frame": "frame-012.png",
+        "scheduled_seconds": 34.60206129914633,
+        "stage": 0,
+        "mode": "foot",
+        "sha256": "70f48646f32da9c17d783dcac5b5889b39cd0e6e52f1595b0235913c96cc2e70",
+        "file_mtime_utc": "2026-10-06T12:42:13.086902+00:00"
+      },
+      {
+        "frame": "frame-013.png",
+        "scheduled_seconds": 35.60206129914633,
+        "stage": 0,
+        "mode": "foot",
+        "sha256": "c4860ea2db71fff758b9668a3f3ca612d2902fa58f58fc69d6c81ef9b83ab1e4",
+        "file_mtime_utc": "2026-10-06T12:42:14.363974+00:00"
+      }
+    ],
+    "events": [
+      {
+        "event": "arrival",
+        "time": 30.200000762939453,
+        "mode": "vehicle",
+        "keys": [
+          "W",
+          "F"
+        ],
+        "mission": "complete",
+        "player": [
+          11.291719436645508,
+          0.13499987125396729,
+          17.672021865844727
+        ],
+        "vehicle": [
+          44.45331573486328,
+          -0.009999871253967285,
+          17.348264694213867
+        ],
+        "health": 60,
+        "grounded": true,
+        "restarts": 0,
+        "routeChapter": {
+          "present": true,
+          "valid": true,
+          "complete": false,
+          "cacheExists": true,
+          "cacheActive": true,
+          "actorChild": false,
+          "originalMeshReuse": true,
+          "componentCount": 1,
+          "stage": 1,
+          "rendererCount": 5,
+          "objective": "EAST DEAD-DROP: drive east to the cache and place it",
+          "cachePosition": [
+            50,
+            0.14000000059604645,
+            18
+          ],
+          "meshNames": [
+            "dumpster_a_body",
+            "dumpster_a_lid",
+            "dumpster_a_rail",
+            "dumpster_a_wheel_-0.9",
+            "dumpster_a_wheel_0.9"
+          ]
+        },
+        "visibleText": [
+          "EAST DEAD-DROP\nDrive to the cache (6m)\nPress E to exit when close",
+          "HEALTH 60\nWANTED . . .",
+          "★ DELIVERY COMPLETE ★\nThe parcel has been delivered.\nR to reset"
+        ]
+      },
+      {
+        "event": "exit",
+        "time": 30.633333206176758,
+        "mode": "foot",
+        "keys": [
+          "E"
+        ],
+        "mission": "complete",
+        "player": [
+          47.42057418823242,
+          0.16000056266784668,
+          18.954700469970703
+        ],
+        "vehicle": [
+          47.60508728027344,
+          -0.009999294765293598,
+          17.460317611694336
+        ],
+        "health": 60,
+        "grounded": false,
+        "restarts": 0,
+        "routeChapter": {
+          "present": true,
+          "valid": true,
+          "complete": false,
+          "cacheExists": true,
+          "cacheActive": true,
+          "actorChild": false,
+          "originalMeshReuse": true,
+          "componentCount": 1,
+          "stage": 1,
+          "rendererCount": 5,
+          "objective": "EAST DEAD-DROP: drive east to the cache and place it",
+          "cachePosition": [
+            50,
+            0.14000000059604645,
+            18
+          ],
+          "meshNames": [
+            "dumpster_a_body",
+            "dumpster_a_lid",
+            "dumpster_a_rail",
+            "dumpster_a_wheel_-0.9",
+            "dumpster_a_wheel_0.9"
+          ]
+        },
+        "visibleText": [
+          "EAST DEAD-DROP\nWalk to the cache (3m)\nPress F to place it",
+          "HEALTH 60\nWANTED . . .",
+          "★ DELIVERY COMPLETE ★\nThe parcel has been delivered.\nR to reset"
+        ]
+      },
+      {
+        "event": "completion",
+        "time": 32.53333282470703,
+        "mode": "foot",
+        "keys": [
+          "F"
+        ],
+        "mission": "complete",
+        "player": [
+          49.420528411865234,
+          0.13499987125396729,
+          18.746315002441406
+        ],
+        "vehicle": [
+          47.60508728027344,
+          -0.009999275207519531,
+          17.460317611694336
+        ],
+        "health": 60,
+        "grounded": true,
+        "restarts": 0,
+        "routeChapter": {
+          "present": true,
+          "valid": true,
+          "complete": true,
+          "cacheExists": true,
+          "cacheActive": true,
+          "actorChild": false,
+          "originalMeshReuse": true,
+          "componentCount": 1,
+          "stage": 2,
+          "rendererCount": 5,
+          "objective": "EAST DEAD-DROP COMPLETE",
+          "cachePosition": [
+            50,
+            0.14000000059604645,
+            18
+          ],
+          "meshNames": [
+            "dumpster_a_body",
+            "dumpster_a_lid",
+            "dumpster_a_rail",
+            "dumpster_a_wheel_-0.9",
+            "dumpster_a_wheel_0.9"
+          ]
+        },
+        "visibleText": [
+          "★ EAST DEAD-DROP COMPLETE ★\nThis route stage is finished.",
+          "HEALTH 60\nWANTED . . .",
+          "★ DELIVERY COMPLETE ★\nThe parcel has been delivered.\nR to reset"
+        ]
+      },
+      {
+        "event": "reset",
+        "time": 34.03333282470703,
+        "mode": "foot",
+        "keys": [
+          "R"
+        ],
+        "mission": "active",
+        "player": [
+          0,
+          0.2616667151451111,
+          1.7000000476837158
+        ],
+        "vehicle": [
+          3.5395970344543457,
+          -3.5795130770566175e-7,
+          7.993959903717041
+        ],
+        "health": 100,
+        "grounded": false,
+        "restarts": 1,
+        "routeChapter": {
+          "present": true,
+          "valid": true,
+          "complete": false,
+          "cacheExists": true,
+          "cacheActive": false,
+          "actorChild": false,
+          "originalMeshReuse": true,
+          "componentCount": 1,
+          "stage": 0,
+          "rendererCount": 0,
+          "objective": "",
+          "cachePosition": [
+            50,
+            0.14000000059604645,
+            18
+          ],
+          "meshNames": [
+            "dumpster_a_body",
+            "dumpster_a_lid",
+            "dumpster_a_rail",
+            "dumpster_a_wheel_-0.9",
+            "dumpster_a_wheel_0.9"
+          ]
+        },
+        "visibleText": [
+          "HEALTH 100\nWANTED . . .",
+          "COURIER: grab the YELLOW parcel\nOBJECTIVE: reach the parcel  (4 m) [30s]\nWASD move   E enter/exit coupe   F grab/deliver   R reset"
+        ]
+      }
+    ]
+  },
+  "hud_change": {
+    "changed_files": [
+      "game/Assets/Game/RouteMission.cs"
+    ],
+    "chapter_logic_unchanged": true,
+    "source": "3f5a0ef117c20fabf75d72495831ed75997af25b",
+    "recovered_proposal_commit": "b92e2e9",
+    "proposal_sha256": "24e266a1ab559e9fd93c17c342b7fdcd0732ffde41176235e637e06db7f4a64e",
+    "proposal_usage": {
+      "completion_tokens": 3165,
+      "input_tokens": 3003,
+      "output_tokens": 3165,
+      "prompt_tokens": 3003,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_time": 77.76,
+      "total_tokens": 6168
+    },
+    "correction": "Local Qwen's new active-objective layout, exact recovered proposal and local backing-depth correction. Existing courier completion remains visible and its full presentation is restored on reset.",
+    "capture_file_mtime_utc": "2026-10-06T12:38:24.174091+00:00",
+    "frame_sha256": "b7e32aed28b61d5982664435ec67d7752d87eb7900840860fcad8e0944c4b11d",
+    "build_id": "65582727ae1e98a883dd99485586bfda1f76ef69b2b056360b8d4b25e9c9b6af",
+    "cloud_pixel_review": "The active objective is now clearly readable and primary, with a dark backing; the old delivery receipt is secondary. The panel remains oversized for final polish."
+  },
+  "replay_provenance": {
+    "failed_local_request": {
+      "file": "response-000.json",
+      "sha256": "de90ab13284429f7b9498aae20a4ce48fa147df14be4ce26c36541e11af58b0a",
+      "usage": {
+        "completion_tokens": 8192,
+        "input_tokens": 9207,
+        "output_tokens": 8192,
+        "prompt_tokens": 9207,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 201.8,
+        "total_tokens": 17399
+      },
+      "finish_reason": "length",
+      "calls": []
+    },
+    "resolution": "Two short native steering measurements informed cloud-authored ordinary-input acceptance timing. No gameplay code, actor transforms, source APIs or gates were bypassed.",
+    "measured_steering": {
+      "attempt": 2,
+      "candidate": "3f5a0ef117c20fabf75d72495831ed75997af25b",
+      "chapter_complete_claimed": false,
+      "cloud_role": "external normal-input acceptance composition",
+      "evidence": "evidence/q0098-2198d5a1-steering-2",
+      "pose": {
+        "error_degrees": 2.0235519409179688,
+        "forward": [
+          0.9993764162063599,
+          0,
+          0.03531026840209961
+        ],
+        "position": [
+          11.397150039672852,
+          -0.009999990463256836,
+          16.174814224243164
+        ],
+        "time": 24.950000762939453,
+        "yaw": 87.97644805908203
+      },
+      "turn_seconds": 1.4734
+    }
+  },
+  "remaining_visuals": "The completion image shows a legible chapter ending, but an extremely rough green/cyan marker, foreground car obstruction and plain east-street walls remain. Existing broad street FIX remains open; fresh local chapter critique is pending.",
+  "live_state": {
+    "controller_pid": 27264,
+    "round": "q0098-2198d5a1",
+    "stage": "chapter-legacy-regressions",
+    "activity": "unity-play",
+    "owned_process_label": "unity-play",
+    "owned_pid": 34402,
+    "regressions": [
+      {
+        "test": "courier",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "motor",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "walk",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "world",
+        "passed": true,
+        "failure": null
+      }
+    ],
+    "blocker": null,
+    "cpu_tests_each_host": 267
+  },
+  "notes": [
+    "The full route lasts36.02seconds. Chapter completion at32.53seconds is a component milestone, not nine-to-eleven-minute acceptance.",
+    "The chapter-gate hash is the collected native snapshot before subsequent regression annotations. Capture/trace/scenario hashes identify the actual run.",
+    "Actual PNGs are retained privately; this report intentionally omits private Library identifiers.",
+    "Latest source and accepted checkpoint remain distinct; no broad visual or final-game promotion."
+  ],
+  "failure_counters": {
+    "task_failures": 24,
+    "failure_streak": 1,
+    "diagnosis_used": true
+  },
+  "hard_cap_utc": "2026-10-08T06:33:12Z",
+  "final_game_accepted": false
+}
