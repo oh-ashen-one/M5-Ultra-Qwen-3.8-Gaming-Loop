@@ -204,7 +204,10 @@ class ContinuousRunner(Runner):
         if task.get('polish'):
             images=[('AI-generated Chicago target, not an actual game frame',self.refs/target_for(task))]
             previous=self.store.get('latest_visual_milestone',{})
-            if previous.get('evidence'):
+            if self.store.get('accepted_map_extension'):
+                from qualify_map_extension import accepted_map_images
+                images += accepted_map_images(self,self.store.get('accepted_map_extension'))
+            elif previous.get('evidence'):
                 from qualify_visual_replay import accepted_visual_images
                 images += accepted_visual_images(self,previous)
         return self.model.session('builder',ident+'-builder',

@@ -4,7 +4,7 @@ import math
 import time
 import uuid
 
-from loop_controller.core import Halt, atomic, now
+from loop_controller.core import Halt, atomic, now, sha, verify_seal, read_json
 from loop_controller.continuous_tasks import TASKS
 from loop_controller.features import pavement_coverage
 from loop_controller.delivery_policy import queue_milestone
@@ -29,6 +29,24 @@ MAP_TASK = dict(id='connected-map-extension', phase='world', checks=[], maximum=
 def outside_distance(position):
     x, _, z = position
     return max(-1-x, x-6, -2-z, z-30, 0)
+
+
+def accepted_map_images(runner, record):
+    from continue_game_queue import review_captures
+    bundle=runner.store.root/record['evidence']
+    note='game/Notes/map-'+bundle.name+'.json'
+    accepted=runner.store.get('last_playable_checkpoint')
+    if json.loads(git(runner.repo,'show',accepted+':'+note))!=record:
+        raise Halt('Accepted map record differs from its Git note')
+    changed=git(runner.repo,'diff','--name-only',record['candidate'],accepted).splitlines()
+    if any(not p.startswith('game/Notes/') for p in changed):
+        raise Halt('Accepted map comparison is stale for current playable source')
+    manifest=verify_seal(bundle/'captures',record['capture_manifest_sha256'])
+    gate=read_json(bundle/'scoped-gate.json')
+    if manifest.get('candidate')!=record['candidate'] or not gate.get('passed'):
+        raise Halt('Accepted map evidence identity mismatch')
+    frames,times=review_captures(MAP_TASK,bundle)
+    return [('ACTUAL accepted connected map t'+str(times[p.name]),p) for p in frames[:2]]
 
 
 def inspect_extension(rows):
@@ -113,7 +131,8 @@ def qualify_one_extension(runner):
         if not review.get('ok') or review.get('verdict')!='PASS':
             runner.reject_scoped(task,ident,review,candidate);continue
         record=dict(candidate=candidate,evidence=str(bundle.relative_to(runner.store.root)),
-            accepted_utc=now(),review=review,scope=task['outcome'],final_game_accepted=False)
+            accepted_utc=now(),review=review,scope=task['outcome'],final_game_accepted=False,
+            capture_manifest_sha256=sha((bundle/'captures/manifest.json').read_bytes()))
         note=runner.project/'Notes'/('map-'+ident+'.json');atomic(note,record)
         git(runner.repo,'add','--',str(note.relative_to(runner.repo)))
         git(runner.repo,'-c','user.name=Evidence controller',

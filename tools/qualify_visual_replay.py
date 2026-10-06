@@ -133,6 +133,8 @@ def verify_completed_native(bundle, candidate, probe, receipt):
 def qualify_saved_visual_candidate(runner, task, ident, candidate, *, completed_native=None):
     """Return True only when this attempt was handled as a scoped visual pass/failure."""
     if task.get('id') != 'chicago-polish-whole-route':return False
+    # The old fixed corridor replay is not a comparison fixture for an expanded map.
+    if runner.store.get('accepted_map_extension'):return False
     accepted = runner.store.get('last_playable_checkpoint')
     changed = git(runner.repo, 'diff', '--name-only', accepted, candidate).splitlines()
     names = asset_only_changes(changed)
