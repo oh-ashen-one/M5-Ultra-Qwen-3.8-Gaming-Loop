@@ -125,6 +125,10 @@ class OrderedRelay(GroundCitedReview):
         if not (self.project/PATH).exists():raise Halt('Local relay component was not saved')
         candidate=self.checkpoint_source('Local Qwen: add ordered three-site relay chapter')
         self.store.set(source_checkpoint=candidate,candidate_commit=candidate)
+        return self.install(ident,raw)
+
+    def install(self,ident,raw):
+        files=Files(self.project,self.store)
         matches=[(i,t) for i,t in enumerate(raw.splitlines(),1) if 'RouteMission.Install(body,cam);' in t]
         if len(matches)!=1:raise Halt('Require exact unchanged RouteMission installation')
         line,old=matches[0];edit=SelectedEdit(files,BOOT,line,line,max_lines=3)

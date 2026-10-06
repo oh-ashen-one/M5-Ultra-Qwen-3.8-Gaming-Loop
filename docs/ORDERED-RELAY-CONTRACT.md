@@ -12,7 +12,7 @@ This implements local Qwen's saved three-site proposal as a short new gameplay i
 
 Each stationary prop reuses the original dumpster mesh, fits within a maximum dimension of 1 m, and stands with its rendered base at sidewalk Y0.20. One matching solid collider represents each prop. Number labels and a compact lower-right objective panel identify the next site without changing existing HUD panels, actors, pavement or camera.
 
-Local Qwen owns `Assets/Game/RelaySequence.cs` and one `RelaySequence.Install(body,cam);` line immediately after the existing `RouteMission.Install(body,cam);` in Bootstrap. The actual Walker speed is 3.2 m/s. No new assets, primitives, external game-state writes or fixture-specific code.
+Local Qwen owns the `RelaySequence.cs`, `RelaySequence.Props.cs` and `RelaySequence.Hud.cs` partials of one component, and one `RelaySequence.Install(body,cam);` line immediately after the existing `RouteMission.Install(body,cam);` in Bootstrap. The actual Walker speed is 3.2 m/s. No new assets, primitives, external game-state writes or fixture-specific code.
 
 ## Gameplay state
 
