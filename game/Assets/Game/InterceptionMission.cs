@@ -105,7 +105,7 @@ namespace ChicagoGame
             { Failed = true; Objective = "MISSION FAILED\nMissing player prefab\nStopped " + Stopped + " / Escaped " + Escaped + "\nR reset"; return; }
             var go = new GameObject("InterceptRunner" + (i + 1));
             go.transform.localScale = Vector3.one;
-            go.transform.rotation = Quaternion.identity;
+            go.transform.rotation = Quaternion.LookRotation(Vector3.right, Vector3.up);
             var child = Instantiate(prefab, go.transform);
             child.transform.localPosition = new Vector3(child.transform.localPosition.x, -0.79f, child.transform.localPosition.z);
             go.transform.position = SPAWN[i];
