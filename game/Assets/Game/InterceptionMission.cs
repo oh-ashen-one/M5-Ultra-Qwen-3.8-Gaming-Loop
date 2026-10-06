@@ -38,7 +38,7 @@ namespace ChicagoGame
             if (LoopSignals.Restarts != lastRestarts) { lastRestarts = LoopSignals.Restarts; Cleanup(); return; }
             if (!Active)
             {
-                if (relay && relay.AllComplete) { Active = true; armedAt = Time.time; }
+                if (relay && relay.AllComplete) { Active = true; armedAt = Time.time; UpdateObj(); }
                 return;
             }
             if (!receiptDone)
