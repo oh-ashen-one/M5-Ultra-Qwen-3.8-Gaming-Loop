@@ -1,0 +1,32 @@
+{
+  "utc": "2026-10-06T15:36:58.294166+00:00",
+  "state": {
+    "status": "running",
+    "controller_pid": 70410,
+    "current_round": "q0110-eafc0e1f",
+    "stage": "local-relay-state",
+    "activity": "local-builder",
+    "owned_process": null,
+    "blocker": null,
+    "source_checkpoint": "248c1cd14db9b70da9ce354f21b5a8afeab35cee",
+    "candidate_commit": "248c1cd14db9b70da9ce354f21b5a8afeab35cee",
+    "last_playable_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "task_failures": 24,
+    "failure_streak": 1,
+    "diagnosis_used": true,
+    "overall_deadline_epoch": 1791441192
+  },
+  "model": {
+    "status": "ok",
+    "active_requests": 1,
+    "waiting_requests": 0
+  },
+  "native_results": {},
+  "relay_outcome": null,
+  "recent_commits": [
+    "248c1cd Local Qwen: apply completed east street ground installation",
+    "4695512 Local Qwen: add original street sidewalks curbs and road markings",
+    "c53cb5d Local Qwen: apply completed cache ground-offset correction"
+  ],
+  "relay_source_bytes": null
+}
