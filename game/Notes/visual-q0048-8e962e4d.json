@@ -1,0 +1,40 @@
+{
+  "accepted_utc": "2026-10-06T03:12:50.834806+00:00",
+  "candidate": "27cbe3e0addd7348656b6d740595c60ec2d7ab89",
+  "capture_manifest_sha256": "e3979b3fac75068a266d89e3fc205994870618774a8bf99a1f5bfafb100f52d2",
+  "evidence": "evidence/q0048-8e962e4d",
+  "final_game_accepted": false,
+  "focus": {
+    "assets": [
+      "Art/coupe.py"
+    ],
+    "decision": "Qualify saved original-asset changes with identical accepted route and camera points"
+  },
+  "replay_reuse": {
+    "accepted_candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+    "accepted_checkpoint": "e38b0681046fb39cab7f8ec182495903729b5ae6",
+    "candidate": "27cbe3e0addd7348656b6d740595c60ec2d7ab89",
+    "changed_paths": [
+      "game/Art/coupe.py",
+      "game/ArtSources/coupe/provenance.json",
+      "game/ArtSources/coupe/source.blend",
+      "game/Assets/Resources/Generated/coupe/scene.fbx"
+    ],
+    "final_game_accepted": false,
+    "game_authorship": "local Qwen",
+    "original_replay": "evidence/q0035-e5f1e32d/captures/scenario.json",
+    "reuse_author": "cloud controller infrastructure",
+    "reuse_kind": "immutable accepted input/camera reuse",
+    "scenario_sha256": "4c378925516fda3bef07b0bb015c2a73567a420ad928fba2449a42af43721915",
+    "source_evidence": "evidence/q0047-bdab27ce",
+    "source_manifest_sha256": "3442598cda2cea0ad3b00f5d0f97e40db76a46f0e7188a5e8dee36949f11e3ba"
+  },
+  "review": {
+    "fixes": [
+      "drive.png t15.5 camera crowding: pull the chase camera back and up (roughly 2-3 m further, slight downward pitch) and widen FOV so the entire car silhouette fits with clear margin above the roof and space on both flanks; also nudge the parked/driven car lane offset laterally away from the red-brick facade so the left flank no longer reads as clipped into the window ledge, and cull or push out the vertical pole stabbing the lower center of frame."
+    ],
+    "ok": true,
+    "summary": "Accepted as a bounded coupe-art improvement only. At the identical t3.2 spawn camera, before.png shows the blue car as a flat boxy slab with a skirt and no wheel definition; after.png shows the same car with distinct dark wheels, cut wheel arches, a tapered hood and a separated cab mass — a real silhouette change, not a recolor, and it improves car readability against the grey road. HUD, player, yellow parcel anchor, building geometry and route are pixel-identical, consistent with an Art/coupe.py-only change and replay reuse; regression suite (walk, world, motor, courier, failure-retry, combat foot/wall/driving, aim tests) passed on candidate 27cbe3e0. However, drive.png at t15.5 shows the bounded acceptance is fragile: the chase camera is jammed inches behind the car, the car's left flank is flush against the red-brick facade and its window ledge, and the bright green beacon ring blooms directly into the car's right side, fusing objective anchor and vehicle into one unreadable blob. The vertical pole clipping the lower frame and the stacked-box cabin confirm the crowding. This PASS covers the coupe silhouette only — Chicago reference quality and ten-minute pacing remain unaccepted, and the t15.5 composition is the largest remaining visible defect.",
+    "verdict": "PASS"
+  }
+}
