@@ -74,7 +74,7 @@ namespace ChicagoGame
             if (_relay != null && _relay.Active)
             {
                 string two = _relay.Objective ?? "OBJECTIVE UNAVAILABLE";
-                string foot = _relay.AllComplete ? "\nDelivery complete" : _relay.Failed ? "\nfailed / R" : "";
+                string foot = "\nDelivery complete / Dead-drop complete";
                 s = two + foot;
             }
             else if (_route != null && _route.RouteStage >= 1)
