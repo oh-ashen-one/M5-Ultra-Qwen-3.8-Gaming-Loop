@@ -68,4 +68,18 @@ class StreetGroundTests(unittest.TestCase):
             with self.assertRaises(Halt):review_captures(dict(id='east-street-ground',review_frame_times=[42]),bundle)
             with self.assertRaises(Halt):review_captures(dict(id='east-street-ground',review_frame_times=[38.8,38.8]),bundle)
 
+    def test_install_recovery_accepts_only_the_exact_completed_two_statements(self):
+        from unittest.mock import patch
+        from loop_controller.core import sha
+        import resume_saved_ground_install as saved
+        old='            EastStreetDetail.Install(parent);\n'
+        content='EastStreetDetail.Install(parent);\n            EastStreetGround.Install(parent);'
+        def check(body,finish='stop'):
+            raw=json.dumps({'choices':[{'finish_reason':finish,'message':{'content':body,'tool_calls':None}}]}).encode()
+            with patch.object(saved,'RESPONSE_SHA',sha(raw)):return saved.saved_install(raw,old)
+        self.assertEqual(check(content),content)
+        for body in [content+'Destroy(parent);',content.replace('Ground','Other'),'Here is the edit: '+content]:
+            with self.subTest(body=body),self.assertRaises(Halt):check(body)
+        with self.assertRaises(Halt):check(content,'length')
+
 if __name__=='__main__':unittest.main()

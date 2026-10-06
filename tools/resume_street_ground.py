@@ -56,14 +56,17 @@ def validate_module(content):
 
 class StreetGround(ChapterPresentation):
     def validate_recovery(self,old):
-        validate_pause(old);e=self.store.root/'evidence'/ROUND
+        validate_pause(old);self.verify_presentation()
+        if (self.project/PATH).exists():raise Halt('Never overwrite an existing ground module')
+
+    def verify_presentation(self):
+        e=self.store.root/'evidence'/ROUND
         for name,digest in HASHES.items():
             if sha((e/name).read_bytes())!=digest:raise Halt('Preserve completed presentation/plan evidence: '+name)
         verify_seal(e/'captures',HASHES['captures/manifest.json'])
         g=read_json(e/'chapter-gate.json');regs=g.get('regressions',{}).get('regressions',[])
         if not g.get('passed') or not g.get('presentation_geometry',{}).get('passed') or len(regs)!=10 or not all(x['gate'].get('passed') for x in regs):
             raise Halt('Require all native presentation and legacy passes')
-        if (self.project/PATH).exists():raise Halt('Never overwrite an existing ground module')
 
     def recovery_settings(self):
         return dict(street_ground_attempted=True,
