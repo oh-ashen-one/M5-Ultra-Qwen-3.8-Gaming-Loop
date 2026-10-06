@@ -82,7 +82,12 @@
     "passed": true,
     "count_each_host": 299
   },
-  "qualification_status": "Positive native contract passed. Red/reset cases, ten regressions and fresh local scoped visual review continue; full HUD qualification pending.",
+  "qualification_status": "Positive and wrong-order/timeout native contracts passed. No-handoff, ten regressions and fresh local scoped visual review remain pending; full HUD qualification is not claimed.",
   "broad_accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
-  "final_game_accepted": false
+  "final_game_accepted": false,
+  "wrong_order_timeout_native": {
+    "passed": true,
+    "hud_passed": true,
+    "failure": null
+  }
 }
