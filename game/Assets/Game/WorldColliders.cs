@@ -115,6 +115,28 @@ namespace ChicagoGame
             var apMr = apGo != null ? apGo.GetComponent<MeshRenderer>() : null;
             if (apMr != null) { var apMat = new Material(apMr.sharedMaterial); apMat.color = new Color(0.30f, 0.30f, 0.29f, 1f); apMr.material = apMat; }
 
+            // Frame alley entrance with existing props (no new assets).
+            {
+                var bp = GameObject.Find("bollard01"); var dp = GameObject.Find("dumpster_a");
+                var targets = new[] { new Vector2(8f, 8.8f), new Vector2(8f, 19.65f), new Vector2(16f, 9.5f) };
+                var srcs = new[] { bp, bp, dp };
+                var names = new[] { "AlleyBollardS", "AlleyBollardN", "AlleyDumpster" };
+                for (int i = 0; i < 3; i++)
+                {
+                    if (srcs[i] == null) continue;
+                    var inst = Object.Instantiate(srcs[i]); inst.name = names[i];
+                    inst.transform.SetParent(go.transform, true);
+                    var mn = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+                    var mx = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+                    foreach (var rr in inst.GetComponentsInChildren<Renderer>())
+                    { var rb = rr.bounds; mn = Vector3.Min(mn, rb.min); mx = Vector3.Max(mx, rb.max); }
+                    if (mn.x > mx.x) continue;
+                    var cxz = new Vector3((mn.x + mx.x) * 0.5f, mn.y, (mn.z + mx.z) * 0.5f);
+                    var delta = new Vector3(targets[i].x - cxz.x, 0.14f - cxz.y, targets[i].y - cxz.z);
+                    inst.transform.position += delta;
+                }
+            }
+
             // 3) Understandable end barriers using the original fence mesh.
             var fw = GameObject.Find("facade_wall");
             if (fw != null)
