@@ -38,6 +38,21 @@ class ReplayContractTests(unittest.TestCase):
         self.assertEqual(block_span(source,'void Build()'),(2,5))
         with self.assertRaises(Halt):block_span(source+source,'void Build()')
 
+    def test_known_key_casing_changes_no_timing_or_original_submission(self):
+        value=copy.deepcopy(MISSION_EXAMPLE)
+        for step in value['input_steps']:step['keys']=[key.lower() for key in step['keys']]
+        original=copy.deepcopy(value)
+        result=validate_submission(value,self.task)
+        self.assertEqual(value,original)
+        self.assertEqual(result['scenario']['steps'],MISSION_EXAMPLE['input_steps'])
+        self.assertEqual(result['scenario']['duration'],original['duration'])
+        self.assertEqual(result['scenario']['captures'],original['captures'])
+        self.assertEqual(len(result['input_key_normalizations']),len(value['input_steps']))
+        for bad in ([],['unknown'],[' w'],['W','unknown']):
+            invalid=copy.deepcopy(value);invalid['input_steps'][0]['keys']=bad
+            with self.subTest(keys=bad),self.assertRaises(ValueError):
+                validate_submission(invalid,self.task)
+
     def test_failure_retry_cannot_submit_a_route_without_R_and_later_interaction(self):
         task={**self.task,'checks':['failure_retry']};value=copy.deepcopy(MISSION_EXAMPLE)
         with self.assertRaisesRegex(ValueError,'ordinary R reset'):validate_submission(value,task)

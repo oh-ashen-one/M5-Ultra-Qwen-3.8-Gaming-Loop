@@ -1,6 +1,6 @@
 """Exact replay submission schema; validate before starting an expensive native build."""
 import json
-from .continuous_checks import validate_proposed
+from .continuous_checks import validate_proposed, KEYS
 from .model import tool, typed_arguments
 
 FIELDS = {
@@ -37,6 +37,14 @@ def finish_tool():
 
 def validate_submission(fields, task):
     value = typed_arguments({'name':'finish_task','arguments':fields}, [finish_tool()])
+    # Normalize only the spelling of known keys; preserve timings and physical actions.
+    canonical={name.casefold():name for name in KEYS}
+    normalizations=[]
+    for index,step in enumerate(value['input_steps']):
+        previous=list(step['keys'])
+        step['keys']=[canonical.get(key.casefold(),key) for key in previous]
+        if step['keys']!=previous:
+            normalizations.append({'step':index,'before':previous,'after':step['keys']})
     if not value['summary'].strip():
         raise ValueError('summary must describe the actual proposed replay')
     replay = validate_proposed({'duration':value['duration'], 'steps':value['input_steps'],
@@ -45,7 +53,8 @@ def validate_submission(fields, task):
         resets=[s for s in replay['steps'] if 'R' in s['keys']]
         if not any(s['start']>r['end'] and 'F' in s['keys'] for r in resets for s in replay['steps']):
             raise ValueError('Failure/retry requires ordinary R reset followed by later F interactions; native evidence must prove actual failure first')
-    return {'ok':True, 'summary':value['summary'][:2000], 'scenario':replay}
+    return {'ok':True, 'summary':value['summary'][:2000], 'scenario':replay,
+            'input_key_normalizations':normalizations}
 
 
 def replay_guide(task):

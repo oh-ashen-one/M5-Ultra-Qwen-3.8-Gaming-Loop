@@ -9,10 +9,23 @@ import resume_map_plan_completion as plan_recovery
 import resume_direct_map_builder as direct
 import resume_map_spans as spans
 import resume_pavement_completion as pavement
+import resume_map_replay_case as replay_case
 from loop_controller.core import Halt
 
 
 class MapExtensionTests(unittest.TestCase):
+    def test_saved_replay_recovery_requires_exact_stop_and_unchanged_proposal(self):
+        state=dict(source_checkpoint=replay_case.SOURCE,last_playable_checkpoint=replay_case.ACCEPTED,
+            current_round=replay_case.ROUND,task_index=7,task_failures=8,failure_streak=1,
+            diagnosis_used=True,overall_deadline_epoch=replay_case.HARD_CAP_EPOCH,
+            blocker=replay_case.BLOCKER,pavement_completion_attempted=True)
+        old=copy.deepcopy(state);replay_case.validate_replay_pause(state);self.assertEqual(state,old)
+        for key,value in [('map_replay_case_recovery_attempted',True),('source_checkpoint','other'),
+                          ('task_failures',0),('blocker','runtime fault')]:
+            with self.subTest(key=key),self.assertRaises(Halt):
+                replay_case.validate_replay_pause({**state,key:value})
+        with self.assertRaises(Halt):replay_case.saved_replay(b'changed original response')
+
     def test_pavement_completion_keeps_exact_stop_and_original_source(self):
         state=dict(source_checkpoint=pavement.SOURCE,last_playable_checkpoint=pavement.ACCEPTED,
             current_round=pavement.ROUND,task_index=7,task_failures=8,failure_streak=1,
