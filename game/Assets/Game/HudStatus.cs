@@ -38,7 +38,7 @@ namespace ChicagoGame
             card.transform.localScale = new Vector3(0.60f, 0.22f, 0.01f);
             var col = card.GetComponent<Collider>();
             if (col != null) Destroy(col);
-            var mat = new Material(Shader.Find("Unlit/Color"));
+            var mat = new Material(Resources.Load<Shader>("HudOpaque"));
             mat.color = new Color(0.06f, 0.07f, 0.085f, 1f);
             card.GetComponent<Renderer>().sharedMaterial = mat;
             cardRend = card.GetComponent<Renderer>();
