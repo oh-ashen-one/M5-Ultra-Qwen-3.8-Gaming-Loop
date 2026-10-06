@@ -1,0 +1,190 @@
+{
+  "utc": "2026-10-06T16:02:31.322107+00:00",
+  "state": {
+    "status": "running",
+    "controller_pid": 71549,
+    "current_round": "q0111-673150bb",
+    "stage": "relay-legacy-regressions",
+    "activity": "unity-play",
+    "owned_process": {
+      "label": "unity-play",
+      "pid": 74595,
+      "start": 1791302550.877527
+    },
+    "blocker": null,
+    "source_checkpoint": "8ef71373663d49349ce8a74827b27e64036614e1",
+    "candidate_commit": "8ef71373663d49349ce8a74827b27e64036614e1",
+    "last_playable_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "task_failures": 24,
+    "failure_streak": 1,
+    "diagnosis_used": true,
+    "overall_deadline_epoch": 1791441192
+  },
+  "model": {
+    "status": "ok",
+    "active_requests": 0,
+    "waiting_requests": 0
+  },
+  "native_results": {
+    "inactive": {
+      "evidence": "evidence/q0111-673150bb-inactive",
+      "passed": true,
+      "failure": null,
+      "build_id": "e7628be23d95313f3b2c65f7ba901632bf4ee862b5efcfbfddf4628adc96be9a",
+      "relay_contract": {
+        "activations": [],
+        "case": "inactive",
+        "completion_latched_after_deadline": false,
+        "completions": [],
+        "failure": null,
+        "final_game_accepted": false,
+        "measured_relay_seconds": null,
+        "ordered_interactions": [],
+        "passed": true,
+        "red_waiting_is_not_mission_duration": true,
+        "resets": [],
+        "timeouts": [],
+        "wrong_orders": []
+      },
+      "compile_errors": []
+    },
+    "positive": {
+      "evidence": "evidence/q0111-673150bb-positive",
+      "passed": true,
+      "failure": null,
+      "build_id": "a9a58025a7917c84ad8b420485c9299ce0777e66aef04ee3ff8672ed54b4c740",
+      "relay_contract": {
+        "activations": [
+          32.53333282470703
+        ],
+        "case": "positive",
+        "completion_latched_after_deadline": true,
+        "completions": [
+          59.63333511352539
+        ],
+        "failure": null,
+        "final_game_accepted": false,
+        "measured_relay_seconds": 27.10000228881836,
+        "ordered_interactions": [
+          {
+            "count": 1,
+            "player": [
+              53.580528259277344,
+              0.19500255584716797,
+              25.94631576538086
+            ],
+            "time": 38.63333511352539
+          },
+          {
+            "count": 2,
+            "player": [
+              41.100528717041016,
+              0.19500064849853516,
+              9.946314811706543
+            ],
+            "time": 49.03333282470703
+          },
+          {
+            "count": 3,
+            "player": [
+              28.620527267456055,
+              0.19499874114990234,
+              25.94631576538086
+            ],
+            "time": 59.63333511352539
+          }
+        ],
+        "passed": true,
+        "red_waiting_is_not_mission_duration": true,
+        "resets": [
+          80.03333282470703
+        ],
+        "timeouts": [],
+        "wrong_orders": []
+      },
+      "compile_errors": []
+    },
+    "wrong-timeout": {
+      "evidence": "evidence/q0111-673150bb-wrong-timeout",
+      "passed": true,
+      "failure": null,
+      "build_id": "356705dc2151254257d5d777c57baa69ab958801ec18f24e9ceb703ca56845ac",
+      "relay_contract": {
+        "activations": [
+          32.53333282470703
+        ],
+        "case": "wrong-timeout",
+        "completion_latched_after_deadline": false,
+        "completions": [],
+        "failure": null,
+        "final_game_accepted": false,
+        "measured_relay_seconds": null,
+        "ordered_interactions": [
+          {
+            "count": 1,
+            "player": [
+              53.580528259277344,
+              0.19500255584716797,
+              25.94631576538086
+            ],
+            "time": 38.63333511352539
+          }
+        ],
+        "passed": true,
+        "red_waiting_is_not_mission_duration": true,
+        "resets": [
+          79.03333282470703
+        ],
+        "timeouts": [
+          77.53333282470703
+        ],
+        "wrong_orders": [
+          49.83333206176758
+        ]
+      },
+      "compile_errors": []
+    }
+  },
+  "relay_outcome": null,
+  "recent_commits": [
+    "8ef7137 Local Qwen: relay distance-controls",
+    "32ebaef Local Qwen: relay latched-outcome",
+    "abf106c Local Qwen: relay actual-mode-api"
+  ],
+  "relay_source_bytes": 3297,
+  "positive_build": "a9a58025a7917c84ad8b420485c9299ce0777e66aef04ee3ff8672ed54b4c740",
+  "capture_metadata": [
+    {
+      "name": "frame-004.png",
+      "scheduled_seconds": 38.7,
+      "mtime_utc": "2026-10-06T15:58:32.427970+00:00",
+      "sha256": "218c4ca6d9470067c729afec312a76a3cb0e5d77b13747cc7ddcd44474393335"
+    },
+    {
+      "name": "frame-006.png",
+      "scheduled_seconds": 59.75,
+      "mtime_utc": "2026-10-06T15:58:57.345137+00:00",
+      "sha256": "fb647417dde70892b93a99eb1d8b342bdb23e445d3e420ee0e7738bd076a535c"
+    }
+  ],
+  "positive_evidence_hashes": {
+    "relay-gate.json": "bbf7a583bf0937f20c84210d3e5b07ae20251cba340969f3dc12ad367d4fe31f",
+    "captures/trace.jsonl": "69b28ee6ebf0c6c7d508f4e44073c9c12ab9ac862288d28cd1576a3aaec3bfc8",
+    "captures/scenario.json": "6a6f95705a900d4c2ab1ad146ab3ee6a7910fbb702d89cb8220f7c38e6beea49"
+  },
+  "source_published": true,
+  "controller_revision": "2724c302a55f1bc48f83904f6e0e7fdb45c699ef",
+  "cpu_tests_each_host": 291,
+  "publisher_recovery": {
+    "old_pid_absent": true,
+    "one_restored_pid": 21326,
+    "unchanged_config_branch_and_deadline": true,
+    "verified_remote_source": "8ef71373663d49349ce8a74827b27e64036614e1"
+  },
+  "cloud_pixel_review": {
+    "observed": "Numbered original-mesh relay props and actual1/3 and3/3HUD states are visible. Relay text is small within its card; the character remains crude, lower-window/transom surfaces show striped/stepped overlap artifacts, and facade repetition remains obvious.",
+    "scope": "native mechanical milestone only",
+    "fresh_local_visual_review": "pending",
+    "final_game_accepted": false
+  }
+}
