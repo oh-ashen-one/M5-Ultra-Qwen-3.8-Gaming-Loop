@@ -11,7 +11,7 @@ namespace ChicagoGame
         static MissionDirectorHud _inst;
         GameObject _player; Camera _cam;
         TextMesh _board; Renderer[] _hide; Transform _hudStatus;
-        RelaySequence _relay; RouteMission _route; CourierMission _courier;
+        RelaySequence _relay; RouteMission _route; CourierMission _courier; InterceptionMission _interception;
 
         public static void Install(GameObject player, Camera cam)
         {
