@@ -1,0 +1,52 @@
+{
+  "utc": "2026-10-06T15:07:53.818950+00:00",
+  "state": {
+    "status": "running",
+    "controller_pid": 68873,
+    "current_round": "q0108-0480baca",
+    "stage": "local-corrected-varied-mission-design",
+    "activity": "local-planner",
+    "owned_process": null,
+    "blocker": null,
+    "source_checkpoint": "248c1cd14db9b70da9ce354f21b5a8afeab35cee",
+    "candidate_commit": "248c1cd14db9b70da9ce354f21b5a8afeab35cee",
+    "last_playable_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "task_failures": 24,
+    "failure_streak": 1,
+    "diagnosis_used": true,
+    "overall_deadline_epoch": 1791441192
+  },
+  "model": {
+    "status": "ok",
+    "active_requests": 1,
+    "waiting_requests": 0
+  },
+  "ground_outcome": {
+    "accepted": true,
+    "candidate": "248c1cd14db9b70da9ce354f21b5a8afeab35cee",
+    "evidence": "evidence/q0107-68764670",
+    "final_game_accepted": false,
+    "native_pass": true,
+    "new_critic_inference": false,
+    "original_failure_preserved": true,
+    "original_response_sha256": "8a6e725edf561ff300e7d3ca84cb02d7cd6c5a72f2afa7ddeca8a7a2e20d2a7a",
+    "review": {
+      "fixes": [],
+      "ok": true,
+      "summary": "Scoped PASS for east-street-ground polish with mission_complete. Native frames show the east street as a dark road with a matte yellow dashed centerline (route evidence), lighter raised sidewalks, and continuous ~6cm curb faces stepping down from sidewalk Y0.20 to road Y0.14 at the post-completion walkover points (north ~38.4s, south ~45.1s). Sidewalks have visible physical support against building bases with no floating surfaces, no route blockage, and 17 added components with colliders (52 total, matching declared) while original road geometry is retained. Mission contract verified end-to-end: active at 14.35s with correct RouteHud distance (28m at 27.3s), chapter complete at 32.53s shown in HUD at 38.8s/45.5s, R-reset at 50.03s restoring the courier mission at 50.6s with the parcel and coupe present; east cache bounds remain at (50,0.87,18), distinct from legacy pad (1,0.15,26). Broader art quality, actor design/occlusion, camera, repetitive facades, the emissive legacy green marker, and varied-mission pacing remain explicitly open and were not credited here.",
+      "verdict": "PASS",
+      "verified_capture_time_citations": {
+        "frame-008.png": 27.3234,
+        "frame-014.png": 38.8,
+        "frame-016.png": 45.5,
+        "frame-018.png": 50.6
+      }
+    }
+  },
+  "revised_plan": null,
+  "recent_commits": [
+    "248c1cd Local Qwen: apply completed east street ground installation",
+    "4695512 Local Qwen: add original street sidewalks curbs and road markings",
+    "c53cb5d Local Qwen: apply completed cache ground-offset correction"
+  ]
+}
