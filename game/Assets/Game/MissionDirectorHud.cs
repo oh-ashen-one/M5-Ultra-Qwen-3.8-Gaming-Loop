@@ -47,7 +47,10 @@ namespace ChicagoGame
                 cl.transform.localScale = new Vector3(1.5f, .36f, .01f);
                 cl.transform.localRotation = Quaternion.identity;
                 cl.SetActive(true);
-                foreach (var r in cl.GetComponentsInChildren<Renderer>()) r.enabled = true;
+                var unlitShader = Shader.Find("Unlit/Color");
+                var boardMat = new Material(unlitShader);
+                boardMat.color = new Color(0.06f, 0.07f, 0.085f, 1f);
+                foreach (var r in cl.GetComponentsInChildren<Renderer>()) { r.material = boardMat; r.enabled = true; }
                 foreach (var col in cl.GetComponentsInChildren<Collider>()) col.enabled = false;
             }
 
