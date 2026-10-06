@@ -1,0 +1,9 @@
+# Connected-map stage
+
+The accepted map remains the [measured 7 × 32 m corridor](../../docs/MAP-STATUS.md) at `d269dc43`. Restored source `9062fb8` has the identical game tree. Courier candidate `e45b26d6` remains rejected on visible aim and is not part of the map work.
+
+The first map planner, `q0051-7f3ba74b`, stopped at **04:04:48 UTC** after four source-reading turns without calling `submit_plan`. This was a **tool-turn limit**, not output-token exhaustion, a runtime fault or a compile failure. The planner also requested a nonexistent generated `scene.prefab`; the actual generated street asset is loaded through the existing Bootstrap API. No source edit, asset export, native build, map capture or accepted expansion resulted from this attempt.
+
+One diagnosed completion resumes the same ledger with the full relevant Bootstrap, WorldColliders, VehicleInteraction and Mission source attached. Its only tool is `submit_plan`, with one bounded turn. Qwen remains responsible for the decision and all subsequent game edits. Original planner history, counters 8/1, accepted game and October 8 06:33:12 UTC cap are preserved. Controller `9adce1a` passes **169 CPU tests on both Macs**; no model restart occurred.
+
+At **04:14:28 UTC**, `q0052-0380f1ce` was actively completing that plan with unchanged game source. The next acceptance is one connected extension: actual walking and driving at least 6 m beyond the old footprint, physical returns without reset teleportation, rendered support and collider continuity, meaningful captures, all ten existing mechanics regressions and fresh local visual review. A planning result or saved source alone does not count as a playable expansion.
