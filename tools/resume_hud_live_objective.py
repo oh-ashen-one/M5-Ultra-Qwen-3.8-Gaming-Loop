@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Repair native-observed HUD hierarchy/receipt faults through local tiny edits."""
 import re
-from resume_consolidated_hud import ConsolidatedHud,PATH,ACCEPTED
+from resume_consolidated_hud import ConsolidatedHud,PATH,ACCEPTED,TASK
 from resume_relay_source_repairs import RelaySourceRepairs
 from resume_three_day_queue import main
-from loop_controller.core import Halt,sha
+from loop_controller.core import Halt,sha,read_json
+from loop_controller.capacity_continuation import CapacityContinuation
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 
 SOURCE='a64f4bbd5f56b0c15bc105664b04ad60c1a4e283'
@@ -13,9 +14,21 @@ SOURCE_SHA='9b1d94bea95d0a849d130e822caac4e8e968b5ce7e1530a2188b963cb10049c1'
 GATE_SHA='7d220e92c6a3129fefab64d7752ee69faec5e1cf12566cff7730ddb1e3ce81e7'
 FAILURES=['relay-HUD-outside-captureTextRect','relay-HUD-outside-textRect','relay-objective-hidden',
     'relay-text-missing','chapter-objective-presentation-missing']
+CAPACITY_SOURCE='6ff596013fd2bfbc896cb338e1fc6cf7a5a59383'
+CAPACITY_ROUND='q0115-a478e7c8'
+CAPACITY_BLOCKER='Halt: Capacity wait: supervisor paused engine admission; preserve other jobs'
+PROOF_HASHES={'positive':'90c005b8bc9c90446705915b310becc4c6e167cfd080c0f2ed62a0e828edb2b3',
+    'wrong-timeout':'30a1f089b39f5f195b0424a206dfb2ac74f19a4acf0ca55106e3af59465e6264'}
 
 def validate_pause(old):
     import json
+    if old.get('blocker')==CAPACITY_BLOCKER:
+        expected=dict(source_checkpoint=CAPACITY_SOURCE,last_playable_checkpoint=ACCEPTED,current_round=CAPACITY_ROUND,
+            task_index=7,task_failures=24,failure_streak=1,diagnosis_used=True,overall_deadline_epoch=HARD_CAP_EPOCH,
+            hud_live_objective_repair_attempted=True)
+        if any(old.get(k)!=v for k,v in expected.items()) or old.get('hud_capacity_resume_attempted'):
+            raise Halt('Require exact first capacity yield with qualified HUD source and history intact')
+        return
     expected=dict(source_checkpoint=SOURCE,last_playable_checkpoint=ACCEPTED,current_round=ROUND,
         task_index=7,task_failures=24,failure_streak=1,diagnosis_used=True,overall_deadline_epoch=HARD_CAP_EPOCH,
         blocker='Halt: Consolidated HUD positive needs measured diagnosis: '+json.dumps(FAILURES))
@@ -23,17 +36,45 @@ def validate_pause(old):
         raise Halt('Require exact native HUD lookup failure and preserved history')
 
 class HudLiveObjective(ConsolidatedHud):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.capacity=CapacityContinuation(self)
+        unity=self.engines.unity;session=self.model.session
+        self.engines.unity=lambda *a,**kw:self.capacity.unity(unity,*a,**kw)
+        self.model.session=lambda *a,**kw:self.capacity.session(session,*a,**kw)
+
+    def wait_for_capacity(self):
+        self.capacity.wait('native-consolidated-hud-inactive' if self.resume_capacity else 'local-hud-repair')
+
     def validate_recovery(self,old):
         validate_pause(old)
+        self.resume_capacity=old.get('blocker')==CAPACITY_BLOCKER
+        if self.resume_capacity:
+            for case,digest in PROOF_HASHES.items():
+                p=self.store.root/'evidence'/(CAPACITY_ROUND+'-'+case)/'consolidated-hud-gate.json'
+                if sha(p.read_bytes())!=digest:raise Halt('Preserve passed native HUD proof: '+case)
+                gate=read_json(p)
+                if not gate.get('passed') or not gate.get('consolidated_hud',{}).get('passed') or gate.get('candidate_commit')!=CAPACITY_SOURCE:
+                    raise Halt('Capacity resume requires current-source native/HUD PASS')
+            return
         if sha((self.project/PATH).read_bytes())!=SOURCE_SHA:raise Halt('Local HUD source changed')
         p=self.store.root/'evidence'/(ROUND+'-positive')/'consolidated-hud-gate.json'
         if sha(p.read_bytes())!=GATE_SHA:raise Halt('Original native HUD rejection changed')
 
     def recovery_settings(self):
+        if self.resume_capacity:
+            return dict(hud_capacity_resume_attempted=True,recovery_route='same-queue-bounded-capacity-continuation',
+                recovery_change='Same owner retains locks and checks capacity every30seconds until the fixed cap; reuse passed positive/timeout proof, preserve interrupted no-handoff bundle, then remaining native/regressions/critic only when admitted.')
         return dict(hud_live_objective_repair_attempted=True,recovery_route='local-native-hud-lookup-repair',
             recovery_change='Read RelaySequence.Objective; correct truthful receipt footers; reacquire late-installed HudStatus. Preserve mechanics and native rejection; require actual active relay objective text in the rendered primary panel.')
 
     def patch(self,*args,**kwargs):return RelaySourceRepairs.patch(self,*args,**kwargs)
+
+    def work(self):
+        if not self.resume_capacity:return super().work()
+        ident=self.begin(TASK,'native-consolidated-hud-inactive')
+        results={case:dict(evidence='evidence/'+CAPACITY_ROUND+'-'+case,passed=True) for case in PROOF_HASHES}
+        self.qualify(ident,CAPACITY_SOURCE,results)
 
     def source(self,ident):
         raw=(self.project/PATH).read_text();lines=raw.splitlines(True)

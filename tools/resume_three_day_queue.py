@@ -82,7 +82,8 @@ def main(runner_type=ThreeDayRunner):
         if git(r.repo,'rev-parse','HEAD')!=old['source_checkpoint'] or git(r.repo,'status','--porcelain'):
             raise Halt('Expected the preserved checkpoint and clean local source')
         if (a.run_dir/'STOP').exists():raise Halt('Preserve an independent stop request')
-        r.model.ready()
+        capacity_ready=getattr(r,'wait_for_capacity',None)
+        if capacity_ready is None:r.model.ready()
         archive=a.run_dir/'policy-migrations'/uuid.uuid4().hex;archive.mkdir(parents=True)
         with sqlite3.connect(archive/'state.sqlite3') as saved:s.db.backup(saved)
         atomic(archive/'status.json',old);atomic(archive/'private-config.json',c)
@@ -99,7 +100,10 @@ def main(runner_type=ThreeDayRunner):
         s.event('three-day-queue-resumed',archive=str(archive.relative_to(a.run_dir)),
                 preserved_failure_streak=old.get('failure_streak'),preserved_task_failures=old.get('task_failures'))
         s.report();reason='Queue reached reviewable delivery'
-        try:r.work()
+        try:
+            if capacity_ready is not None:
+                capacity_ready()
+            r.work()
         except Exception as error:
             reason=type(error).__name__+': '+str(error)
             reached=time.time()>=HARD_CAP_EPOCH or 'Three-day project cap reached' in str(error)

@@ -133,9 +133,17 @@ class ConsolidatedHud(OrderedRelay):
 
     def work(self):
         ident=self.begin(TASK,'local-consolidated-hud-source');candidate=self.source(ident)
+        self.qualify(ident,candidate)
+
+    def qualify(self,ident,candidate,results=None):
         probes=scenarios(read_json(self.store.root/'evidence'/GROUND_ROUND/'captures/scenario.json'))
-        results={}
+        results=dict(results or {})
         for case in ('positive','wrong-timeout','inactive'):
+            if case in results:
+                prior=read_json(self.store.root/results[case]['evidence']/'consolidated-hud-gate.json')
+                if not results[case].get('passed') or not prior.get('passed') or prior.get('candidate_commit')!=candidate:
+                    raise Halt('Cannot reuse a different-source or failed native HUD case')
+                continue
             self.store.set(stage='native-consolidated-hud-'+case);self.store.report()
             bundle,gate=self.relay_native(ident+'-'+case,candidate,probes[case],case)
             if (bundle/'captures/trace.jsonl').exists():
