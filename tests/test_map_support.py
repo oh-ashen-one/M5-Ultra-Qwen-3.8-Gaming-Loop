@@ -7,6 +7,7 @@ from resume_map_support import compose_clear_walk, ground_span, validate_support
 from loop_controller.core import Halt
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 from loop_controller.recovery_policy import support_repair_scope
+from unittest.mock import patch
 
 
 class MapSupportTests(unittest.TestCase):
@@ -51,3 +52,15 @@ class MapSupportTests(unittest.TestCase):
         validate_support_pause(state)
         state['task_failures']=0
         with self.assertRaises(Halt):validate_support_pause(state)
+
+    def test_compiler_repair_preserves_exhausted_route_history(self):
+        import resume_map_support_compile as c
+        state=dict(source_checkpoint=c.SOURCE,last_playable_checkpoint=c.ACCEPTED,current_round=c.ROUND,
+            task_index=7,task_failures=14,failure_streak=1,diagnosis_used=True,
+            overall_deadline_epoch=HARD_CAP_EPOCH,map_support_repair_attempted=True,
+            blocker='Halt: Repeated diagnosed blocker on connected-map-extension; failed source preserved and last playable state restored',
+            map_traversal_strategies=[{}, {}, {'round':c.ROUND}],last_valid_replay={})
+        with patch.object(c,'replay_identity',return_value=c.REPLAY):
+            c.validate_compile_pause(state)
+            state['map_traversal_strategies'].pop(0)
+            with self.assertRaises(Halt):c.validate_compile_pause(state)
