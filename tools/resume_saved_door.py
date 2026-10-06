@@ -19,6 +19,7 @@ ACCEPTED='c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188'
 ROUND='q0077-c5f06ea7'
 RESPONSE_SHA='59445dd2628b42076577e06a21da019f8e705b6f2ac3fb41dd09eb3653d7e714'
 PATH='Assets/Game/WorldColliders.cs'
+STREET_PATHS=(PATH,'Assets/Game/ConnectedStreet.cs')
 BLOCKER='Halt: Replay-only role supplied no valid finish_task; required: summary, duration, input_steps, captures'
 DOOR_TASK={**MAP_TASK,'outcome':'The saved wood door is visible ahead of its stone backing; preserve the accepted connector and every regression.',
     'instructions':'Qualify only the saved0.07m wood-panel depth correction with unchanged accepted inputs. '
@@ -124,7 +125,7 @@ class SavedDoor(ThreeDayRunner):
 
     def local_street_source(self,ident):
         files=Files(self.project,self.store);edits=ReadBoundEdits(files,True)
-        allowed={PATH,'Assets/Game/ConnectedStreet.cs'}
+        allowed=set(STREET_PATHS)
         def complete(path):
             count=len(files.path(path).read_text().splitlines())
             return ''.join(edits.read('',dict(path=path,start_line=start,line_count=300))['content']
@@ -134,28 +135,31 @@ class SavedDoor(ThreeDayRunner):
         if extra.exists():source+='\nConnectedStreet.cs:\n'+complete('Assets/Game/ConnectedStreet.cs')
         def scoped(fn):
             def call(action,fields):
-                if fields['path'] not in allowed:raise ValueError('This role edits only WorldColliders and optional ConnectedStreet')
+                if fields['path'] not in allowed:raise ValueError('Use exactly one of these project-relative paths: '+', '.join(STREET_PATHS))
                 content=fields.get('new',fields.get('content',''))
-                if len(content.splitlines())>120:raise ValueError('Save one smaller replacement, at most120lines')
+                limit=160 if 'content' in fields else 120
+                if len(content.splitlines())>limit:raise ValueError('Save one smaller edit, at most '+str(limit)+' lines')
                 return fn(action,fields)
             return call
         self.c.update(output_tokens=8192,model_timeout_seconds=400)
         self.store.set(stage='local-second-street-source');self.store.report()
         s={'type':'string'}
+        path_schema={'type':'string','enum':list(STREET_PATHS)}
         result=self.model.session('builder',ident+'-street-source',
             'You are the sole local Qwen game author. Save a small original topology change now; no mission or replay authoring in this role.',
             json.dumps(SECOND_TASK)+'\nACTUAL PREVIOUS FEEDBACK:\n'+json.dumps(self.store.get('feedback',{}))[:12000]+
+            '\nONLY VALID PROJECT-RELATIVE TOOL PATHS: '+json.dumps(list(STREET_PATHS))+
             '\nEXACT CURRENT WORLD SOURCE, already read and hash-bound for replacement:\n'+source+
             '\nMake one small saved tool edit per response. You may revise WorldColliders directly or create one compact '
             'ConnectedStreet.cs helper and call it from WorldColliders.Install. No need to reread unchanged source. '
             'The existing east end has BOTH AddWall collider and a visible AlleyEndWall with collider, plus a '
             'decorative FenceBarrier; account for all three at the interior opening. Remove only obsolete boundary '
             'segments and replace with new visible outer boundaries. Preserve all other colliders and accepted tests. '
-            'Keep each replacement at most120lines; do not rewrite the entire file. Submit finish_source after saving. '
+            'Keep each replacement at most120lines and a new helper at most160lines; do not rewrite the entire file. Submit finish_source after saving. '
             'A separate role will propose a short physical replay from saved source; no ten-minute replay here.',
-            [tool('read_file','Read exact current allowed source.',{'path':s,'start_line':{'type':'integer'},'line_count':{'type':'integer'}},['path']),
-             tool('replace_text','Save one exact unique bounded replacement.',{'path':s,'old':s,'new':s}),
-             tool('create_file','Save one new compact source module.',{'path':s,'content':s}),
+            [tool('read_file','Read exact current allowed source.',{'path':path_schema,'start_line':{'type':'integer'},'line_count':{'type':'integer'}},['path']),
+             tool('replace_text','Save one exact unique bounded replacement.',{'path':path_schema,'old':s,'new':s}),
+             tool('create_file','Save one new compact source module.',{'path':path_schema,'content':s}),
              tool('finish_source','Describe the actually saved geometry and junction.',{'summary':s})],
             {'read_file':scoped(edits.read),'replace_text':scoped(edits.replace),'create_file':scoped(edits.create),
              'finish_source':lambda _,f:dict(ok=True,summary=f['summary'][:2000])},turns=6,reasoning_effort='low')
