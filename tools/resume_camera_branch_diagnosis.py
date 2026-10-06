@@ -77,11 +77,11 @@ class CameraBranchDiagnosis(StreetReadability):
             'per-frame phases, segmentPulled, targetLifted, camera/renderer bounds. Distinguish body intersection from poor '
             'framing; do not assume the guard ran. Name the measured cause and one minimal repair span. '
             'Keep wall/near-plane clearance, ordinary target transitions, aim and controls. No mission or asset redesign. '
-            'Submit a short observed cause and minimal action through submit_diagnosis; do not provide private reasoning. '
+            'Submit a short observed cause and minimal action through submit_plan; do not provide private reasoning. '
             '\nACTUAL RETURN OBSERVATIONS:\n'+json.dumps(observed)+'\nEXACT CURRENT FOLLOW:\n'+follow,
-            [tool('submit_diagnosis','Record concise measured cause and the smallest camera repair scope.',
+            [tool('submit_plan','Record concise measured cause and the smallest camera repair scope.',
                 {'cause':{'type':'string'},'span':{'type':'string','enum':list(SPANS)},'minimal_change':{'type':'string'}})],
-            {'submit_diagnosis':submit},images=[('return.png ACTUAL unchanged diagnostic native return',bundle/'captures/frame-010.png')],
+            {'submit_plan':submit},images=[('return.png ACTUAL unchanged diagnostic native return',bundle/'captures/frame-010.png')],
             turns=1,reasoning_effort='low')
         atomic(bundle/'local-cause-diagnosis.json',diagnosis)
         if not diagnosis.get('ok'):raise Halt('Local branch diagnosis supplied no complete findings; preserve observations before any edit')

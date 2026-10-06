@@ -1,4 +1,5 @@
 import copy
+import json
 from pathlib import Path
 import sys
 import tempfile
@@ -9,6 +10,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from loop_controller import camera_branch_probe as probe
 from loop_controller.core import Halt,sha
 import resume_camera_branch_diagnosis as recovery
+import resume_camera_completed_diagnosis as completed
 
 ANCHORS='''            Vector3 want = origin + hdir * hDist + Vector3.up * camY;
             Vector3 pos = Vector3.Lerp(transform.position, want,
@@ -70,6 +72,28 @@ class CameraBranchProbeTests(unittest.TestCase):
         for key,value in [('source_checkpoint','other'),('task_failures',0),('camera_branch_diagnosis_attempted',True),
                           ('overall_deadline_epoch',recovery.HARD_CAP_EPOCH+1),('blocker','native crash')]:
             with self.subTest(key=key),self.assertRaises(Halt):recovery.validate_pause({**state,key:value})
+
+    def test_recover_only_original_complete_accepted_diagnosis_without_changing_fields(self):
+        fields=dict(cause='Measured final correction lowers camera while cramped remains false.',
+            span='final-clearance',minimal_change='Repair the measured final correction while preserving collisions.')
+        data={'choices':[{'finish_reason':'tool_calls','message':{'tool_calls':[{'id':'call1',
+            'function':{'name':'submit_diagnosis','arguments':json.dumps(fields)}}]}}]}
+        raw=json.dumps(data).encode();history=[{'role':'tool','tool_call_id':'call1','content':json.dumps(dict(ok=True,**fields))}]
+        with patch.object(completed,'RESPONSE_SHA',sha(raw)):
+            self.assertEqual(completed.completed_diagnosis(raw,history),dict(ok=True,**fields))
+            with self.assertRaises(Halt):completed.completed_diagnosis(raw,[])
+            with self.assertRaises(Halt):completed.completed_diagnosis(raw+b' ',history)
+        data['choices'][0]['finish_reason']='length';raw=json.dumps(data).encode()
+        with patch.object(completed,'RESPONSE_SHA',sha(raw)),self.assertRaises(Halt):completed.completed_diagnosis(raw,history)
+
+    def test_completed_diagnosis_recovery_does_not_reset_or_skip_the_routing_fault(self):
+        state=dict(source_checkpoint=completed.SOURCE,last_playable_checkpoint=completed.ACCEPTED,
+            current_round=completed.ROUND,task_index=7,task_failures=23,failure_streak=1,diagnosis_used=True,
+            second_street_attempts=4,overall_deadline_epoch=completed.HARD_CAP_EPOCH,camera_branch_diagnosis_attempted=True,
+            blocker='Halt: Local branch diagnosis supplied no complete findings; preserve observations before any edit')
+        before=copy.deepcopy(state);completed.validate_pause(state);self.assertEqual(state,before)
+        for key,value in [('completed_camera_diagnosis_recovered',True),('task_failures',0),('current_round',recovery.ROUND)]:
+            with self.subTest(key=key),self.assertRaises(Halt):completed.validate_pause({**state,key:value})
 
 
 if __name__=='__main__':unittest.main()
