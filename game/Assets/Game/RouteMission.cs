@@ -306,11 +306,11 @@ namespace ChicagoGame
                 Bounds agg = new Bounds(c.position, Vector3.zero);
                 foreach (var rd in c.GetComponentsInChildren<Renderer>())
                     agg.Encapsulate(rd.bounds);
-                // World offset: center X/Z -> anchor X/Z, min Y -> anchor.y + 0.14
+                // World offset: center X/Z -> anchor X/Z, min Y -> anchor.y
                 Vector3 aPos = anchor.transform.position;
                 Vector3 delta = new Vector3(
                     aPos.x - agg.center.x,
-                    (aPos.y + 0.14f) - agg.min.y,
+                    aPos.y - agg.min.y,
                     aPos.z - agg.center.z);
                 c.position += delta;
             }
