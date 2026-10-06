@@ -131,7 +131,7 @@ class LocalModel:
             raise Halt("Model identity changed or another request owns the model")
 
     def session(self, role, session_id, system, prompt, tools, dispatch, images=(), turns=16,
-                reasoning_effort="xhigh"):
+                reasoning_effort="xhigh", visual_contract=None):
         if reasoning_effort not in ("low", "medium", "xhigh"):
             raise ValueError("Pinned Qwen template supports only low, medium and xhigh")
         sampling = {**SAMPLING, "reasoning_effort": reasoning_effort,
@@ -162,6 +162,14 @@ class LocalModel:
                 request_id = session_id + "-" + str(turn)
                 payload = dict(model=MODEL, messages=messages, tools=tools,
                                tool_choice="auto", max_tokens=self.config["output_tokens"], **sampling)
+                if visual_contract is not None:
+                    from .visual_context import verify_payload
+                    receipt=verify_payload(messages,visual_contract)
+                    receipt.update(request_id=request_id,payload_sha256=sha(encode(payload)),
+                                   working_context_tokens=self.config['working_context_tokens'],
+                                   output_tokens=self.config['output_tokens'],reasoning_effort=reasoning_effort)
+                    atomic(private/('request-%03d-visual.json'%turn),receipt)
+                    self.store.event('verified-visual-request',session_id=session_id,**receipt)
                 self.store.begin_action(request_id, "model-request", {"role": role, "payload_sha256": sha(encode(payload))})
                 atomic(private / "history.json", messages)
                 self.store.set(activity="local-" + role, last_action_utc=now(),

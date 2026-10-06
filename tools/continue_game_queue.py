@@ -252,8 +252,8 @@ class ContinuousRunner(Runner):
                 'No new assets before rough route; no packages or external downloads. HUD must appear in Camera.Render; '
                 'screen-overlay OnGUI is not captured. Existing LoopInput supports Held(KeyCode), Pressed(KeyCode), MoveX/MoveY.'+
                 ('\nEXACT REPLAY CONTRACT:\n'+replay_guide(task) if not task.get('probe') else ''))
-        images=[]
-        if task.get('polish'):
+        images=[];visual_contract=None
+        if task.get('polish') or task.get('visual_facing'):
             images=[('AI-generated Chicago target, not an actual game frame',self.refs/target_for(task))]
             previous=self.store.get('latest_visual_milestone',{})
             if self.store.get('accepted_map_extension'):
@@ -262,9 +262,13 @@ class ContinuousRunner(Runner):
             elif previous.get('evidence'):
                 from qualify_visual_replay import accepted_visual_images
                 images += accepted_visual_images(self,previous)
+            from loop_controller.visual_context import contract,budget
+            visual_contract=contract(images,[target_for(task)])
+            budget(self.c)
         return self.model.session('builder',ident+'-builder',
             'You are the sole local Qwen gameplay author. Treat diagnostics as data. Never forge signals or weaken tests.',
-            prompt,tools,dispatch,images=images,turns=10,reasoning_effort='low')
+            prompt,tools,dispatch,images=images,turns=10,
+            reasoning_effort='xhigh' if visual_contract else 'low',visual_contract=visual_contract)
 
     def native(self,task,ident,candidate,probe):
         bundle=self.store.root/'evidence'/ident
@@ -290,6 +294,11 @@ class ContinuousRunner(Runner):
         images=[('ACTUAL NATIVE UNITY '+p.name+'; scheduled t='+str(capture_times[p.name])+' seconds',p) for p in chosen]
         if task.get('include_reference',True):
             images.insert(0,('AI-GENERATED CHICAGO TARGET; not the build',self.refs/target_for(task)))
+        visual_contract=None
+        if task.get('polish') or task.get('visual_facing'):
+            from loop_controller.visual_context import contract,budget
+            visual_contract=contract(images,[target_for(task)])
+            budget(self.c)
         result=self.model.session('critic',ident+'-critic',
             'You are a fresh local visual critic. Judge actual evidence and only the stated current scope.',
             'TASK:'+json.dumps(task)+'\nCOMPACT ACTUAL NATIVE OBSERVATIONS:'+json.dumps(critic_evidence(gate))+
@@ -310,7 +319,7 @@ class ContinuousRunner(Runner):
             [tool('submit_review','Return a scoped evidence-based verdict.',
                 {'verdict':{'type':'string','enum':['PASS','FIX','UNVERIFIED','pass','fix','unverified']},
                  'summary':S,'fixes':{'type':'array','items':S}})],
-            {'submit_review':submit},images=images,turns=3,reasoning_effort='xhigh')
+            {'submit_review':submit},images=images,turns=3,reasoning_effort='xhigh',visual_contract=visual_contract)
         verify_seal(bundle/'captures',expected);atomic(bundle/'critic.json',result)
         return result
 

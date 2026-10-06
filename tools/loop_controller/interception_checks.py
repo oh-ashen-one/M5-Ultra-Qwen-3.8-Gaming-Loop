@@ -110,9 +110,17 @@ def inspect_interception(rows,events,case):
                         # Inspect other living actors immediately after this shot.
                         sample=next((r for r in rows if r.get('restarts')==e.get('restarts') and 0<=r['time']-e['time']<=.25),None)
                         if sample is None: fail('lethal-shot-post-state-missing'); continue
-                        living=[v for v in sample.get('rivals',[]) if v.get('name')!=target['name'] and v.get('alive') and v.get('hp',0)>0]
+                        before=next((r for r in reversed(rows) if r.get('restarts')==e.get('restarts') and 0<e['time']-r['time']<=.25),None)
+                        if before is None: fail('lethal-shot-pre-state-missing'); continue
+                        expected={v['name']:v for v in before.get('rivals',[]) if v.get('name')!=target['name'] and v.get('alive') and v.get('hp',0)>0}
+                        after={v['name']:v for v in sample.get('rivals',[])}
+                        living=[after[name] for name in expected if name in after]
                         original_visibility.extend(dict(time=sample['time'],name=v['name'],renderers=v.get('renderers'),collider=v.get('colliderEnabled')) for v in living)
-                        if not living: fail('secondary-target-isolation-comparison-missing')
+                        # The final living rival has no comparator. Earlier real
+                        # comparisons remain mandatory, including the original rival.
+                        if any(name not in after or not after[name].get('alive') or
+                               after[name].get('hp')!=v.get('hp') for name,v in expected.items()):
+                            fail('lethal-hit-changed-another-live-rival')
                         if any(v.get('renderers',0)<1 or v.get('colliderEnabled') is not True for v in living):
                             fail('lethal-hit-hid-or-disabled-another-live-rival')
         if set(lethal)!=NAMES or len(lethal)!=3 or len(actual_shots)!=9: fail('three-actual-moving-target-kills-unverified')

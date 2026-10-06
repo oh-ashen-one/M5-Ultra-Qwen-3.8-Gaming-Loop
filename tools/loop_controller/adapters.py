@@ -118,7 +118,9 @@ class Machine:
             if len(existing) > 1 and not self.c.get('authorized_shared_coexistence',False):
                 raise Halt("No room for one owned engine beside the existing renderer")
             from .shared_admission import admitted
-            with admitted(lambda: gpu_admission("chicago-loop-" + label, len(existing)),
+            with admitted(lambda: gpu_admission("chicago-loop-" + label, len(existing),
+                          authorized_shared_coexistence=self.c.get('authorized_shared_coexistence',False),
+                          guard=self.guard),
                           self.guard, self.store, request, lease, timeout):
                 yield
         finally:

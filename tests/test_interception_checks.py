@@ -72,6 +72,26 @@ class InterceptionTests(unittest.TestCase):
         rows,events=self.evidence('inactive')
         self.assertTrue(inspect_interception(rows,events,'inactive')['passed'])
 
+    def test_last_living_target_needs_no_nonexistent_comparator(self):
+        rows,events=self.evidence()
+        # The original rival was preserved at the first lethal shot and later
+        # defeated separately; the last moving target is the last living actor.
+        for row in rows:
+            if row['time']>=8.3:row['rivals'][-1].update(hp=0,alive=False,renderers=0,colliderEnabled=False)
+        result=inspect_interception(rows,events,'positive')
+        self.assertTrue(result['passed'],result['failure'])
+        self.assertTrue(result['secondary_target_isolation_qualified'])
+
+    def test_other_live_actor_cannot_disappear_or_be_killed_at_a_lethal_shot(self):
+        for defect in ('missing','dead'):
+            rows,events=self.evidence()
+            for row in rows:
+                if 8<=row['time']<=8.25:
+                    if defect=='missing':row['rivals'].pop()
+                    else:row['rivals'][-1].update(hp=0,alive=False,renderers=0,colliderEnabled=False)
+            with self.subTest(defect=defect):
+                self.assertIn('lethal-hit-changed-another-live-rival',inspect_interception(rows,events,'positive')['failure'])
+
     def test_new_hud_phase_still_requires_truthful_counts_and_actual_objective(self):
         row=hud_row(70,'relay-complete');text='INTERCEPT RUNNERS 1/3\nMove to aim; Mouse0 fire\nStopped 1 / Escaped 0\nRelay complete | R reset'
         row['interception']=dict(active=True,valid=True,complete=False,failed=False,stopped=1,escaped=0,objective=text)

@@ -160,7 +160,8 @@ def main():
     with (root / "resident.lock").open("a+") as mutex:
         fcntl.flock(mutex, fcntl.LOCK_EX | fcntl.LOCK_NB)
         with contextlib.ExitStack() as admission:
-            shared = admission.enter_context(gpu_admission("m5-flash-next-resident", len(existing)))
+            shared = admission.enter_context(gpu_admission("m5-flash-next-resident", len(existing),
+                authorized_shared_coexistence=args.authorized_shared_coexistence,guard=guard))
             resident_admitted=True
             try:
                 env = os.environ.copy()
@@ -261,12 +262,14 @@ def main():
                         # not a model fault. Never remove their records.
                         admission.close()
                         try:
-                            shared=admission.enter_context(gpu_admission('m5-flash-next-resident',len(existing)))
+                            shared=admission.enter_context(gpu_admission('m5-flash-next-resident',len(existing),
+                                authorized_shared_coexistence=args.authorized_shared_coexistence,guard=guard))
                             resident_admitted=True
                         except (RuntimeError,BlockingIOError) as error:
                             state['status']='capacity-wait';state['admission_wait_reason']=str(error)
                             write_state(args.coordination_dir/'capacity-wait.json',{'supervisor_pid':os.getpid(),
-                                'status':'capacity-wait','reason':str(error),'snapshot':snapshot(args.coordination_dir,baseline)})
+                                'status':'capacity-wait','reason':str(error),'snapshot':snapshot(args.coordination_dir,baseline,
+                                    coexistence=args.authorized_shared_coexistence)})
                             write_state(root/'resident-state.json',state);stopped.wait(2);continue
                     state['status']='engine-handoff' if engine_lease else 'loaded-idle'
                     if args.coordination_dir:(args.coordination_dir/'capacity-wait.json').unlink(missing_ok=True)

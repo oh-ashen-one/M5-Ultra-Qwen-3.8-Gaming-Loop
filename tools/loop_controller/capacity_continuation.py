@@ -51,8 +51,9 @@ class CapacityContinuation:
 
     def unity(self,original,project,bundle,scenario,candidate):
         r=self.r;bundle=Path(bundle);attempts=0
+        resume_stage=r.store.get('capacity_resume_stage') or r.store.get('stage','native-qualification')
         while True:
-            self.wait(r.store.get('stage','native-qualification'))
+            self.wait(resume_stage)
             try:return original(project,bundle,scenario,candidate)
             except Halt as error:
                 capacity=str(error).startswith('Capacity wait:') or str(error)=='No room for one owned engine beside the existing renderer'
