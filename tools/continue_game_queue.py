@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import signal
@@ -26,13 +27,28 @@ STEPS={'type':'array','items':{'type':'object','properties':{
     'required':['start','end','keys'],'additionalProperties':False}}
 
 
-def validate_scoped_review(fields,names):
+def verified_time_citations(summary,capture_times):
+    found={}
+    for match in re.finditer(r'\bt\s*=\s*(\d+(?:\.\d+)?(?:/\d+(?:\.\d+)?)*)',summary,re.I):
+        for token in match.group(1).split('/'):
+            precision=len(token.split('.')[1]) if '.' in token else 0
+            tolerance=.5*10**(-precision)+1e-8
+            matches=[name for name,when in capture_times.items() if abs(float(token)-when)<=tolerance]
+            if len(matches)==1:found[matches[0]]=capture_times[matches[0]]
+    return found
+
+
+def validate_scoped_review(fields,names,capture_times=None):
     verdict=fields['verdict'].strip().upper()
     if verdict not in ('PASS','FIX','UNVERIFIED') or len(fields['fixes'])>5:
         raise ValueError('Use PASS/FIX/UNVERIFIED with at most five prioritized fixes')
-    if not references_capture(fields['summary'],names):raise ValueError('Cite an actual supplied frame in summary')
+    cited=verified_time_citations(fields['summary'],capture_times or {})
+    if not references_capture(fields['summary'],names) and not cited:
+        raise ValueError('Cite an actual supplied frame filename or unambiguous capture time in summary')
     if verdict!='PASS' and not fields['fixes']:raise ValueError('State an actionable evidence-based fix or missing proof')
-    return {'ok':True,**fields,'verdict':verdict}
+    result={'ok':True,**fields,'verdict':verdict}
+    if cited:result['verified_capture_time_citations']=cited
+    return result
 
 
 def review_evidence_seal(captures,candidate,scope):
@@ -254,7 +270,7 @@ class ContinuousRunner(Runner):
         names=[p.name for p in chosen]
         expected=review_evidence_seal(bundle/'captures',gate['candidate_commit'],task['id'])
         def submit(_,f):
-            return validate_scoped_review(f,names)
+            return validate_scoped_review(f,names,capture_times)
         images=[('ACTUAL NATIVE UNITY '+p.name+'; scheduled t='+str(capture_times[p.name])+' seconds',p) for p in chosen]
         images.insert(0,('AI-GENERATED CHICAGO TARGET; not the build',self.refs/target_for(task)))
         result=self.model.session('critic',ident+'-critic',

@@ -84,6 +84,44 @@ def inspect_extension(rows):
                 traversal=facts, area_claim='Only observed connected traversal; no gross map-area acceptance')
 
 
+def promote_qualified_extension(runner,task,bundle,gate,review):
+    from continue_game_queue import review_captures
+    checks=gate.get('regressions',{}).get('regressions',[])
+    required={'walk','world','motor','courier','failure-retry','combat-foot','combat-wall',
+              'combat-driving','aim-miss','aim-near-cover'}
+    facts=gate.get('scoped_facts',{})
+    if (not gate.get('passed') or not review.get('ok') or review.get('verdict')!='PASS'
+            or len(checks)!=10 or {c['test'] for c in checks}!=required
+            or not all(c['gate'].get('passed') and c['gate'].get('candidate_commit')==gate['candidate_commit'] for c in checks)
+            or not facts.get('map_extension',{}).get('passed')
+            or not facts.get('rendered_walking_support',{}).get('passed')
+            or not facts.get('prop_clone_parity',{'passed':True}).get('passed')):
+        raise Halt('Map promotion requires actual traversal, support, all ten regressions and complete critic PASS')
+    candidate=gate['candidate_commit']
+    changed=git(runner.repo,'diff','--name-only',candidate,'HEAD','--','game').splitlines()
+    if any(not p.startswith('game/Notes/') for p in changed):raise Halt('Current source differs from qualified map')
+    manifest_hash=sha((bundle/'captures/manifest.json').read_bytes())
+    manifest=verify_seal(bundle/'captures',manifest_hash)
+    if manifest.get('candidate')!=candidate or manifest.get('scope')!=task['id']:
+        raise Halt('Qualified map capture identity changed')
+    record=dict(candidate=candidate,evidence=str(bundle.relative_to(runner.store.root)),
+        accepted_utc=now(),review=review,scope=task['outcome'],final_game_accepted=False,
+        capture_manifest_sha256=manifest_hash)
+    note=runner.project/'Notes'/('map-'+bundle.name+'.json');atomic(note,record)
+    git(runner.repo,'add','--',str(note.relative_to(runner.repo)))
+    git(runner.repo,'-c','user.name=Evidence controller',
+        '-c','user.email=254017794+oh-ashen-one@users.noreply.github.com','commit','-m',
+        'Record native connected-extension PASS; complete map and pacing remain pending')
+    saved=git(runner.repo,'rev-parse','HEAD')
+    runner.store.set(accepted_map_extension=record,last_playable_checkpoint=saved,
+        source_checkpoint=saved,last_verified_progress_epoch=time.time(),last_verified_progress_utc=now())
+    frames,times=review_captures(task,bundle)
+    queue_milestone(runner.store,'accepted-feature',task,bundle,gate,frames,times,review)
+    runner.store.event('map-extension-accepted',**record)
+    runner.store.report()
+    return record
+
+
 def qualify_one_extension(runner, *, integrated_builder=False):
     from continue_game_queue import ContinuousRunner, review_captures
     task=MAP_TASK
@@ -133,19 +171,5 @@ def qualify_one_extension(runner, *, integrated_builder=False):
         review=runner.review(task,ident,bundle,gate)
         if not review.get('ok') or review.get('verdict')!='PASS':
             runner.reject_scoped(task,ident,review,candidate);continue
-        record=dict(candidate=candidate,evidence=str(bundle.relative_to(runner.store.root)),
-            accepted_utc=now(),review=review,scope=task['outcome'],final_game_accepted=False,
-            capture_manifest_sha256=sha((bundle/'captures/manifest.json').read_bytes()))
-        note=runner.project/'Notes'/('map-'+ident+'.json');atomic(note,record)
-        git(runner.repo,'add','--',str(note.relative_to(runner.repo)))
-        git(runner.repo,'-c','user.name=Evidence controller',
-            '-c','user.email=254017794+oh-ashen-one@users.noreply.github.com','commit','-m',
-            'Record native connected-extension PASS; complete map and pacing remain pending')
-        saved=git(runner.repo,'rev-parse','HEAD')
-        runner.store.set(accepted_map_extension=record,last_playable_checkpoint=saved,
-            source_checkpoint=saved,last_verified_progress_epoch=time.time(),last_verified_progress_utc=now())
-        frames,times=review_captures(task,bundle)
-        queue_milestone(runner.store,'accepted-feature',task,bundle,gate,frames,times,review)
-        runner.store.event('map-extension-accepted',**record)
-        runner.store.report()
+        promote_qualified_extension(runner,task,bundle,gate,review)
     return runner.store.get('accepted_map_extension')
