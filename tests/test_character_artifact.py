@@ -3,7 +3,7 @@ from pathlib import Path
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from resume_character_artifact import validate_boundary, validate_character, SOURCE, ACCEPTED, PRIOR
+from resume_character_artifact import validate_boundary, validate_character, SOURCE, ACCEPTED, PRIOR, REVIEWED_NONDELIVERABLE_RESPONSE
 from loop_controller.core import Halt
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 
@@ -35,6 +35,9 @@ class CharacterArtifactTests(unittest.TestCase):
         response['choices'][0]['message'] = {'content': 'Possible complete public source'}
         with self.assertRaises(Halt):
             validate_boundary(self.state(), response, {'bounded_stop': 'output'})
+        # Only the caller's hash of the one already-inspected raw response
+        # permits nonempty text; no model-controlled source bypass is added.
+        validate_boundary(self.state(), response, {'bounded_stop': 'output'}, REVIEWED_NONDELIVERABLE_RESPONSE)
 
     def test_character_source_requires_complete_bounded_python_without_execution(self):
         source = 'raise RuntimeError("not executed by validation")\n'

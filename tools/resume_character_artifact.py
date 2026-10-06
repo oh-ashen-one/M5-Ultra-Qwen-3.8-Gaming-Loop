@@ -12,11 +12,15 @@ from loop_controller.visual_context import TARGETS, contract
 
 PRIOR = 'q0127-50cd61d4'
 SESSION = PRIOR + '-coherent-visual-author'
+# Inspected structurally after completion: no tool markup/calls, no complete
+# character source, no thinking-end delimiter. Preserve privately; never apply
+# source fragments from the budget-limited reasoning/content field.
+REVIEWED_NONDELIVERABLE_RESPONSE = '9dca04a29d6837177c93fb0797cb3b6463c1852b77de57b6a4a02d572605bb1c'
 TASK = dict(id='original-character-artifact', phase='polish', polish=True,
             visual_facing=True, outcome='One saved original character, Blender export and native visual inspection')
 
 
-def validate_boundary(old, response, outcome):
+def validate_boundary(old, response, outcome, response_sha256=None):
     expected = dict(status='paused', controller_pid=None, source_checkpoint=SOURCE,
         last_playable_checkpoint=ACCEPTED, current_round=PRIOR, task_index=7,
         task_failures=24, failure_streak=1, diagnosis_used=True,
@@ -30,7 +34,8 @@ def validate_boundary(old, response, outcome):
         raise Halt('This recovery applies only to the completed output-budget stop')
     if choices[0].get('message', {}).get('tool_calls'):
         raise Halt('Inspect and preserve returned public tool calls before requesting replacement work')
-    if (choices[0].get('message', {}).get('content') or '').strip():
+    if ((choices[0].get('message', {}).get('content') or '').strip()
+            and response_sha256 != REVIEWED_NONDELIVERABLE_RESPONSE):
         raise Halt('Inspect returned public content for usable source before requesting replacement work')
 
 
@@ -49,7 +54,7 @@ class CharacterArtifact(ReferenceVisuals):
         self.prior_session = self.store.root / 'private/sessions' / SESSION
         response_path = self.prior_session / 'response-000.json'
         outcome_path = self.store.root / 'evidence' / (PRIOR + '-visual-author.json')
-        validate_boundary(old, read_json(response_path), read_json(outcome_path))
+        validate_boundary(old, read_json(response_path), read_json(outcome_path), sha(response_path.read_bytes()))
         self.prior_proof = {str(p.relative_to(self.store.root)): sha(p.read_bytes())
             for p in (response_path, self.prior_session / 'history.json', outcome_path)}
         self.before = self.store.root / 'evidence/q0126-657b9ebf-positive'
