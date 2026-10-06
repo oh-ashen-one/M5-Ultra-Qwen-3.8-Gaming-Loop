@@ -1,0 +1,224 @@
+{
+  "observed_utc": "2026-10-06T10:50:47.713585+00:00",
+  "source": "0af5787bc2a1e57ff5e17bd2d0b984069a659380",
+  "source_published": true,
+  "controller_revision": "3c5418cb2e1ee69608b4866c655c9318a41ee855",
+  "cpu_tests": {
+    "controller": 239,
+    "m5": 239,
+    "passed": true
+  },
+  "preserved_failure": {
+    "round": "q0088-9a0ccd72",
+    "response_sha256": "85aa572cecd2e7ca0c0cd014a2425956f4187dc84ba27a0ec8477c3d9e7f5fa0",
+    "output_tokens": 6144,
+    "seconds": 150.31,
+    "finish_reason": "length",
+    "tool_calls": 0,
+    "source_saved": false
+  },
+  "saved_edit": {
+    "round": "q0089-58cdf873",
+    "author": "local Qwen3.8-Flash-Next",
+    "file": "game/Assets/Game/Bootstrap.cs",
+    "added_lines": 7,
+    "description": "Guard the final camera position against expanded active target renderer bounds, lifting above body top and using the existing cramped look mode when intersected.",
+    "response_sha256": "4d550357a47ee842f3f4d433538ecc0bd0aaf97c65be6a52db7d1da3d9fb752c",
+    "finish_reason": "tool_calls",
+    "usage": {
+      "completion_tokens": 1557,
+      "input_tokens": 568,
+      "output_tokens": 1557,
+      "prompt_tokens": 568,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_time": 36,
+      "total_tokens": 2125
+    }
+  },
+  "camera_wall_contract": {
+    "acceptance_fixture": "camera-clearance",
+    "build_id": "f078e9f337f93f00e180a42234869fa9aafa17e6349352806ca4d9bd6c530c2e",
+    "candidate": "0af5787bc2a1e57ff5e17bd2d0b984069a659380",
+    "evidence": "evidence/q0089-58cdf873-camera-clearance",
+    "failure": [],
+    "final_game_accepted": false,
+    "passed": true,
+    "phases": [
+      {
+        "camera_beyond_wall_samples": 0,
+        "camera_inside_samples": 0,
+        "camera_inside_world_samples": 0,
+        "legacy_endpoint_predicate_samples": 0,
+        "minimum_actor_samples_in_frame": 2,
+        "minimum_actor_samples_unobstructed": 2,
+        "near_plane_intersection_samples": 0,
+        "phase": "near",
+        "probe_distance_max": 0.6499999165534973,
+        "probe_distance_min": 0.6499999165534973,
+        "samples": 15
+      },
+      {
+        "camera_beyond_wall_samples": 0,
+        "camera_inside_samples": 0,
+        "camera_inside_world_samples": 0,
+        "legacy_endpoint_predicate_samples": 0,
+        "minimum_actor_samples_in_frame": 9,
+        "minimum_actor_samples_unobstructed": 5,
+        "near_plane_intersection_samples": 0,
+        "phase": "middle",
+        "probe_distance_max": 3,
+        "probe_distance_min": 3,
+        "samples": 14
+      },
+      {
+        "camera_beyond_wall_samples": 0,
+        "camera_inside_samples": 0,
+        "camera_inside_world_samples": 0,
+        "legacy_endpoint_predicate_samples": 14,
+        "minimum_actor_samples_in_frame": 9,
+        "minimum_actor_samples_unobstructed": 5,
+        "near_plane_intersection_samples": 0,
+        "phase": "endpoint",
+        "probe_distance_max": 5.403923511505127,
+        "probe_distance_min": 5.403923511505127,
+        "samples": 14
+      }
+    ],
+    "scope": "disposable-camera-clearance-diagnostic",
+    "visibility_note": "At least one actor bounds sample must remain visible and camera must be outside foreign colliders; useful framing still needs actual images"
+  },
+  "ordinary_native_gate": {
+    "passed": true,
+    "failure": null,
+    "build_id": "2ff563bd1e09159e1c63432f74974e26095548f8979de975a4ea158623d59143",
+    "candidate_commit": "0af5787bc2a1e57ff5e17bd2d0b984069a659380",
+    "compile_errors": [],
+    "scene_inventory": {
+      "declared_counts": {
+        "colliderRecorded": 47,
+        "colliderTotal": 47,
+        "rendererRecorded": 2770,
+        "rendererTotal": 2770
+      },
+      "failure": [],
+      "observed_at_seconds": 0.5,
+      "observed_counts": {
+        "collider": 47,
+        "renderer": 2770
+      },
+      "passed": true,
+      "scope": "Complete point-in-time scene component inventory; gameplay and rendered support criteria are unchanged"
+    }
+  },
+  "return_comparison": {
+    "before_round": "q0087-e949809e",
+    "after_round": "q0089-58cdf873",
+    "scheduled_seconds": 50.49647,
+    "capture_utc": "2026-10-06T10:48:34.462304+00:00",
+    "before_and_after_sha256": "c6b5b70e0055b242bf527e2f442aea4df020ca065f3edc13122135d77011de15",
+    "byte_identical": true,
+    "pixel_changes": 0,
+    "camera_observations": [
+      {
+        "round": "q0087-e949809e",
+        "time": 50.53333282470703,
+        "camera": [
+          1.8904540538787842,
+          1.7686353921890259,
+          15.574650764465332
+        ],
+        "forward": [
+          0.9858343601226807,
+          -0.11216692626476288,
+          0.12469659000635147
+        ],
+        "vehicle": [
+          3.886597156524658,
+          -0.010000050067901611,
+          15.827138900756836
+        ],
+        "viewport_min": [
+          -0.7953674793243408,
+          0.17803701758384705,
+          -0.5655622482299805
+        ],
+        "viewport_max": [
+          8.891446113586426,
+          13.703975677490234,
+          4.829647064208984
+        ],
+        "foreign_overlap": []
+      },
+      {
+        "round": "q0089-58cdf873",
+        "time": 50.53333282470703,
+        "camera": [
+          1.8904540538787842,
+          1.7686353921890259,
+          15.574650764465332
+        ],
+        "forward": [
+          0.9858343601226807,
+          -0.11216692626476288,
+          0.12469659000635147
+        ],
+        "vehicle": [
+          3.886597156524658,
+          -0.010000050067901611,
+          15.827138900756836
+        ],
+        "viewport_min": [
+          -0.7953674793243408,
+          0.17803701758384705,
+          -0.5655622482299805
+        ],
+        "viewport_max": [
+          8.891446113586426,
+          13.703975677490234,
+          4.829647064208984
+        ],
+        "foreign_overlap": []
+      }
+    ],
+    "conclusion": "No improvement to the return view. The target-bounds guard did not change the observed camera pose or image. Wall-fixture success does not establish correction of this actual visual defect.",
+    "duplicate_image_uploaded": false
+  },
+  "evidence_sha256": {
+    "gate.json": "2cdfd4e8747b5992bbf18e830bf6ef60cd4af386e6254b6be8f833388bc4cab1",
+    "captures/runtime-result.json": "3060af98ec52301c72b3b1ea11c0d2f9a237518b5f5430011ce17962f1bf0be3",
+    "captures/scenario.json": "e3affe7d53ae4f4de5aefeb24f849826ac98430dce21ebe56e6442eda0c92081",
+    "captures/trace.jsonl": "707e0e7a14ab2152dcf15c077b3008671e318ed6422c16558ad81ebdfdb7f838",
+    "captures/frame-010.png": "c6b5b70e0055b242bf527e2f442aea4df020ca065f3edc13122135d77011de15"
+  },
+  "camera_contract_sha256": "a80c462069e61865c3fd151fd5a5274ccd104460cb1a7978f49e754c373f86fb",
+  "state": {
+    "status": "running",
+    "controller_pid": 1933,
+    "current_round": "q0089-58cdf873",
+    "stage": "native-scoped-gate",
+    "activity": "unity-play",
+    "source_checkpoint": "0af5787bc2a1e57ff5e17bd2d0b984069a659380",
+    "last_playable_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "blocker": null,
+    "task_failures": 23,
+    "failure_streak": 1,
+    "overall_deadline_epoch": 1791441192,
+    "regressions_completed": [
+      {
+        "test": "walk",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "world",
+        "passed": true,
+        "failure": null
+      }
+    ]
+  },
+  "fresh_critic": "pending",
+  "final_game_accepted": false,
+  "remaining": "Diagnose the actual close-return framing from current geometry; preserve the real FIX and unchanged image. Then street readability and meaningful mission pacing."
+}
