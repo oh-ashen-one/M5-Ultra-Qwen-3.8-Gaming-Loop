@@ -199,6 +199,7 @@ namespace ChicagoGame
                     }
                 }
             }
+            ConnectedStreet.Install(go, fenceSourcePrefab);
             if (fenceSourcePrefab != null)
             {
                 // North (forward, +Z) end: fence runs across pavement width.
