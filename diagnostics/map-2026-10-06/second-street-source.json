@@ -1,0 +1,45 @@
+{
+  "observed_utc": "2026-10-06T09:17:44.887493+00:00",
+  "round": "q0080-35287f55",
+  "saved_integrated_source": "6f9244b9045039e0749cd85489e55114b345e448",
+  "accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+  "controller_revision": "ba356d4108078266ca87d0b11b83717533045b00",
+  "source_recovery": {
+    "original_complete_response_sha256": "0ae7fb563a104059206b71adaed9d5e3f10cf3bf9cacd04d3d9c44bae0e497c1",
+    "module_path": "game/Assets/Game/ConnectedStreet.cs",
+    "module_sha256": "c2276d477d2673e58735110cfa33b33466a8565194d1368a2e8dcd1eed28adf5",
+    "module_lines": 124,
+    "first_saved_commit": "18d8fc3",
+    "original_path": "ConnectedStreet.cs",
+    "resolved_project_relative_path": "Assets/Game/ConnectedStreet.cs",
+    "source_bytes_changed": false,
+    "source_author": "Local Qwen3.8-Flash-Next",
+    "recovery_author": "Disclosed cloud controller",
+    "permissions_broadened": false
+  },
+  "integration": {
+    "author": "Local Qwen3.8-Flash-Next",
+    "completed_edits": 6,
+    "changes": [
+      "Expose existing wall and fence helper APIs without changing their implementations",
+      "Remove only the old east alley collider and fence",
+      "Preserve north/south walls while omitting the old east visible wall",
+      "Call the new street installer once"
+    ],
+    "proposed_new_bounds_xz": [
+      22,
+      60,
+      8,
+      28
+    ],
+    "proposed_bounds_are_source_claim_not_native_measurement": true
+  },
+  "status": "Saved source; separate local replay role active; native build/traversal pending",
+  "required_native_scope": "Walk and drive at least 6 m beyond the union of both old rendered regions, then physically return without reset; visible support, all ten regressions and fresh scoped review remain mandatory.",
+  "deferred_door_visual_fix": true,
+  "task_failures": 20,
+  "failure_streak": 1,
+  "cpu_tests_both_hosts": 224,
+  "overall_deadline_utc": "2026-10-08T06:33:12Z",
+  "final_game_accepted": false
+}
