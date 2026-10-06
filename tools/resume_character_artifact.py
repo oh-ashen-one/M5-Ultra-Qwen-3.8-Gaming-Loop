@@ -140,6 +140,9 @@ class CharacterArtifact(ReferenceVisuals):
             raise Halt('Focused character source was not saved; preserve output and diagnose: ' + json.dumps(result))
         if any(sha(p.read_bytes()) != digest for p, digest in protected.items()):
             raise Halt('Character-only author changed protected gameplay source')
+        self.export_and_preview(ident)
+
+    def export_and_preview(self, ident):
         self.store.set(stage='export-original-character'); self.store.report()
         exported = self.engines.blender(self.project, ART, ident + '-character-export')
         atomic(self.store.root / 'evidence' / (ident + '-character-export.json'), exported)
