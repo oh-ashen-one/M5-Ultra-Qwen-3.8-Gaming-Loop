@@ -137,23 +137,6 @@ namespace ChicagoGame
                 }
             }
 
-            // Mirror the original collider augmentation on the cloned props so
-            // the clone carries the SAME major-mesh colliders the originals got
-            // in section 1 (fixes prop_clone_parity: missing-original-components).
-            foreach (var cloneName in new[] { "AlleyBollardS", "AlleyBollardN", "AlleyDumpster" })
-            {
-                var cg = GameObject.Find(cloneName);
-                if (cg == null) continue;
-                foreach (var mf in cg.GetComponentsInChildren<MeshFilter>())
-                {
-                    if (mf.GetComponent<Collider>() != null) continue;
-                    if (!IsMajor(mf.name)) continue;
-                    var cb = mf.sharedMesh.bounds;
-                    var cc = mf.gameObject.AddComponent<BoxCollider>();
-                    cc.center = cb.center; cc.size = cb.size;
-                }
-            }
-
             {
                 var ds = GameObject.Find("door00_panel"); var dmf = ds != null ? ds.GetComponent<MeshFilter>() : null; var dmr = ds != null ? ds.GetComponent<MeshRenderer>() : null;
                 if (dmf != null && dmr != null)
