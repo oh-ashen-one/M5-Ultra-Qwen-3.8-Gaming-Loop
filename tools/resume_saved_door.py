@@ -100,7 +100,7 @@ class SavedDoor(ThreeDayRunner):
             objects=json.loads((bundle/'captures/scene-transforms.json').read_text())['objects']
             for key,check in [('prop_clone_parity',inspect_alley_clones(objects)),('door_layer_order',inspect_door_layers(objects))]:
                 gate['scoped_facts'][key]=check
-                if not check['passed']:gate.update(passed=False,failure=gate.get('failure',[])+check['failure'])
+                if not check['passed']:gate.update(passed=False,failure=(gate.get('failure') or [])+check['failure'])
             atomic(bundle/'scoped-gate.json',gate)
         return bundle,gate
 
@@ -199,6 +199,9 @@ class SavedDoor(ThreeDayRunner):
             raise Halt('Saved door did not qualify; accepted connector and local correction preserved')
         promote_qualified_extension(self,DOOR_TASK,bundle,gate,json.loads((bundle/'critic.json').read_text()))
         self.store.set(saved_door_accepted=True,feedback={},task_design=SECOND_TASK['instructions'])
+        return self.advance_second_street()
+
+    def advance_second_street(self):
         for attempt in range(3):
             ident=self.begin(SECOND_TASK,'local-second-street-source')
             self.store.set(second_street_attempts=attempt+1)

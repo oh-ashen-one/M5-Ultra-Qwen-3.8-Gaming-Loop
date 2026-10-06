@@ -138,7 +138,8 @@ def promote_qualified_extension(runner,task,bundle,gate,review):
     record=dict(candidate=candidate,evidence=str(bundle.relative_to(runner.store.root)),
         accepted_utc=now(),review=review,scope=task['outcome'],final_game_accepted=False,
         capture_manifest_sha256=manifest_hash,
-        prior_rendered_rectangles_xz=task.get('prior_bounds',[[-1,6,-2,30]]))
+        prior_rendered_rectangles_xz=task.get('prior_bounds',[[-1,6,-2,30]]),
+        deferred_visual_findings=runner.store.get('deferred_visual_findings',[]))
     note=runner.project/'Notes'/('map-'+bundle.name+'.json');atomic(note,record)
     git(runner.repo,'add','--',str(note.relative_to(runner.repo)))
     git(runner.repo,'-c','user.name=Evidence controller',
