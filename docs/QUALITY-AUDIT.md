@@ -2,6 +2,8 @@
 
 Audit date: 2026-10-06. This is an audit of the existing local run, not a model benchmark. The visible output remains below the requested standard. The evidence does not isolate intrinsic model capability from the authoring and review workflow.
 
+**Implemented correction status:** [controller28499bc](https://github.com/oh-ashen-one/M5-Ultra-Qwen-3.8-Gaming-Loop/commit/28499bce4c54a29a87c00c23dd3792f8ce482111) was deployed after345 CPU checks passed on both hosts. It fixes actual slot acquisition at both callers, verifies reference/native PNG bytes in each visual API request, and supplies a coherent local character/camera author with Blender/Unity tools and16384output tokens. Its first real request carried two target images and two native before frames. Broader review requires all five targets. These are implemented safeguards and actual request-delivery facts; rendered visual improvement was still pending. The findings below describe the audited workflow before those corrections.
+
 ## Model and execution
 
 The loaded model is `mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp`, revision `e171af86f499f1855b0fb71d781105e8dd609610`, on official oMLX 0.6.4, runtime commit `1d7826185c5b5b69b38b27cbe57d7597b7551fd7`. Health reports one loaded vision-language model. Thinking and history preservation are enabled; planner/critic default to `xhigh`, while authorized small edits use `low`. MTP, KV quantization and APC are disabled. Sampling is temperature 1.0, top-p 0.95, top-k 20, min-p 0, repetition penalty 1 and presence penalty 0. No evidence in this audit shows an accidental replacement model, disabled vision or disabled thinking.
