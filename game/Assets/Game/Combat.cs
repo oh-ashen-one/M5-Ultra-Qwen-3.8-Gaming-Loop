@@ -96,6 +96,12 @@ namespace ChicagoGame
             col.height = 1.9f;
             col.radius = 0.38f;
             col.isTrigger = false;
+            var rb = go.AddComponent<Rigidbody>();
+            rb.mass = 80f;
+            rb.isKinematic = false;
+            rb.useGravity = true;
+            rb.drag = 2f;
+            rb.constraints = RigidbodyConstraints.FreezeRotation;
 
             // Tint it red so the rival reads as hostile (original geometry kept).
             Renderer flash = null;
