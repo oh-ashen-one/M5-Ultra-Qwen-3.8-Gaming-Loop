@@ -155,11 +155,6 @@ namespace ChicagoGame
             for (int i = 0; i < 3; i++)
             { if (runners[i]) Destroy(runners[i]); runners[i] = null; agents[i] = null; bodies[i] = null; resolved[i] = false; }
         }
-        int ReadHealth()
-        {
-            var t = Object.FindObjectOfType<Combat>();
-            if (t) return Mathf.Max(0, LoopSignals.Health);
-            return LoopSignals.Health;
-        }
+        float ReadHealth() { return LoopSignals.Health; }
     }
 }
