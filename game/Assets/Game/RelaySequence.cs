@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace ChicagoGame
 {
     public partial class RelaySequence : MonoBehaviour
