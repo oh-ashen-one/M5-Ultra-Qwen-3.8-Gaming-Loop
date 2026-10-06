@@ -344,11 +344,10 @@ MissionDirectorHud.Install(body,cam);
         }
 
         // ---- restrained center-ray reticle (drawn inside the camera's own render loop) ----
-        // OnPostRender fires after this camera has finished its opaque + transparent draws
-        // on whichever surface is bound: the on-screen backbuffer AND an explicit
-        // Camera.Render into a target texture. So one pass covers both capture paths, and
-        // for a symmetric perspective frustum camera.transform.forward lands exactly on
-        // pixel (w/2, h/2) of that surface - no raycast, no second camera, no OnGUI.
+        // OnPostRender runs after this camera has drawn into whatever render surface is
+        // bound: the normal screen backbuffer and an explicit Camera.Render target. The
+        // same pixel-coordinate overlay therefore reaches both capture paths. The shader
+        // owns overlay read/write states, so this span never calls GL state helpers.
         bool reticleMissing;   // Resources load failed once -> stop retrying per frame
         bool reticleOwned;     // we allocated reticleMat, so only we may destroy it
 
@@ -360,42 +359,53 @@ MissionDirectorHud.Install(body,cam);
             if (reticleMat == null)
             {
                 if (reticleMissing) return;
-                // Shader.Find("Sprites/Default"/"Unlit/Color") is not safe here: those
-                // names can be stripped from this player, which is why nothing drew.
-                // Only the shipped Resources shader's availability is guaranteed.
-                var sh = Resources.Load<Shader>("HudOpaque");
+
+                // Load the one shipped overlay asset by Resources path. If it is absent,
+                // remember the failure rather than retrying or substituting another shader.
+                var sh = Resources.Load<Shader>("ReticleOverlay");
                 if (sh == null) { reticleMissing = true; return; }
-                reticleMat = new Material(sh) { hideFlags = HideFlags.HideAndDontSave };
-                reticleOwned = true;                    // allocated once, reused forever
+
+                reticleMat = new Material(sh)
+                {
+                    name = "ReticleOverlay",
+                    hideFlags = HideFlags.HideAndDontSave
+                };
+                reticleOwned = true;
             }
 
-            // Real pixel size of the bound surface. Screen.* is meaningless while the
-            // camera renders into the capture RT (960x540), and the argument-less
-            // GL.LoadPixelMatrix() would map our coordinates onto the wrong rectangle.
             var rt = cam.targetTexture;
             float w = rt != null ? rt.width : Screen.width;
             float h = rt != null ? rt.height : Screen.height;
             if (w < 8f || h < 8f) return;
 
-            GL.PushMatrix();
-            GL.LoadPixelMatrix(0f, w, h, 0f);
+            // Camera.forward projects to the centre of the camera viewport. When the
+            // viewport is a sub-rectangle, that centre may not be the target centre.
+            // Convert bottom-origin viewport coordinates to the top-origin GL pixel grid.
+            Rect viewport = cam.rect;
+            float cx, cy;
+            if (viewport.width > 0.0001f && viewport.height > 0.0001f)
+            {
+                cx = w * (viewport.x + viewport.width * 0.5f);
+                cy = h * (1f - (viewport.y + viewport.height * 0.5f));
+            }
+            else
+            {
+                cx = w * 0.5f;
+                cy = h * 0.5f;
+            }
+            if (float.IsNaN(cx) || float.IsInfinity(cx) ||
+                float.IsNaN(cy) || float.IsInfinity(cy)) return;
 
-            // No GL.Clear: it would wipe the freshly rendered scene and/or discard the
-            // depth image later passes still need. A 2D overlay only has to ignore
-            // depth, so disable the test, suppress writes, then hand the state back.
-            GL.Disable(GL_DEPTH_TEST);
-            GL.DepthMask(false);
-
-            float cx = w * 0.5f, cy = h * 0.5f;              // == camera.forward ray
-            float s = Mathf.Clamp(Mathf.Min(w, h) / 540f, 1f, 2.5f);   // RT vs native window
+            float s = Mathf.Clamp(Mathf.Min(w, h) / 540f, 1f, 2.5f);
             float gap = 6.0f * s, len = 15.0f * s;
             float th = Mathf.Max(1.5f, 2.0f * s), bd = th + 1.6f * s;
             float dh = 3.4f * s, dd = 1.8f * s;
 
-            // The fragment reads only _Color (vertex colours are ignored), so tint
-            // changes go through the material and need a fresh SetPass per batch.
-            // Blending is off, hence two fully opaque layers: dark backing + bright
-            // core stays legible on sunlit brick and on shadowed wet asphalt.
+            GL.PushMatrix();
+            GL.LoadPixelMatrix(0f, w, h, 0f);
+
+            // _Color is the only colour source. The two opaque layers remain readable
+            // because blending is disabled and depth behaviour lives in the shader.
             Ink(new Color(0.02f, 0.02f, 0.025f, 1f));
             Bar(cx - gap - len, cy - bd, cx - gap, cy + bd);
             Bar(cx + gap, cy - bd, cx + gap + len, cy + bd);
@@ -410,13 +420,14 @@ MissionDirectorHud.Install(body,cam);
             Bar(cx - th, cy + gap, cx + th, cy + gap + len);
             Bar(cx - dd, cy - dd, cx + dd, cy + dd);          // dot on the aim ray
 
-            GL.DepthMask(true);
-            GL.Enable(GL_DEPTH_TEST);
             GL.PopMatrix();
+            GL.RenderTargetBarrier();
+            GL.Flush();
         }
 
         void Ink(Color c)
         {
+            if (reticleMat == null) return;
             reticleMat.SetColor("_Color", c);
             reticleMat.SetPass(0);
         }
@@ -424,13 +435,14 @@ MissionDirectorHud.Install(body,cam);
         static void Bar(float x0, float y0, float x1, float y1)
         {
             GL.Begin(GL.TRIANGLES);
-            // The shipped shader is single-sided (Cull Back) while the GL pixel matrix
-            // leaves front-face polarity platform dependent: emit both windings so the
-            // flat rect is never culled. Same colour, depth writes off -> no artefact.
+
+            // Cull Off makes winding irrelevant; still emit the two ordinary triangles
+            // that cover the rectangle. Both colours use _Color, so repeats are harmless.
             Tri(x0, y0, x1, y0, x1, y1);
             Tri(x0, y0, x1, y1, x0, y1);
             Tri(x1, y1, x0, y1, x0, y0);
             Tri(x0, y1, x1, y1, x1, y0);
+
             GL.End();
         }
 
