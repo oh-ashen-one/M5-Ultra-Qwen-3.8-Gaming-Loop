@@ -4,9 +4,22 @@ import unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from qualify_map_extension import inspect_extension
+import resume_map_after_courier as recovery
+from loop_controller.core import Halt
 
 
 class MapExtensionTests(unittest.TestCase):
+    def test_new_map_scope_preserves_exact_courier_rejection(self):
+        state=dict(source_checkpoint=recovery.SOURCE,last_playable_checkpoint=recovery.ACCEPTED,
+            current_round=recovery.ROUND,task_index=7,task_failures=8,failure_streak=1,
+            diagnosis_used=True,overall_deadline_epoch=recovery.HARD_CAP_EPOCH,
+            blocker=recovery.BLOCKER,process_scan_recovery_attempted=True)
+        old=copy.deepcopy(state);recovery.validate_map_pause(state);self.assertEqual(state,old)
+        for key,value in [('source_checkpoint','other'),('task_failures',0),
+                          ('map_after_courier_attempted',True),('blocker','memory fault')]:
+            with self.subTest(key=key),self.assertRaises(Halt):
+                recovery.validate_map_pause({**state,key:value})
+
     def rows(self):
         rows=[]
         for mode in ['foot','vehicle']:
