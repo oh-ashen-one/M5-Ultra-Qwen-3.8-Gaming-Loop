@@ -87,39 +87,92 @@ def slab(nm, dx, dy, dz, y_bot, y_top, xbot, xtop, ybot, ytop, z, m):
     return ob
 
 
-# --- lower body: single original silhouette, nose at +Y
-box("body_lower", (1.84, 3.30, 0.56), (0, 0.05, 0.60), "paint")
-box("body_nose", (1.70, 0.62, 0.46), (0, 2.02, 0.55), "paint2")
-box("body_tail", (1.72, 0.60, 0.50), (0, -1.96, 0.57), "paint2")
-box("rocker_L", (0.14, 2.60, 0.16), (-0.90, 0.05, 0.30), "trim")
-box("rocker_R", (0.14, 2.60, 0.16), (0.90, 0.05, 0.30), "trim")
-box("bumper_f", (1.72, 0.26, 0.30), (0, 2.32, 0.44), "trim")
-box("bumper_r", (1.72, 0.24, 0.30), (0, -2.24, 0.46), "trim")
-box("grille", (1.02, 0.08, 0.16), (0, 2.36, 0.62), "chrome")
-for sx in (-0.62, 0.62):
-    box("headlamp_%s" % ("L" if sx < 0 else "R"), (0.42, 0.10, 0.16), (sx, 2.33, 0.74), "lamp")
-    box("tailamp_%s" % ("L" if sx < 0 else "R"), (0.40, 0.08, 0.15), (sx, -2.34, 0.76), "tail")
-    box("mirror_%s" % ("L" if sx < 0 else "R"), (0.20, 0.12, 0.11), (sx * 1.08, 0.74, 1.00), "trim")
-
-# --- greenhouse / cabin
-box("cabin_floor", (1.66, 1.90, 0.10), (0, -0.10, 0.90), "trim")
-slab("cabin_roof", 1.56, 1.62, 0.46, 0, 0, 1.00, 0.80, 1.06, 0.88, 1.12, "paint")
-slab("cabin_glass", 1.48, 1.54, 0.40, 0, 0, 1.00, 0.80, 1.06, 0.88, 1.11, "glass")
-box("windshield", (1.44, 0.10, 0.62), (0, 0.86, 1.02), "glass")
-box("rear_window", (1.44, 0.10, 0.52), (0, -0.94, 1.02), "glass")
-box("hood", (1.62, 1.10, 0.08), (0, 1.52, 0.92), "paint")
-box("decklid", (1.62, 0.86, 0.08), (0, -1.60, 0.92), "paint")
-box("spoiler", (1.44, 0.26, 0.07), (0, -2.02, 1.00), "paint2")
-box("a-pillar_L", (0.10, 0.14, 0.60), (-0.72, 0.80, 1.06), "trim")
-box("a-pillar_R", (0.10, 0.14, 0.60), (0.72, 0.80, 1.06), "trim")
-box("door_line_L", (0.06, 1.05, 0.42), (-0.925, 0.10, 0.66), "trim")
-box("door_line_R", (0.06, 1.05, 0.42), (0.925, 0.10, 0.66), "trim")
-
-# --- wheels: axle along X, spin about X in Unity too
-def wheel(nm, loc, r=0.345, w=0.26):
+# --- main body: ONE extruded side silhouette (hood->trunk), tapered nose
+def extrude(nm, prof, xw, xfront, m):
+    """prof = ordered list of (y, z) outlining the side profile in Y-Z plane.
+    Extruded along X from -xw..xw with front (highest-Y) verts narrowed by xfront
+    to give a tapered nose/tail plan view. Produces a single closed solid."""
     me = bpy.data.meshes.new(nm)
     bm = bmesh.new()
-    bmesh.ops.create_cone(bm, cap_ends=True, segments=20, radius1=r, radius2=r, depth=w)
+    ymax = max(p[0] for p in prof)
+    ymin = min(p[0] for p in prof)
+    span = (ymax - ymin) or 1.0
+    left, right = [], []
+    for (y, z) in prof:
+        # narrowing factor: 1.0 at centre, xfront toward the nose/tail ends
+        t = abs(y - (ymax + ymin) * 0.5) / (span * 0.5)
+        k = 1.0 - (1.0 - xfront) * (t ** 1.6)
+        left.append(bm.verts.new((-xw * k, y, z)))
+        right.append(bm.verts.new((xw * k, y, z)))
+    n = len(prof)
+    for i in range(n):
+        j = (i + 1) % n
+        bm.faces.new((left[i], left[j], right[j], right[i]))
+    bm.faces.new(list(reversed(left)))
+    bm.faces.new(right)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.normal_update()
+    bm.to_mesh(me)
+    bm.free()
+    ob = obj(nm, me, m)
+    return ob
+
+
+# side silhouette: ONE continuous hood->trunk volume (name preserved: body_lower)
+_body_prof = [
+    (2.05, 0.50),   # nose bottom front
+    (2.18, 0.82),   # nose front top (tapered)
+    (1.05, 0.92),   # cowl / windscreen base
+    (-1.05, 0.92),  # cabin base rear
+    (-1.95, 0.88),  # deck
+    (-2.18, 0.80),  # tail top
+    (-2.16, 0.48),  # tail bottom
+    (-1.30, 0.42),  # underbody rear
+    (1.30, 0.42),   # underbody front
+]
+body_lower = extrude("body_lower", _body_prof, 0.80, 0.74, "paint")
+
+# flush nose/tail extensions (names preserved) keep the volume continuous,
+# painted a tone darker so they read as sculpted ends, not stacked slabs.
+box("body_nose", (1.34, 0.50, 0.40), (0, 2.20, 0.62), "paint2")
+box("body_tail", (1.34, 0.46, 0.42), (0, -2.20, 0.64), "paint2")
+
+# rocker sills tying the wheel arches together
+box("rocker_L", (0.12, 2.20, 0.14), (-0.80, 0.00, 0.44), "trim")
+box("rocker_R", (0.12, 2.20, 0.14), (0.80, 0.00, 0.44), "trim")
+
+# bumpers integrated flush into nose/tail faces
+box("bumper_f", (1.50, 0.14, 0.24), (0, 2.32, 0.54), "trim")
+box("bumper_r", (1.50, 0.14, 0.26), (0, -2.32, 0.58), "trim")
+box("grille", (0.96, 0.06, 0.14), (0, 2.40, 0.68), "chrome")
+
+# head/tail lamps INSET into the body faces (not floating quads)
+for sx in (-0.56, 0.56):
+    box("headlamp_%s" % ("L" if sx < 0 else "R"), (0.40, 0.18, 0.16), (sx, 2.30, 0.80), "lamp")
+    box("tailamp_%s" % ("L" if sx < 0 else "R"), (0.44, 0.18, 0.14), (sx, -2.30, 0.74), "tail")
+    box("mirror_%s" % ("L" if sx < 0 else "R"), (0.20, 0.12, 0.11), (sx * 1.02, 0.72, 1.02), "trim")
+
+# --- greenhouse / cabin: one raked roof volume, glass inset
+box("cabin_floor", (1.60, 1.90, 0.10), (0, -0.05, 0.92), "trim")
+slab("cabin_roof", 1.48, 1.50, 0.42, 0, 0, 0.92, 0.66, 0.92, 0.78, 1.16, "paint")
+slab("cabin_glass", 1.40, 1.42, 0.38, 0, 0, 0.92, 0.66, 0.92, 0.78, 1.15, "glass")
+box("windshield", (1.42, 0.12, 0.58), (0, 0.90, 1.08), "glass")
+box("rear_window", (1.42, 0.12, 0.50), (0, -0.96, 1.06), "glass")
+# thin hood/deck cap panels now sit ON the single volume (subtle shut lines)
+box("hood", (1.50, 1.00, 0.06), (0, 1.52, 0.90), "paint")
+box("decklid", (1.50, 0.80, 0.06), (0, -1.50, 0.90), "paint")
+box("spoiler", (1.38, 0.24, 0.06), (0, -1.96, 0.96), "paint2")
+box("a-pillar_L", (0.10, 0.14, 0.56), (-0.70, 0.74, 1.08), "trim")
+box("a-pillar_R", (0.10, 0.14, 0.56), (0.70, 0.74, 1.08), "trim")
+box("door_line_L", (0.05, 1.00, 0.38), (-0.805, 0.00, 0.70), "trim")
+box("door_line_R", (0.05, 1.00, 0.38), (0.805, 0.00, 0.70), "trim")
+
+# --- wheels: axle along X, spin about X in Unity too. Bigger + protrude past
+# body sides (body half-width 0.80) so the wheels are clearly readable.
+def wheel(nm, loc, r=0.40, w=0.28):
+    me = bpy.data.meshes.new(nm)
+    bm = bmesh.new()
+    bmesh.ops.create_cone(bm, cap_ends=True, segments=22, radius1=r, radius2=r, depth=w)
     for v in bm.verts:
         c = v.co.z
         v.co.z = v.co.x
@@ -132,8 +185,8 @@ def wheel(nm, loc, r=0.345, w=0.26):
     return ob
 
 
-for nm, loc in (("wheel_FL", (-0.86, 1.42, 0.345)), ("wheel_FR", (0.86, 1.42, 0.345)),
-                ("wheel_RL", (-0.86, -1.34, 0.345)), ("wheel_RR", (0.86, -1.34, 0.345))):
+for nm, loc in (("wheel_FL", (-0.88, 1.26, 0.40)), ("wheel_FR", (0.88, 1.26, 0.40)),
+                ("wheel_RL", (-0.88, -1.20, 0.40)), ("wheel_RR", (0.88, -1.20, 0.40))):
     wheel(nm, loc)
 
 print("coupe objects:", len(scene.objects), "mats:", len(M))
