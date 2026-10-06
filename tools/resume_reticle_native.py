@@ -15,13 +15,20 @@ TASK = dict(id='reticle-native-verification', phase='polish', visual_facing=True
 
 class ReticleNative(CameraNativeOnly):
     def validate_recovery(self, old):
+        port_recovery = old.get('current_round') == 'q0139-7e4cc0cc'
         expected = dict(status='paused', controller_pid=None, owned_process=None,
             current_round=PRIOR, last_playable_checkpoint=ACCEPTED,
             task_index=7, task_failures=24, failure_streak=1, diagnosis_used=True,
             overall_deadline_epoch=HARD_CAP_EPOCH, reticle_render_repair_attempted=True,
             blocker='Halt: Local reticle source saved; unload the idle model deliberately before dual-render native verification')
+        if port_recovery:
+            expected.update(current_round='q0139-7e4cc0cc', reticle_native_attempted=True,
+                blocker='Halt: Native-only inference reservation unavailable; no engine launched')
+            before = self.store.root / 'evidence/q0139-7e4cc0cc-dual'
+            if (before / 'gate.json').exists() or (before / 'captures').exists() or old.get('reticle_native_port_recovered'):
+                raise Halt('Port recovery requires the untouched pre-engine interruption')
         authored = old.get('reticle_source_outcome', {})
-        if (any(old.get(k) != v for k, v in expected.items()) or old.get('reticle_native_attempted')
+        if (any(old.get(k) != v for k, v in expected.items()) or (old.get('reticle_native_attempted') and not port_recovery)
                 or authored.get('candidate') != old.get('source_checkpoint')
                 or authored.get('round') != PRIOR or not authored.get('local_authored')):
             raise Halt('Require the complete local reticle source checkpoint and preserved sole-owner history')
@@ -32,10 +39,12 @@ class ReticleNative(CameraNativeOnly):
         if not result.get('ok'):
             raise Halt('Require a usable complete source save, never a truncated response')
         self.source = old['source_checkpoint']
+        self.port_recovery = port_recovery
         self.resume_capacity = self.priority_resume = self.transport_recovery = self.admission_recovery = False
 
     def recovery_settings(self):
-        return dict(reticle_native_attempted=True, recovery_route='local-reticle-native-both-paths',
+        return dict(reticle_native_attempted=True, reticle_native_port_recovered=self.port_recovery,
+            recovery_route='local-reticle-native-both-paths',
             recovery_change='Keep inference deliberately unloaded. Check real screen/target PNGs, the prior 95-second '
             'input-driven mission and wall/near-plane clearance without changing any acceptance requirement.')
 
