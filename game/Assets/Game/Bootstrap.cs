@@ -176,77 +176,139 @@ namespace ChicagoGame
         public float lookAhead = 4.0f;
         public LayerMask collideMask = ~0;
 
-        // Scratch buffer for the multi-hit back-probe so we can skip the courier's
-        // own capsule and react only to architecture along the view ray.
         readonly RaycastHit[] hits = new RaycastHit[16];
+        readonly Collider[] near = new Collider[8];
+        Renderer[] rend;
+
+        void Awake()
+        {
+            if (target != null) rend = target.GetComponentsInChildren<Renderer>();
+        }
 
         void LateUpdate()
         {
             if (target == null) return;
             var yaw = Quaternion.Euler(0f, target.eulerAngles.y, 0f);
 
-            // Rig direction is the unobstructed behind-the-back pose. The ray runs
-            // from the target origin along that direction, so the camera sits at
-            // target + dir*dist. Walls are kept in front of the lens by stopping
-            // short of the first foreign hit.
-            Vector3 dir = yaw * offset;
-            float full = dir.magnitude;
-            if (full < 1e-4f) return;
-            dir /= full;
             Vector3 origin = target.position;
 
-            // clearance covers both the wall surface and the camera near plane, so
-            // the lens never pokes through nor clips the near plane.
-            const float clearance = 0.22f;
-            float maxSafe = full;
+            // Real target bounds: used only for the shoulder/overhead pose and the
+            // look target, so framing reflects the actual actor, not a distance proxy.
+            float top = origin.y, ctr = origin.y; bool have = false;
+            if (rend != null)
+            {
+                foreach (var r in rend)
+                {
+                    if (r == null) continue;
+                    var b = r.bounds;
+                    if (!have) { top = b.max.y; ctr = (b.min.y + b.max.y) * 0.5f; have = true; }
+                    else { top = Mathf.Max(top, b.max.y); ctr = (ctr + b.center.y) * 0.5f; }
+                }
+            }
+            if (!have) { top = origin.y + 1.8f; ctr = origin.y + 1.0f; }
+            float bodyTop = Mathf.Max(0.5f, top - origin.y);
 
-            // Walk all hits along the rig ray and ignore the courier's own colliders;
-            // the nearest foreign surface bounds how far back we may go.
-            int n = Physics.RaycastNonAlloc(origin, dir, hits, full + 0.05f,
+            // Split the rig offset into horizontal (the part that collides with a
+            // wall behind) and vertical (the part that keeps a usable height). Scaling
+            // the whole normalized direction — the old dir*maxSafe — collapsed Y to the
+            // feet when a close wall forced a tiny distance, giving a waist-height view.
+            Vector3 fullOff = yaw * offset;
+            Vector3 horiz = new Vector3(fullOff.x, 0f, fullOff.z);
+            float horizFull = horiz.magnitude;
+            if (horizFull < 1e-4f) { transform.position = origin + fullOff; return; }
+            Vector3 hdir = horiz / horizFull;
+
+            const float clearance = 0.25f;   // wall surface + near-plane budget
+            float camY = offset.y;           // normal height until proven cramped
+
+            // Horizontal room measured at head height along the back direction.
+            Vector3 probeOrigin = origin + Vector3.up * Mathf.Max(1.0f, bodyTop * 0.9f);
+            float hFull = horizFull;
+            float hHit = float.PositiveInfinity;
+            int n = Physics.RaycastNonAlloc(probeOrigin, hdir, hits, hFull + 0.05f,
                                            collideMask, QueryTriggerInteraction.Ignore);
-            float hitDist = float.PositiveInfinity;
             for (int i = 0; i < n; i++)
             {
                 var t = hits[i].collider ? hits[i].collider.transform : null;
                 if (t == target || (t && t.IsChildOf(target))) continue;
-                if (hits[i].distance < hitDist) hitDist = hits[i].distance;
+                if (hits[i].distance < hHit) hHit = hits[i].distance;
             }
-            // Geometry-safe clamp: never exceed available space. With a wall at 0.65 m
-            // this yields ~0.43 m (in front of the wall); it has NO floor that could
-            // jump past a close hit the way Max(1.4, hit-0.45) did.
-            if (hitDist < float.PositiveInfinity)
-                maxSafe = Mathf.Min(full, Mathf.Max(0.05f, hitDist - clearance));
 
-            Vector3 want = origin + dir * maxSafe;
-            // Pulled well inside the rig means architecture is touching the lens:
-            // this is pure collision response, and we frame the actor accordingly.
-            bool cramped = maxSafe < full * 0.55f;
+            float hDist = hFull;
+            bool cramped = false;
+            if (hHit < float.PositiveInfinity)
+            {
+                float avail = hHit - clearance;
+                if (avail < hFull * 0.6f)
+                {
+                    // Back space is short: pure collision response. Lift to an
+                    // overhead/shoulder height (above the torso) and hug the actor
+                    // instead of dropping height — keeps the actor framed AND the
+                    // route visible ahead rather than a waist-height upward stare.
+                    cramped = true;
+                    camY = Mathf.Max(1.35f, bodyTop + 0.25f);
+                    hDist = Mathf.Max(0.18f, avail);
+                }
+                else
+                {
+                    hDist = Mathf.Min(hFull, avail);
+                }
+            }
 
+            Vector3 want = origin + hdir * hDist + Vector3.up * camY;
             Vector3 pos = Vector3.Lerp(transform.position, want,
                                        Mathf.Clamp01(damping * Time.deltaTime));
 
-            // Geometry-safe FINAL smoothed pose: re-verify along the actual smoothed
-            // ray so an interpolated frame between two safe points can never settle
-            // past a wall that the endpoint had already cleared.
-            float d = Vector3.Dot(pos - origin, dir);
-            if (d > 0.01f && Physics.Raycast(origin, dir, out RaycastHit v, d,
-                                             collideMask, QueryTriggerInteraction.Ignore))
+            // Validate the ACTUAL smoothed segment (origin -> pos), whose direction is
+            // not the fixed hdir once the target has yawed, and pull back along that
+            // same segment if a foreign surface intrudes.
+            Vector3 seg = pos - origin;
+            float segLen = seg.magnitude;
+            if (segLen > 0.02f)
             {
-                var vt = v.collider ? v.collider.transform : null;
-                bool own = vt == target || (vt && vt.IsChildOf(target));
-                if (!own && v.distance < d - 0.02f)
-                    pos = origin + dir * Mathf.Max(0.05f, v.distance - clearance);
+                Vector3 sd = seg / segLen;
+                if (Physics.Raycast(origin, sd, out RaycastHit v, segLen,
+                                    collideMask, QueryTriggerInteraction.Ignore))
+                {
+                    var vt = v.collider ? v.collider.transform : null;
+                    bool own = vt == target || (vt && vt.IsChildOf(target));
+                    if (!own && v.distance < segLen - clearance)
+                        pos = origin + sd * Mathf.Max(0.05f, v.distance - clearance);
+                }
+            }
+
+            // Final geometry-aware near-plane guard: if the smoothed lens overlaps any
+            // foreign collider (height differences can hide a low wall), step toward
+            // the target until the lens sits in open space.
+            for (int k = 0; k < 5 && Physics.OverlapSphereNonAlloc(pos, clearance, near,
+                                                                   collideMask, QueryTriggerInteraction.Ignore) > 0; k++)
+            {
+                bool touchingForeign = false;
+                for (int i = 0; i < near.Length; i++)
+                {
+                    var t = near[i] ? near[i].transform : null;
+                    if (t == null || t == target || t.IsChildOf(target)) continue;
+                    touchingForeign = true; break;
+                }
+                if (!touchingForeign) break;
+                Vector3 toT = origin - pos; float d = toT.magnitude;
+                if (d < 1e-4f) break;
+                pos += toT / d * clearance;
             }
             transform.position = pos;
 
-            // Look down the route normally. When cramped, the back-ray has met a wall
-            // ahead of the rig, so pushing look-ahead would aim into that wall; we
-            // instead look straight at the courier's torso to keep the actor framed
-            // and visible. (Framing is tied to the actual target, not to a fake
-            // endpoint-distance visibility proxy.)
-            float la = cramped ? 0f : lookAhead;
-            float hy = cramped ? 1.0f : 1.1f;
-            transform.LookAt(target.position + Vector3.up * hy + yaw * Vector3.forward * la);
+            // Look target: normal pose unchanged. When cramped, aim at the real torso
+            // center (bounds) with a short forward lead so the actor stays framed while
+            // the route ahead remains on screen — an over-the-shoulder collision pose.
+            if (!cramped)
+            {
+                transform.LookAt(origin + Vector3.up * 1.1f + yaw * Vector3.forward * lookAhead);
+            }
+            else
+            {
+                float lookY = Mathf.Clamp(ctr - origin.y, 1.0f, bodyTop);
+                transform.LookAt(origin + Vector3.up * lookY + yaw * Vector3.forward * 1.4f);
+            }
         }
     }
 }
