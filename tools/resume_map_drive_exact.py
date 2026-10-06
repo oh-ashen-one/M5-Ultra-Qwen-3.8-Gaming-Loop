@@ -7,7 +7,7 @@ from qualify_map_extension import MAP_TASK
 from loop_controller.core import Halt,now
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 from loop_controller.model import tool
-from loop_controller.recovery_policy import admit_strategy
+from loop_controller.recovery_policy import admit_strategy,support_repair_scope
 from loop_controller.runner import git
 
 ROUND='q0062-c575829a'
@@ -43,6 +43,14 @@ class MapDriveExact(MapDriveMicro):
         initial=not history
         previous=history[-1]['parameters'] if history else dict(approach_seconds=.75,turn_seconds=1.444444,out_seconds=.8,reverse_seconds=5.5)
         feedback=driving_feedback(self.store.root/'evidence'/self.store.get('map_traversal_feedback_round')) if history else None
+        if history:
+            bundle=self.store.root/'evidence'/self.store.get('map_traversal_feedback_round')
+            gate=json.loads((bundle/'scoped-gate.json').read_text())
+            rows=[json.loads(line) for line in (bundle/'captures/trace.jsonl').read_text().splitlines()]
+            scope=support_repair_scope(gate,rows,prefix['duration']+.8)
+            if scope:
+                self.report_blocker('Driving-only repair cannot affect earlier failures: '+', '.join(scope),ident)
+                raise Halt('Measured pre-driving support needs source/prefix repair; no futile driving retry')
         self.c.update(output_tokens=1024 if initial else 2048,model_timeout_seconds=120)
         self.store.set(stage='local-single-driving-parameter');self.store.report()
         def finish(_,fields):

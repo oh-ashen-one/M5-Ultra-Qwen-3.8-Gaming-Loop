@@ -13,6 +13,24 @@ MAP_REPLAY_FAILURES=frozenset({
     'foot-outside-capture-missing','vehicle-outside-capture-missing'})
 
 
+def support_repair_scope(gate, rows, driving_start):
+    """Later driving parameters cannot repair already-observed prefix faults."""
+    failures=gate.get('failure',[])
+    support=gate.get('scoped_facts',{}).get('rendered_walking_support',{})
+    scopes=[]
+    if 'rendered-pavement-support' in failures and any(
+            r.get('time',float('inf'))<driving_start for r in support.get('first_uncovered',[])):
+        scopes.append('walking-prefix')
+    if 'vehicle-rendered-support' in failures:
+        surfaces=support.get('surfaces',[])
+        if surfaces and any(r.get('mode')=='vehicle' and r.get('time',float('inf'))<driving_start
+                and not any(s['min'][0]<=r['vehicle'][0]<=s['max'][0]
+                    and s['min'][2]<=r['vehicle'][2]<=s['max'][2]
+                    and abs(s['max'][1]-r['vehicle'][1])<.5 for s in surfaces) for r in rows):
+            scopes.append('vehicle-source')
+    return scopes
+
+
 def recovery_route(gate,attempt_count):
     failures=gate.get('failure')
     eligible=(gate.get('passed') is False and gate.get('build_exit')==0 and
