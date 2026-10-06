@@ -36,8 +36,10 @@ namespace ChicagoGame
             // 2) Bound traversal to the visible pavement with edge barriers.
             AddWall(go, new Vector3(PX0 - WALL_T * 0.5f, WALL_H * 0.5f, (PZ0 + PZ1) * 0.5f),
                     new Vector3(WALL_T, WALL_H, (PZ1 - PZ0)));
-            AddWall(go, new Vector3(PX1 + WALL_T * 0.5f, WALL_H * 0.5f, (PZ0 + PZ1) * 0.5f),
-                    new Vector3(WALL_T, WALL_H, (PZ1 - PZ0)));
+            AddWall(go, new Vector3(PX1 + WALL_T * 0.5f, WALL_H * 0.5f, 3.0f),
+                    new Vector3(WALL_T, WALL_H, 10.0f));
+            AddWall(go, new Vector3(PX1 + WALL_T * 0.5f, WALL_H * 0.5f, 25.0f),
+                    new Vector3(WALL_T, WALL_H, 10.0f));
             AddWall(go, new Vector3((PX0 + PX1) * 0.5f, WALL_H * 0.5f, PZ1 + WALL_T * 0.5f),
                     new Vector3((PX1 - PX0) + WALL_T * 2f, WALL_H, WALL_T));
             AddWall(go, new Vector3((PX0 + PX1) * 0.5f, WALL_H * 0.5f, PZ0 - WALL_T * 0.5f),
