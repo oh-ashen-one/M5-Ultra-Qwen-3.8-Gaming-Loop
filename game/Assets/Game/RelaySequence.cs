@@ -64,7 +64,7 @@ namespace ChicagoGame
             if (Remaining <= 0) { Failed = true; return; }
             if (AllComplete || Failed) return;
 
-            if (LoopInput.Pressed(KeyCode.F) && LoopInput.Mode == "foot")
+            if (LoopInput.Pressed(KeyCode.F) && LoopSignals.Mode == "foot")
             {
                 int hit = -1;
                 float px = player.transform.position.x, pz = player.transform.position.z;
