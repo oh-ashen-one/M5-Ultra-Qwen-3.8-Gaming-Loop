@@ -10,10 +10,30 @@ import resume_direct_map_builder as direct
 import resume_map_spans as spans
 import resume_pavement_completion as pavement
 import resume_map_replay_case as replay_case
+import resume_map_compile as map_compile
 from loop_controller.core import Halt
 
 
 class MapExtensionTests(unittest.TestCase):
+    def test_lookup_span_preserves_inline_search_and_entire_loop_boundary(self):
+        raw=('before\nTransform pv0 = null;\nforeach(var g in roots)\n{\n'
+             'pv0 = FindDeep(g, "pavement"); if (pv0 != null) break;\n}\n'
+             'if (pv0 != null)\n{\nuse(pv0);\n}\n')
+        self.assertEqual(pavement.pavement_lookup_span(raw),(2,6))
+        for bad in (raw+raw,raw.replace('if (pv0 != null)\n','if (other)\n')):
+            with self.assertRaises(Halt):pavement.pavement_lookup_span(bad)
+
+    def test_compile_recovery_keeps_rejection_counts_and_accepted_fallback(self):
+        state=dict(source_checkpoint=map_compile.SOURCE,last_playable_checkpoint=map_compile.ACCEPTED,
+            current_round=map_compile.ROUND,task_index=7,task_failures=9,failure_streak=1,
+            diagnosis_used=True,overall_deadline_epoch=map_compile.HARD_CAP_EPOCH,
+            blocker=map_compile.BLOCKER,map_replay_case_recovery_attempted=True)
+        old=copy.deepcopy(state);map_compile.validate_compile_pause(state);self.assertEqual(state,old)
+        for key,value in [('map_compile_recovery_attempted',True),('source_checkpoint','other'),
+                          ('task_failures',0),('blocker','runtime fault')]:
+            with self.subTest(key=key),self.assertRaises(Halt):
+                map_compile.validate_compile_pause({**state,key:value})
+
     def test_saved_replay_recovery_requires_exact_stop_and_unchanged_proposal(self):
         state=dict(source_checkpoint=replay_case.SOURCE,last_playable_checkpoint=replay_case.ACCEPTED,
             current_round=replay_case.ROUND,task_index=7,task_failures=8,failure_streak=1,

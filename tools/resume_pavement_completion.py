@@ -42,6 +42,15 @@ def completed_proposal(raw):
     return content
 
 
+def pavement_lookup_span(raw):
+    lines=raw.splitlines()
+    starts=[i for i,line in enumerate(lines) if line.strip()=='Transform pv0 = null;']
+    stops=[i for i,line in enumerate(lines) if line.strip()=='if (pv0 != null)']
+    if len(starts)!=1 or len(stops)!=1 or not 0<stops[0]-starts[0]<=12:
+        raise Halt('Expected one complete bounded pavement lookup before its whole-line guard')
+    return starts[0]+1,stops[0]
+
+
 class PavementCompletion(MapSpanBuilder):
     def validate_recovery(self,old):
         validate_pavement_pause(old)
@@ -64,9 +73,8 @@ class PavementCompletion(MapSpanBuilder):
             original_response_sha256=RESPONSE_SHA,proposal_sha256=PROPOSAL_SHA,
             original_lines=47,previous_line_limit=45,recovery_line_limit=50,
             bytes_unchanged=True,original_rejection_preserved=True,game_author='local Qwen')
-        raw=path.read_text();lines=raw.splitlines()
-        first=next(i+1 for i,line in enumerate(lines) if 'Transform pv0 = null;' in line)
-        last=next(i for i,line in enumerate(lines) if 'if (pv0 != null)' in line)
+        raw=path.read_text()
+        first,last=pavement_lookup_span(raw)
         bootstrap=files.path('Assets/Game/Bootstrap.cs').read_text()
         context=bootstrap[bootstrap.index('            Transform sw = null;'):bootstrap.index('            static GameObject Coupe()')]
         self.span(ident,'pavement-root-lookup',first,last,
