@@ -26,6 +26,26 @@ def row(t,state='grab',restart=0):
         relay=dict(active=relay,complete=state=='relay-complete',failed=state=='relay-failed',count=1))
 
 class ConsolidatedHudTests(unittest.TestCase):
+    def test_source_tool_preserves_state_and_harness_boundaries(self):
+        from resume_consolidated_hud import validate_module
+        source='using UnityEngine; [DefaultExecutionOrder(31000)] class MissionDirectorHud { }\n// Install(GameObject player, Camera cam) MissionBoard MissionHud RouteHud RelayHud HudStatus'
+        validate_module(source)
+        for bad in ['LoopSignals.Mission="complete";','LoopSignals.Restarts++;','LoopRuntime.CaptureWidth',
+                    'GameObject.CreatePrimitive(', 'System.IO.File.ReadAllText(', 'Destroy(other);']:
+            with self.subTest(bad=bad),self.assertRaises(ValueError):validate_module(source+'\n'+bad)
+
+    def test_resume_preserves_the_corrected_plan_boundary_and_cap(self):
+        from resume_consolidated_hud import validate_pause,SOURCE,ACCEPTED,ROUND
+        from loop_controller.delivery_policy import HARD_CAP_EPOCH
+        from loop_controller.core import Halt
+        state=dict(source_checkpoint=SOURCE,last_playable_checkpoint=ACCEPTED,current_round=ROUND,
+            task_index=7,task_failures=24,failure_streak=1,diagnosis_used=True,overall_deadline_epoch=HARD_CAP_EPOCH,
+            blocker='Halt: Corrected next gameplay plan saved; continue authorized consolidated HUD implementation')
+        validate_pause(state)
+        for change in [{'task_failures':0},{'consolidated_hud_attempted':True},{'source_checkpoint':'other'},
+                       {'overall_deadline_epoch':HARD_CAP_EPOCH+3600}]:
+            with self.subTest(change=change),self.assertRaises(Halt):validate_pause({**state,**change})
+
     def test_truthful_progress_failure_and_reset_on_two_real_projections(self):
         rows=[row(i+1,s) for i,s in enumerate(['grab','carrying','courier-failed','dead-drop','relay','relay-complete','relay-failed'])]
         rows.append(row(9,'grab',1));result=inspect_hud(rows,['relay','relay-complete','relay-failed'])
