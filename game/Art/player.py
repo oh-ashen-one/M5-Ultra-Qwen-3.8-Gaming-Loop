@@ -69,33 +69,37 @@ def ball(nm, r, loc, m, parent, scale=(1, 1, 1)):
     return ob
 
 
+# body sits at hip/torso-centre world Z=0.92; ALL child pivots/boxes below use
+# TRUE parent-local coords (world = 0.92 + local_z) so limbs no longer stack a
+# second +0.92 offset (the bug that lifted arms over the head and floated shoes).
 body = pivot("body", (0, 0, 0.92), root)
-box("torso", (0.40, 0.26, 0.56), (0, 0, 0.28), "jacket", body)
-box("shirt_strip", (0.30, 0.275, 0.14), (0, 0.005, -0.06), "shirt", body)
-box("shoulders", (0.50, 0.24, 0.16), (0, 0, 0.52), "jacket", body)
-box("collar", (0.28, 0.22, 0.10), (0, 0, 0.63), "jacket", body)
-box("belt", (0.40, 0.27, 0.10), (0, 0, 0.00), "shoe", body)
-ball("head", 0.125, (0, 0.01, 0.80), "skin", body)
-ball("hair", 0.132, (0, -0.005, 0.845), "hair", body, scale=(1, 1, 0.72))
-box("neck", (0.11, 0.11, 0.10), (0, 0, 0.66), "skin", body)
-head = pivot("head_root", (0, 0, 1.55), root)
+box("torso", (0.42, 0.26, 0.58), (0, 0, 0.26), "jacket", body)
+box("shirt_strip", (0.26, 0.275, 0.16), (0, 0.01, 0.05), "shirt", body)
+box("shoulders", (0.50, 0.24, 0.16), (0, 0, 0.56), "jacket", body)
+box("collar", (0.26, 0.22, 0.10), (0, 0, 0.65), "jacket", body)
+box("belt", (0.42, 0.27, 0.10), (0, 0, 0.00), "shoe", body)
+box("backpack", (0.30, 0.14, 0.34), (0, -0.18, 0.30), "jeans", body)
+box("pack_strap", (0.10, 0.10, 0.06), (0, 0.14, 0.46), "shoe", body)
+box("neck", (0.11, 0.11, 0.10), (0, 0, 0.62), "skin", body)
+ball("head", 0.13, (0, 0.01, 0.73), "skin", body)
+ball("hair", 0.138, (0, -0.01, 0.78), "hair", body, scale=(1, 1, 0.72))
+head = pivot("head_root", (0, 0, 0.63), root)
 head.parent = body
 
 for s, tag in ((-1, "L"), (1, "R")):
-    a = pivot("arm%s_root" % tag, (s * 0.29, 0, 1.44), root)
+    a = pivot("arm%s_root" % tag, (s * 0.27, 0, 0.56), root)
     a.parent = body
-    box("arm%s_upper" % tag, (0.115, 0.125, 0.34), (0, 0, -0.17), "jacket", a)
+    box("arm%s_upper" % tag, (0.115, 0.125, 0.34), (0, 0, -0.18), "jacket", a)
     box("arm%s_fore" % tag, (0.105, 0.115, 0.30), (0, 0.015, -0.48), "jacket", a)
-    ball("arm%s_hand" % tag, 0.058, (0, 0.02, -0.65), "skin", a)
-    l = pivot("leg%s_root" % tag, (s * 0.115, 0, 0.90), root)
+    ball("arm%s_hand" % tag, 0.058, (0, 0.02, -0.66), "skin", a)
+    l = pivot("leg%s_root" % tag, (s * 0.115, 0, 0.03), root)
     l.parent = body
     box("leg%s_thigh" % tag, (0.165, 0.180, 0.44), (0, 0, -0.22), "jeans", l)
-    box("leg%s_shin" % tag, (0.145, 0.160, 0.42), (0, -0.01, -0.64), "jeans", l)
-    box("leg%s_shoe" % tag, (0.150, 0.300, 0.09), (0, 0.055, -0.865), "shoe", l)
+    box("leg%s_shin" % tag, (0.145, 0.160, 0.42), (0, -0.01, -0.62), "jeans", l)
+    box("leg%s_shoe" % tag, (0.150, 0.300, 0.09), (0, 0.06, -0.875), "shoe", l)
 
-gun = pivot("gun_root", (-0.02, 0.16, 0.98), root)
+gun = pivot("gun_root", (-0.02, 0.16, 0.06), root)
 gun.parent = body
 box("gun_slide", (0.055, 0.215, 0.075), (0, 0, 0), "steel", gun)
 box("gun_grip", (0.048, 0.065, 0.135), (0, -0.065, -0.09), "shoe", gun, rx=-12)
-
 print("player objects:", len(scene.objects), "mats:", len(M))
