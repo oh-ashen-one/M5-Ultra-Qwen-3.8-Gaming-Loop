@@ -90,6 +90,7 @@ class CharacterCamera(ReferenceVisuals):
     def author_camera(self, ident, baseline):
         files = Files(self.project, self.store)
         original = files.path(BOOT).read_text()
+        combat = files.path('Assets/Game/Combat.cs').read_text()
         preimage = sha(files.path(BOOT).read_bytes())
         protected = {p: sha(p.read_bytes()) for p in self.project.rglob('*.cs') if p != files.path(BOOT)}
         protected[files.path(ART)] = sha(files.path(ART).read_bytes())
@@ -117,7 +118,8 @@ class CharacterCamera(ReferenceVisuals):
             'ray used by Combat. The reticle must appear in Camera.Render, not only OnGUI. Inspect the current pixels '
             'before choosing how much framing needs correction. Keep the character visible and avoid unnecessary '
             'camera changes if the new anatomy already removed crowding. Preserve wall/floor/near-plane clearance, '
-            'target switches, existing walking/driving controls and thin-ray shooting. No aim assist, cast widening, '
+            'target switches, existing walking/driving controls and thin-ray shooting. Use the existing Unity APIs '
+            'and render setup; add no package or external shader dependency. No aim assist, cast widening, '
             'health/mission writes, scene placement, asset edits or acceptance/replay-dependent behavior. '
             'Only the supplied Follow class and its final namespace brace may be replaced. Everything before Follow '
             'stays byte-for-byte intact; other files are protected. Retain public target and offset interfaces. '
@@ -125,7 +127,9 @@ class CharacterCamera(ReferenceVisuals):
             'needed. Use low thinking effort, keep the source compact and submit finish_source now. The controller '
             'runs actual native qualification and fresh reference-based review automatically. '
             'Do not write a long planning essay or a replay.\nCHARACTER PIXEL OBSERVATIONS:\n' +
-            json.dumps(self.character_review['observations']) + '\nEXACT CURRENT FOLLOW SPAN:\n' +
+            json.dumps(self.character_review['observations']) +
+            '\nREAD-ONLY EXACT BOOTSTRAP/WALKER AND RENDER SETUP:\n' + original.split(MARKER)[0] +
+            '\nREAD-ONLY EXACT COMBAT CENTER-RAY CONTRACT:\n' + combat + '\nEXACT CURRENT FOLLOW SPAN:\n' +
             MARKER + original.split(MARKER)[1],
             [tool('finish_source', 'Save the complete replacement Follow span; native validation follows.',
                   {'content': {'type': 'string'}})], {'finish_source': save}, images=images,
