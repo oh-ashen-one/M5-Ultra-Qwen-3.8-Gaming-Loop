@@ -72,9 +72,7 @@ class PropTransforms(AlleyReadability):
         saved=self.checkpoint_source('Local Qwen: preserve cloned prop world scale and orientation')
         self.store.set(source_checkpoint=saved,candidate_commit=saved)
 
-    def edit(self,task,ident):
-        if task['id']!=MAP_TASK['id']:return super().edit(task,ident)
-        if git(self.repo,'rev-parse','HEAD')!=SOURCE:raise Halt('Expected preserved fallback before local repair')
+    def complete_prior_review(self,task,ident):
         bundle=self.store.root/'evidence'/ROUND
         # Preserve the original no-inference stop before completing its actual
         # independent review with a bounded, state-relevant image selection.
@@ -95,6 +93,11 @@ class PropTransforms(AlleyReadability):
             raise Halt('Bounded lighting review did not supply a verdict')
         self.store.event('prior-lighting-review-completed',prior_round=ROUND,review=review,
             original_context_stop_preserved=True,measured_clone_defect_still_requires_repair=True)
+
+    def edit(self,task,ident):
+        if task['id']!=MAP_TASK['id']:return super().edit(task,ident)
+        if git(self.repo,'rev-parse','HEAD')!=SOURCE:raise Halt('Expected preserved fallback before local repair')
+        self.complete_prior_review(task,ident)
         git(self.repo,'restore','--source='+CANDIDATE,'--','game')
         saved=self.checkpoint_source('Recover local lighting and props for measured transform correction')
         self.store.set(source_checkpoint=saved)

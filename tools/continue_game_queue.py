@@ -35,6 +35,17 @@ def validate_scoped_review(fields,names):
     return {'ok':True,**fields,'verdict':verdict}
 
 
+def review_evidence_seal(captures,candidate,scope):
+    """Reuse verified evidence without regenerating its manifest timestamp."""
+    path=Path(captures)/'manifest.json'
+    if not path.exists():return seal(captures,{'candidate':candidate,'scope':scope})
+    expected=sha(path.read_bytes())
+    manifest=verify_seal(captures,expected)
+    if manifest.get('candidate')!=candidate or manifest.get('scope')!=scope:
+        raise Halt('Existing review evidence has a different candidate or scope')
+    return expected
+
+
 def review_captures(task,bundle):
     frames=sorted((bundle/'captures').glob('frame-*.png'))
     scenario=read_json(bundle/'captures/scenario.json')
@@ -241,7 +252,7 @@ class ContinuousRunner(Runner):
         self.c.update(output_tokens=8192,model_timeout_seconds=400)
         chosen,capture_times=review_captures(task,bundle)
         names=[p.name for p in chosen]
-        expected=seal(bundle/'captures',{'candidate':gate['candidate_commit'],'scope':task['id']})
+        expected=review_evidence_seal(bundle/'captures',gate['candidate_commit'],task['id'])
         def submit(_,f):
             return validate_scoped_review(f,names)
         images=[('ACTUAL NATIVE UNITY '+p.name+'; scheduled t='+str(capture_times[p.name])+' seconds',p) for p in chosen]
