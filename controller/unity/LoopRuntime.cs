@@ -29,7 +29,7 @@ public class LoopRuntime : MonoBehaviour
         public LoopVehicleObservation.State vehiclePhysics;
     }
     [Serializable] public class ObjectObservation {
-        public int instanceId;
+        public string entityId;
         public string name, kind; public float[] position, lossyScale, up, forward, boundsCenter, boundsSize;
         public bool enabled;
     }
@@ -49,7 +49,7 @@ public class LoopRuntime : MonoBehaviour
     static float[] Vec(Vector3 v) { return new [] { v.x, v.y, v.z }; }
     static string Hierarchy(Transform t) { var n=t.name; while(t.parent != null) {t=t.parent;n=t.name+"/"+n;} return n; }
     static ObjectObservation Observe(Component c, string kind, Bounds b) {
-        return new ObjectObservation {instanceId=c.GetInstanceID(), name=Hierarchy(c.transform), kind=kind, position=Vec(c.transform.position),
+        return new ObjectObservation {entityId=c.GetEntityId().ToString(), name=Hierarchy(c.transform), kind=kind, position=Vec(c.transform.position),
             lossyScale=Vec(c.transform.lossyScale), up=Vec(c.transform.up), forward=Vec(c.transform.forward),
             boundsCenter=Vec(b.center), boundsSize=Vec(b.size),
             enabled=c.gameObject.activeInHierarchy && (!(c is Renderer) || ((Renderer)c).enabled)

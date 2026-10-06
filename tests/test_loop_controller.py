@@ -336,7 +336,7 @@ class ControllerTests(unittest.TestCase):
         atomic(path/"runtime-result.json",{"completed":True,"errors":0,"capture_id":"test","graphics":"Metal","duration":2})
         atomic(path/'scene-transforms.json',dict(schemaVersion=2,complete=True,truncated=False,
             observedAtSeconds=.5,rendererTotal=1,rendererRecorded=1,colliderTotal=0,colliderRecorded=0,
-            objects=[dict(kind='renderer',instanceId=1)]))
+            objects=[dict(kind='renderer',entityId='1')]))
         rows=[{"time":i/10,"camera":True,"player":[i/5 if moves else 0,0,0],"vehicle":None,"keys":["W"]} for i in range(21)]
         (path/"trace.jsonl").write_text("\n".join(json.dumps(row) for row in rows))
         # Deliberately synthetic evaluator fixtures, never actual image/play evidence.

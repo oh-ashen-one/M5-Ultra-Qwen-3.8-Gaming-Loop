@@ -205,8 +205,8 @@ class SavedDoor(ThreeDayRunner):
         self.store.set(saved_door_accepted=True,feedback={},task_design=SECOND_TASK['instructions'])
         return self.advance_second_street()
 
-    def advance_second_street(self,start_attempt=1):
-        for attempt in range(start_attempt,4):
+    def advance_second_street(self,start_attempt=1,last_attempt=3):
+        for attempt in range(start_attempt,last_attempt+1):
             ident=self.begin(SECOND_TASK,'local-second-street-source')
             self.store.set(second_street_attempts=attempt)
             candidate=self.local_street_source(ident)
@@ -216,7 +216,7 @@ class SavedDoor(ThreeDayRunner):
                 self.record_rejection(SECOND_TASK,ident,candidate,failure);continue
             record=promote_qualified_extension(self,SECOND_TASK,bundle,gate,json.loads((bundle/'critic.json').read_text()))
             return self.continue_after_street(record)
-        raise Halt('Three changed second-street attempts exhausted; preserve evidence and accepted door connector')
+        raise Halt('Bounded changed second-street attempts exhausted; preserve evidence and accepted connector')
 
     def continue_after_street(self,record):
         self.store.set(second_connected_street=record,task_design=

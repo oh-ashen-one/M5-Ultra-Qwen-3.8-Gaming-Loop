@@ -282,6 +282,8 @@ class Engines:
         if build_code or failure_lines or not (build / "build-result.json").exists():
             receipt.update(passed=False, failure="compile-build", diagnostic=errors[-7000:])
             atomic(bundle / "gate.json", receipt)
+            from .scene_inventory import require_gameplay_compile_failure
+            require_gameplay_compile_failure(failure_lines)
             return receipt
         executable = app / "Contents/MacOS/Chicago Local Slice"
         if not executable.exists():

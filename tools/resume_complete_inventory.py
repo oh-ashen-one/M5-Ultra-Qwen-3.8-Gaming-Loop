@@ -28,8 +28,14 @@ def validate_pause(old):
 
 
 class CompleteInventory(SavedDoor):
+    preserved_source=SOURCE
+    native_attempt=1
+
     def validate_recovery(self,old):
         validate_pause(old)
+        self.validate_recorded_fault()
+
+    def validate_recorded_fault(self):
         bundle=self.store.root/'evidence'/EVIDENCE
         for name,expected in HASHES.items():
             if sha((bundle/name).read_bytes())!=expected:raise Halt('Original incomplete evidence changed: '+name)
@@ -38,7 +44,7 @@ class CompleteInventory(SavedDoor):
         if (gate.get('candidate_commit')!=CANDIDATE or gate.get('failure')!=['WorldCollision/AlleyDumpster:missing-original-components']
                 or sum(o.get('kind')=='renderer' for o in objects)!=2048):
             raise Halt('Expected measured scene-recording cap, not another gameplay fault')
-        if git(self.repo,'diff','--name-only',CANDIDATE,SOURCE,'--','game')!='game/Assets/Game/WorldColliders.cs':
+        if git(self.repo,'diff','--name-only',CANDIDATE,self.preserved_source,'--','game')!='game/Assets/Game/WorldColliders.cs':
             raise Halt('Preserve unexpected intervening game changes')
         self.accepted_probe()
 
@@ -59,9 +65,9 @@ class CompleteInventory(SavedDoor):
         if git(self.repo,'diff','--name-only',CANDIDATE,'HEAD','--','game'):
             raise Halt('Restored game differs from the pinned local street')
         self.store.set(source_checkpoint=restored,candidate_commit=CANDIDATE,
-            preserved_speculative_source=SOURCE,complete_inventory_native_attempts=1)
+            preserved_speculative_source=self.preserved_source,complete_inventory_native_attempts=self.native_attempt)
         self.store.event('restore-street-for-complete-observation',source=CANDIDATE,
-            restored_checkpoint=restored,preserved_local_edit=SOURCE,
+            restored_checkpoint=restored,preserved_local_edit=self.preserved_source,
             source_bytes_equal=True,cloud_game_code_authored=False,
             support_and_prop_requirements_unchanged=True)
         ident=self.begin(SECOND_TASK,'complete-inventory-native-qualification')
@@ -71,9 +77,12 @@ class CompleteInventory(SavedDoor):
             self.record_rejection(SECOND_TASK,ident,CANDIDATE,failure)
             # The previous two source/native attempts remain recorded. Any real
             # gap now goes to the local author with complete native evidence.
-            return self.advance_second_street(start_attempt=3)
+            return self.after_native_failure()
         record=promote_qualified_extension(self,SECOND_TASK,bundle,gate,json.loads((bundle/'critic.json').read_text()))
         return self.continue_after_street(record)
+
+    def after_native_failure(self):
+        return self.advance_second_street(start_attempt=3)
 
 
 if __name__=='__main__':raise SystemExit(main(CompleteInventory))

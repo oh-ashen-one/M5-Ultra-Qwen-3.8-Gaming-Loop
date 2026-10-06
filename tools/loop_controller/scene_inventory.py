@@ -21,8 +21,8 @@ def inspect_inventory(observation):
     when=observation.get('observedAtSeconds')
     if not isinstance(when,(float,int)) or not math.isfinite(when) or not .5<=when<4:
         failures.append('scene-snapshot-outside-initialization-window')
-    ids=[o.get('instanceId') for o in objects]
-    if any(type(i) is not int or i==0 for i in ids) or len(set(ids))!=len(ids):
+    ids=[o.get('entityId') for o in objects]
+    if any(not isinstance(i,str) or not i.strip() or i=='0' for i in ids) or len(set(ids))!=len(ids):
         failures.append('missing-or-duplicate-scene-component-identity')
     return dict(passed=not failures,failure=failures,observed_counts=counts,
         declared_counts={k:observation.get(k) for k in ('rendererTotal','rendererRecorded','colliderTotal','colliderRecorded')},
@@ -38,3 +38,8 @@ def inspect_capture_inventory(captures):
 def require_complete_inventory(receipt):
     if not receipt.get('scene_inventory',{}).get('passed'):
         raise Halt('Native scene inventory is incomplete; preserve source and diagnose the recorder before gameplay edits')
+
+
+def require_gameplay_compile_failure(errors):
+    if any('Assets/LoopHarness/' in line.replace('\\','/') for line in errors):
+        raise Halt('Protected controller harness compilation failed; stop gameplay edits and repair infrastructure')
