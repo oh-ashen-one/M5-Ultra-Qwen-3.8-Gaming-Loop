@@ -32,6 +32,9 @@ class CharacterArtifactTests(unittest.TestCase):
         response = {'choices': [{'finish_reason': 'length', 'message': {'tool_calls': [{'id': 'saved'}]}}]}
         with self.assertRaises(Halt):
             validate_boundary(self.state(), response, {'bounded_stop': 'output'})
+        response['choices'][0]['message'] = {'content': 'Possible complete public source'}
+        with self.assertRaises(Halt):
+            validate_boundary(self.state(), response, {'bounded_stop': 'output'})
 
     def test_character_source_requires_complete_bounded_python_without_execution(self):
         source = 'raise RuntimeError("not executed by validation")\n'

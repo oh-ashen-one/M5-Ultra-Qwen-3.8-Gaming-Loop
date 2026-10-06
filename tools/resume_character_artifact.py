@@ -30,6 +30,8 @@ def validate_boundary(old, response, outcome):
         raise Halt('This recovery applies only to the completed output-budget stop')
     if choices[0].get('message', {}).get('tool_calls'):
         raise Halt('Inspect and preserve returned public tool calls before requesting replacement work')
+    if (choices[0].get('message', {}).get('content') or '').strip():
+        raise Halt('Inspect returned public content for usable source before requesting replacement work')
 
 
 def validate_character(content):
