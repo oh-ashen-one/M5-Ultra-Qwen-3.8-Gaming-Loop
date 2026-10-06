@@ -131,7 +131,7 @@ class LocalModel:
             raise Halt("Model identity changed or another request owns the model")
 
     def session(self, role, session_id, system, prompt, tools, dispatch, images=(), turns=16,
-                reasoning_effort="xhigh", visual_contract=None):
+                reasoning_effort="xhigh", visual_contract=None, retained_assistant=None):
         if reasoning_effort not in ("low", "medium", "xhigh"):
             raise ValueError("Pinned Qwen template supports only low, medium and xhigh")
         sampling = {**SAMPLING, "reasoning_effort": reasoning_effort,
@@ -145,6 +145,15 @@ class LocalModel:
             image_records.append({"label": label, "name": Path(path).name,
                                   "sha256": sha(Path(path).read_bytes())})
         messages = [{"role": "system", "content": system}, {"role": "user", "content": content}]
+        if retained_assistant is not None:
+            if retained_assistant.get('role') != 'assistant' or retained_assistant.get('tool_calls'):
+                raise Halt('Only inspected non-tool private work may be continued')
+            messages.append({k: retained_assistant[k] for k in
+                ('role', 'content', 'reasoning_content', 'reasoning') if k in retained_assistant})
+            messages.append({'role': 'user', 'content':
+                'The previous response hit its output cap without saving a file. Use that retained work; '
+                'do not repeat the analysis. Thinking effort is now low. Call finish_source now with '
+                'one complete, compact usable source file within the available output budget.'})
         self.store.event("role-start", role=role, session_id=session_id, images=image_records)
         unsupported_calls = 0
         with exclusive(Path(self.config["coordination_dir"]) / "request.lock"):
@@ -177,7 +186,9 @@ class LocalModel:
                                    "enable_thinking": True, "preserve_thinking": True,
                                    "output_tokens": self.config["output_tokens"]})
                 self.store.report()
-                value = self.api("/v1/chat/completions", payload, self.config["model_timeout_seconds"])
+                from .request_speed_guard import request_guard
+                with request_guard(self, request_id, private, turn):
+                    value = self.api("/v1/chat/completions", payload, self.config["model_timeout_seconds"])
                 atomic(private / ("response-%03d.json" % turn), value)
                 choice = value["choices"][0]
                 msg = choice["message"]

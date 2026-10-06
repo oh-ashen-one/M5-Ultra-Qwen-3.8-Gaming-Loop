@@ -50,6 +50,9 @@ def validate_character(content):
 
 
 class CharacterArtifact(ReferenceVisuals):
+    author_effort = 'medium'
+    retained_assistant = None
+
     def validate_recovery(self, old):
         self.prior_session = self.store.root / 'private/sessions' / SESSION
         response_path = self.prior_session / 'response-000.json'
@@ -106,7 +109,7 @@ class CharacterArtifact(ReferenceVisuals):
             'Deliver ONE coherent original character by calling finish_source with the complete replacement '
             'Art/player.py. The exact current source is supplied below and its preimage is already pinned; '
             'no read call or hash transcription is needed. Save the usable artifact in your next response. '
-            'Thinking is enabled at medium with8192 output tokens; use it to make the source, not a long essay. '
+            f'Thinking is enabled at {self.author_effort} with8192 output tokens; use it to make the source, not a long essay. '
             'The controller immediately exports your source and captures the real Unity result.\n'
             'Compare the attached reference and actual native character. Replace the crude box/sphere body '
             'with a substantially better original silhouette: proportioned torso/pelvis, tapered rounded limbs '
@@ -130,7 +133,8 @@ class CharacterArtifact(ReferenceVisuals):
             'CURRENT COMPLETE CHARACTER SOURCE:\n' + original,
             [tool('finish_source', 'Save the complete original character source; export follows automatically.',
                   {'content': {'type': 'string'}})], {'finish_source': save},
-            images=images, visual_contract=required, turns=2, reasoning_effort='medium')
+            images=images, visual_contract=required, turns=2, reasoning_effort=self.author_effort,
+            retained_assistant=self.retained_assistant)
         atomic(self.store.root / 'evidence' / (ident + '-character-author.json'), result)
         if not result.get('ok') or sha(files.path(ART).read_bytes()) == preimage:
             raise Halt('Focused character source was not saved; preserve output and diagnose: ' + json.dumps(result))
