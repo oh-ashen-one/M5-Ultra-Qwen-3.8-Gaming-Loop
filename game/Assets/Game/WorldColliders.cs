@@ -49,11 +49,8 @@ namespace ChicagoGame
             // reusing original pavement mesh/material/rotation/thickness.
             float AX0 = 6f, AX1 = 22f, AZ0 = 8f, AZ1 = 20f;
             Transform pv0 = null;
-            foreach (var r in roots)
-            {
-                var g = (r as Component) != null ? (r as Component).gameObject : (r as GameObject);
-                if (g == null) continue;
-                if (g.name.ToLower().Contains("pavement")) { pv0 = g.transform; break; }
+            var pvGo = GameObject.Find("Pavement");
+            if (pvGo != null) pv0 = pvGo.transform;
                 pv0 = FindDeep(g.transform, "pavement"); if (pv0 != null) break;
             }
             if (pv0 != null)
