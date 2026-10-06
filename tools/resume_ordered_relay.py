@@ -18,7 +18,7 @@ PLAN_SHA='aa95d708b62e995dc16fb39a732e80039fb35ab54c06dae82cb8cd810d63939d'
 PATH='Assets/Game/RelaySequence.cs'
 BOOT='Assets/Game/Bootstrap.cs'
 TASK=dict(id='ordered-relay',phase='mission',checks=['mission_complete'],maximum=100,coverage='mission-core',
-    include_reference=False,review_frame_times=[38.7,49.15,59.75,61.6],
+    include_reference=False,review_frame_times=[38.7,49.15,59.75,80.6],
     outcome='After the real east cache, complete three ordered on-foot relay interactions before45seconds, with wrong-order feedback and reset.',
     instructions='Judge the new ordered relay only. The old courier and east-cache chapter remain complete while the relay '
     'runs. Three fixed original-mesh props stand on existing sidewalks: north(53,.2,27), south(41,.2,9), northwest(29,.2,27). '

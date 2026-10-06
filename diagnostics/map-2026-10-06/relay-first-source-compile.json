@@ -1,0 +1,62 @@
+{
+  "utc": "2026-10-06T15:52:03.152734+00:00",
+  "state": {
+    "status": "paused",
+    "controller_pid": null,
+    "current_round": "q0110-eafc0e1f",
+    "stage": "native-relay-positive",
+    "activity": "unity-build",
+    "owned_process": null,
+    "blocker": "Halt: Relay positive requires measured diagnosis: \"compile-build\"",
+    "source_checkpoint": "42084b6ad9c5d41423899e738fe1938938ac1c41",
+    "candidate_commit": "42084b6ad9c5d41423899e738fe1938938ac1c41",
+    "last_playable_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "task_failures": 24,
+    "failure_streak": 1,
+    "diagnosis_used": true,
+    "overall_deadline_epoch": 1791441192
+  },
+  "model": {
+    "status": "ok",
+    "active_requests": 0,
+    "waiting_requests": 0
+  },
+  "native_results": {
+    "positive": {
+      "evidence": "evidence/q0110-eafc0e1f-positive",
+      "passed": false,
+      "failure": "compile-build",
+      "build_id": null,
+      "relay_contract": null,
+      "compile_errors": [
+        "Assets/Game/RelaySequence.cs(3,42): error CS0246: The type or namespace name 'MonoBehaviour' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(6,9): error CS0246: The type or namespace name 'GameObject' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(7,9): error CS0246: The type or namespace name 'Camera' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(15,16): error CS0246: The type or namespace name 'Transform' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(20,36): error CS0246: The type or namespace name 'GameObject' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(20,55): error CS0246: The type or namespace name 'Camera' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(3,42): error CS0246: The type or namespace name 'MonoBehaviour' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(6,9): error CS0246: The type or namespace name 'GameObject' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(7,9): error CS0246: The type or namespace name 'Camera' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(15,16): error CS0246: The type or namespace name 'Transform' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(20,36): error CS0246: The type or namespace name 'GameObject' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(20,55): error CS0246: The type or namespace name 'Camera' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(3,42): error CS0246: The type or namespace name 'MonoBehaviour' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(6,9): error CS0246: The type or namespace name 'GameObject' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(7,9): error CS0246: The type or namespace name 'Camera' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(15,16): error CS0246: The type or namespace name 'Transform' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(20,36): error CS0246: The type or namespace name 'GameObject' could not be found (are you missing a using directive or an assembly reference?)",
+        "Assets/Game/RelaySequence.cs(20,55): error CS0246: The type or namespace name 'Camera' could not be found (are you missing a using directive or an assembly reference?)",
+        "Scripts have compiler errors.",
+        "Scripts have compiler errors."
+      ]
+    }
+  },
+  "relay_outcome": null,
+  "recent_commits": [
+    "42084b6 Local Qwen: install ordered relay chapter",
+    "0a86224 Local Qwen: relay objective HUD",
+    "f5e0a0b Local Qwen: relay original-mesh props"
+  ],
+  "relay_source_bytes": 3275
+}

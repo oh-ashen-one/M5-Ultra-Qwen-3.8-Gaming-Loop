@@ -16,13 +16,13 @@ def scenarios(original):
         (37,38.25,['W']),(37,38.4,['F']),(38.55,38.85,['F'])]
     positive=common+[(39.2,40.2,['S']),(40.5,44.4,['A']),(44.7,48.7,['S']),
         (49,49.3,['F']),(49.8,51,['W']),(51.3,55.2,['A']),(55.5,59.3,['W']),
-        (59.6,59.9,['F']),(61,61.3,['R']),(62,62.3,['F'])]
+        (59.6,59.9,['F']),(80,80.3,['R']),(81,81.3,['F'])]
     wrong=common+[(39.2,40.2,['S']),(40.5,48.2,['A']),(48.5,49.5,['W']),
         (49.8,51.4,['F']),(78.2,78.5,['F']),(79,79.3,['R']),(80,80.3,['F'])]
     def make(extra,duration,captures):
         value=dict(duration=duration,steps=steps+[dict(start=a,end=b,keys=k) for a,b,k in extra],captures=captures)
         return validate_proposed(value,100,'mission-core')
-    return {'positive':make(positive,64,[3.2,27.3234,32.55,38.3,38.7,49.15,59.75,61.6,63]),
+    return {'positive':make(positive,83,[3.2,27.3234,32.55,38.3,38.7,49.15,59.75,78.6,80.6,82]),
         'wrong-timeout':make(wrong,82,[3.2,32.55,38.7,49.95,51.6,77.9,79.6,81]),
         'inactive':validate_proposed(dict(duration=18,steps=[dict(start=4,end=5,keys=['W']),
             dict(start=6,end=6.4,keys=['F']),dict(start=8,end=8.4,keys=['F'])],captures=[3.2,5.5,9,16]),100,'mission-core')}
@@ -30,7 +30,7 @@ def scenarios(original):
 def inspect_relay(rows,case):
     if case not in ('positive','wrong-timeout','inactive'):raise ValueError('Unknown relay proof case')
     failures=set();events=[];prior=None;prior_keys=set();edges=[];armed=None;reset_pending=None
-    activations=[];completions=[];timeouts=[];wrong=[];resets=[];counts=[];active_samples=0
+    activations=[];completions=[];timeouts=[];wrong=[];resets=[];counts=[];active_samples=0;latched=False
     def fail(v):failures.add(v)
     def fresh(k,t):return any(key==k and 0<=t-at<=.35 for at,key in edges)
     for row in rows:
@@ -94,6 +94,7 @@ def inspect_relay(rows,case):
         if complete and not old.get('complete'):
             if count!=3 or old_count!=2 or armed is None or t-armed>45.4:fail('relay-invalid-completion')
             completions.append(t)
+        if complete and not failed and armed is not None and t-armed>=45.5:latched=True
         if old.get('failed') and not restarted and (count!=old_count or s.get('wrongOrders')!=old.get('wrongOrders')):fail('relay-progress-after-timeout')
         prior=row
     if not rows:fail('relay-trace-missing')
@@ -102,8 +103,10 @@ def inspect_relay(rows,case):
         if not activations or active_samples<5:fail('relay-activation-unverified')
         if not resets:fail('relay-reset-unverified')
     if case=='positive' and (counts!=[1,2,3] or len(completions)!=1 or wrong or timeouts):fail('relay-positive-sequence-unverified')
+    if case=='positive' and not latched:fail('relay-completed-ending-after-deadline-unverified')
     if case=='wrong-timeout' and (counts!=[1] or len(wrong)!=1 or len(timeouts)!=1 or completions):fail('relay-wrong-order-or-timeout-unverified')
     return dict(passed=not failures,failure=sorted(failures) or None,case=case,activations=activations,
         ordered_interactions=events,wrong_orders=wrong,timeouts=timeouts,completions=completions,resets=resets,
         measured_relay_seconds=completions[0]-activations[0] if completions and activations else None,
+        completion_latched_after_deadline=latched,
         final_game_accepted=False,red_waiting_is_not_mission_duration=True)

@@ -77,9 +77,10 @@ public static class LoopRouteObservation
     {
         var value=new Panel{name=name};var go=GameObject.Find(name);
         if(go==null || camera==null)return value;
-        var text=go.GetComponent<TextMesh>();var renderer=go.GetComponent<Renderer>();
+        var text=go.GetComponentInChildren<TextMesh>(true);
+        var renderer=text!=null?text.GetComponent<Renderer>():go.GetComponent<Renderer>();
         value.text=text!=null?text.text:"";
-        value.visible=renderer!=null && renderer.enabled && go.activeInHierarchy && value.text.Length>0;
+        value.visible=renderer!=null && renderer.enabled && renderer.gameObject.activeInHierarchy && value.text.Length>0;
         if(renderer!=null) {value.textRect=Rect(renderer,camera);value.captureTextRect=Rect(renderer,camera,true);}
         var card=go.GetComponentsInChildren<Renderer>().FirstOrDefault(r=>r!=renderer && r.enabled);
         if(card!=null) {value.cardRect=Rect(card,camera);value.captureCardRect=Rect(card,camera,true);}

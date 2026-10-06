@@ -25,7 +25,7 @@ def positive():
     return [row(1),row(32.6,active=True),row(37,active=True,keys=('F',)),
         row(38.45,active=True),row(38.6,1,True,keys=('F',)),row(40,1,True),
         row(49.1,2,True,index=1,keys=('F',)),row(51,2,True),
-        row(59.7,3,True,index=2,keys=('F',)),row(60,3,True),row(61.1,keys=('R',),restart=1),row(63,restart=1)]
+        row(59.7,3,True,index=2,keys=('F',)),row(78.6,3,True),row(80.1,keys=('R',),restart=1),row(82,restart=1)]
 
 def red():
     return [row(1),row(32.6,active=True),row(38.6,1,True,keys=('F',)),row(40,1,True),
@@ -36,6 +36,8 @@ def red():
 class RelayTests(unittest.TestCase):
     def test_real_ordered_foot_interactions_and_reset_are_required(self):
         self.assertTrue(inspect_relay(positive(),'positive')['passed'])
+        early_reset=positive();early_reset[9]['time']=60
+        self.assertFalse(inspect_relay(early_reset,'positive')['passed'])
         for kind in ('remote','vehicle','no-F','held-F','wrong-anchor','missing-collider','floating','hidden-HUD','legacy-write','bad-reset'):
             r=positive()
             if kind=='remote':r[4]['player']=[50,.135,18]
@@ -77,7 +79,8 @@ class RelayTests(unittest.TestCase):
         for name in ('positive','wrong-timeout'):
             self.assertEqual(probes[name]['steps'][:2],original['steps'][:2])
             self.assertTrue(all(set(s)=={'start','end','keys'} for s in probes[name]['steps']))
-        self.assertEqual(probes['positive']['duration'],64)
+        self.assertEqual(probes['positive']['duration'],83)
+        self.assertTrue(any(s['keys']==['R'] and s['start']==80 for s in probes['positive']['steps']))
         self.assertEqual(probes['wrong-timeout']['duration'],82)
 
     def test_recovery_keeps_exact_baseline_and_does_not_overwrite_prior_work(self):

@@ -28,11 +28,11 @@ The passive observer records actual component fields, root/render/collider bound
 
 Normal-input probes preserve the proven chapter through its 32.53-second completion:
 
-- Positive: remote F; hold F while approaching site1, release and press again; visit sites1/2/3; ending; R and remote F after reset.
+- Positive: remote F; hold F while approaching site1, release and press again; visit sites1/2/3; ending remains complete beyond the45second deadline; R and remote F after reset.
 - Wrong order and timeout: site1 then site3, with the wrong F held; progress resets exactly once, the original deadline expires, F cannot revive it, then R clears state.
 - No handoff: walk and press F without completing the earlier chapters; relay stays inactive.
 
-The proposed 64-second positive and 82-second negative replays are acceptance schedules, not measured successful game durations. Waiting in the timeout test never counts as mission content. Native success, all ten prior regressions and fresh scoped pixel review remain required. Exact chapter gates and the broad accepted fallback remain unchanged.
+The proposed 83-second positive and 82-second negative replays are acceptance schedules, not measured successful game durations. Waiting in either the timeout or completed-state-latch test never counts as mission content. Native success, all ten prior regressions and fresh scoped pixel review remain required. Exact chapter gates and the broad accepted fallback remain unchanged.
 
 ## Continuing scope
 
