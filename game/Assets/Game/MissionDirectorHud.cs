@@ -65,6 +65,7 @@ namespace ChicagoGame
 
         void LateUpdate()
         {
+            if (!_hudStatus) { var hs = GameObject.Find("HudStatus"); if (hs) _hudStatus = hs.transform; }
             if (_hudStatus) _hudStatus.localPosition = new Vector3(-1.20f, .85f, 1.6f);
             if (!_relay) _relay = FindAny<RelaySequence>();
             if (!_route) _route = FindAny<RouteMission>();
