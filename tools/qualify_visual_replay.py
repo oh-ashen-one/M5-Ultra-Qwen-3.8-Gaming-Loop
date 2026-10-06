@@ -22,9 +22,12 @@ REGRESSIONS = {'walk', 'world', 'motor', 'courier', 'failure-retry', 'combat-foo
                'combat-wall', 'combat-driving', 'aim-miss', 'aim-near-cover'}
 NEXT_FOCUS = (
     'Choose the single largest remaining visible problem from the actual frames. '
-    'Prioritize the beacon obstructing the car and camera crowding, then actor/car '
-    'shape and readability. Do not spend another pass adding windows or minor trim. '
-    'Preserve accepted thin-ray combat, objective anchors, controls and physical route. '
+    'Prioritize courier anatomy/animation, substantial Chicago street context and lighting, '
+    'then meaningful connected mission objectives and ten-minute pacing. The beacon and camera '
+    'have a preserved bounded acceptance; do not reopen that edit loop or move the car lane '
+    'because an image critic suggests it. Record remaining framing limits for a separately '
+    'scoped representative check. Do not spend another pass adding windows or minor trim. '
+    'Preserve accepted camera behavior, thin-ray combat, objective anchors, boarding, controls and physical route. '
     'All substantive game/art edits remain local Qwen. Final Chicago quality and '
     'meaningful ten-minute pacing remain separate, unaccepted goals.')
 

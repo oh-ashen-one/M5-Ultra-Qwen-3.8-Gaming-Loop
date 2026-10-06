@@ -26,37 +26,42 @@ def validate_coupe_export_pause(old):
 
 
 def export_saved_coupe(runner):
+    return export_saved_asset(runner, SCRIPT, SCRIPT_SHA, ROUND + '-export-only')
+
+
+def export_saved_asset(runner, script_path, script_sha, session_id):
     """Offer the local model one export, with no source-edit or engine-retry tools."""
-    script = runner.project / SCRIPT
-    if sha(script.read_bytes()) != SCRIPT_SHA:
-        raise Halt('Saved local coupe source changed before export')
+    if script_path not in {'Art/' + n + '.py' for n in ('street', 'coupe', 'props', 'player')}:
+        raise Halt('Export completion is limited to the four existing original assets')
+    script = runner.project / script_path
+    if sha(script.read_bytes()) != script_sha:
+        raise Halt('Saved local asset source changed before export')
     attempted = []
     def export(action, _):
         if attempted: raise Halt('One export attempt only; preserve failures for diagnosis')
         attempted.append(action)
-        if sha(script.read_bytes()) != SCRIPT_SHA:
-            raise Halt('Saved local coupe source changed during export completion')
-        result = runner.engines.blender(runner.project, SCRIPT, action)
-        if not result.get('ok'): raise Halt('Saved coupe export failed; no automatic retry')
-        validate_exports(runner.project, ['coupe'])
+        if sha(script.read_bytes()) != script_sha:
+            raise Halt('Saved local asset source changed during export completion')
+        result = runner.engines.blender(runner.project, script_path, action)
+        if not result.get('ok'): raise Halt('Saved asset export failed; no automatic retry')
+        validate_exports(runner.project, [script.stem])
         return result
     def finish(_, fields):
         if not attempted: raise ValueError('Run the offered Blender export before finishing')
-        validate_exports(runner.project, ['coupe'])
+        validate_exports(runner.project, [script.stem])
         return {'ok': True, 'summary': fields['summary'][:1000]}
     runner.c.update(output_tokens=4096, model_timeout_seconds=240)
-    runner.store.set(stage='local-saved-coupe-export'); runner.store.report()
-    runner.model.session('builder', ROUND + '-export-only',
-        'You are local Qwen completing the export of your saved original coupe asset.',
-        'Your saved Art/coupe.py changed, but the previous role ended without a Blender call. '
-        'The old export provenance correctly rejected it. Call run_blender once, then finish_task. '
+    runner.store.set(stage='local-saved-' + script.stem + '-export'); runner.store.report()
+    runner.model.session('builder', session_id,
+        'You are local Qwen completing the export of your saved original asset.',
+        'Your saved ' + script_path + ' needs a matching export. Call run_blender once, then finish_task. '
         'Do not redesign or rewrite anything. Your exact saved script is:\n' + script.read_text(),
-        [tool('run_blender', 'Export the exact saved coupe through the protected adapter.', {}),
+        [tool('run_blender', 'Export the exact saved asset through the protected adapter.', {}),
          tool('finish_task', 'Finish after the verified export.', {'summary': {'type': 'string'}})],
         {'run_blender': export, 'finish_task': finish}, turns=2, reasoning_effort='low')
-    if not attempted or sha(script.read_bytes()) != SCRIPT_SHA:
-        raise Halt('Saved coupe export incomplete or source changed; preserve work')
-    validate_exports(runner.project, ['coupe'])
+    if not attempted or sha(script.read_bytes()) != script_sha:
+        raise Halt('Saved asset export incomplete or source changed; preserve work')
+    validate_exports(runner.project, [script.stem])
 
 
 class CoupeExportResume(ThreeDayRunner):
