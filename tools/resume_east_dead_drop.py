@@ -20,7 +20,7 @@ ROUND='q0093-a7aec9b3'
 PLAN_SHA='a66148068032209bec56b8a541918643cd5126da76793bbd1b0ad3db96a53a70'
 PATH='Assets/Game/RouteMission.cs'
 BOOT='Assets/Game/Bootstrap.cs'
-TASK=dict(id='east-dead-drop',phase='mission',checks=[],maximum=180,coverage='mission-core',
+TASK=dict(id='east-dead-drop',phase='mission',checks=['mission_complete'],maximum=180,coverage='mission-core',
     outcome='Real courier handoff, driving arrival at the east cache, E exit, close F interaction and R reset.',
     instructions='Judge this short connected chapter, not ten-minute or final art acceptance. Require the actual east '
     'cache, readable non-overlapping objective text, visible driving approach and on-foot interaction, and reset. '
@@ -133,7 +133,7 @@ class EastDeadDrop(MissionPacingDesign):
         self.store.set(source_checkpoint=saved,candidate_commit=saved);return saved
 
     def chapter_native(self,ident,candidate,probe,require_complete=True,require_reset=True,expect_inactive=False):
-        task=TASK if require_complete or expect_inactive else TASKS[2]
+        task=dict(TASK,checks=[]) if expect_inactive else (TASK if require_complete else TASKS[2])
         bundle,gate=ContinuousRunner.native(self,task,ident,candidate,probe)
         if gate.get('passed'):
             rows=[json.loads(x) for x in (bundle/'captures/trace.jsonl').read_text().splitlines()]
@@ -189,4 +189,3 @@ class EastDeadDrop(MissionPacingDesign):
         raise Halt('East Dead-Drop scoped qualification recorded; preserve broader visual FIX and continue connected pacing')
 
 if __name__=='__main__':raise SystemExit(main(EastDeadDrop))
-

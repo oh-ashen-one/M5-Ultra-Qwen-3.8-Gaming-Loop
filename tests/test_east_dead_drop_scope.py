@@ -7,6 +7,9 @@ import resume_east_dead_drop as m
 from loop_controller.core import Halt
 
 class EastDeadDropScopeTests(unittest.TestCase):
+    def test_full_chapter_keeps_real_courier_anchor_and_input_checks(self):
+        self.assertIn('mission_complete',m.TASK['checks'])
+
     def test_scope_requires_exact_plan_pause_and_preserves_counters(self):
         state=dict(source_checkpoint=m.SOURCE,last_playable_checkpoint=m.ACCEPTED,current_round=m.ROUND,
             task_index=7,task_failures=24,failure_streak=1,diagnosis_used=True,second_street_attempts=4,
@@ -27,5 +30,16 @@ class EastDeadDropScopeTests(unittest.TestCase):
             with self.subTest(code=code),self.assertRaises(ValueError):m.validate_module(valid+code)
         m.validate_module(valid+' if(LoopSignals.Mission == "complete") { }')
 
-if __name__=='__main__':unittest.main()
 
+    def test_compile_recovery_preserves_failed_source_and_does_not_reopen_unrelated_faults(self):
+        import resume_east_dead_drop_compile as c
+        state=dict(source_checkpoint=c.SOURCE,last_playable_checkpoint=c.ACCEPTED,current_round=c.ROUND,
+            task_index=7,task_failures=24,failure_streak=1,diagnosis_used=True,second_street_attempts=4,
+            overall_deadline_epoch=c.HARD_CAP_EPOCH,east_dead_drop_implementation_attempted=True,
+            blocker='Halt: Saved chapter failed additive native activation/reset gate')
+        before=copy.deepcopy(state);c.validate_pause(state);self.assertEqual(state,before)
+        for key,value in [('task_failures',0),('east_dead_drop_compile_repair_attempted',True),
+                          ('blocker','Resource fault'),('source_checkpoint',m.SOURCE)]:
+            with self.subTest(key=key),self.assertRaises(Halt):c.validate_pause({**state,key:value})
+
+if __name__=='__main__':unittest.main()
