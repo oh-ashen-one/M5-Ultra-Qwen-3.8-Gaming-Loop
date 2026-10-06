@@ -72,8 +72,7 @@ namespace ChicagoGame
                 }
             }
             // Bound east (X22) and both Z edges across X6..22; west X6 stays open.
-            AddWall(go, new Vector3(AX1 + WALL_T * 0.5f, WALL_H * 0.5f, (AZ0 + AZ1) * 0.5f),
-                    new Vector3(WALL_T, WALL_H, AZ1 - AZ0));
+
             AddWall(go, new Vector3((AX0 + AX1) * 0.5f, WALL_H * 0.5f, AZ1 + WALL_T * 0.5f),
                     new Vector3(AX1 - AX0 + WALL_T * 2f, WALL_H, WALL_T));
             AddWall(go, new Vector3((AX0 + AX1) * 0.5f, WALL_H * 0.5f, AZ0 - WALL_T * 0.5f),
