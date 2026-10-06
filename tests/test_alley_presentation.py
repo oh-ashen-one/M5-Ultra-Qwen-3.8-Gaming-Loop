@@ -9,6 +9,10 @@ from loop_controller.core import Halt
 
 
 class PresentationRecoveryTests(unittest.TestCase):
+    def test_changed_complete_proposal_cannot_be_recovered(self):
+        from resume_alley_completed import completed_entrance
+        with self.assertRaises(Halt):completed_entrance(b'changed original response')
+
     def test_exact_visual_recovery_preserves_counters_and_physical_replay(self):
         s=dict(source_checkpoint=p.SOURCE,last_playable_checkpoint=p.ACCEPTED,current_round=p.ROUND,
             task_index=7,task_failures=16,failure_streak=1,diagnosis_used=True,

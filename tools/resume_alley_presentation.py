@@ -65,12 +65,15 @@ class AlleyPresentation(MapTraversalRecovery):
         saved=self.checkpoint_source('Local Qwen: alley '+label)
         self.store.set(source_checkpoint=saved,candidate_commit=saved)
 
-    def edit(self,task,ident):
-        if task['id']!=MAP_TASK['id']:return super().edit(task,ident)
+    def prepare_source(self):
         if git(self.repo,'rev-parse','HEAD')!=SOURCE:raise Halt('One exact visual repair only')
         git(self.repo,'restore','--source='+CANDIDATE,'--','game')
         saved=self.checkpoint_source('Recover physically qualified local map for visual alley repair')
         self.store.set(source_checkpoint=saved)
+
+    def edit(self,task,ident):
+        if task['id']!=MAP_TASK['id']:return super().edit(task,ident)
+        self.prepare_source()
         self.selected(ident,'matching-asphalt','ap.AddComponent<MeshRenderer>().sharedMaterial = omr.sharedMaterial;',
             'The local visual critic rejects the tan slab as disconnected from the grey street. Replace only '
             'this material assignment: obtain the existing active scene GameObject named road_asphalt, '
