@@ -139,6 +139,19 @@ namespace ChicagoGame
                 }
             }
 
+            {
+                var ds = GameObject.Find("door00_panel"); var dmf = ds != null ? ds.GetComponent<MeshFilter>() : null; var dmr = ds != null ? ds.GetComponent<MeshRenderer>() : null;
+                if (dmf != null && dmr != null)
+                {
+                    var dgo = new GameObject("ServiceDoor"); dgo.transform.SetParent(go.transform, false);
+                    dgo.transform.localScale = ds.transform.lossyScale;
+                    dgo.transform.rotation = Quaternion.Euler(0f, 90f, 0f) * ds.transform.rotation;
+                    dgo.AddComponent<MeshFilter>().sharedMesh = dmf.sharedMesh;
+                    var dR = dgo.AddComponent<MeshRenderer>(); dR.sharedMaterial = dmr.sharedMaterial;
+                    var db = dR.bounds;
+                    dgo.transform.position += new Vector3(16f - db.center.x, 0.14f - db.min.y, 19.92f - db.center.z);
+                }
+            }
             // 3) Understandable end barriers using the original fence mesh.
             var fw = GameObject.Find("facade_wall");
             if (fw != null)
