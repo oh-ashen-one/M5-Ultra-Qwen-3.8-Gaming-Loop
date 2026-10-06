@@ -69,7 +69,7 @@ namespace ChicagoGame
                     dist = Mathf.Sqrt(dx * dx + dz * dz);
                 }
                 s = "RELAY " + ActivationCount + "/3  " + rem + "s\n" +
-                    (i + 1) + " " + DIR[i] + " " + Mathf.RoundToInt(dist) + "F";
+(i + 1) + " " + DIR[i] + " " + Mathf.RoundToInt(dist) + "m  F";
             }
             relayHud.text = s;
             Objective = s;
