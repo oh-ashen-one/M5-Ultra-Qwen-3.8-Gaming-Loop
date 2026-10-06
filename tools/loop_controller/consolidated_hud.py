@@ -8,6 +8,9 @@ import re
 from .chapter_presentation import rect,overlaps
 
 def phase(row):
+    intercept=row.get('interception',{})
+    if intercept.get('active'):
+        return 'interception-failed' if intercept.get('failed') else ('interception-complete' if intercept.get('complete') else 'interception')
     relay=row.get('relay',{});chapter=row.get('routeChapter',{})
     if relay.get('active'):
         return 'relay-failed' if relay.get('failed') else ('relay-complete' if relay.get('complete') else 'relay')
@@ -56,7 +59,10 @@ def inspect_hud(rows,required=()):
             'delivery-complete':['delivery complete'],'dead-drop':['dead-drop','delivery complete'],
             'relay':['relay','delivery complete','dead-drop complete'],
             'relay-complete':['relay complete','delivery complete','dead-drop complete'],
-            'relay-failed':['relay failed','r','delivery complete','dead-drop complete']}[state]
+            'relay-failed':['relay failed','r','delivery complete','dead-drop complete'],
+            'interception':['intercept','mouse0','relay complete','r reset'],
+            'interception-complete':['interception complete','relay complete','r reset'],
+            'interception-failed':['interception failed','relay complete','r reset']}[state]
         if any(term not in text for term in expected):failures.add('truthful-'+state+'-text-missing')
         if state=='grab' and any(term in text for term in ['parcel in hand','delivery complete','dead-drop complete','relay complete']):
             failures.add('premature-or-stale-receipt')
@@ -69,6 +75,12 @@ def inspect_hud(rows,required=()):
             objective=(row.get('relay',{}).get('objective') or '').lower().splitlines()
             if not objective or lines[:len(objective)]!=objective:
                 failures.add('relay-live-objective-not-rendered')
+        if state.startswith('interception'):
+            current=row['interception']
+            if not current.get('valid') or text!=(current.get('objective') or '').lower():
+                failures.add('interception-live-objective-not-rendered')
+            if f"stopped {current.get('stopped')} / escaped {current.get('escaped')}" not in text:
+                failures.add('interception-actual-counts-not-rendered')
         if ch.get('stage',0)>0:
             c=ch.get('cacheBoundsCenter');z=ch.get('cacheBoundsSize')
             if not isinstance(c,list) or not isinstance(z,list) or len(c)!=3 or len(z)!=3 or not all(math.isfinite(v) for v in c+z):
