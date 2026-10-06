@@ -176,46 +176,77 @@ namespace ChicagoGame
         public float lookAhead = 4.0f;
         public LayerMask collideMask = ~0;
 
+        // Scratch buffer for the multi-hit back-probe so we can skip the courier's
+        // own capsule and react only to architecture along the view ray.
+        readonly RaycastHit[] hits = new RaycastHit[16];
+
         void LateUpdate()
         {
             if (target == null) return;
             var yaw = Quaternion.Euler(0f, target.eulerAngles.y, 0f);
 
-            // Chest-height origin so the wall probe ignores the courier's own
-            // capsule and only reacts to architecture behind them.
-            var origin = target.position + Vector3.up * 1.25f;
-            Vector3 desired = yaw * offset;
-            float full = desired.magnitude;
-            Vector3 dir = desired / full;
+            // Rig direction is the unobstructed behind-the-back pose. The ray runs
+            // from the target origin along that direction, so the camera sits at
+            // target + dir*dist. Walls are kept in front of the lens by stopping
+            // short of the first foreign hit.
+            Vector3 dir = yaw * offset;
+            float full = dir.magnitude;
+            if (full < 1e-4f) return;
+            dir /= full;
+            Vector3 origin = target.position;
 
-            // Pull the rig in when a facade sits between target and camera so we
-            // never get jammed against the brick rowhouse; a small margin keeps a
-            // readable gap. When wall < ~1.5 m we also swing the pivot higher and
-            // steeper, framing the whole car body + the fence/lane ahead instead
-            // of a wall edge and car slivers.
-            float dist = full;
-            bool crowding = false;
-            if (Physics.Raycast(origin, dir, out RaycastHit hit, full, collideMask,
-                                QueryTriggerInteraction.Ignore))
+            // clearance covers both the wall surface and the camera near plane, so
+            // the lens never pokes through nor clips the near plane.
+            const float clearance = 0.22f;
+            float maxSafe = full;
+
+            // Walk all hits along the rig ray and ignore the courier's own colliders;
+            // the nearest foreign surface bounds how far back we may go.
+            int n = Physics.RaycastNonAlloc(origin, dir, hits, full + 0.05f,
+                                           collideMask, QueryTriggerInteraction.Ignore);
+            float hitDist = float.PositiveInfinity;
+            for (int i = 0; i < n; i++)
             {
-                dist = Mathf.Max(1.4f, hit.distance - 0.45f);
-                crowding = (full - hit.distance) < 1.5f;
+                var t = hits[i].collider ? hits[i].collider.transform : null;
+                if (t == target || (t && t.IsChildOf(target))) continue;
+                if (hits[i].distance < hitDist) hitDist = hits[i].distance;
             }
+            // Geometry-safe clamp: never exceed available space. With a wall at 0.65 m
+            // this yields ~0.43 m (in front of the wall); it has NO floor that could
+            // jump past a close hit the way Max(1.4, hit-0.45) did.
+            if (hitDist < float.PositiveInfinity)
+                maxSafe = Mathf.Min(full, Mathf.Max(0.05f, hitDist - clearance));
 
-            Vector3 want = origin + dir * dist - Vector3.up * 1.25f;
-            if (crowding)
-                // Raise the rig and shorten the run so the camera looks down over
-                // the car roof into the open lane rather than into the wall.
-                want += Vector3.up * 0.9f + dir * 0.5f;
+            Vector3 want = origin + dir * maxSafe;
+            // Pulled well inside the rig means architecture is touching the lens:
+            // this is pure collision response, and we frame the actor accordingly.
+            bool cramped = maxSafe < full * 0.55f;
 
-            transform.position = Vector3.Lerp(transform.position, want, Mathf.Clamp01(damping * Time.deltaTime));
-            // Aim slightly down the route so the horizon sits high and the
-            // destination (green pad / parcel) reads in the upper-centre frame
-            // while the hood stays near the bottom edge. When crowded, drop the
-            // look-ahead so the full car silhouette lands inside the frame.
-            float la = crowding ? lookAhead * 0.55f : lookAhead;
-            var look = target.position + Vector3.up * (crowding ? 0.6f : 1.1f) + yaw * Vector3.forward * la;
-            transform.LookAt(look);
+            Vector3 pos = Vector3.Lerp(transform.position, want,
+                                       Mathf.Clamp01(damping * Time.deltaTime));
+
+            // Geometry-safe FINAL smoothed pose: re-verify along the actual smoothed
+            // ray so an interpolated frame between two safe points can never settle
+            // past a wall that the endpoint had already cleared.
+            float d = Vector3.Dot(pos - origin, dir);
+            if (d > 0.01f && Physics.Raycast(origin, dir, out RaycastHit v, d,
+                                             collideMask, QueryTriggerInteraction.Ignore))
+            {
+                var vt = v.collider ? v.collider.transform : null;
+                bool own = vt == target || (vt && vt.IsChildOf(target));
+                if (!own && v.distance < d - 0.02f)
+                    pos = origin + dir * Mathf.Max(0.05f, v.distance - clearance);
+            }
+            transform.position = pos;
+
+            // Look down the route normally. When cramped, the back-ray has met a wall
+            // ahead of the rig, so pushing look-ahead would aim into that wall; we
+            // instead look straight at the courier's torso to keep the actor framed
+            // and visible. (Framing is tied to the actual target, not to a fake
+            // endpoint-distance visibility proxy.)
+            float la = cramped ? 0f : lookAhead;
+            float hy = cramped ? 1.0f : 1.1f;
+            transform.LookAt(target.position + Vector3.up * hy + yaw * Vector3.forward * la);
         }
     }
 }
