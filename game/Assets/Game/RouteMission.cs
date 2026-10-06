@@ -249,21 +249,43 @@ namespace ChicagoGame
                 c.localRotation = Quaternion.identity;
                 c.localScale = src.localScale;
                 foreach (var col in c.GetComponentsInChildren<Collider>()) col.enabled = false;
+
                 foreach (var rd in c.GetComponentsInChildren<Renderer>())
                 {
                     var m = new Material(rd.sharedMaterial);
-                    m.color = new Color(0.15f, 0.82f, 1f);
-                    m.EnableKeyword("_EMISSION");
-                    m.SetColor("_EmissionColor", new Color(0.05f, 0.45f, 0.65f));
+                    string rn = rd.name.ToLower();
+                    if (rn.Contains("wheel"))
+                    {
+                        m.color = new Color(0.07f, 0.07f, 0.08f);
+                        m.DisableKeyword("_EMISSION");
+                        m.SetColor("_EmissionColor", Color.black);
+                    }
+                    else if (rn.Contains("rail"))
+                    {
+                        m.color = new Color(0.12f, 0.50f, 0.55f);
+                        m.EnableKeyword("_EMISSION");
+                        m.SetColor("_EmissionColor", new Color(0.03f, 0.32f, 0.36f));
+                        tintedMat = m;
+                    }
+                    else
+                    {
+                        m.color = new Color(0.13f, 0.21f, 0.23f);
+                        m.DisableKeyword("_EMISSION");
+                        m.SetColor("_EmissionColor", Color.black);
+                    }
                     rd.sharedMaterial = m;
-                    if (tintedMat == null) tintedMat = m;
                 }
-                var r0 = c.GetComponentInChildren<Renderer>();
-                if (r0 != null)
-                {
-                    var b = r0.bounds;
-                    c.localPosition = new Vector3(0f, 0.14f - b.min.y, 0f);
-                }
+                // Aggregate bounds of all cloned renderers
+                Bounds agg = new Bounds(c.position, Vector3.zero);
+                foreach (var rd in c.GetComponentsInChildren<Renderer>())
+                    agg.Encapsulate(rd.bounds);
+                // World offset: center X/Z -> anchor X/Z, min Y -> anchor.y + 0.14
+                Vector3 aPos = anchor.transform.position;
+                Vector3 delta = new Vector3(
+                    aPos.x - agg.center.x,
+                    (aPos.y + 0.14f) - agg.min.y,
+                    aPos.z - agg.center.z);
+                c.position += delta;
             }
             Cache.gameObject.SetActive(true);
         }
