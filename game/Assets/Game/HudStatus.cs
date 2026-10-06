@@ -45,8 +45,8 @@ namespace ChicagoGame
 
             tm = gameObject.AddComponent<TextMesh>();
             tm.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            tm.fontSize = 34;
-            tm.characterSize = 0.011f;
+            tm.fontSize = 40;
+            tm.characterSize = 0.017f;
             tm.anchor = TextAnchor.UpperLeft;
             tm.alignment = TextAlignment.Left;
             tm.color = Color.white;
