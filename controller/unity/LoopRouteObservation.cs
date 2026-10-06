@@ -73,7 +73,7 @@ public static class LoopRouteObservation
         }
         return value;
     }
-    static Panel ObservePanel(string name,Camera camera)
+    public static Panel ObservePanel(string name,Camera camera)
     {
         var value=new Panel{name=name};var go=GameObject.Find(name);
         if(go==null || camera==null)return value;
