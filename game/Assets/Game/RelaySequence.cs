@@ -60,9 +60,9 @@ namespace ChicagoGame
                 return;
             }
 
+            if (AllComplete || Failed) return;
             Remaining = UnityEngine.Mathf.Max(0, 45 - (Time.time - armedAt));
             if (Remaining <= 0) { Failed = true; return; }
-            if (AllComplete || Failed) return;
 
             if (LoopInput.Pressed(KeyCode.F) && LoopSignals.Mode == "foot")
             {
