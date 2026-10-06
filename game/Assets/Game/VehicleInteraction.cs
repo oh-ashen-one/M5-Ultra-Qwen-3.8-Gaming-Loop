@@ -121,7 +121,7 @@ namespace ChicagoGame
             // Ground snap: compare against collider bottom, only correct downward float (never launch up)
             if (GroundRaycast(transform.position, out var hit))
             {
-                float colliderBottomY = transform.position.y + _collider.center.y - _collider.size.y * 0.5f;
+                float colliderBottomY = GetComponent<Collider>().bounds.min.y;
                 float gap = colliderBottomY - hit.point.y; // positive = floating above ground
                 if (gap > 0.02f && gap < 0.5f)
                 {
