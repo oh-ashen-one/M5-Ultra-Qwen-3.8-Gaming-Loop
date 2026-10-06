@@ -1,0 +1,279 @@
+{
+  "utc": "2026-10-06T06:09:39.287320+00:00",
+  "round": "q0067-99bd4994",
+  "candidate": "bd0187d4c05d3c77bb1e60376852cf2851b738b0",
+  "build_id": "77777e6e2c2f6beec08fd5747e89039aa540d36e2f33ee0da641b69535f4628b",
+  "gate": {
+    "passed": false,
+    "failure": [
+      "vehicle-new-space-not-traversed",
+      "vehicle-outside-capture-missing"
+    ],
+    "scoped_facts": {
+      "map_extension": {
+        "area_claim": "Only observed connected traversal; no gross map-area acceptance",
+        "failure": [
+          "vehicle-new-space-not-traversed",
+          "vehicle-outside-capture-missing"
+        ],
+        "old_bounds_xz": [
+          -1,
+          6,
+          -2,
+          30
+        ],
+        "passed": false,
+        "traversal": {
+          "foot": {
+            "maximum_distance_beyond_old_boundary_m": 6.533334732055664,
+            "outside_samples": 15,
+            "physical_return_seconds": 15.966666221618652
+          },
+          "vehicle": {
+            "maximum_distance_beyond_old_boundary_m": 0,
+            "outside_samples": 0,
+            "physical_return_seconds": null
+          }
+        }
+      },
+      "rendered_walking_support": {
+        "first_uncovered": [],
+        "passed": true,
+        "radius_m": 0.32,
+        "samples": 188,
+        "scope": "Flat rendered-surface bounds support the route; actual frame review is also required.",
+        "surfaces": [
+          {
+            "max": [
+              22,
+              0.1400010734796524,
+              20
+            ],
+            "min": [
+              6,
+              -0.0000027418136596679688,
+              8
+            ],
+            "name": "WorldCollision/AlleyPavement"
+          },
+          {
+            "max": [
+              6,
+              0.14000045508146286,
+              30
+            ],
+            "min": [
+              -1,
+              -0.000001214444637298584,
+              -2
+            ],
+            "name": "Pavement"
+          },
+          {
+            "max": [
+              2.4000000953674316,
+              0.14000078290700912,
+              28
+            ],
+            "min": [
+              -0.7999999523162842,
+              2.2351741790771484e-8,
+              14
+            ],
+            "name": "Street/sidewalk"
+          },
+          {
+            "max": [
+              13.649999618530273,
+              0.05000346805900335,
+              28
+            ],
+            "min": [
+              2.6499996185302734,
+              -0.06999915186315775,
+              14
+            ],
+            "name": "Street/road_asphalt"
+          },
+          {
+            "max": [
+              2.4000000953674316,
+              0.14000078290700912,
+              14
+            ],
+            "min": [
+              -0.7999999523162842,
+              2.2351741790771484e-8,
+              0
+            ],
+            "name": "Street/sidewalk"
+          },
+          {
+            "max": [
+              13.649999618530273,
+              0.05000346805900335,
+              14
+            ],
+            "min": [
+              2.6499996185302734,
+              -0.06999915186315775,
+              0
+            ],
+            "name": "Street/road_asphalt"
+          }
+        ],
+        "uncovered_samples": 0
+      }
+    }
+  },
+  "vehicle_y_range": [
+    -0.015232499688863754,
+    -0.009986380115151405
+  ],
+  "vehicle_xz_range": [
+    [
+      1.4699997901916504,
+      3.359421730041504
+    ],
+    [
+      7.96269416809082,
+      9.455322265625
+    ]
+  ],
+  "samples": [
+    {
+      "time": 20.78333282470703,
+      "mode": "vehicle",
+      "keys": [],
+      "vehicle": [
+        3.359421491622925,
+        -0.009999990463256836,
+        7.96269416809082
+      ],
+      "vehiclePenetration": 0
+    },
+    {
+      "time": 21.950000762939453,
+      "mode": "vehicle",
+      "keys": [],
+      "vehicle": [
+        3.359421491622925,
+        -0.009999990463256836,
+        7.96269416809082
+      ],
+      "vehiclePenetration": 0
+    },
+    {
+      "time": 22.700000762939453,
+      "mode": "vehicle",
+      "keys": [
+        "W"
+      ],
+      "vehicle": [
+        3.1671218872070312,
+        -0.01000303030014038,
+        8.3842134475708
+      ],
+      "vehiclePenetration": 0.008983731269836426
+    },
+    {
+      "time": 24.200000762939453,
+      "mode": "vehicle",
+      "keys": [],
+      "vehicle": [
+        2.913106679916382,
+        -0.010000227950513363,
+        8.439019203186035
+      ],
+      "vehiclePenetration": 0.0000010728836059570312
+    },
+    {
+      "time": 25.700000762939453,
+      "mode": "vehicle",
+      "keys": [
+        "W"
+      ],
+      "vehicle": [
+        1.9183300733566284,
+        -0.010115621611475945,
+        8.960495948791504
+      ],
+      "vehiclePenetration": 0.00001049041748046875
+    },
+    {
+      "time": 26.883333206176758,
+      "mode": "vehicle",
+      "keys": [],
+      "vehicle": [
+        1.847227931022644,
+        -0.010447523556649685,
+        9.281672477722168
+      ],
+      "vehiclePenetration": 0.009117364883422852
+    },
+    {
+      "time": 28.58333396911621,
+      "mode": "vehicle",
+      "keys": [],
+      "vehicle": [
+        1.8392882347106934,
+        -0.00999998115003109,
+        9.455245018005371
+      ],
+      "vehiclePenetration": 1.1920928955078125e-7
+    },
+    {
+      "time": 29.983333587646484,
+      "mode": "vehicle",
+      "keys": [
+        "S"
+      ],
+      "vehicle": [
+        1.4700795412063599,
+        -0.010823037475347519,
+        9.049572944641113
+      ],
+      "vehiclePenetration": 0.00024640560150146484
+    },
+    {
+      "time": 35.03333282470703,
+      "mode": "vehicle",
+      "keys": [],
+      "vehicle": [
+        1.4700013399124146,
+        -0.009999990463256836,
+        9.047182083129883
+      ],
+      "vehiclePenetration": 0
+    }
+  ],
+  "captures": [
+    {
+      "source_frame": "frame-002.png",
+      "replay_seconds": 13.69791,
+      "capture_file_mtime_utc": "2026-10-06T06:07:49.458316+00:00",
+      "sha256": "dcf9c58513627f75a827b6da3787eb3030217fb68d1bd0db9fadf5ca0b4cc335"
+    },
+    {
+      "source_frame": "frame-005.png",
+      "replay_seconds": 26.84647,
+      "capture_file_mtime_utc": "2026-10-06T06:08:03.934972+00:00",
+      "sha256": "aa60dbc927827796f517104720f86e1263c08e00f3763a2a30e8d207106ec1fe"
+    }
+  ],
+  "acceptance": {
+    "regressions_run": false,
+    "fresh_critic_run": false,
+    "accepted_checkpoint": "d269dc43ac66c39afca4cb98ea53f9e7ed36806f",
+    "restored_source": "f2889dc458343cc5018a6f52de3e67b9f0ad48fe",
+    "extension_accepted": false
+  },
+  "recovery": {
+    "state": "paused",
+    "reason": "Three changed map strategies exhausted; support fixed but driving maneuver fails under corrected grounded physics.",
+    "controller": "1b92489f24bc877b724d694b252278b158954e58",
+    "cpu_tests_both_hosts": 194,
+    "task_failures": 15,
+    "failure_streak": 1
+  }
+}
