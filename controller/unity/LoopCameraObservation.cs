@@ -17,6 +17,7 @@ public static class LoopCameraObservation
         public string targetRole;
         public int expectedRendererCount,cachedRendererCount;
         public bool rendererCacheMatchesTarget;
+        public string[] cameraInsideForeignColliders;
     }
     static float[] Vec(Vector3 p) { return new[] {p.x,p.y,p.z}; }
     public static MonoBehaviour Follow() {
@@ -42,6 +43,9 @@ public static class LoopCameraObservation
         result.rendererCacheMatchesTarget=cached!=null && expected.Length>0 && expected.Length==result.cachedRendererCount
             && expected.All(r=>cached.Any(c=>c==r));
         result.cameraPosition=Vec(camera.transform.position);result.cameraForward=Vec(camera.transform.forward);
+        result.cameraInsideForeignColliders=Physics.OverlapSphere(camera.transform.position,.01f,~0,QueryTriggerInteraction.Ignore)
+            .Where(c=>c.transform!=actor && !c.transform.IsChildOf(actor) && Inside(c,camera.transform.position))
+            .Select(c=>c.name).Distinct().ToArray();
         var pivot=actor.position+Vector3.up*1.25f;
         var desired=Quaternion.Euler(0,actor.eulerAngles.y,0)*offset;var full=desired.magnitude;
         var dir=desired/full;result.pivot=Vec(pivot);result.desiredDirection=Vec(dir);result.desiredDistance=full;

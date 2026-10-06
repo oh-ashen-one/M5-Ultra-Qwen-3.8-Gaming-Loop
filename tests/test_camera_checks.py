@@ -7,6 +7,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from loop_controller.camera_checks import inspect_camera,inspect_target_transitions
 from repair_camera_lifecycle import validate_lifecycle_pause,SOURCE as LIFECYCLE_SOURCE,BLOCKER as LIFECYCLE_BLOCKER
 from resume_camera_lifecycle_validation import validate_observer_pause,SOURCE as OBSERVER_SOURCE
+from repair_camera_floor import validate_floor_pause
 from loop_controller.core import Halt
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 from probe_camera_clearance import validate_camera_pause,SOURCE,ACCEPTED,BLOCKER
@@ -19,7 +20,7 @@ def observations():
     return [dict(time=start+i*.1,cameraGeometry=dict(available=True,probeHit=True,
         phase=phase,probeCollider='CameraClearanceWall',probeDistance=distance,
         cameraInsideFixture=False,fixtureBetweenTargetAndCamera=False,nearPlaneTouchesFixture=False,
-        legacyEndpointCrowding=phase=='endpoint',targetSamples=9,inFrameSamples=9,unobstructedSamples=9))
+        legacyEndpointCrowding=phase=='endpoint',targetSamples=9,inFrameSamples=9,unobstructedSamples=9,cameraInsideForeignColliders=[]))
         for phase,start,distance in [('near',6,.65),('middle',10,3),('endpoint',14,5.4)] for i in range(10)]
 
 class CameraTests(unittest.TestCase):
@@ -52,6 +53,11 @@ class CameraTests(unittest.TestCase):
         result=inspect_camera(rows)
         self.assertEqual(result['phases'][0]['legacy_endpoint_predicate_samples'],0)
         self.assertEqual(result['phases'][0]['minimum_actor_samples_unobstructed'],0)
+        self.assertFalse(result['passed'])
+
+    def test_wall_clearance_does_not_hide_camera_inside_the_floor(self):
+        rows=observations();rows[0]['cameraGeometry']['cameraInsideForeignColliders']=['GroundCollider']
+        self.assertIn('near-camera-inside-world-collider',inspect_camera(rows)['failure'])
 
     def test_only_exact_original_pause_is_admitted_without_reset(self):
         state=dict(source_checkpoint=SOURCE,last_playable_checkpoint=ACCEPTED,task_index=7,
@@ -130,5 +136,13 @@ class CameraTests(unittest.TestCase):
         original=copy.deepcopy(state);validate_observer_pause(state);self.assertEqual(state,original)
         for key,value in [('source_checkpoint','other'),('task_failures',0),('camera_observer_recovery_attempted',True),('blocker','resource fault')]:
             with self.assertRaises(Halt):validate_observer_pause({**state,key:value})
+
+    def test_floor_repair_requires_measured_stop_and_preserves_cache_proof(self):
+        state=dict(source_checkpoint=OBSERVER_SOURCE,last_playable_checkpoint=ACCEPTED,task_index=7,
+            task_failures=6,failure_streak=1,diagnosis_used=True,overall_deadline_epoch=HARD_CAP_EPOCH,
+            camera_observer_recovery_attempted=True,blocker='Halt: Requested stop',camera_target_transitions={'passed':True})
+        validate_floor_pause(state)
+        for key,value in [('camera_floor_repair_attempted',True),('camera_target_transitions',{}),('blocker','other stop')]:
+            with self.assertRaises(Halt):validate_floor_pause({**state,key:value})
 
 if __name__=='__main__':unittest.main()
