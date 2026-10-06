@@ -171,7 +171,7 @@ class Files:
         if not path.resolve().is_relative_to(self.root):
             raise ValueError("Path escape")
         if write and not ((relative.startswith("Assets/Game/") and p.suffix == ".cs") or
-                          relative == "Assets/Resources/HudOpaque.shader" or
+                          relative in ("Assets/Resources/HudOpaque.shader", "Assets/Resources/ReticleOverlay.shader") or
                           (relative.startswith("Art/") and p.suffix in (".py", ".json")) or
                           (relative.startswith("Notes/") and p.suffix == ".md")):
             raise ValueError("Only Assets/Game/*.cs, Art/*.py|json and Notes/*.md are writable")
