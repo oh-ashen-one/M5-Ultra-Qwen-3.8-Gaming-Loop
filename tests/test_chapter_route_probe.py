@@ -47,14 +47,27 @@ class ChapterRouteProbeTests(unittest.TestCase):
                     'void Update() {}','legacy.SetActive(false);','Destroy(player);']:
             with self.subTest(raw=raw),self.assertRaises(ValueError):validate_hud(raw)
 
-    def test_review_selects_actual_handoff_junction_arrival_completion_and_reset(self):
+    def test_review_selects_actual_handoff_arrival_onfoot_completion_and_reset(self):
         frames=[Path('frame-%03d.png'%i) for i in range(7)]
         rows=[]
         for i,(stage,x,mode,reset) in enumerate([(0,3,'foot',0),(1,1,'vehicle',0),(1,22,'vehicle',0),
                                                (1,47,'vehicle',0),(1,48,'foot',0),(2,48,'foot',0),(0,3,'foot',1)]):
-            rows.append(dict(time=i,vehicle=[x,0,18],mode=mode,restarts=reset,routeChapter={'stage':stage}))
+            rows.append(dict(time=i,player=[x,0,18],vehicle=[x,0,18],mode=mode,restarts=reset,routeChapter={'stage':stage},
+                             mission='complete' if stage else 'active',missionObjects=[]))
         selected=chapter_capture_selection(frames,{'captures':list(range(7))},rows)
-        self.assertEqual(selected,[frames[i] for i in [1,2,3,5,6]])
+        self.assertEqual(selected,[frames[i] for i in [1,3,4,5,6]])
+        # Exercise the real dispatcher: legacy mission_complete selection must
+        # not overwrite the chapter frames after the helper returns.
+        import json,tempfile
+        from continue_game_queue import review_captures
+        with tempfile.TemporaryDirectory() as temp:
+            bundle=Path(temp);captures=bundle/'captures';captures.mkdir()
+            for frame in frames:(captures/frame.name).touch()
+            (captures/'scenario.json').write_text(json.dumps({'captures':list(range(7))}))
+            (captures/'trace.jsonl').write_text('\n'.join(json.dumps(r) for r in rows))
+            chosen,times=review_captures({'id':'east-dead-drop','checks':['mission_complete']},bundle)
+            self.assertEqual([p.name for p in chosen],[frames[i].name for i in [1,3,4,5,6]])
+            self.assertEqual(list(times.values()),[1,3,4,5,6])
 
 
     def test_complete_hud_recovery_requires_original_finished_tool_call(self):

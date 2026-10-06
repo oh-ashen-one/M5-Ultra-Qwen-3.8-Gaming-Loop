@@ -94,7 +94,7 @@ def review_captures(task,bundle):
         # A measured junction view replaces the redundant opening image. Keep
         # four actual images plus the reference within the established budget.
         chosen=sorted(set([*(junction or [frames[0]]),*selected,frames[-1]]))
-    if 'mission_complete' in task.get('checks',[]) and trace.exists():
+    if 'mission_complete' in task.get('checks',[]) and task['id']!='east-dead-drop' and trace.exists():
         rows=[json.loads(line) for line in trace.read_text().splitlines()]
         observed=[]
         for frame in frames:

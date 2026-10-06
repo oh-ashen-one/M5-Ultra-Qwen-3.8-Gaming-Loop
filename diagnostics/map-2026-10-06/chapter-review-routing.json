@@ -1,0 +1,51 @@
+{
+  "source": "3f5a0ef117c20fabf75d72495831ed75997af25b",
+  "round": "q0098-2198d5a1",
+  "native_pass": true,
+  "regressions_passed": 10,
+  "original_critic_verdict": "FIX",
+  "original_critic_sha256": "f08e62f8dd0b91aed6dc76ac9b27f480236f0612ce3ac979e1917a286784696d",
+  "cause": "Generic mission_complete frame selection overwrote the dedicated chapter selection later in review_captures.",
+  "original_review_preserved": true,
+  "source_changed_for_review": false,
+  "old_courier_anchor": [
+    1,
+    0.15,
+    26
+  ],
+  "new_chapter_cache": [
+    50,
+    0.14,
+    18
+  ],
+  "corrected_capture_indices": [
+    3,
+    9,
+    10,
+    11,
+    12
+  ],
+  "measured_live_distance_m": [
+    50,
+    48,
+    43,
+    39,
+    28,
+    5
+  ],
+  "chapter_native_events": {
+    "activation": 14.350000381,
+    "arrival": 30.200000763,
+    "exit": 30.633333206,
+    "completion": 32.533332825,
+    "reset": 34.033332825
+  },
+  "remaining": [
+    "Old courier receipt clutter",
+    "Neon cache appearance",
+    "Camera occlusion and broader street visual FIX",
+    "Varied connected ten-minute mission"
+  ],
+  "next_scope": "Original mesh/material facade relief on existing east-street walls; same local game author and same sole queue.",
+  "final_game_accepted": false
+}

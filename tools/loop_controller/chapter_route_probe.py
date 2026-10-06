@@ -85,12 +85,17 @@ def chapter_capture_selection(frames,scenario,rows):
         if abs(row['time']-t)<=.25:observed.append((frame,row))
     active=[p for p in observed if p[1].get('routeChapter',{}).get('stage')==1]
     driving=[p for p in active if p[1].get('mode')=='vehicle' and p[1].get('vehicle')]
+    onfoot=[p for p in active if p[1].get('mode')=='foot' and p[1].get('player') and
+        math.dist([p[1]['player'][0],p[1]['player'][2]],[50,18])<=6]
     done=[p for p in observed if p[1].get('routeChapter',{}).get('stage')==2]
     result=[]
     if active:result.append(active[0][0])
     if driving:
-        result.append(min(driving,key=lambda p:abs(p[1]['vehicle'][0]-22))[0])
         result.append(min(driving,key=lambda p:math.dist([p[1]['vehicle'][0],p[1]['vehicle'][2]],[50,18]))[0])
+    if onfoot:
+        result.append(min(onfoot,key=lambda p:math.dist([p[1]['player'][0],p[1]['player'][2]],[50,18]))[0])
+    elif driving:
+        result.append(min(driving,key=lambda p:abs(p[1]['vehicle'][0]-22))[0])
     if done:
         result.append(done[0][0])
         reset=[p for p in observed if p[1]['time']>done[0][1]['time'] and
