@@ -99,7 +99,7 @@ class Machine:
         if request.exists():
             raise Halt("An engine handoff is already present; reconcile ownership before resume")
         lease = {"lease_id": uuid.uuid4().hex, "controller_pid": os.getpid(),
-                 "controller_start": psutil.Process().create_time(), "expires_epoch": time.time()+timeout+90,
+                 "controller_start": psutil.Process().create_time(), "expires_epoch": time.time()+min(1500,timeout+390),
                  "label": label}
         atomic(request, lease)
         try:
@@ -117,7 +117,9 @@ class Machine:
                     existing.append(process.pid)
             if len(existing) > 1 and not self.c.get('authorized_shared_coexistence',False):
                 raise Halt("No room for one owned engine beside the existing renderer")
-            with gpu_admission("chicago-loop-" + label, len(existing)):
+            from .shared_admission import admitted
+            with admitted(lambda: gpu_admission("chicago-loop-" + label, len(existing)),
+                          self.guard, self.store, request, lease, timeout):
                 yield
         finally:
             if request.exists() and read_json(request).get("lease_id") == lease["lease_id"]:

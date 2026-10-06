@@ -15,12 +15,17 @@ TASK = dict(id='combat-lethal-reset', phase='mission', checks=[], maximum=30, co
 
 
 def validate_pause(old):
+    capacity = old.get('current_round') == 'q0122-d0f2423b' and old.get('combat_death_attempted')
     expected = dict(source_checkpoint=SOURCE, last_playable_checkpoint=ACCEPTED, current_round=ROUND,
         task_index=7, task_failures=24, failure_streak=1, diagnosis_used=True,
         overall_deadline_epoch=HARD_CAP_EPOCH, stage='combat-hit-target-original-regressions',
         blocker='Halt: Local hit-target dependency and original regressions complete; next qualify the planned moving encounter')
+    if capacity:
+        expected.update(current_round='q0122-d0f2423b', stage='native-combat-lethal-reset',
+            blocker='RuntimeError: Existing shared GPU waiters have priority')
     prep = old.get('combat_hit_target_preparation', {})
-    if (any(old.get(k) != v for k,v in expected.items()) or old.get('combat_death_attempted')
+    if (any(old.get(k) != v for k,v in expected.items()) or (old.get('combat_death_attempted') and not capacity)
+        or old.get('combat_death_admission_recovered') or old.get('combat_death_outcome')
         or prep.get('candidate') != SOURCE or not prep.get('original_regressions_passed')):
         raise Halt('Require exact completed local hit-target regression boundary and preserved history')
 
@@ -28,12 +33,18 @@ def validate_pause(old):
 class CombatDeath(HudPresentationPolish):
     def validate_recovery(self, old):
         validate_pause(old)
+        self.admission_recovery = old.get('current_round') == 'q0122-d0f2423b'
+        if self.admission_recovery:
+            bundle = self.store.root / 'evidence' / 'q0122-d0f2423b'
+            if (bundle / 'gate.json').exists() or (bundle / 'captures').exists():
+                raise Halt('Capacity recovery requires no completed engine or native output')
         self.resume_capacity = False; self.priority_resume = False; self.transport_recovery = False
 
     def wait_for_capacity(self): self.capacity.wait('native-combat-lethal-reset')
 
     def recovery_settings(self):
-        return dict(combat_death_attempted=True, recovery_route='actual-lethal-hit-reset',
+        return dict(combat_death_attempted=True, combat_death_admission_recovered=self.admission_recovery,
+            recovery_route='actual-lethal-hit-reset',
             recovery_change='Extend the original ordinary-input two-shot test to three shots and R reset. '
             'Observe actual target HP, enabled renderers/collider and reset state. No gameplay edits or '
             'secondary-target qualification claim until the moving encounter proves it.')

@@ -43,6 +43,10 @@ class CombatDeathTests(unittest.TestCase):
             blocker='Halt: Local hit-target dependency and original regressions complete; next qualify the planned moving encounter',
             combat_hit_target_preparation=dict(candidate=SOURCE,original_regressions_passed=True))
         validate_pause(old)
+        capacity={**old,'current_round':'q0122-d0f2423b','stage':'native-combat-lethal-reset',
+            'blocker':'RuntimeError: Existing shared GPU waiters have priority','combat_death_attempted':True}
+        validate_pause(capacity)
+        with self.assertRaises(Halt): validate_pause({**capacity,'combat_death_admission_recovered':True})
         for field,value in [('source_checkpoint','other'),('task_failures',0),('overall_deadline_epoch',HARD_CAP_EPOCH+1),('combat_death_attempted',True)]:
             with self.assertRaises(Halt): validate_pause({**old,field:value})
 
