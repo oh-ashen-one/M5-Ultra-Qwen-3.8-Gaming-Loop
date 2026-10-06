@@ -11,12 +11,17 @@ SOURCE='8ef71373663d49349ce8a74827b27e64036614e1'
 ROUND='q0111-673150bb'
 ACCEPTED='c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188'
 FIELDS=('next_playable_increment','fixed_physical_scope','actual_api_and_state','positive_and_red_proofs','consolidated_hud','pacing_dependencies')
+TASK=dict(id='post-relay-design',phase='mission',checks=[],maximum=100,coverage='mission-core',
+    outcome='Define the next measurable gameplay increment and one consolidated mission HUD')
 
 def validate_pause(old):
     expected=dict(source_checkpoint=SOURCE,last_playable_checkpoint=ACCEPTED,current_round=ROUND,
         task_index=7,task_failures=24,failure_streak=1,diagnosis_used=True,overall_deadline_epoch=HARD_CAP_EPOCH,
         blocker='Halt: Relay qualification recorded; continue measured gameplay and broad visual work under existing authority')
-    if any(old.get(k)!=v for k,v in expected.items()) or old.get('post_relay_design_attempted'):
+    metadata_repair=(old.get('blocker')=="KeyError: 'outcome'" and old.get('post_relay_design_attempted')
+        and not old.get('post_relay_metadata_repaired') and not old.get('post_relay_plan'))
+    if metadata_repair:expected['blocker']="KeyError: 'outcome'"
+    if any(old.get(k)!=v for k,v in expected.items()) or (old.get('post_relay_design_attempted') and not metadata_repair):
         raise Halt('Require exact qualified relay checkpoint/history')
     if not old.get('relay_outcome',{}).get('accepted'):raise Halt('Preserve an unqualified relay outcome')
 
@@ -30,12 +35,11 @@ class PostRelayDesign(OrderedRelay):
         verify_seal(e/'captures',sha((e/'captures/manifest.json').read_bytes()))
 
     def recovery_settings(self):
-        return dict(post_relay_design_attempted=True,recovery_route='local-next-gameplay-and-consolidated-HUD',
+        return dict(post_relay_design_attempted=True,post_relay_metadata_repaired=True,recovery_route='local-next-gameplay-and-consolidated-HUD',
             recovery_change='Preserve qualified relay; local next measurable varied gameplay plan and one-primary-objective HUD. Shared M5 checks remain active; other authorized workloads untouched.')
 
     def work(self):
-        task=dict(id='post-relay-design',phase='mission',checks=[],maximum=100,coverage='mission-core')
-        ident=self.begin(task,'local-next-playable-increment');self.store.report()
+        ident=self.begin(TASK,'local-next-playable-increment');self.store.report()
         source='\n\n'.join(p+'\n'+(self.project/p).read_text() for p in
             ['Assets/Game/RelaySequence.cs','Assets/Game/RelaySequence.Hud.cs','Assets/Game/Combat.cs','Assets/Game/Mission.cs'])
         self.c.update(output_tokens=6144,model_timeout_seconds=330)
