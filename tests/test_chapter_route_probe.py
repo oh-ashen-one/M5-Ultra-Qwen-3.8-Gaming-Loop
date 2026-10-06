@@ -68,6 +68,9 @@ class ChapterRouteProbeTests(unittest.TestCase):
             chosen,times=review_captures({'id':'east-dead-drop','checks':['mission_complete']},bundle)
             self.assertEqual([p.name for p in chosen],[frames[i].name for i in [1,3,4,5,6]])
             self.assertEqual(list(times.values()),[1,3,4,5,6])
+            chosen,times=review_captures({'id':'east-dead-drop','checks':['mission_complete'],
+                                        'chapter_review_reset':False},bundle)
+            self.assertEqual([p.name for p in chosen],[frames[i].name for i in [1,3,4,5]])
 
 
     def test_complete_hud_recovery_requires_original_finished_tool_call(self):

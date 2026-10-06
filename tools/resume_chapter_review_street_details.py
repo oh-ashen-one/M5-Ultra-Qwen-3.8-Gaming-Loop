@@ -24,7 +24,7 @@ HASHES={
     'captures/manifest.json':'ae165522a2059a3c3f6446392d47e275906be07b63364ca68b874862f956a416',
     'captures/scenario.json':'d310895282f0f435ff78fe14f8c43a64534820180688c37f76e3824a9dc788d9',
 }
-CORRECTED={**TASK,'instructions':TASK['instructions']+
+CORRECTED={**TASK,'include_reference':False,'instructions':TASK['instructions']+
     ' There are TWO DIFFERENT objectives. Legacy courier DropPad/BeaconRing anchor=(1,.15,26), completed14.35s. '
     'The NEW RouteMission.Cache anchor=(50,.14,18), activation14.35s, vehicle arrival30.20s, E exit30.63s, '
     'close-foot F completion32.53s, R reset34.03s. Legacy Mission==complete does NOT mean the new chapter is complete. '
@@ -33,7 +33,7 @@ CORRECTED={**TASK,'instructions':TASK['instructions']+
     'The supplied frames now show the actual chapter, including on-foot approach. Judge their actual text overlap, '
     'actor visibility and marker readability honestly; do not conflate the legacy pad with the new cache. '
     'Any missing exact interaction image remains a visual-proof limitation, even with trace-proven F input.'}
-ART_TASK={**CORRECTED,'phase':'polish','outcome':
+ART_TASK={**CORRECTED,'include_reference':True,'chapter_review_reset':False,'phase':'polish','outcome':
     'Architectural relief makes the existing east-street enclosure read as building fronts while the entire chapter remains playable.',
     'instructions':CORRECTED['instructions']+
     ' Current visual scope is the NEW east-street facade dressing: actual visible windows, doors, projecting cornice '
@@ -69,6 +69,9 @@ def validate_module(content):
 class ChapterReviewStreetDetails(EastDeadDrop):
     def validate_recovery(self,old):
         validate_pause(old)
+        self.verify_original()
+
+    def verify_original(self):
         bundle=self.store.root/'evidence'/ROUND
         for name,digest in HASHES.items():
             if sha((bundle/name).read_bytes())!=digest:raise Halt('Original chapter evidence changed: '+name)

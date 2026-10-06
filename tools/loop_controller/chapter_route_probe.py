@@ -77,7 +77,7 @@ def full_route(activation,turn_seconds,pose):
     return dict(id='east-dead-drop-measured-normal-input',coverage='mission-core',
         duration=reset+2,steps=steps,captures=captures)
 
-def chapter_capture_selection(frames,scenario,rows):
+def chapter_capture_selection(frames,scenario,rows,include_reset=True):
     observed=[]
     for frame in frames:
         index=int(frame.stem.split('-')[-1]);t=scenario['captures'][index]
@@ -100,5 +100,5 @@ def chapter_capture_selection(frames,scenario,rows):
         result.append(done[0][0])
         reset=[p for p in observed if p[1]['time']>done[0][1]['time'] and
             p[1].get('restarts',0)>done[0][1].get('restarts',0) and p[1].get('routeChapter',{}).get('stage')==0]
-        if reset:result.append(reset[0][0])
+        if reset and include_reset:result.append(reset[0][0])
     return sorted(set(result))

@@ -71,7 +71,7 @@ def review_captures(task,bundle):
     if task['id']=='east-dead-drop' and trace.exists():
         from loop_controller.chapter_route_probe import chapter_capture_selection
         rows=[json.loads(line) for line in trace.read_text().splitlines()]
-        selected=chapter_capture_selection(frames,scenario,rows)
+        selected=chapter_capture_selection(frames,scenario,rows,task.get('chapter_review_reset',True))
         if selected:chosen=selected
     if task['id']=='connected-map-extension' and trace.exists():
         from qualify_map_extension import outside_distance
@@ -277,7 +277,8 @@ class ContinuousRunner(Runner):
         def submit(_,f):
             return validate_scoped_review(f,names,capture_times)
         images=[('ACTUAL NATIVE UNITY '+p.name+'; scheduled t='+str(capture_times[p.name])+' seconds',p) for p in chosen]
-        images.insert(0,('AI-GENERATED CHICAGO TARGET; not the build',self.refs/target_for(task)))
+        if task.get('include_reference',True):
+            images.insert(0,('AI-GENERATED CHICAGO TARGET; not the build',self.refs/target_for(task)))
         result=self.model.session('critic',ident+'-critic',
             'You are a fresh local visual critic. Judge actual evidence and only the stated current scope.',
             'TASK:'+json.dumps(task)+'\nCOMPACT ACTUAL NATIVE OBSERVATIONS:'+json.dumps(critic_evidence(gate))+
