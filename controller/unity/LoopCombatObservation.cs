@@ -10,7 +10,7 @@ public static class LoopCombatObservation
         public string name, actor, firstAimCollider, firstAttackCollider;
         public float[] position, actorPosition, renderCenter, renderSize, rootScale, colliderSize;
         public int hp, renderers;
-        public bool alive, attackUnobstructed;
+        public bool alive, attackUnobstructed, colliderEnabled;
         public float actorDistance, footDistance, aimDistance;
     }
     static float[] Vec(Vector3 p) { return new [] {p.x,p.y,p.z}; }
@@ -34,6 +34,7 @@ public static class LoopCombatObservation
                     hp=Convert.ToInt32(type.GetField("hp",flags).GetValue(m)),alive=Convert.ToBoolean(type.GetField("alive",flags).GetValue(m)),
                     renderers=visual.Length,renderCenter=Vec(bounds.center),renderSize=Vec(bounds.size),rootScale=Vec(t.lossyScale),
                     colliderSize=collider != null ? Vec(collider.bounds.size) : null,
+                    colliderEnabled=collider != null && collider.enabled && collider.gameObject.activeInHierarchy,
                     actorDistance=Vector3.Distance(actor.position,t.position),
                     footDistance=LoopSignals.Player != null ? Vector3.Distance(LoopSignals.Player.position,t.position) : -1f};
                 var origin=t.position+Vector3.up*1.25f;var aim=actor.position+Vector3.up;var delta=aim-origin;
