@@ -35,7 +35,7 @@ public static class LoopRelayObservation
         s.count=(int)t.GetField("ActivationCount").GetValue(m);s.expected=(int)t.GetField("ExpectedIndex").GetValue(m);
         s.wrongOrders=(int)t.GetField("WrongOrderCount").GetValue(m);s.remaining=(float)t.GetField("Remaining").GetValue(m);
         s.objective=(string)t.GetField("Objective").GetValue(m);
-        s.hud=LoopRouteObservation.ObservePanel("RelayHud",Camera.main);
+        s.hud=LoopRouteObservation.ObservePanel(GameObject.Find("MissionBoard")!=null?"MissionBoard":"RelayHud",Camera.main);
         var roots=t.GetField("Relays").GetValue(m) as Transform[];
         if(roots==null)roots=new Transform[0];
         var original=UnityEngine.Object.FindObjectsByType<MeshFilter>(FindObjectsInactive.Include,FindObjectsSortMode.None)

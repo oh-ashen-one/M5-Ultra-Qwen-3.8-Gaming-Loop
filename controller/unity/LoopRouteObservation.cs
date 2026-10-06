@@ -9,6 +9,7 @@ public static class LoopRouteObservation
     [Serializable] public class Panel {
         public string name, text;
         public bool visible;
+        public int visibleRenderers;
         public float[] textRect, cardRect;
         public float[] captureTextRect, captureCardRect;
     }
@@ -42,7 +43,7 @@ public static class LoopRouteObservation
         var camera=Camera.main;
         value.liveAspect=camera!=null?camera.aspect:0;
         value.captureAspect=(float)LoopRuntime.CaptureWidth/LoopRuntime.CaptureHeight;
-        value.hudPanels=new[]{"RouteHud","MissionHud","HudStatus"}.Select(n=>ObservePanel(n,camera)).ToArray();
+        value.hudPanels=new[]{"RouteHud","MissionHud","RelayHud","HudStatus","MissionBoard"}.Select(n=>ObservePanel(n,camera)).ToArray();
         var root=cache.GetValue(m) as Transform;
         value.cacheExists=root!=null;
         if(root==null)return value;
@@ -80,6 +81,7 @@ public static class LoopRouteObservation
         var text=go.GetComponentInChildren<TextMesh>(true);
         var renderer=text!=null?text.GetComponent<Renderer>():go.GetComponent<Renderer>();
         value.text=text!=null?text.text:"";
+        value.visibleRenderers=go.GetComponentsInChildren<Renderer>(true).Count(r=>r.enabled && r.gameObject.activeInHierarchy);
         value.visible=renderer!=null && renderer.enabled && renderer.gameObject.activeInHierarchy && value.text.Length>0;
         if(renderer!=null) {value.textRect=Rect(renderer,camera);value.captureTextRect=Rect(renderer,camera,true);}
         var card=go.GetComponentsInChildren<Renderer>().FirstOrDefault(r=>r!=renderer && r.enabled);
