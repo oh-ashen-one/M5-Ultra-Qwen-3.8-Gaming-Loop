@@ -118,18 +118,19 @@ namespace ChicagoGame
             // real drag to stop the car under held throttle.
             _rb.linearVelocity = targetVel;
 
-            // Ground snap: compare against collider bottom, only correct downward float (never launch up)
+            // Ground snap: raycast down skipping own collider
             if (GroundRaycast(transform.position, out var hit))
             {
-                float colliderBottomY = GetComponent<Collider>().bounds.min.y;
-                float gap = colliderBottomY - hit.point.y; // positive = floating above ground
-                if (gap > 0.02f && gap < 0.5f)
+                float groundY = hit.point.y;
+                float diff = groundY - transform.position.y;
+                if (diff > 0.02f && diff < 0.5f)
                 {
                     Vector3 vel = _rb.linearVelocity;
-                    vel.y = -gap / Time.deltaTime; // gently pull down, never upward
+                    vel.y = diff / Time.deltaTime;
                     _rb.linearVelocity = vel;
                 }
             }
+
             if (e) Exit();
         }
 
