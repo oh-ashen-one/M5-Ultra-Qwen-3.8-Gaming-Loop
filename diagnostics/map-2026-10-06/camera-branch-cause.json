@@ -1,0 +1,220 @@
+{
+  "observed_utc": "2026-10-06T11:09:05.587046+00:00",
+  "scope": "Measured camera branches and recovered local cause diagnosis; visual repair remains unaccepted",
+  "source": "0af5787bc2a1e57ff5e17bd2d0b984069a659380",
+  "diagnostic_round": "q0090-cdb1642f-branch-diagnostic",
+  "diagnostic_build_id": "fffe7c1ffeb49782254bdf59faa0ca6468bacf299ab955689c65b9de3d022de0",
+  "instrumentation": {
+    "author": "cloud controller",
+    "scope": "Passive calls in disposable build copy only",
+    "authoring_checkout_changed": false,
+    "physical_and_camera_trace_equivalent": true
+  },
+  "observed_return": {
+    "time": 50.53333282470703,
+    "passive_trace_equivalent": true,
+    "camera_position": [
+      1.8904540538787842,
+      1.7686353921890259,
+      15.574650764465332
+    ],
+    "segmentPulled": false,
+    "segmentCollider": "",
+    "segmentHitDistance": -1,
+    "targetLifted": false,
+    "nearClip": 0.10000000149011612,
+    "phases": [
+      {
+        "camY": 3.0999999046325684,
+        "cramped": false,
+        "horizontalDistance": 4.57473611831665,
+        "horizontalHit": 4.82473611831665,
+        "name": "desired",
+        "position": [
+          -0.6519761085510254,
+          3.0899999141693115,
+          15.253061294555664
+        ],
+        "top": 1.3599998950958252
+      },
+      {
+        "camY": 3.0999999046325684,
+        "cramped": false,
+        "horizontalDistance": 4.57473611831665,
+        "horizontalHit": 4.82473611831665,
+        "name": "smoothed",
+        "position": [
+          1.4496095180511475,
+          1.9978660345077515,
+          15.518889427185059
+        ],
+        "top": 1.3599998950958252
+      },
+      {
+        "camY": 3.0999999046325684,
+        "cramped": false,
+        "horizontalDistance": 4.57473611831665,
+        "horizontalHit": 4.82473611831665,
+        "name": "after-segment",
+        "position": [
+          1.4496095180511475,
+          1.9978660345077515,
+          15.518889427185059
+        ],
+        "top": 1.3599998950958252
+      },
+      {
+        "camY": 3.0999999046325684,
+        "cramped": false,
+        "horizontalDistance": 4.57473611831665,
+        "horizontalHit": 4.82473611831665,
+        "name": "after-world-clearance",
+        "position": [
+          1.8904540538787842,
+          1.7686353921890259,
+          15.574650764465332
+        ],
+        "top": 1.3599998950958252
+      },
+      {
+        "camY": 3.0999999046325684,
+        "cramped": false,
+        "horizontalDistance": 4.57473611831665,
+        "horizontalHit": 4.82473611831665,
+        "name": "final",
+        "position": [
+          1.8904540538787842,
+          1.7686353921890259,
+          15.574650764465332
+        ],
+        "top": 1.3599998950958252
+      }
+    ],
+    "closest_target_bounds": [
+      {
+        "cameraDistance": 0.7886353135108948,
+        "containsCamera": false,
+        "expandedContainsCamera": false,
+        "horizontalOverlap": true,
+        "max": [
+          2.1477296352386475,
+          0.9800000786781311,
+          16.280786514282227
+        ],
+        "min": [
+          1.736452579498291,
+          0.9200000166893005,
+          14.881577491760254
+        ],
+        "name": "spoiler"
+      },
+      {
+        "cameraDistance": 0.8488065004348755,
+        "containsCamera": false,
+        "expandedContainsCamera": false,
+        "horizontalOverlap": true,
+        "max": [
+          2.889409065246582,
+          0.9200000762939453,
+          16.43317413330078
+        ],
+        "min": [
+          1.9075002670288086,
+          0.8600000143051147,
+          14.844639778137207
+        ],
+        "name": "decklid"
+      },
+      {
+        "cameraDistance": 0.8586351871490479,
+        "containsCamera": false,
+        "expandedContainsCamera": false,
+        "horizontalOverlap": true,
+        "max": [
+          6.141644477844238,
+          0.910000205039978,
+          16.83026123046875
+        ],
+        "min": [
+          1.631549596786499,
+          0.40999963879585266,
+          14.824016571044922
+        ],
+        "name": "body_lower"
+      },
+      {
+        "cameraDistance": 0.9286352396011353,
+        "containsCamera": false,
+        "expandedContainsCamera": false,
+        "horizontalOverlap": true,
+        "max": [
+          2.016247510910034,
+          0.8400001525878906,
+          16.24462890625
+        ],
+        "min": [
+          1.3917291164398193,
+          0.4200001060962677,
+          14.857497215270996
+        ],
+        "name": "body_tail"
+      }
+    ]
+  },
+  "local_diagnosis": {
+    "cause": "Poor framing, not body intersection: containsCamera is false for every renderer (lens at y=1.768 sits above cabinRoof top 1.36). The facade_wall probe hit shortens horizontal back-space, and the final near-plane / world-clearance guard then stepped the smoothed pose (1.449,1.997,15.518) toward the pivot to (1.890,1.768,15.574), landing the lens directly above the vehicle's rear decklid/spoiler/body_tail (horizontalOverlap true, cameraDistance 0.79–0.93). This collapsed the desired 6.05 distance to 2.08 and put only the blue roof/deck in frame (inFrameSamples 5/9), matching return.png.",
+    "span": "final-clearance",
+    "minimal_change": "In the final near-plane step loop, forbid the candidate position from entering the target's own expanded body bounds (horizontal standoff behind body_tail/decklid) so the clearance step cannot push the lens onto the roof; preserve wall/near-plane clearance and normal lookAt.",
+    "author": "local Qwen",
+    "response_sha256": "4a7206bd9a750161cd8425a7998c1dba804c4f70783eee911eaf5208c91e594c",
+    "finish_reason": "tool_calls",
+    "usage": {
+      "completion_tokens": 1495,
+      "input_tokens": 10714,
+      "output_tokens": 1495,
+      "prompt_tokens": 10714,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_time": 43.02,
+      "total_tokens": 12209
+    }
+  },
+  "controller_fault": {
+    "cause": "submit_diagnosis was successfully accepted by dispatch but was not a recognized terminal tool, so session returned a turn-budget stop.",
+    "original_failed_return_sha256": "62f85d4b344477444e1b845f07d78b8f4ecdf29ad3f859e74e15384ca6cf7f08",
+    "fixed_future_tool": "submit_plan",
+    "original_findings_changed": false,
+    "private_reasoning_used": false,
+    "inference_repeated": false
+  },
+  "evidence_sha256": {
+    "native_gate": "fe6a552637a76f58592e13c85d5145a3afd61f36cadba74baa328f352c8ced1b",
+    "observation": "2026341f3120c6dff342d7dac2070b569121c100d1df74d92aba9d15cb646f30",
+    "instrumentation": "724307b1370691619ec2244de7de1234128bcf3637c9cfe9d99da51e2a95ca27"
+  },
+  "recovery": {
+    "controller_revision": "ea9ff995e445872095704ec27100ddfd0b3bc0a9",
+    "cpu_tests_each_host": 246,
+    "owner_pid": 10797,
+    "launch_utc": "2026-10-06T11:09:05.587046+00:00",
+    "entrypoint": "resume_camera_completed_diagnosis.py",
+    "accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "task_failures": 23,
+    "failure_streak": 1,
+    "hard_cap_utc": "2026-10-08T06:33:12Z"
+  },
+  "acceptance_requirements": [
+    "Local cause-based source edit only after actual image/branch diagnosis",
+    "Existing camera wall and near-plane contracts",
+    "Actual player/car/exit/reset target transitions",
+    "Changed return pixels and fresh focused before/after clarity PASS",
+    "All ten street/mechanics regressions and original scoped visual gate"
+  ],
+  "limitations": [
+    "No newly corrected return capture exists at this snapshot.",
+    "The collider responsible for each world-overlap correction was not separately named by these phase records.",
+    "World-clearance phase movement is directly observed; the specific framing remedy is a local recommendation pending native verification."
+  ],
+  "final_game_accepted": false
+}
