@@ -95,4 +95,20 @@ class ChapterPresentationTests(unittest.TestCase):
         for key,value in [('task_failures',0),('last_playable_checkpoint',SOURCE),('chapter_presentation_attempted',True)]:
             with self.subTest(key=key),self.assertRaises(Halt):validate_pause({**state,key:value})
 
+    def test_final_answer_patch_recovery_never_reads_reasoning_or_changed_code(self):
+        import json
+        from unittest.mock import patch
+        from loop_controller.core import sha
+        import resume_saved_ground_offset as saved
+        expected='    aPos.y - agg.min.y;\n'
+        def check(content,finish='stop',reasoning='private unrelated content'):
+            raw=json.dumps({'choices':[{'finish_reason':finish,'message':{
+                'content':content,'reasoning_content':reasoning,'tool_calls':None}}]}).encode()
+            with patch.object(saved,'RESPONSE_SHA',sha(raw)):return saved.saved_patch(raw,expected)
+        self.assertEqual(check('```csharp\n'+expected+'```'),expected)
+        for body in ['```csharp\n    aPos.y + .14f;\n```','No submitted code',
+                     '```csharp\n'+expected+'```\n```csharp\n'+expected+'```']:
+            with self.subTest(body=body),self.assertRaises(Halt):check(body,reasoning='```csharp\n'+expected+'```')
+        with self.assertRaises(Halt):check('```csharp\n'+expected+'```',finish='length')
+
 if __name__=='__main__':unittest.main()
