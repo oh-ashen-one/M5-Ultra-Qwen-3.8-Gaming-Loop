@@ -1,0 +1,98 @@
+{
+  "observed_utc": "2026-10-06T14:21:57.861348+00:00",
+  "source": "c53cb5d79437823562d57f74b3b1fd7f0761b43d",
+  "presentation_outcome": {
+    "accepted": true,
+    "candidate": "c53cb5d79437823562d57f74b3b1fd7f0761b43d",
+    "evidence": "evidence/q0105-4643cf8b",
+    "final_game_accepted": false,
+    "native_pass": true,
+    "review": {
+      "fixes": [],
+      "ok": true,
+      "summary": "The scoped chapter requirements are met on actual frames. In the chapter states (15.2s, 30.3s, 31.0s, 32.55s) all three HUD panels are readable, fully inside the screen, and mutually separate (HudStatus top-left, RouteHud top-right, legacy receipt bottom band), and the main objective no longer blocks the middle of the street — it sits in the top-right corner. Objective text matches trace distance (50m → 5m → 3m). On-foot interaction is visible: the actor stands between the coupe and the cache with \"Walk to cache (3m) F to place\". The new cache reads as the reused original dumpster mesh (muted body, distinct lid, dark chassis/wheels) with exactly one small emissive accent, grounded at its unchanged anchor (bottom ≈ y0.14 at 50,18); it is not a primitive marker. frame-011 (32.55s) brackets the 32.53s F completion with clear \"EAST DEAD-DROP COMPLETE\" feedback, and frame-013 confirms reset. Kept open as instructed: legacy green beacon at the old pad, repetitive facades, uniform curb-less ground, broader camera/final-art polish; additionally the legacy post-reset status/objective cards visually merge at their touching edges in frame-013 (text still legible, outside the three-panel chapter layout).",
+      "verdict": "PASS"
+    }
+  },
+  "regressions": [
+    {
+      "test": "aim-miss",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "aim-near-cover",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "combat-driving",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "combat-foot",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "combat-wall",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "courier",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "failure-retry",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "motor",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "walk",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "test": "world",
+      "passed": true,
+      "failure": null
+    }
+  ],
+  "qualified_hashes": {
+    "chapter-gate.json": "71578d61891a8e70cbdbccea18a98b201b6c263be69ef2136e0ad4ff575806bc",
+    "critic.json": "b063700bd911cf0c850eb796b6a39581a91bc346ed7c1be4b16c86bca8928785",
+    "presentation-outcome.json": "10b59a17e806d20b5e864fbed8c881d7101d7fad7afdf9a45b282976405d81e5",
+    "next-pacing-plan.json": "09b5a998514e870aba3f60c8390dad1c417d92118412dfd6c2eb0a16f9801421",
+    "captures/manifest.json": "ed049167c31a07fe721debfe2efcb5a2b8fd49b47d161d4f120eaa8b37d8330a"
+  },
+  "original_next_pacing_proposal": {
+    "existing_state_compatibility": "CourierMission \"complete\" and RouteMission RouteStage==2 remain latched and never re-entered. AlleyRetrieval only activates when RouteStage==2 AND RouteComplete==true AND a new bool signal (AlleyRetrievalArmed) is false→true (set once by RouteMission at cache placement). Restarts counter reset behavior unchanged: pressing R returns all three systems to stage 0 simultaneously. The new stage does not modify any field on CourierMission, Combat, or VehicleInteraction. Existing HUD cards reposition identically (RouteStage≥1 path unchanged; new Stage≥3 branch extends the existing position logic by reusing the same card anchor).",
+    "first_next_objective": "ALLEY RETRIEVAL — after RouteStage 2 (east cache placed), a new additive stage begins. The courier receives a secondary objective: return to the alley system (X6–22, Z8–20), identify and grab the single BLUE-marked crate among three decoys, then extract it to a new amber zone at (3.5, 0.14, 29) on the core pavement. Grabbing the blue crate activates Pursuer-2 — a faster rival (speed 3.2 m/s, cannot be killed, shots only stagger for 0.4 s) that must be outrun using alley turns to break line-of-sight. This is materially different from delivery: it is selection + escape, not box transport.",
+    "independent_native_proof": "RED (failure): Player grabs wrong crate or is caught → Pursuer-2 deals damage → Health reaches 0 → signal Mission=\"failed\" (same pattern as CourierMission failure; RetryPrompt shows, R works). RED (wrong crate): PursuerCount increments from 1→2, second capsule spawns at opposite alley end, pursuit speed unchanged, both unkillable (hits reduce stagger timer only, never deactivate). GREEN (success): Player carries blue crate within 1.5 m of amber zone (3.5,0.14,29), presses F → AlleyRetrievalComplete=true, pad turns solid green with emission, Pursuer-2 disables renderer+collider, HUD shows \"RETRIEVAL COMPLETE\", blue crate destroyed from hierarchy. GREEN (stagger proof): Mouse0 hit on Pursuer-2 → tracer visible, Pursuer-2 halts for 0.4 s then resumes (observable velocity→0→restore). GREEN (wrong-crate penalty): F on non-blue crate → PursuerCount=2, new rival visible, existing pursuit continues without reset.",
+    "ok": true,
+    "player_choices": "1) Which crate to grab — wrong crate spawns an additional Pursuer-3 (also unkillable) and costs ~15 s of extra chase. 2) Travel mode during extraction: on-foot through alley shortcuts (faster cornering, no vehicle entry delay) vs. car (straight-line faster but cannot enter alley corridors narrower than 2.1 m, forcing longer loop). 3) Combat decision: shoot Pursuer-2 for brief stagger (costs ~0.8 s each, 3 shots needed per stagger) vs. pure evasion — both can succeed but shooting is only worth it in dead-end segments.",
+    "smallest_source_scope": "One new file: Assets/Game/AlleyRetrieval.cs (~180 lines). Public entry: static Install(Transform cacheAnchor, Transform player, Camera cam). Spawns 4 crates (PrimitiveType.Cube, scale 0.8×0.6×0.8, dark grey with one emissive-blue top face), 1 amber pad (Cylinder, scale 2.4×0.02×2.4), and 2 Pursuer agents (reuse RivalAgent pattern with hp=int.MaxValue and stagger logic instead of death). No existing files modified. Signal additions: AlleyRetrievalActive (bool), AlleyRetrievalComplete (bool), PursuerCount (int). RouteMission reads AlleyRetrievalComplete for optional HUD update but is not required to change.",
+    "street_ground_detail_scope": "TASK: Street-ground surface contrast between core block pavement and alley entrance at transition zone X6–8, Z10–14. Uses only original asset surfaces (existing road/sidewalk geometry types already in scene).\n\nPhysical elements (all with matching colliders):\n- Road surface: dark grey (albedo 0.08,0.08,0.09) Plane, Y=0.10, spanning X6–8, Z10–14. BoxCollider flush (thin, 0.02 tall) or mesh collider from plane's quad.\n- Curb step: two thin Cube primitives, each 0.15 m wide × 0.06 m tall, along north and south edges of the road strip (Z=10 and Z=14 faces at X6 boundary). Y from 0.10 to 0.16. BoxCollider matching exact geometry.\n- Sidewalk: light grey (albedo 0.35,0.35,0.33) Plane at Y=0.16, extending beyond curbs. Thin BoxCollider for ground contact.\n- Lane marking: white (albedo 0.92, emissive 0.4) thin stretched Cube (0.08 wide × 0.005 tall), centered on road, Y=0.105. No collider (decorative only, flush with surface).\n- Dashed center line: 3 segments of the above, each 0.8 m long with 0.6 m gaps.\n\nAll colliders sit at the exact visual boundary — player CharacterController (radius ~0.3, slope limit considered) can step the 0.06 m curb without issue (within default stepOffset of 0.3). No floating geometry, no unsupported ledges. The curb height (0.06 m) is chosen to be visually distinct but below the step height that would trap the walker.\n\nThis task is bounded, verifiable by camera inspection + walk-over test (controller steps up onto sidewalk smoothly, car can traverse road but curb blocks vehicle lateral drift at edges).",
+    "varied_ten_minute_path": "Honest constraint: the current connected topology (~80 m total traversable length across three zones) cannot credibly fill 540–660 s without padding or repetition. The following route fits ~130–150 s within existing geometry; reaching 540+ s requires the physical expansion described below.\n\nPhase A — East cache handoff (existing, latched): ~15 s. Player stands at cache (50,18). New HUD prompt appears within 2 s.\nPhase B — Drive back to alley entrance (~20 s): car on east street X50→X22, turn south toward alley entry near (22,12).\nPhase C — Dismount and crate search (~50–70 s): on-foot in alley, inspect four crates via proximity (F within 1.5 m). Only blue succeeds. Wrong crate spawns Pursuer-3. Player must circle back to correct crate.\nPhase D — Pursuit escape through alley (~40–60 s): Pursuer-2 at 3.2 m/s chases. Player uses alley Z-turns (walls at X6 and X22 block LOS) to break proximity. Health drops if caught (6 dmg per hit, 1.8 s cooldown). Player must reach core pavement via alley exit (X6, Z12).\nPhase E — Final sprint to amber zone (~15–25 s): on-foot from (6,12) to (3.5,29) on core block, ~20 m sprint with Pursuer-2 close behind. If Health ≤ 0 → failure (red proof).\nTotal within current topology: ~130–150 s.\n\nTo reach 540 s: after Alley Retrieval completes, the player must have a second connected eastward area (at least one additional block, X60–X100 or Z28–Z50) providing ≥150 m of new traversal with at least one enterable structure (not a facade) or an open lot with cover geometry. This is a bounded physical acceptance that must be built before the final chapter objective can be designed."
+  },
+  "proposal_status": "Saved local proposal, not implemented or accepted as an implementation specification.",
+  "verified_proposal_conflicts": [
+    "AlleyRetrievalArmed and other proposed legacy signal additions do not exist.",
+    "RouteStage has only0/1/2; proposed Stage>=3 and a hook written by RouteMission contradict the preserved additive-state boundary.",
+    "Writing legacy Mission=failed conflicts with keeping original courier state truthful.",
+    "Proposed primitive assets conflict with required original-mesh reuse.",
+    "A new component needs an explicit installation line.",
+    "The proposed surfaceY0.10 lies below the existingY0.14 pavement; a6cm curb is not proven to block a vehicle.",
+    "Phase estimates were not measured and their arithmetic does not support the stated total."
+  ],
+  "next_scope": "Original street-ground detail with matching colliders and actual curb walkovers; then local plan revision using actual APIs.",
+  "final_game_accepted": false
+}

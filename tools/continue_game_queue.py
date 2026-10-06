@@ -125,6 +125,15 @@ def review_captures(task,bundle):
         # At most five genuine state captures fit the bounded image context.
         # Missing state captures remain missing evidence; never invent or relabel them.
         if selected:chosen=sorted(selected)
+    if task.get('review_frame_times') is not None:
+        requested=task['review_frame_times']
+        if not 1<=len(requested)<=5:raise Halt('Bound the explicit scoped image selection to five frames')
+        chosen=[]
+        for when in requested:
+            match=min(frames,key=lambda p:abs(scenario['captures'][int(p.stem.split('-')[-1])]-when))
+            actual=scenario['captures'][int(match.stem.split('-')[-1])]
+            if abs(actual-when)>.06 or match in chosen:raise Halt('Requested scoped capture is missing or duplicated')
+            chosen.append(match)
     mapping={p.name:scenario['captures'][int(p.stem.split('-')[-1])] for p in chosen}
     return chosen,mapping
 
