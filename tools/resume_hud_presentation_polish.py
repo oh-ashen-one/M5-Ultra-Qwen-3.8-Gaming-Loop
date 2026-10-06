@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Local fixes for measured HUD lighting, tiny status text and missing reset hint."""
 import json
+import math
 import re
 from resume_hud_live_objective import HudLiveObjective, CAPACITY_SOURCE as SOURCE, ACCEPTED
 from resume_hud_bounded_review import review_hud
@@ -62,8 +63,11 @@ def inspect_polish(rows):
             if p.get('cardShader') not in ('Unlit/Color', 'Chicago/HudOpaque') or len(color) != 4 or color[3] != 1 or max(color[:3], default=1) > .15:
                 failures.add(name + '-backing-not-uniform-dark-unlit')
         health = panels.get('HudStatus', {})
-        wanted = 'HEALTH ' + str(row.get('health')) + '\nWANTED ' + str(row.get('pursuit')) + ' / 3'
-        if health.get('text') != wanted: failures.add('health-wanted-not-actual-numeric-state')
+        displayed = re.fullmatch(r'HEALTH (\d+)\nWANTED (\d+) / 3', health.get('text', ''))
+        hp = row.get('health'); pursuit = row.get('pursuit')
+        if (not displayed or not isinstance(hp, (int, float)) or not math.isfinite(hp)
+            or int(displayed[1]) != hp or int(displayed[2]) != pursuit):
+            failures.add('health-wanted-not-actual-numeric-state')
         for key in ('textRect', 'captureTextRect'):
             box = health.get(key, [])
             if len(box) != 4 or (box[3] - box[1]) * 540 / 2 < 12:

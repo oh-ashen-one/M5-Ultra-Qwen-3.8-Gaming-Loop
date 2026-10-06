@@ -26,6 +26,12 @@ class HudPresentationPolishTests(unittest.TestCase):
 
     def test_real_state_and_complete_reset_hint_are_required(self):
         row = self.row(); self.assertTrue(inspect_polish([row])['passed'])
+        row['health'] = 44.0
+        self.assertTrue(inspect_polish([row])['passed'])
+        fractional = copy.deepcopy(row); fractional['health'] = 44.5
+        self.assertFalse(inspect_polish([fractional])['passed'])
+        nonfinite = copy.deepcopy(row); nonfinite['health'] = float('nan')
+        self.assertFalse(inspect_polish([nonfinite])['passed'])
         for kind in ('health', 'wanted', 'hint'):
             value = copy.deepcopy(row)
             if kind == 'health': value['health'] = 40
