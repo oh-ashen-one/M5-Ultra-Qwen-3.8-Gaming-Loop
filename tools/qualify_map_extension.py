@@ -84,7 +84,7 @@ def inspect_extension(rows):
                 traversal=facts, area_claim='Only observed connected traversal; no gross map-area acceptance')
 
 
-def qualify_one_extension(runner):
+def qualify_one_extension(runner, *, integrated_builder=False):
     from continue_game_queue import ContinuousRunner, review_captures
     task=MAP_TASK
     while not runner.store.get('accepted_map_extension'):
@@ -94,10 +94,13 @@ def qualify_one_extension(runner):
             stage='local-map-extension',current_task=task['outcome'],next_task='Second connected street and side alley; then meaningful mission pacing')
         runner.store.report()
         # A separate local planner sees exact current APIs before the first topology edit.
-        if not runner.store.get('map_extension_plan'):
+        if not integrated_builder and not runner.store.get('map_extension_plan'):
             design=runner.design(task,ident)
             if not design.get('ok'):raise Halt('Map planner did not finish a bounded implementable design')
             runner.store.set(map_extension_plan=design['decision'])
+        if integrated_builder:
+            runner.store.event('map-design-in-local-builder', separate_plan_claimed=False,
+                reason='Preserved read-turn/output-limit planner failures; direct bounded local source action.')
         result=runner.edit(task,ident)
         candidate=runner.checkpoint_source('Local Qwen: first connected map extension')
         runner.store.set(source_checkpoint=candidate,candidate_commit=candidate)

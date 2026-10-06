@@ -6,10 +6,27 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from qualify_map_extension import inspect_extension
 import resume_map_after_courier as recovery
 import resume_map_plan_completion as plan_recovery
+import resume_direct_map_builder as direct
 from loop_controller.core import Halt
 
 
 class MapExtensionTests(unittest.TestCase):
+    def test_direct_builder_requires_exact_plan_output_stop_and_preserves_counters(self):
+        state=dict(source_checkpoint=direct.SOURCE,last_playable_checkpoint=direct.ACCEPTED,
+            current_round=direct.ROUND,task_index=7,task_failures=8,failure_streak=1,
+            diagnosis_used=True,overall_deadline_epoch=direct.HARD_CAP_EPOCH,
+            blocker=direct.BLOCKER,map_plan_completion_attempted=True)
+        old=copy.deepcopy(state);direct.validate_direct_pause(state);self.assertEqual(state,old)
+        for key,value in [('map_direct_builder_attempted',True),('map_extension_plan','present'),
+                          ('source_checkpoint','other'),('task_failures',0),('blocker','memory fault')]:
+            with self.subTest(key=key),self.assertRaises(Halt):direct.validate_direct_pause({**state,key:value})
+
+    def test_direct_map_module_rejects_oversize_or_missing_callable_interface(self):
+        valid='namespace ChicagoGame { public static class MapExtension { public static void Install(GameObject street) {} } }'
+        self.assertEqual(direct.validate_module(valid),valid)
+        for invalid in ['class Other {}',valid+'x'*10001,valid+chr(10)*171]:
+            with self.assertRaises(ValueError):direct.validate_module(invalid)
+
     def test_read_only_plan_completion_is_one_time_and_exact(self):
         state=dict(source_checkpoint=plan_recovery.SOURCE,last_playable_checkpoint=plan_recovery.ACCEPTED,
             current_round=plan_recovery.ROUND,task_index=7,task_failures=8,failure_streak=1,
