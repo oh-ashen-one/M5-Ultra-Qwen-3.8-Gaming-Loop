@@ -1,11 +1,32 @@
 import sys
 from pathlib import Path
 import unittest
+from types import SimpleNamespace
+from unittest.mock import Mock
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
-from engine_admission import ownership
+from engine_admission import ownership, complete_process_scan
 
 
 class EngineAdmissionTests(unittest.TestCase):
+    def test_partial_process_inventory_is_discarded_before_retry(self):
+        def broken():
+            yield 'partial-old-entry'
+            raise SystemError('<built-in function proc_cmdline> returned a result with an exception set')
+        module = SimpleNamespace(process_iter=Mock(side_effect=[broken(), iter(['complete-renderer', 'complete-owner'])]))
+        with self.assertWarns(RuntimeWarning):
+            self.assertEqual(complete_process_scan(['cmdline'], module), ['complete-renderer', 'complete-owner'])
+        self.assertEqual(module.process_iter.call_count, 2)
+
+    def test_repeated_or_unrelated_scan_failure_still_stops_admission(self):
+        for errors, calls in [([SystemError('proc_cmdline failed')] * 2, 2),
+                              ([SystemError('unrelated native failure')], 1)]:
+            module = SimpleNamespace(process_iter=Mock(side_effect=errors))
+            with self.assertRaises(SystemError):
+                if calls == 2:
+                    with self.assertWarns(RuntimeWarning): complete_process_scan(['cmdline'], module)
+                else: complete_process_scan(['cmdline'], module)
+            self.assertEqual(module.process_iter.call_count, calls)
+
     def test_native_player_is_counted_alongside_editor_and_blender(self):
         from unity_smoke import renderer_process
         self.assertTrue(renderer_process('/tmp/ChicagoLocalSlice.app/Contents/MacOS/Chicago Local Slice',

@@ -18,7 +18,7 @@ import psutil
 
 from unity_smoke import renderer_process
 from warmup_resident import gpu_admission, session_token, write_state
-from engine_admission import snapshot
+from engine_admission import snapshot, complete_process_scan
 
 
 def main():
@@ -65,7 +65,7 @@ def main():
 
     def renderers():
         found = []
-        for p in psutil.process_iter(["pid", "name", "exe", "cmdline"]):
+        for p in complete_process_scan(["pid", "name", "exe", "cmdline"], psutil):
             if p.pid == os.getpid():
                 continue
             words = p.info["cmdline"] or []

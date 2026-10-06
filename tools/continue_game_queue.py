@@ -41,6 +41,18 @@ def review_captures(task,bundle):
     indices=[0,3,4,5,6] if task['id']=='vehicle-collision-reset' and len(frames)==7 else [0,len(frames)//2,len(frames)-1]
     chosen=[frames[i] for i in indices]
     trace=bundle/'captures/trace.jsonl'
+    if task['id']=='connected-map-extension' and trace.exists():
+        from qualify_map_extension import outside_distance
+        rows=[json.loads(line) for line in trace.read_text().splitlines()]
+        selected=[]
+        for mode,key in [('foot','player'),('vehicle','vehicle')]:
+            for frame in frames:
+                when=scenario['captures'][int(frame.stem.split('-')[-1])]
+                near=min(rows,key=lambda row:abs(row['time']-when))
+                if (abs(near['time']-when)<=.25 and near.get('mode')==mode
+                        and near.get(key) and outside_distance(near[key])>=6):
+                    selected.append(frame);break
+        chosen=sorted(set([frames[0],*selected,frames[-1]]))
     if 'mission_complete' in task.get('checks',[]) and trace.exists():
         rows=[json.loads(line) for line in trace.read_text().splitlines()]
         observed=[]

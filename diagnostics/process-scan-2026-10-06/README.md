@@ -1,0 +1,11 @@
+# Diagnosed process-inspection stop
+
+At 03:37:06 UTC the resident supervisor stopped on `SystemError: <built-in function proc_cmdline> returned a result with an exception set`. It terminated its owned model server; no automatic restart occurred. The captured renderer inventory showed the preserved Blender, one owned Unity editor and a null import worker. The recorded decision allowed that ownership. This is an observed process-inspection failure, not evidence of insufficient M5 capacity or a gameplay crash. A process-exit race is only a hypothesis.
+
+The courier controller paused at 03:38:51 when it could not obtain the next engine handoff. Candidate `e45b26d6e84ac39f55a876e6aa43cddfec0c95d3` is preserved, while `d269dc43ac66c39afca4cb98ea53f9e7ed36806f` remains accepted. The 52-second integrated route and walking, world, motor, courier and failure/retry regressions completed successfully. Combat-foot had a partial build/capture directory and no gate; three combat checks, two aim checks and fresh visual review remained unfinished.
+
+The repair discards an incomplete native process inventory and retries the entire scan once for the observed `proc_cmdline` SystemError. A repeated or unrelated failure still propagates and stops admission. Caps, ownership, desktop, memory and model settings are unchanged. A manually diagnosed launch uses a fresh work directory and an immutable supervisor revision; the original fault records remain intact.
+
+The scoped continuation verifies exact stopped state, source and preserved counters. It pins the six completed native gates, capture manifests and build hashes, rechecks runtime evidence and retains the old partial combat directory. Only unfinished checks run under new names, followed by fresh local visual criticism. No source is reauthored for this recovery. Passing the courier then advances the same owner to the [bounded map extension](../../docs/MAP-STATUS.md), before further corridor polish.
+
+Validation before deployment: 167 CPU tests pass on the controller, including incomplete-inventory retry, repeated-failure stop, exact-pause authorization, changed-evidence rejection and negative map tests for reset/teleport, missing collision and the old corridor alone. Live launch and native results must be reported separately; these tests do not establish courier acceptance.

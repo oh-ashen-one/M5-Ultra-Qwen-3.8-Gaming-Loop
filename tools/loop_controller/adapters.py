@@ -86,6 +86,7 @@ class Machine:
     def engine(self, label, timeout):
         from warmup_resident import gpu_admission
         from unity_smoke import renderer_process
+        from engine_admission import complete_process_scan
         self.guard()
         coordination = Path(self.c["coordination_dir"])
         request, ack = coordination / "engine-request.json", coordination / "engine-ack.json"
@@ -105,7 +106,7 @@ class Machine:
                     raise Halt('Capacity wait: engine handoff not granted; process/lease snapshot preserved')
                 time.sleep(0.5)
             existing = []
-            for process in psutil.process_iter(["pid", "exe", "name", "cmdline"]):
+            for process in complete_process_scan(["pid", "exe", "name", "cmdline"], psutil):
                 if renderer_process(process.info["exe"] or "", (process.info["name"] or "").lower(), process.info["cmdline"] or []):
                     existing.append(process.pid)
             if len(existing) > 1:

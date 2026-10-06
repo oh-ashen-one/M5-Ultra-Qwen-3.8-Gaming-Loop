@@ -108,7 +108,29 @@ def accepted_visual_images(runner, record):
             ('ACTUAL accepted game ' + record['candidate'][:8] + ', drive t15.5', captures / 'frame-005.png')]
 
 
-def qualify_saved_visual_candidate(runner, task, ident, candidate):
+def verify_completed_native(bundle, candidate, probe, receipt):
+    """Reuse only pinned complete evidence for identical source and normal inputs."""
+    from loop_controller.adapters import encode_directory, evaluate_runtime
+    gate_path = bundle / 'scoped-gate.json'
+    if gate_path.is_symlink() or sha(gate_path.read_bytes()) != receipt['gate_sha256']:
+        raise Halt('Completed native gate changed')
+    gate = read_json(gate_path)
+    manifest = verify_seal(bundle / 'captures', receipt['capture_manifest_sha256'])
+    if (manifest.get('candidate') != candidate or gate.get('candidate_commit') != candidate
+            or not gate.get('passed') or gate.get('build_exit') != 0 or gate.get('player_exit') != 0
+            or gate.get('acceptance_fixture') or gate.get('capture_id') != bundle.name
+            or gate.get('build_id') != receipt['build_id']
+            or read_json(bundle / 'captures/scenario.json') != probe):
+        raise Halt('Completed native source, inputs, build or result mismatch')
+    if sha(encode_directory(bundle / 'build/ChicagoLocalSlice.app')) != receipt['build_id']:
+        raise Halt('Completed native build bytes changed')
+    runtime = evaluate_runtime(bundle / 'captures', probe, gate['player_exit'], bundle.name)
+    if not runtime.get('passed'):
+        raise Halt('Completed native evidence no longer satisfies runtime acceptance')
+    return gate
+
+
+def qualify_saved_visual_candidate(runner, task, ident, candidate, *, completed_native=None):
     """Return True only when this attempt was handled as a scoped visual pass/failure."""
     if task.get('id') != 'chicago-polish-whole-route':return False
     accepted = runner.store.get('last_playable_checkpoint')
@@ -121,7 +143,10 @@ def qualify_saved_visual_candidate(runner, task, ident, candidate):
     record = runner.store.get('latest_visual_milestone', {})
     before, before_seal, probe = accepted_fixture(runner, record)
     bundle = runner.store.root / 'evidence' / ident
-    if bundle.exists():raise Halt('Preserve existing native evidence; never overwrite a replay attempt')
+    if bundle.exists() and completed_native is None:
+        raise Halt('Preserve existing native evidence; never overwrite a replay attempt')
+    if completed_native is not None:
+        gate = verify_completed_native(bundle, candidate, probe, completed_native)
     provenance = dict(reuse_kind='immutable accepted input/camera reuse',
         source_evidence=record['evidence'], original_replay=ORIGINAL_REPLAY,
         accepted_checkpoint=accepted, accepted_candidate=record['candidate'],
@@ -134,7 +159,8 @@ def qualify_saved_visual_candidate(runner, task, ident, candidate):
                      current_visual_replay=provenance)
     runner.store.report()
     from continue_game_queue import ContinuousRunner, validate_scoped_review
-    bundle, gate = ContinuousRunner.native(runner, TASKS[6], ident, candidate, probe)
+    if completed_native is None:
+        bundle, gate = ContinuousRunner.native(runner, TASKS[6], ident, candidate, probe)
     gate['replay_reuse'] = provenance
     if gate.get('passed'):
         runner.store.set(stage='visual-mechanics-regressions');runner.store.report()
@@ -148,7 +174,8 @@ def qualify_saved_visual_candidate(runner, task, ident, candidate):
     if not require_combat_contracts(gate) or not require_aim_contracts(gate):
         raise Halt('Visual promotion requires every accepted combat/aim contract')
     captures = bundle / 'captures'
-    digest = seal(captures, {'candidate': candidate, 'scope': 'visual-improvement'})
+    digest = (completed_native['capture_manifest_sha256'] if completed_native is not None
+              else seal(captures, {'candidate': candidate, 'scope': 'visual-improvement'}))
     runner.store.set(stage='fresh-visual-comparison', latest_evidence=str(bundle.relative_to(runner.store.root)))
     runner.store.report();runner.c.update(output_tokens=8192, model_timeout_seconds=400)
     review = runner.model.session('critic', ident + '-visual-critic',

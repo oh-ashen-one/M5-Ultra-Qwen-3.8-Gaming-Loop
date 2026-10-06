@@ -4,6 +4,21 @@ import fcntl
 import json
 import os
 from pathlib import Path
+import warnings
+
+
+def complete_process_scan(attributes, process_module=None):
+    """Discard an incomplete Darwin metadata scan; permit one complete rescan only."""
+    if process_module is None: import psutil as process_module
+    for attempt in range(2):
+        try:
+            return list(process_module.process_iter(attributes))
+        except SystemError as error:
+            if attempt or 'proc_cmdline' not in str(error): raise
+            warnings.warn(datetime.datetime.now(datetime.timezone.utc).isoformat() +
+                ' discarded incomplete proc_cmdline scan; retrying the entire process inventory once',
+                RuntimeWarning)
+    raise RuntimeError('A complete process inventory is required')
 
 
 def same_identity(a,b):
@@ -39,7 +54,7 @@ def snapshot(coordination=None,baseline=None,lease=None,process_module=None):
     if process_module is None:import psutil as process_module
     from unity_smoke import renderer_process
     rows=[]
-    for p in process_module.process_iter(['pid','ppid','name','exe','cmdline','create_time']):
+    for p in complete_process_scan(['pid','ppid','name','exe','cmdline','create_time'], process_module):
         try:
             v=p.info;argv=v['cmdline'] or [];exe=v['exe'] or '';name=v['name'] or ''
             renderer=renderer_process(exe,name.lower(),argv)
