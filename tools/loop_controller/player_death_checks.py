@@ -1,5 +1,6 @@
 """External zero-health boundary diagnostics; no fabricated objective completion."""
 import math
+import struct
 
 CASES = {
     'courier-pickup': (7.4, 'F', {'courierStage': 0, 'routeStage': 0}),
@@ -30,12 +31,16 @@ def death_probe(original, case):
 
 def inspect_player_death(rows, injection, case):
     at, key, expected = CASES[case]
+    # Scenario.death_at and LoopInput.Elapsed are Unity float32, serialized into
+    # JSON doubles. Compare the same representable boundary, not a stricter
+    # Python decimal (e.g.59.6 becomes59.599998474121094 in the player).
+    native_at = struct.unpack('f', struct.pack('f', at))[0]
     before = injection.get('before', {})
     failures = []
     setup_failures = []
     if (injection.get('caseName') != case or injection.get('healthBefore', 0) <= 0
             or injection.get('healthAfter') != 0 or injection.get('restarts') != 0
-            or not at <= injection.get('time', -1) <= at+.12
+            or not native_at <= injection.get('time', -1) <= at+.12
             or (key and key not in injection.get('keys', []))):
         setup_failures.append('declared-live-health-injection-not-established')
     if any(before.get(k) != v for k,v in expected.items()):

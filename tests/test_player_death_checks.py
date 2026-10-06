@@ -62,5 +62,14 @@ class PlayerDeathChecks(unittest.TestCase):
         self.assertNotIn(original['steps'][2], probe['steps'])
         self.assertTrue(any('R' in step['keys'] for step in probe['steps']))
 
+    def test_unity_float32_boundary_is_valid_but_earlier_frame_is_not(self):
+        injection = dict(caseName='relay-final', healthBefore=44, healthAfter=0, restarts=0,
+            time=59.599998474121094, keys=['F'], before={'routeStage':2,'relayCount':2,'relayComplete':False})
+        self.assertTrue(inspect_player_death([], injection, 'relay-final')['setup_passed'])
+        injection['time'] = 59.58
+        self.assertFalse(inspect_player_death([], injection, 'relay-final')['setup_passed'])
+        injection['time'] = 59.599998474121094; injection['keys'] = []
+        self.assertFalse(inspect_player_death([], injection, 'relay-final')['setup_passed'])
+
 
 if __name__ == '__main__': unittest.main()
