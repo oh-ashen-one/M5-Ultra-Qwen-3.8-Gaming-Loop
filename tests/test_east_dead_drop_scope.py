@@ -42,4 +42,18 @@ class EastDeadDropScopeTests(unittest.TestCase):
                           ('blocker','Resource fault'),('source_checkpoint',m.SOURCE)]:
             with self.subTest(key=key),self.assertRaises(Halt):c.validate_pause({**state,key:value})
 
+
+    def test_negative_repair_requires_inactive_chapter_and_only_the_missing_motion_failure(self):
+        import resume_chapter_negative_probe as c
+        from test_route_chapter import row
+        gate={'candidate_commit':c.SOURCE,'passed':False,'failure':['input-driven-player-movement']}
+        rows=[row(1),row(5,keys=('F',))]
+        c.validate_negative(gate,rows)
+        for changed in [{**gate,'failure':['runtime-exit-or-identity']},{**gate,'passed':True},
+                        {**gate,'candidate_commit':'other'}]:
+            with self.assertRaises(Halt):c.validate_negative(changed,rows)
+        rows[1]['routeChapter']['stage']=1
+        with self.assertRaises(Halt):c.validate_negative(gate,rows)
+        self.assertTrue(any('W' in step['keys'] for step in m.NO_HANDOFF['steps']))
+
 if __name__=='__main__':unittest.main()

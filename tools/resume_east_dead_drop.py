@@ -25,7 +25,7 @@ TASK=dict(id='east-dead-drop',phase='mission',checks=['mission_complete'],maximu
     instructions='Judge this short connected chapter, not ten-minute or final art acceptance. Require the actual east '
     'cache, readable non-overlapping objective text, visible driving approach and on-foot interaction, and reset. '
     'Keep broader street and camera visual FIX findings open. No timer padding or primitive marker replacements.')
-NO_HANDOFF=scenario(18,[(4,4.35,['F']),(8,8.35,['F'])],[3,5,9,16],'chapter-inactive-red')
+NO_HANDOFF=scenario(18,[(4,5,['W']),(6,6.35,['F']),(8,8.35,['F'])],[3,5.5,9,16],'chapter-inactive-red')
 
 def validate_pause(old):
     expected=dict(source_checkpoint=SOURCE,last_playable_checkpoint=ACCEPTED,current_round=ROUND,
@@ -167,8 +167,11 @@ class EastDeadDrop(MissionPacingDesign):
         if not gate.get('passed'):raise Halt('Saved chapter failed additive native activation/reset gate')
         self.store.set(east_dead_drop_activation=dict(candidate=candidate,evidence=str(bundle.relative_to(self.store.root)),
             gate_sha256=sha((bundle/'chapter-gate.json').read_bytes()),final_game_accepted=False))
+        return self.continue_chapter(ident,candidate,activation)
+
+    def continue_chapter(self,ident,candidate,activation):
         _,red=self.chapter_native(ident+'-inactive-red',candidate,NO_HANDOFF,False,False,True)
-        if not red.get('passed'):raise Halt('Chapter advances without the real courier handoff')
+        if not red.get('passed'):raise Halt('Chapter no-handoff probe failed: '+json.dumps(red.get('failure')))
         probe=self.propose_chapter_replay(ident,activation)
         self.store.set(stage='native-east-dead-drop-route',last_valid_replay=probe);self.store.report()
         bundle,gate=self.chapter_native(ident,candidate,probe)
