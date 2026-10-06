@@ -26,6 +26,7 @@ public class LoopRuntime : MonoBehaviour
         public LoopObservation.MissionObject[] missionObjects;
         public LoopCombatObservation.Rival[] rivals;
         public LoopCameraObservation.Observation cameraGeometry;
+        public LoopVehicleObservation.State vehiclePhysics;
     }
     [Serializable] public class ObjectObservation {
         public string name, kind; public float[] position, lossyScale, up, forward, boundsCenter, boundsSize;
@@ -122,7 +123,7 @@ public class LoopRuntime : MonoBehaviour
                 vehiclePenetration=LoopObservation.HorizontalPenetration(LoopSignals.Vehicle),
                 visibleText=LoopObservation.VisibleText(),audioRms=LoopObservation.AudioRms(),
                 missionObjects=LoopObservation.MissionObjects(actor),rivals=LoopCombatObservation.Capture(),
-                cameraGeometry=LoopCameraObservation.Capture()};
+                cameraGeometry=LoopCameraObservation.Capture(),vehiclePhysics=LoopVehicleObservation.Capture()};
             File.AppendAllText(Path.Combine(output, "trace.jsonl"), JsonUtility.ToJson(sample) + "\n"); samples++;
         }
         var captures = LoopInput.Replay.captures;
