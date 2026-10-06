@@ -130,7 +130,7 @@ namespace ChicagoGame
 
             if (src != null)
             {
-                var c = Instantiate(src, anchor).transform;
+                var c = Instantiate(src, anchor.transform).transform;
                 c.localPosition = Vector3.zero;
                 c.localRotation = Quaternion.identity;
                 c.localScale = src.localScale;
