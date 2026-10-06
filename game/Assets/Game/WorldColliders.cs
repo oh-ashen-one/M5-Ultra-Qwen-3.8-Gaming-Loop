@@ -103,6 +103,18 @@ namespace ChicagoGame
                 }
             }
 
+            // Warm-neutral fill over the east alley (golden-hour key light retained)
+            // plus a local material tint on the alley pavement so road edge + actor read.
+            var l0 = new GameObject("AlleyFill0").AddComponent<Light>();
+            l0.transform.SetParent(go.transform, false); l0.transform.position = new Vector3(12f, 4f, 12f);
+            l0.type = LightType.Point; l0.color = new Color(1f, 0.85f, 0.70f); l0.range = 20f; l0.intensity = 2.5f; l0.shadows = LightShadows.None;
+            var l1 = new GameObject("AlleyFill1").AddComponent<Light>();
+            l1.transform.SetParent(go.transform, false); l1.transform.position = new Vector3(19f, 4f, 16f);
+            l1.type = LightType.Point; l1.color = new Color(1f, 0.85f, 0.70f); l1.range = 18f; l1.intensity = 3f; l1.shadows = LightShadows.None;
+            var apGo = GameObject.Find("AlleyPavement");
+            var apMr = apGo != null ? apGo.GetComponent<MeshRenderer>() : null;
+            if (apMr != null) { var apMat = new Material(apMr.sharedMaterial); apMat.color = new Color(0.30f, 0.30f, 0.29f, 1f); apMr.material = apMat; }
+
             // 3) Understandable end barriers using the original fence mesh.
             var fw = GameObject.Find("facade_wall");
             if (fw != null)
