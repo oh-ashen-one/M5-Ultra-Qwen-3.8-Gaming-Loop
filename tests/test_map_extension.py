@@ -8,10 +8,22 @@ import resume_map_after_courier as recovery
 import resume_map_plan_completion as plan_recovery
 import resume_direct_map_builder as direct
 import resume_map_spans as spans
+import resume_pavement_completion as pavement
 from loop_controller.core import Halt
 
 
 class MapExtensionTests(unittest.TestCase):
+    def test_pavement_completion_keeps_exact_stop_and_original_source(self):
+        state=dict(source_checkpoint=pavement.SOURCE,last_playable_checkpoint=pavement.ACCEPTED,
+            current_round=pavement.ROUND,task_index=7,task_failures=8,failure_streak=1,
+            diagnosis_used=True,overall_deadline_epoch=pavement.HARD_CAP_EPOCH,
+            blocker=pavement.BLOCKER,map_span_builder_attempted=True)
+        old=copy.deepcopy(state);pavement.validate_pavement_pause(state);self.assertEqual(state,old)
+        for key,value in [('pavement_completion_attempted',True),('source_checkpoint','other'),
+                          ('task_failures',0),('blocker','runtime fault')]:
+            with self.subTest(key=key),self.assertRaises(Halt):pavement.validate_pavement_pause({**state,key:value})
+        with self.assertRaises(Halt):pavement.completed_proposal(b'changed original response')
+
     def test_smaller_spans_preserve_exact_whole_module_stop(self):
         state=dict(source_checkpoint=spans.SOURCE,last_playable_checkpoint=spans.ACCEPTED,
             current_round=spans.ROUND,task_index=7,task_failures=8,failure_streak=1,
