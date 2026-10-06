@@ -4,7 +4,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
-from loop_controller.camera_checks import inspect_camera
+from loop_controller.camera_checks import inspect_camera,inspect_target_transitions
+from repair_camera_lifecycle import validate_lifecycle_pause,SOURCE as LIFECYCLE_SOURCE,BLOCKER as LIFECYCLE_BLOCKER
 from loop_controller.core import Halt
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 from probe_camera_clearance import validate_camera_pause,SOURCE,ACCEPTED,BLOCKER
@@ -100,5 +101,25 @@ class CameraTests(unittest.TestCase):
         validate_qualification_pause(state)
         for key,value in [('camera_qualification_attempted',True),('source_checkpoint','other'),('camera_after_manifest',None),('task_failures',0)]:
             with self.assertRaises(Halt):validate_qualification_pause({**state,key:value})
+
+    def test_actual_target_switches_require_matching_renderer_identities(self):
+        rows=[dict(time=t+i*.1,mode=role,cameraGeometry=dict(targetRole=role,
+            rendererCacheMatchesTarget=True,expectedRendererCount=count))
+            for t,role,count in [(2,'foot',12),(9,'vehicle',30),(22,'foot',12),(25,'foot',12)] for i in range(6)]
+        self.assertTrue(inspect_target_transitions(rows)['passed'])
+        for index in [0,6,12,18]:
+            changed=copy.deepcopy(rows);changed[index]['cameraGeometry']['rendererCacheMatchesTarget']=False
+            self.assertFalse(inspect_target_transitions(changed)['passed'])
+        changed=copy.deepcopy(rows);changed[6]['cameraGeometry']['targetRole']='foot'
+        self.assertFalse(inspect_target_transitions(changed)['passed'])
+        self.assertFalse(inspect_target_transitions([])['passed'])
+
+    def test_parent_lifecycle_repair_preserves_exact_failed_qualification(self):
+        state=dict(source_checkpoint=LIFECYCLE_SOURCE,last_playable_checkpoint=ACCEPTED,task_index=7,
+            task_failures=6,failure_streak=1,diagnosis_used=True,overall_deadline_epoch=HARD_CAP_EPOCH,
+            camera_qualification_attempted=True,blocker=LIFECYCLE_BLOCKER)
+        original=copy.deepcopy(state);validate_lifecycle_pause(state);self.assertEqual(state,original)
+        for key,value in [('camera_lifecycle_attempted',True),('source_checkpoint','other'),('task_failures',0),('blocker','resource fault')]:
+            with self.assertRaises(Halt):validate_lifecycle_pause({**state,key:value})
 
 if __name__=='__main__':unittest.main()

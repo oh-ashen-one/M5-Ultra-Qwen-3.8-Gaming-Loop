@@ -1,6 +1,7 @@
 // External observation only. Never moves camera/actors or changes game outcomes.
 using System;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 public static class LoopCameraObservation
@@ -13,6 +14,9 @@ public static class LoopCameraObservation
             targetViewportMin, targetViewportMax;
         public float desiredDistance, probeDistance, cameraDistance, fixtureHitDistance;
         public int targetSamples, inFrameSamples, unobstructedSamples;
+        public string targetRole;
+        public int expectedRendererCount,cachedRendererCount;
+        public bool rendererCacheMatchesTarget;
     }
     static float[] Vec(Vector3 p) { return new[] {p.x,p.y,p.z}; }
     public static MonoBehaviour Follow() {
@@ -31,6 +35,12 @@ public static class LoopCameraObservation
         var result=new Observation {phase=LoopCameraFixture.Phase};var camera=Camera.main;
         Transform actor;Vector3 offset;if(camera==null || !Rig(out actor,out offset))return result;
         result.available=true;result.target=actor.name;result.targetPosition=Vec(actor.position);
+        result.targetRole=actor==LoopSignals.Vehicle?"vehicle":actor==LoopSignals.Player?"foot":"other";
+        var follow=Follow();var cached=follow.GetType().GetField("rend",BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic)?.GetValue(follow) as Renderer[];
+        var expected=actor.GetComponentsInChildren<Renderer>();
+        result.expectedRendererCount=expected.Length;result.cachedRendererCount=cached==null?0:cached.Count(r=>r!=null);
+        result.rendererCacheMatchesTarget=cached!=null && expected.Length>0 && expected.Select(r=>r.GetInstanceID()).OrderBy(i=>i)
+            .SequenceEqual(cached.Where(r=>r!=null).Select(r=>r.GetInstanceID()).OrderBy(i=>i));
         result.cameraPosition=Vec(camera.transform.position);result.cameraForward=Vec(camera.transform.forward);
         var pivot=actor.position+Vector3.up*1.25f;
         var desired=Quaternion.Euler(0,actor.eulerAngles.y,0)*offset;var full=desired.magnitude;

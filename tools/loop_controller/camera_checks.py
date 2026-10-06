@@ -39,3 +39,17 @@ def inspect_camera(rows):
     return dict(passed=not failed,failure=failed,phases=phases,
         scope='disposable-camera-clearance-diagnostic',final_game_accepted=False,
         visibility_note='Viewport and occlusion samples describe actor visibility; full art/framing quality needs actual images')
+
+
+def inspect_target_transitions(rows):
+    """Actual E entry/exit and R replay windows, independently observing live renderer identities."""
+    facts=[];failed=[]
+    for phase,role,start,end in [('initial-foot','foot',2,6),('driving','vehicle',9,18),
+                                ('exit-foot','foot',22,23.5),('reset-foot','foot',25,30)]:
+        samples=[r for r in rows if start<=r.get('time',-1)<=end]
+        good=[r for r in samples if r.get('mode')==role and r.get('cameraGeometry',{}).get('targetRole')==role
+              and r['cameraGeometry'].get('rendererCacheMatchesTarget') is True
+              and r['cameraGeometry'].get('expectedRendererCount',0)>0]
+        facts.append(dict(phase=phase,samples=len(samples),matching_cache_samples=len(good)))
+        if len(samples)<5 or len(good)!=len(samples):failed.append(phase+'-actual-target-renderer-cache-mismatch')
+    return dict(passed=not failed,failure=failed,phases=facts,scope='normal-input-camera-target-transitions',final_game_accepted=False)
