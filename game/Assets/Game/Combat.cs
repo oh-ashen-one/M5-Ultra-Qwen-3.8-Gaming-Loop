@@ -242,9 +242,9 @@ namespace ChicagoGame
                 if (first.hp <= 0)
                 {
                     first.alive = false;
-                    foreach (var rr in rivalGo.GetComponentsInChildren<Renderer>())
+                    foreach (var rr in first.GetComponentsInChildren<Renderer>())
                         rr.enabled = false;
-                    var c = rivalGo.GetComponent<CapsuleCollider>();
+                    var c = first.GetComponent<CapsuleCollider>();
                     if (c != null) c.enabled = false;
                 }
             }
