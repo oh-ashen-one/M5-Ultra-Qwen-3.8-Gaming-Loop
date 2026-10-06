@@ -79,8 +79,7 @@ namespace ChicagoGame
                     new Vector3(AX1 - AX0 + WALL_T * 2f, WALL_H, WALL_T));
             if (fenceSourcePrefab != null)
             {
-                PlaceFence(fenceSourcePrefab, go, new Vector3(AX1 - 0.3f, 0f, (AZ0 + AZ1) * 0.5f),
-                    Quaternion.Euler(0f, 90f, 0f), new Vector3((AZ1 - AZ0) / 18f, 1f, 1f));
+
                 PlaceFence(fenceSourcePrefab, go, new Vector3((AX0 + AX1) * 0.5f, 0f, AZ1 - 0.3f),
                     Quaternion.identity, new Vector3((AX1 - AX0) / 18f, 1f, 1f));
                 PlaceFence(fenceSourcePrefab, go, new Vector3((AX0 + AX1) * 0.5f, 0f, AZ0 + 0.3f),
