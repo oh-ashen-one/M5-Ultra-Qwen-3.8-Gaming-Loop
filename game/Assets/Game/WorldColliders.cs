@@ -185,7 +185,7 @@ namespace ChicagoGame
                         new Vector3(16f / b.size.x, 0.5f / b.size.y, 8.8f / b.size.z),
                         new Vector3(12f / b.size.x, 0.5f / b.size.y, 8.8f / b.size.z)
                     };
-                    for (int i = 0; i < 3; i++)
+                    for (int i = 0; i < 2; i++)
                     {
                         var o = new GameObject(names[i]);
                         o.transform.SetParent(go.transform, false);
