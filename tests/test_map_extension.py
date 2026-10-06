@@ -7,10 +7,21 @@ from qualify_map_extension import inspect_extension
 import resume_map_after_courier as recovery
 import resume_map_plan_completion as plan_recovery
 import resume_direct_map_builder as direct
+import resume_map_spans as spans
 from loop_controller.core import Halt
 
 
 class MapExtensionTests(unittest.TestCase):
+    def test_smaller_spans_preserve_exact_whole_module_stop(self):
+        state=dict(source_checkpoint=spans.SOURCE,last_playable_checkpoint=spans.ACCEPTED,
+            current_round=spans.ROUND,task_index=7,task_failures=8,failure_streak=1,
+            diagnosis_used=True,overall_deadline_epoch=spans.HARD_CAP_EPOCH,
+            blocker=spans.BLOCKER,map_direct_builder_attempted=True)
+        old=copy.deepcopy(state);spans.validate_span_pause(state);self.assertEqual(state,old)
+        for key,value in [('map_span_builder_attempted',True),('source_checkpoint','other'),
+                          ('task_failures',0),('blocker','resource fault')]:
+            with self.subTest(key=key),self.assertRaises(Halt):spans.validate_span_pause({**state,key:value})
+
     def test_direct_builder_requires_exact_plan_output_stop_and_preserves_counters(self):
         state=dict(source_checkpoint=direct.SOURCE,last_playable_checkpoint=direct.ACCEPTED,
             current_round=direct.ROUND,task_index=7,task_failures=8,failure_streak=1,
