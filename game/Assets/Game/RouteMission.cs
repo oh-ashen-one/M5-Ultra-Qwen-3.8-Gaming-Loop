@@ -61,9 +61,10 @@ namespace ChicagoGame
                 {
                     var clone = Instantiate(c.gameObject, go.transform);
                     card = clone.transform;
-                    card.localPosition = new Vector3(0f, 0.06f, 0.02f);
+                    card.localPosition = new Vector3(0f, -0.11f, 0.025f);
                     card.localRotation = Quaternion.identity;
-                    card.localScale = new Vector3(0.34f, 0.16f, 0.32f);
+                    card.localScale = new Vector3(2.2f, 0.34f, 0.01f);
+                    var col = card.GetComponent<Collider>(); if (col != null) col.enabled = false;
                 }
             }
             if (card != null) card.gameObject.SetActive(false);
