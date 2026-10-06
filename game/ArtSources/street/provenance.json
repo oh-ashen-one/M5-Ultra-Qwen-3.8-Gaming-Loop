@@ -1,23 +1,23 @@
 {
-  "action_id": "v0040-e9347baf-art-builder-6-tool-0",
+  "action_id": "q0041-71098791-builder-9-tool-0",
   "author": "local-Qwen",
   "files": [
     {
       "bytes": 730,
       "path": "ArtSources/street/provenance.json",
-      "sha256": "cba4c2cd54111ff8d9033b5d828e99f18af8626ee448563e8058b74bbc3a8fca"
+      "sha256": "92cc602b910920cedc093c725550db653738f51a3e054c3d7516c9b7dcf82f37"
     },
     {
-      "bytes": 191404,
+      "bytes": 196764,
       "path": "ArtSources/street/source.blend",
-      "sha256": "82739f2d33897bd9b7602d76b82cc586553563d9ae608269a3c2c3f1e42e9a13"
+      "sha256": "81c521e0b0290a9529ee1becb8ace94ae15a76fc0fb2a464bbb97f12b60869f7"
     },
     {
-      "bytes": 575676,
+      "bytes": 613084,
       "path": "Assets/Resources/Generated/street/scene.fbx",
-      "sha256": "a4baf45a79023b4a04b156ad77fea5fd5c2f7e661357b4e86c7e47a414959d09"
+      "sha256": "3284deee9ea1721b255ba8e3e42f203c9f384df0d339cbe310331f6f0ec49576"
     }
   ],
   "script": "Art/street.py",
-  "script_sha256": "108060e9bdd1f9a62fdabad5318303b71f195e312db72ff5777270e83ce2f6ff"
+  "script_sha256": "22cecf37fe42c87e2cf3a1fa22ecc6777640ec1bf01e755c283971db2789bdf4"
 }

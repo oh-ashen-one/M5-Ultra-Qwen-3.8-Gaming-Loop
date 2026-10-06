@@ -143,11 +143,14 @@ EF = -6.0
 box("ef_base", (0.30, D, 1.05), (EF - 0.12, D / 2, 0.52), "stone")
 box("ef_cornice_bed", (0.34, D, 0.24), (EF - 0.15, D / 2, H - 0.50), "stone")
 box("ef_cornice", (0.52, D, 0.40), (EF - 0.24, D / 2, H - 0.18), "stone")
-for pi, py in enumerate((0.45, D / 2, D - 0.45)):
-    box("ef_pil%d" % pi, (0.24, 0.55, H - 1.30), (EF - 0.10, py, (H - 1.30) / 2 + 1.05), "brick")
-    box("ef_pil%d_cap" % pi, (0.34, 0.70, 0.16), (EF - 0.15, py, H - 0.70), "stone")
-for ei, ey in enumerate((2.05, 4.0, 5.95)):
-    for ri, ez in enumerate((2.95, 5.45)):
+for pi, py in enumerate((0.40, 2.30, 4.10, 5.90, D - 0.40)):
+    box("ef_pil%d" % pi, (0.24, 0.50, H - 1.30), (EF - 0.10, py, (H - 1.30) / 2 + 1.05), "brick")
+    box("ef_pil%d_cap" % pi, (0.34, 0.66, 0.16), (EF - 0.15, py, H - 0.70), "stone")
+# mid-height stone belt course reads as a horizontal datum at visible height
+box("ef_belt", (0.30, D, 0.26), (EF - 0.14, D / 2, 4.20), "stone")
+# full-depth repeated bay rhythm: four window bays stacked over two floors
+for ei, ey in enumerate((1.35, 3.20, 4.95, 6.75)):
+    for ri, ez in enumerate((2.85, 5.55)):
         t = "ef_win%d_%d" % (ri, ei)
         box(t + "_frame", (0.16, 1.05, 1.55), (EF - 0.07, ey, ez), "trim")
         box(t + "_glass", (0.08, 0.78, 1.30), (EF - 0.11, ey, ez), "glass")
