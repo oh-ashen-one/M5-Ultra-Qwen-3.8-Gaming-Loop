@@ -29,10 +29,17 @@ public class LoopRuntime : MonoBehaviour
         public LoopVehicleObservation.State vehiclePhysics;
     }
     [Serializable] public class ObjectObservation {
+        public int instanceId;
         public string name, kind; public float[] position, lossyScale, up, forward, boundsCenter, boundsSize;
         public bool enabled;
     }
-    [Serializable] public class SceneObservation { public ObjectObservation[] objects; }
+    [Serializable] public class SceneObservation {
+        public int schemaVersion, rendererTotal, rendererRecorded, colliderTotal, colliderRecorded;
+        public float observedAtSeconds;
+        public bool complete, truncated;
+        public string scope;
+        public ObjectObservation[] objects;
+    }
     [Serializable] public class Final { public string capture_id, unity, graphics, replay_clock; public int samples, errors; public float duration, wallDuration; public bool completed; }
     string output, captureId;
     float started, wallStarted, nextSample;
@@ -42,7 +49,7 @@ public class LoopRuntime : MonoBehaviour
     static float[] Vec(Vector3 v) { return new [] { v.x, v.y, v.z }; }
     static string Hierarchy(Transform t) { var n=t.name; while(t.parent != null) {t=t.parent;n=t.name+"/"+n;} return n; }
     static ObjectObservation Observe(Component c, string kind, Bounds b) {
-        return new ObjectObservation {name=Hierarchy(c.transform), kind=kind, position=Vec(c.transform.position),
+        return new ObjectObservation {instanceId=c.GetInstanceID(), name=Hierarchy(c.transform), kind=kind, position=Vec(c.transform.position),
             lossyScale=Vec(c.transform.lossyScale), up=Vec(c.transform.up), forward=Vec(c.transform.forward),
             boundsCenter=Vec(b.center), boundsSize=Vec(b.size),
             enabled=c.gameObject.activeInHierarchy && (!(c is Renderer) || ((Renderer)c).enabled)
@@ -96,13 +103,22 @@ public class LoopRuntime : MonoBehaviour
     {
         if (output == null || finished || LoopInput.Replay == null) return;
         var elapsed = LoopInput.Elapsed;
-        if (!observedScene) {
-            var renderers=UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None)
-                .Take(2048).Select(r => Observe(r,"renderer",r.bounds));
-            var colliders=UnityEngine.Object.FindObjectsByType<Collider>(FindObjectsSortMode.None)
-                .Take(2048).Select(c => Observe(c,c.GetType().Name,c.bounds));
+        if (!observedScene && elapsed >= 0.5f) {
+            // Observe after initialization/deferred destruction, before the first
+            // replay input. Enumerate every loaded scene component, including
+            // inactive ones, and report completeness instead of silently slicing.
+            var rendererComponents=UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None);
+            var colliderComponents=UnityEngine.Object.FindObjectsByType<Collider>(FindObjectsInactive.Include,FindObjectsSortMode.None);
+            var renderers=rendererComponents.Select(r => Observe(r,"renderer",r.bounds)).ToArray();
+            var colliders=colliderComponents.Select(c => Observe(c,c.GetType().Name,c.bounds)).ToArray();
+            bool truncated=renderers.Length!=rendererComponents.Length || colliders.Length!=colliderComponents.Length;
             File.WriteAllText(Path.Combine(output,"scene-transforms.json"),JsonUtility.ToJson(
-                new SceneObservation {objects=renderers.Concat(colliders).ToArray()},true));
+                new SceneObservation {schemaVersion=2,observedAtSeconds=elapsed,
+                    rendererTotal=rendererComponents.Length,rendererRecorded=renderers.Length,
+                    colliderTotal=colliderComponents.Length,colliderRecorded=colliders.Length,
+                    complete=!truncated,truncated=truncated,
+                    scope="All loaded scene renderers and colliders, including inactive components, after initialization and before replay input",
+                    objects=renderers.Concat(colliders).ToArray()},true));
             observedScene=true;
         }
         if (elapsed >= nextSample) {

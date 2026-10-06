@@ -205,24 +205,27 @@ class SavedDoor(ThreeDayRunner):
         self.store.set(saved_door_accepted=True,feedback={},task_design=SECOND_TASK['instructions'])
         return self.advance_second_street()
 
-    def advance_second_street(self):
-        for attempt in range(3):
+    def advance_second_street(self,start_attempt=1):
+        for attempt in range(start_attempt,4):
             ident=self.begin(SECOND_TASK,'local-second-street-source')
-            self.store.set(second_street_attempts=attempt+1)
+            self.store.set(second_street_attempts=attempt)
             candidate=self.local_street_source(ident)
             probe=self.local_street_replay(ident)
             bundle,gate,failure=self.qualify(SECOND_TASK,ident,candidate,probe)
             if failure:
                 self.record_rejection(SECOND_TASK,ident,candidate,failure);continue
             record=promote_qualified_extension(self,SECOND_TASK,bundle,gate,json.loads((bundle/'critic.json').read_text()))
-            self.store.set(second_connected_street=record,task_design=
+            return self.continue_after_street(record)
+        raise Halt('Three changed second-street attempts exhausted; preserve evidence and accepted door connector')
+
+    def continue_after_street(self,record):
+        self.store.set(second_connected_street=record,task_design=
                 'Second street passed scoped native traversal. Next create a meaningful second objective beyond '
                 'the original core and extend actual connected travel/objectives/pursuit toward8-12minutes. '
                 'Preserve regressions. Use original facade window assemblies with relative depths intact for '
                 'bounded presentation work. No waiting/idle padding and no final-quality claim from this scope.',
                 feedback={'accepted_second_street':record})
-            return ContinuousRunner.work(self)
-        raise Halt('Three changed second-street attempts exhausted; preserve evidence and accepted door connector')
+        return ContinuousRunner.work(self)
 
 
 if __name__=='__main__':raise SystemExit(main(SavedDoor))

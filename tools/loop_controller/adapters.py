@@ -301,6 +301,8 @@ class Engines:
         receipt["build_id"] = sha(encode_directory(app))
         receipt["capture_id"] = bundle.name
         atomic(bundle / "gate.json", receipt)
+        from .scene_inventory import require_complete_inventory
+        require_complete_inventory(receipt)
         return receipt
 
 
@@ -310,13 +312,17 @@ def encode_directory(root):
 
 
 def evaluate_runtime(captures, scenario, player_exit, capture_id):
+    from .scene_inventory import inspect_capture_inventory
     captures = Path(captures)
     failed = []
+    inventory=inspect_capture_inventory(captures)
+    if not inventory['passed']:failed.append('incomplete-scene-inventory')
     try:
         final = read_json(captures / "runtime-result.json")
         trace = [json.loads(line) for line in (captures / "trace.jsonl").read_text().splitlines()]
     except (FileNotFoundError, ValueError):
-        return {"passed": False, "failure": "missing-runtime-evidence", "player_exit": player_exit}
+        return {"passed": False, "failure": "missing-runtime-evidence", "player_exit": player_exit,
+                "scene_inventory": inventory}
     if player_exit != 0 or not final.get("completed") or final.get("errors") or final.get("capture_id") != capture_id:
         failed.append("runtime-exit-or-identity")
     if final.get("graphics") != "Metal" or final.get("duration", 0) < scenario["duration"] - 0.5:
@@ -370,6 +376,7 @@ def evaluate_runtime(captures, scenario, player_exit, capture_id):
         if not any(t.get("mission") == "failed" or t.get("health", 100) <= 0 for t in trace):
             failed.append("failure-or-death-path")
     return {"passed": not failed, "failure": failed or None, "player_exit": player_exit,
+            "scene_inventory": inventory,
             "coverage": coverage, "samples": len(trace), "duration": final["duration"],
             "player_displacement": round(movement, 3), "vehicle_displacement": round(driving, 3),
             "displacement_axes": "horizontal XZ", "player_vertical_drop": round(vertical_drop, 3),
