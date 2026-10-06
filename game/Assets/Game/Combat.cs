@@ -291,6 +291,8 @@ namespace ChicagoGame
                 rival.hp = 3;
                 rival.muzzle = SHOT_COOLDOWN;
                 rivalGo.position = RIVAL_SPAWN;
+                var rrb = rivalGo.GetComponent<Rigidbody>();
+                if (rrb != null) { rrb.linearVelocity = Vector3.zero; rrb.angularVelocity = Vector3.zero; rrb.position = RIVAL_SPAWN; }
                 rivalGo.rotation = Quaternion.identity;
                 var c = rivalGo.GetComponent<CapsuleCollider>();
                 if (c != null) c.enabled = true;
