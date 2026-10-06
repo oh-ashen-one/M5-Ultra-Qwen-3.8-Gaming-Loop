@@ -1,0 +1,206 @@
+{
+  "utc": "2026-10-06T05:32:55.159372+00:00",
+  "scenario": {
+    "captures": [
+      6.5,
+      11.3,
+      12.3,
+      14,
+      16.5
+    ],
+    "coverage": "foundation",
+    "duration": 17,
+    "id": "observed-foundation",
+    "steps": [
+      {
+        "end": 6.91,
+        "keys": [
+          "W"
+        ],
+        "start": 4
+      },
+      {
+        "end": 10.82,
+        "keys": [
+          "D"
+        ],
+        "start": 6.91
+      },
+      {
+        "end": 11.76,
+        "keys": [
+          "W"
+        ],
+        "start": 10.82
+      },
+      {
+        "end": 12.7,
+        "keys": [
+          "S"
+        ],
+        "start": 11.76
+      },
+      {
+        "end": 15.36,
+        "keys": [
+          "A"
+        ],
+        "start": 12.7
+      },
+      {
+        "end": 15.5,
+        "keys": [
+          "S"
+        ],
+        "start": 15.36
+      },
+      {
+        "end": 15.85,
+        "keys": [
+          "E"
+        ],
+        "start": 15.5
+      }
+    ]
+  },
+  "gate": {
+    "candidate_commit": "1c68cc752e653129196cfec1c2aa153d8445ca87",
+    "build_id": "b812578397d93af0fb0371f8d723b5b62a202c99c6cb1a3839226e6bc81879f3",
+    "duration": 17,
+    "frame_count": 5,
+    "walking_prefix": {
+      "failure": [
+        "foot-physical-return-missing",
+        "actual-boarding-missing"
+      ],
+      "final_state": {
+        "mode": "foot",
+        "player": [
+          7.340000152587891,
+          0.13499993085861206,
+          10.606667518615723
+        ],
+        "time": 16.933332443237305,
+        "vehicle": [
+          3.359421491622925,
+          -0.009999990463256836,
+          7.96269416809082
+        ],
+        "vehiclePenetration": 0
+      },
+      "passed": false,
+      "scope": "Diagnostic walking roundtrip and boarding only; not connected-map acceptance",
+      "traversal": {
+        "maximum_distance_beyond_old_boundary_m": 6.533334732055664,
+        "outside_samples": 21,
+        "physical_return_seconds": null
+      }
+    }
+  },
+  "captures": [
+    {
+      "frame": "frame-000.png",
+      "scheduled": 6.5,
+      "observed": {
+        "time": 6.5333333015441895,
+        "player": [
+          0,
+          0.13499993085861206,
+          9.860000610351562
+        ],
+        "vehicle": [
+          3.359421491622925,
+          -0.009999990463256836,
+          7.96269416809082
+        ],
+        "mode": "foot",
+        "keys": [
+          "W"
+        ]
+      }
+    },
+    {
+      "frame": "frame-001.png",
+      "scheduled": 11.3,
+      "observed": {
+        "time": 11.25,
+        "player": [
+          12.533334732055664,
+          0.1350000500679016,
+          12.420001029968262
+        ],
+        "vehicle": [
+          3.359421491622925,
+          -0.009999990463256836,
+          7.96269416809082
+        ],
+        "mode": "foot",
+        "keys": [
+          "W"
+        ]
+      }
+    },
+    {
+      "frame": "frame-002.png",
+      "scheduled": 12.3,
+      "observed": {
+        "time": 12.316666603088379,
+        "player": [
+          12.533334732055664,
+          0.1350000500679016,
+          12.20666790008545
+        ],
+        "vehicle": [
+          3.359421491622925,
+          -0.009999990463256836,
+          7.96269416809082
+        ],
+        "mode": "foot",
+        "keys": [
+          "S"
+        ]
+      }
+    },
+    {
+      "frame": "frame-003.png",
+      "scheduled": 14,
+      "observed": {
+        "time": 14.033333778381348,
+        "player": [
+          8.213334083557129,
+          0.13499993085861206,
+          11.033334732055664
+        ],
+        "vehicle": [
+          3.359421491622925,
+          -0.009999990463256836,
+          7.96269416809082
+        ],
+        "mode": "foot",
+        "keys": [
+          "A"
+        ]
+      }
+    },
+    {
+      "frame": "frame-004.png",
+      "scheduled": 16.5,
+      "observed": {
+        "time": 16.483333587646484,
+        "player": [
+          7.340000152587891,
+          0.1350000500679016,
+          10.606667518615723
+        ],
+        "vehicle": [
+          3.359421491622925,
+          -0.009999990463256836,
+          7.96269416809082
+        ],
+        "mode": "foot",
+        "keys": []
+      }
+    }
+  ],
+  "local_summary": "The prior run failed because it tried to cross the X=6 plane at Z=14.5 and rammed dumpster_b's left face (X=4.875) and never reached/ boarded the car; the fix threads the only obstacle-free gap at Z≈11 (between pier column L01 right edge 10.275 and R01 left edge 11.725) out into the alley pavement to X≈12.5, dwells outside >1s, returns on that same clear Z=11 line to X=4.0, then closes in on the settled car's +Z face (X≈3.36,Z≈7.96) and presses E to board."
+}
