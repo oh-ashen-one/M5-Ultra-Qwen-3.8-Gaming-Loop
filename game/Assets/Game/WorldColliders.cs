@@ -88,6 +88,21 @@ namespace ChicagoGame
                     Quaternion.identity, new Vector3((AX1 - AX0) / 18f, 1f, 1f));
             }
 
+            // Hide ONLY original decorative fence mesh crossing the opening X5..6,Z8..20.
+            foreach (var r in roots)
+            {
+                if (r == null) continue;
+                var root = (r as Component) != null ? (r as Component).gameObject : (r as GameObject);
+                if (root == null) continue;
+                foreach (var mr in root.GetComponentsInChildren<MeshRenderer>())
+                {
+                    if (!mr.name.StartsWith("fence_")) continue;
+                    var b = mr.bounds;
+                    if (b.center.x >= 5f && b.center.x <= 6f && b.center.z >= 8f && b.center.z <= 20f)
+                        mr.enabled = false;
+                }
+            }
+
             // 3) Understandable end barriers using the original fence mesh.
             if (fenceSourcePrefab != null)
             {
