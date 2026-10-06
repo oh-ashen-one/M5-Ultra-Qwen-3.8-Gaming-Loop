@@ -306,6 +306,13 @@ namespace ChicagoGame
             }
             // Absolute floor guard: camera lens must remain above walkable surface.
             pos.y = Mathf.Max(pos.y, floorY + 0.08f);
+            if (rend != null)
+                foreach (var r in rend)
+                    if (r != null && r.enabled && r.gameObject.activeInHierarchy)
+                    {
+                        var b = r.bounds; b.Expand(clearance);
+                        if (b.Contains(pos)) { pos.y = top + clearance; cramped = true; break; }
+                    }
             transform.position = pos;
 
             // Look target: normal pose unchanged. When cramped, aim at the real torso
