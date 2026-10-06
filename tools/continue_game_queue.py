@@ -68,6 +68,11 @@ def review_captures(task,bundle):
     indices=[0,3,4,5,6] if task['id']=='vehicle-collision-reset' and len(frames)==7 else [0,len(frames)//2,len(frames)-1]
     chosen=[frames[i] for i in indices]
     trace=bundle/'captures/trace.jsonl'
+    if task['id']=='east-dead-drop' and trace.exists():
+        from loop_controller.chapter_route_probe import chapter_capture_selection
+        rows=[json.loads(line) for line in trace.read_text().splitlines()]
+        selected=chapter_capture_selection(frames,scenario,rows)
+        if selected:chosen=selected
     if task['id']=='connected-map-extension' and trace.exists():
         from qualify_map_extension import outside_distance
         rows=[json.loads(line) for line in trace.read_text().splitlines()]

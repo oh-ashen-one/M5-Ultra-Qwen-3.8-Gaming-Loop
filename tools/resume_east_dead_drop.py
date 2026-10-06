@@ -139,6 +139,7 @@ class EastDeadDrop(MissionPacingDesign):
             rows=[json.loads(x) for x in (bundle/'captures/trace.jsonl').read_text().splitlines()]
             check=inspect_chapter(rows,require_complete,require_reset,expect_inactive)
             gate['chapter_contract']=check
+            gate.setdefault('scoped_facts',{})['chapter_contract']=check
             if not check['passed']:gate.update(passed=False,failure=check['failure'])
         atomic(bundle/'chapter-gate.json',gate);return bundle,gate
 
