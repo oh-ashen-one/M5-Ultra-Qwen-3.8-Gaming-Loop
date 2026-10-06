@@ -65,6 +65,10 @@ def inspect_hud(rows,required=()):
         if state=='relay':
             if str(row['relay'].get('count'))+'/3' not in text or 'f' not in text or not re.search(r'\d+\s*m\b',text):
                 failures.add('relay-next-action-distance-or-progress-missing')
+        if state.startswith('relay'):
+            objective=(row.get('relay',{}).get('objective') or '').lower().splitlines()
+            if not objective or lines[:len(objective)]!=objective:
+                failures.add('relay-live-objective-not-rendered')
         if ch.get('stage',0)>0:
             c=ch.get('cacheBoundsCenter');z=ch.get('cacheBoundsSize')
             if not isinstance(c,list) or not isinstance(z,list) or len(c)!=3 or len(z)!=3 or not all(math.isfinite(v) for v in c+z):

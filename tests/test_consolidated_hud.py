@@ -23,7 +23,8 @@ def row(t,state='grab',restart=0):
         missionObjects=[dict(name='Parcel',playerChild=state=='carrying')],
         routeChapter=dict(stage=2 if relay else int(chapter),hudPanels=panels,liveAspect=4/3,captureAspect=16/9,
             cacheBoundsCenter=[50,.874,18],cacheBoundsSize=[2.534,1.468,1.346],emissiveRenderers=1),
-        relay=dict(active=relay,complete=state=='relay-complete',failed=state=='relay-failed',count=1))
+        relay=dict(active=relay,complete=state=='relay-complete',failed=state=='relay-failed',count=1,
+            objective='\n'.join(texts[state].splitlines()[:2]) if relay else ''))
 
 class ConsolidatedHudTests(unittest.TestCase):
     def test_source_tool_preserves_state_and_harness_boundaries(self):
@@ -73,5 +74,15 @@ class ConsolidatedHudTests(unittest.TestCase):
         rows=[row(1),row(3,'grab',1)];rows[1]['routeChapter']['hudPanels'][0]['textRect'][3]=.91
         self.assertIn('primary-panel-anchor-moves',inspect_hud(rows)['failure'])
         self.assertFalse(inspect_hud([row(1)],['relay-complete'])['passed'])
+
+    def test_native_active_relay_requires_its_actual_live_objective(self):
+        value=row(40,'relay');self.assertTrue(inspect_hud([value],['relay'])['passed'])
+        value['routeChapter']['hudPanels'][0]['text']='RELAY 1/3 30s\n2 SOUTH 99m F\nDelivery complete / Dead-drop complete'
+        self.assertIn('relay-live-objective-not-rendered',inspect_hud([value])['failure'])
+        value['routeChapter']['hudPanels'][0]['text']=''
+        value['routeChapter']['hudPanels'][0]['visible']=False
+        failure=inspect_hud([value])['failure']
+        self.assertIn('relay-live-objective-not-rendered',failure)
+        self.assertIn('primary-or-health-panel-hidden',failure)
 
 if __name__=='__main__':unittest.main()

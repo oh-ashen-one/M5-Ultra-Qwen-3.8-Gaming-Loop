@@ -138,11 +138,14 @@ class ConsolidatedHud(OrderedRelay):
         for case in ('positive','wrong-timeout','inactive'):
             self.store.set(stage='native-consolidated-hud-'+case);self.store.report()
             bundle,gate=self.relay_native(ident+'-'+case,candidate,probes[case],case)
-            if gate.get('passed'):
+            if (bundle/'captures/trace.jsonl').exists():
                 rows=[json.loads(x) for x in (bundle/'captures/trace.jsonl').read_text().splitlines()]
                 required=['grab','carrying','dead-drop','relay','relay-complete'] if case=='positive' else (['relay-failed'] if case=='wrong-timeout' else ['grab'])
                 gate['consolidated_hud']=inspect_hud(rows,required)
-                if not gate['consolidated_hud']['passed']:gate.update(passed=False,failure=gate['consolidated_hud']['failure'])
+                if not gate['consolidated_hud']['passed']:
+                    previous=gate.get('failure') or []
+                    if not isinstance(previous,list):previous=[previous]
+                    gate.update(passed=False,failure=sorted(set(previous+gate['consolidated_hud']['failure'])))
             atomic(bundle/'consolidated-hud-gate.json',gate);results[case]=dict(evidence=str(bundle.relative_to(self.store.root)),passed=gate.get('passed'))
             self.store.set(consolidated_hud_native_results=results);self.store.report()
             if not gate.get('passed'):raise Halt('Consolidated HUD '+case+' needs measured diagnosis: '+json.dumps(gate.get('failure')))
