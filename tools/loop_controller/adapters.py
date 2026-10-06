@@ -262,6 +262,9 @@ class Engines:
         shutil.copytree(project, build_project)
         harness = build_project / "Assets/LoopHarness"
         shutil.copytree(self.source_root / "controller/unity", harness)
+        from .camera_branch_probe import FIXTURE, apply_disposable_hooks
+        if scenario.get('fixture') == FIXTURE:
+            atomic(bundle / 'camera-instrumentation.json', apply_disposable_hooks(build_project))
         protected = [p for p in build_project.rglob("*") if p.is_file() and p.suffix in (".cs", ".py", ".blend", ".fbx")]
         expected = {str(p): sha(p.read_bytes()) for p in protected}
         build = bundle / "build"
