@@ -8,7 +8,7 @@ from qualify_moving_encounter import checked
 from loop_controller.core import Halt, atomic, read_json, sha
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 
-PRIOR = 'q0135-8cd67cb5'
+PRIOR = 'q0136-d3f42928'
 TASK = dict(id='reticle-native-verification', phase='polish', visual_facing=True,
     outcome='Both reticle render paths, unchanged input-driven route and camera clearance')
 
