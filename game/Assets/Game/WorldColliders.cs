@@ -51,8 +51,6 @@ namespace ChicagoGame
             Transform pv0 = null;
             var pvGo = GameObject.Find("Pavement");
             if (pvGo != null) pv0 = pvGo.transform;
-                pv0 = FindDeep(g.transform, "pavement"); if (pv0 != null) break;
-            }
             if (pv0 != null)
             {
                 var omf = pv0.GetComponent<MeshFilter>(); var omr = pv0.GetComponent<MeshRenderer>();
