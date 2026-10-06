@@ -343,64 +343,111 @@ MissionDirectorHud.Install(body,cam);
             }
         }
 
-        // ---- restrained center-ray reticle (rendered in the camera loop) ----
-        // OnPostRender runs after the camera has drawn opaque/transparent geometry, so
-        // the marker is part of Camera.Render (not an OnGUI overlay) and is never
-        // occluded by the scene once we clear the depth buffer for the overlay pass.
+        // ---- restrained center-ray reticle (drawn inside the camera's own render loop) ----
+        // OnPostRender fires after this camera has finished its opaque + transparent draws
+        // on whichever surface is bound: the on-screen backbuffer AND an explicit
+        // Camera.Render into a target texture. So one pass covers both capture paths, and
+        // for a symmetric perspective frustum camera.transform.forward lands exactly on
+        // pixel (w/2, h/2) of that surface - no raycast, no second camera, no OnGUI.
+        bool reticleMissing;   // Resources load failed once -> stop retrying per frame
+        bool reticleOwned;     // we allocated reticleMat, so only we may destroy it
+
         void OnPostRender()
         {
             var cam = GetComponent<Camera>();
-            if (cam == null || cam.targetTexture != null) return; // on-screen camera only
+            if (cam == null) return;
 
             if (reticleMat == null)
             {
-                var sh = Shader.Find("Sprites/Default");
-                if (sh == null) sh = Shader.Find("Unlit/Color");
-                if (sh == null) return;
+                if (reticleMissing) return;
+                // Shader.Find("Sprites/Default"/"Unlit/Color") is not safe here: those
+                // names can be stripped from this player, which is why nothing drew.
+                // Only the shipped Resources shader's availability is guaranteed.
+                var sh = Resources.Load<Shader>("HudOpaque");
+                if (sh == null) { reticleMissing = true; return; }
                 reticleMat = new Material(sh) { hideFlags = HideFlags.HideAndDontSave };
+                reticleOwned = true;                    // allocated once, reused forever
             }
 
+            // Real pixel size of the bound surface. Screen.* is meaningless while the
+            // camera renders into the capture RT (960x540), and the argument-less
+            // GL.LoadPixelMatrix() would map our coordinates onto the wrong rectangle.
+            var rt = cam.targetTexture;
+            float w = rt != null ? rt.width : Screen.width;
+            float h = rt != null ? rt.height : Screen.height;
+            if (w < 8f || h < 8f) return;
+
             GL.PushMatrix();
-            reticleMat.SetPass(0);
-            GL.LoadPixelMatrix();
-            // Drop the scene depth so the thin crosshair always reads on top of the
-            // rendered world without needing an external ZTest-always shader.
-            GL.Clear(true, false, Color.clear);
+            GL.LoadPixelMatrix(0f, w, h, 0f);
 
-            float w = Screen.width, h = Screen.height;
-            float cx = w * 0.5f, cy = h * 0.5f;   // == cam.transform.forward ray
-            float gap = 6f, len = 14f, th = 2.2f, bd = 1.6f;
-            Color ink = new Color(0f, 0f, 0f, 0.85f);
-            Color line = new Color(1f, 1f, 1f, 0.95f);
+            // No GL.Clear: it would wipe the freshly rendered scene and/or discard the
+            // depth image later passes still need. A 2D overlay only has to ignore
+            // depth, so disable the test, suppress writes, then hand the state back.
+            GL.Disable(GL_DEPTH_TEST);
+            GL.DepthMask(false);
 
-            // Horizontal bar (with a centre gap), then vertical, each as a dark
-            // backing + white core for contrast over lit brick or shadowed asphalt.
-            Bar(cx - gap - len, cy - bd, cx - gap, cy + bd, ink);
-            Bar(cx + gap, cy - bd, cx + gap + len, cy + bd, ink);
-            Bar(cx - gap - len, cy - th, cx - gap, cy + th, line);
-            Bar(cx + gap, cy - th, cx + gap + len, cy + th, line);
-            Bar(cx - bd, cy - gap - len, cx + bd, cy - gap, ink);
-            Bar(cx - bd, cy + gap, cx + bd, cy + gap + len, ink);
-            Bar(cx - th, cy - gap - len, cx + th, cy - gap, line);
-            Bar(cx - th, cy + gap, cx + th, cy + gap + len, line);
-            // Centre dot sits exactly on the aim ray.
-            Bar(cx - 3f, cy - 3f, cx + 3f, cy + 3f, ink);
-            Bar(cx - 1.6f, cy - 1.6f, cx + 1.6f, cy + 1.6f, line);
+            float cx = w * 0.5f, cy = h * 0.5f;              // == camera.forward ray
+            float s = Mathf.Clamp(Mathf.Min(w, h) / 540f, 1f, 2.5f);   // RT vs native window
+            float gap = 6.0f * s, len = 15.0f * s;
+            float th = Mathf.Max(1.5f, 2.0f * s), bd = th + 1.6f * s;
+            float dh = 3.4f * s, dd = 1.8f * s;
 
+            // The fragment reads only _Color (vertex colours are ignored), so tint
+            // changes go through the material and need a fresh SetPass per batch.
+            // Blending is off, hence two fully opaque layers: dark backing + bright
+            // core stays legible on sunlit brick and on shadowed wet asphalt.
+            Ink(new Color(0.02f, 0.02f, 0.025f, 1f));
+            Bar(cx - gap - len, cy - bd, cx - gap, cy + bd);
+            Bar(cx + gap, cy - bd, cx + gap + len, cy + bd);
+            Bar(cx - bd, cy - gap - len, cx + bd, cy - gap);
+            Bar(cx - bd, cy + gap, cx + bd, cy + gap + len);
+            Bar(cx - dh, cy - dh, cx + dh, cy + dh);          // dot backing
+
+            Ink(Color.white);
+            Bar(cx - gap - len, cy - th, cx - gap, cy + th);
+            Bar(cx + gap, cy - th, cx + gap + len, cy + th);
+            Bar(cx - th, cy - gap - len, cx + th, cy - gap);
+            Bar(cx - th, cy + gap, cx + th, cy + gap + len);
+            Bar(cx - dd, cy - dd, cx + dd, cy + dd);          // dot on the aim ray
+
+            GL.DepthMask(true);
+            GL.Enable(GL_DEPTH_TEST);
             GL.PopMatrix();
         }
 
-        static void Bar(float x0, float y0, float x1, float y1, Color c)
+        void Ink(Color c)
+        {
+            reticleMat.SetColor("_Color", c);
+            reticleMat.SetPass(0);
+        }
+
+        static void Bar(float x0, float y0, float x1, float y1)
         {
             GL.Begin(GL.TRIANGLES);
-            GL.Color(c);
-            GL.Vertex3(x0, y0, 0f);
-            GL.Vertex3(x1, y0, 0f);
-            GL.Vertex3(x1, y1, 0f);
-            GL.Vertex3(x0, y0, 0f);
-            GL.Vertex3(x1, y1, 0f);
-            GL.Vertex3(x0, y1, 0f);
+            // The shipped shader is single-sided (Cull Back) while the GL pixel matrix
+            // leaves front-face polarity platform dependent: emit both windings so the
+            // flat rect is never culled. Same colour, depth writes off -> no artefact.
+            Tri(x0, y0, x1, y0, x1, y1);
+            Tri(x0, y0, x1, y1, x0, y1);
+            Tri(x1, y1, x0, y1, x0, y0);
+            Tri(x0, y1, x1, y1, x1, y0);
             GL.End();
+        }
+
+        static void Tri(float ax, float ay, float bx, float by, float cx, float cy)
+        {
+            GL.Vertex3(ax, ay, 0f);
+            GL.Vertex3(bx, by, 0f);
+            GL.Vertex3(cx, cy, 0f);
+        }
+
+        void OnDestroy()
+        {
+            // Free only the material this component created; leave any author-supplied
+            // reticleMat (and all scene/camera state) untouched.
+            if (reticleOwned && reticleMat != null) Destroy(reticleMat);
+            reticleMat = null;
+            reticleOwned = false;
         }
     }
 }
