@@ -1,5 +1,11 @@
 # Character artifact recovery and decode investigation
 
+**2026-10-06 22:20 UTC update:** official oMLX0.7.0 / MLX0.32.2 restored the same pinned model's matched short text decode from2.60 to73.37tok/s. Tool and actual-image checks passed, with zero swap growth. Old0.6.4 runtime/configuration remain preserved; no other job or OS setting was changed. The exact low-level cause is unproven. The qualified runtime is promoted, and [fd06f35](https://github.com/oh-ashen-one/M5-Ultra-Qwen-3.8-Gaming-Loop/commit/fd06f359af82052be272907b25b6ee131c5d1d06) deploys sustained-speed and ten-minute elapsed-request guards.
+
+The second old-runtime request q0128 also failed:8,192 output tokens over3,082.65seconds, no tool/source/export/preview. Both failed histories remain intact. Resumed q0129 then saved a complete local character in108.4seconds:13,242 prompt /7,822 output tokens,77.53decode tok/s. Its first Blender export failed on nonexistent `Matrix.Euler`; latest preserved source is `ab5992e4`. The separate bounded local API/transform repair launched at22:20:48UTC under [ccb4bcd](https://github.com/oh-ashen-one/M5-Ultra-Qwen-3.8-Gaming-Loop/commit/ccb4bcd). Export/native preview and actual visual acceptance remain pending. Accepted`c9bbf1ac`, counters and theOctober8cap remain unchanged.
+
+The [published playbook recovery record](https://github.com/oh-ashen-one/ralph-loop-playbook/blob/9127b62633ea2b0f2c4f5534047f11a6a3ab482b/docs/RUNTIME-RECOVERY-2026-10-06.md) includes exact versions/settings, matched measurement limits, startup/rollback procedure, false-slot and image-coverage lessons, and deployed-versus-recommended safeguards. Earlier snapshots below remain historical; inspect live state before further action.
+
 Measured snapshot: 2026-10-06 21:16:32 UTC. This is an existing game run, not a new model benchmark. The original overall deadline remains October 8 at 06:33:12 UTC.
 
 ## Broad authoring attempt: no artifact
