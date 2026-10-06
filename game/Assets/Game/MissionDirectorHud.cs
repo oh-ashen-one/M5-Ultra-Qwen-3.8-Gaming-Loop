@@ -73,8 +73,7 @@ namespace ChicagoGame
             string s = null;
             if (_relay != null && _relay.Active)
             {
-                var rt = _relay.GetComponentInChildren<TextMesh>(true);
-                string two = rt ? rt.text : "";
+                string two = _relay.Objective ?? "OBJECTIVE UNAVAILABLE";
                 string foot = _relay.AllComplete ? "\nDelivery complete" : _relay.Failed ? "\nfailed / R" : "";
                 s = two + foot;
             }
