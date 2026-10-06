@@ -1,0 +1,156 @@
+{
+  "observed_utc": "2026-10-06T09:05:10.556213+00:00",
+  "scope": "Preserved visual FIX; separate second-street authorship",
+  "prior_round": "q0078-0edc60bc",
+  "saved_candidate": "bc4f350e57e0b0632aeef5d3498ec30a66ad2bf2",
+  "accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+  "native_gate": {
+    "passed": true,
+    "candidate": "bc4f350e57e0b0632aeef5d3498ec30a66ad2bf2",
+    "build_id": "87b8dad5ef69c44b976d138b56b75f0198758e31fbf04e4dd558fde2e2ce8dc0",
+    "facts": {
+      "door_layer_order": {
+        "failure": [],
+        "panel_bounds_center": [
+          16,
+          1.1899998188018799,
+          19.850000381469727
+        ],
+        "passed": true,
+        "scope": "Native geometry only; actual rendered door readability needs fresh visual review",
+        "stone_bounds_center": [
+          16,
+          1.429999828338623,
+          19.920000076293945
+        ],
+        "wood_center_outward_offset_m": 0.06999969482421875,
+        "wood_front_ahead_of_stone_m": 0.009999655187129974
+      },
+      "map_extension": {
+        "area_claim": "Only observed connected traversal; no gross map-area acceptance",
+        "failure": [],
+        "old_bounds_xz": [
+          -1,
+          6,
+          -2,
+          30
+        ],
+        "passed": true,
+        "prior_rendered_rectangles_xz": [
+          [
+            -1,
+            6,
+            -2,
+            30
+          ]
+        ],
+        "traversal": {
+          "foot": {
+            "maximum_distance_beyond_old_boundary_m": 6.533334732055664,
+            "outside_samples": 15,
+            "physical_return_seconds": 15.966666221618652
+          },
+          "vehicle": {
+            "maximum_distance_beyond_old_boundary_m": 13.76791000366211,
+            "outside_samples": 48,
+            "physical_return_seconds": 33.63333511352539
+          }
+        }
+      }
+    },
+    "regressions": [
+      {
+        "test": "walk",
+        "passed": true,
+        "candidate": "bc4f350e57e0b0632aeef5d3498ec30a66ad2bf2"
+      },
+      {
+        "test": "world",
+        "passed": true,
+        "candidate": "bc4f350e57e0b0632aeef5d3498ec30a66ad2bf2"
+      },
+      {
+        "test": "motor",
+        "passed": true,
+        "candidate": "bc4f350e57e0b0632aeef5d3498ec30a66ad2bf2"
+      },
+      {
+        "test": "courier",
+        "passed": true,
+        "candidate": "bc4f350e57e0b0632aeef5d3498ec30a66ad2bf2"
+      },
+      {
+        "test": "failure-retry",
+        "passed": true,
+        "candidate": "bc4f350e57e0b0632aeef5d3498ec30a66ad2bf2"
+      },
+      {
+        "test": "combat-foot",
+        "passed": true,
+        "candidate": "bc4f350e57e0b0632aeef5d3498ec30a66ad2bf2"
+      },
+      {
+        "test": "combat-wall",
+        "passed": true,
+        "candidate": "bc4f350e57e0b0632aeef5d3498ec30a66ad2bf2"
+      },
+      {
+        "test": "combat-driving",
+        "passed": true,
+        "candidate": "bc4f350e57e0b0632aeef5d3498ec30a66ad2bf2"
+      },
+      {
+        "test": "aim-miss",
+        "passed": true,
+        "candidate": "bc4f350e57e0b0632aeef5d3498ec30a66ad2bf2"
+      },
+      {
+        "test": "aim-near-cover",
+        "passed": true,
+        "candidate": "bc4f350e57e0b0632aeef5d3498ec30a66ad2bf2"
+      }
+    ]
+  },
+  "independent_visual_review": {
+    "fixes": [
+      "Give the wood panel a distinctly dark-brown material so it contrasts against the pale stone backing; in frame-002.png and frame-006.png the panel is the same pale tan family as the stone, failing the 'dark wood' requirement.",
+      "Make the protrusion readable without moving geometry (keep the saved 0.07 m correction): add a thin dark trim/reveal or edge-shadow along the panel boundary so the 0.01 m front offset reads as the panel standing proud of the stone rather than recessed.",
+      "Capture a dedicated head-on close-range frame of the X16 north-wall door during a pre-failure traversal pass; the supplied native views (frame-002.png, frame-006.png edge-on; frame-010.png post-MISSION-FAILED) never demonstrate door readability.",
+      "Preserve all accepted connector and regression behavior unchanged (walk, world, motor, courier, failure-retry, combat, aim) — no blocking or collision regressions are visible in the supplied frames; the fix is material/depth-cue and capture only."
+    ],
+    "ok": true,
+    "summary": "Geometry qualification holds: the saved 0.07 m wood-panel outward correction is present in native data (panel center z=19.85 vs stone z=19.92 at x=16, wood front 0.01 m ahead of stone) with unchanged accepted inputs; all regressions pass and the accepted rough connector scope is preserved. The required visual outcome is not met, however: in frame-002.png (t=12.898 s) and frame-006.png (t=26.846 s) the X16 north-wall door reads as a pale cream slab with a similar-toned, seemingly recessed inset — the panel albedo is not dark wood and the 1 cm front offset yields no visible depth cue — and frame-010.png (t=34.996 s) shows the door only under the MISSION FAILED overlay while frame-001.png (t=10.817 s) is the AI target, not the build. Dark wood visibly ahead of pale stone is therefore not established by any supplied native frame.",
+    "verdict": "FIX",
+    "verified_capture_time_citations": {
+      "frame-001.png": 10.817,
+      "frame-002.png": 12.89791,
+      "frame-006.png": 26.84647,
+      "frame-010.png": 34.99647
+    }
+  },
+  "evidence_sha256": {
+    "scoped-gate.json": "8403aef78204bb092fe1a7aa882194f2bfebbbc004d82bca420dece1cbedd538",
+    "critic.json": "1eac132c456b03a0277a6f97542dfa352cd18f9e5deb020f011dfc1ecb13a8f8",
+    "captures/manifest.json": "e97e68936700a9409049b69037bc408750fc7a3035a4688632027faa1c7d056b"
+  },
+  "door_presentation_accepted": false,
+  "cloud_evidence_annotation": "The critic misidentified frame-001.png as the AI target. It is a genuine sealed native junction capture. The separate reference image is AI-generated. The original FIX is preserved; this annotation does not supply or upgrade a verdict.",
+  "continuation": {
+    "controller_revision": "8eaf29ddd314a458ef62072fdb9b65070a9c666d",
+    "round": "q0079-ff33490c",
+    "stage": "local-second-street-source",
+    "actual_model_active_requests": 1,
+    "second_street_attempt": 1,
+    "source_change_saved_at_observation": false,
+    "decision": "Retain the door correction as unaccepted working source and carry its visual findings forward. Advance the independent second-street topology scope; do not spend it on another minor material pass.",
+    "gate": "Foot and vehicle must travel at least 6 m beyond the union of the previously accepted core and alley, remain outside at least 1 s, physically return without reset, have rendered support, pass all ten regressions and receive fresh scoped review.",
+    "bounded_attempts": 3
+  },
+  "cpu_tests_both_hosts": 220,
+  "task_failures": 20,
+  "failure_streak": 1,
+  "original_failure_history_preserved": true,
+  "new_image_delivery": "Door-only capture held for a broader milestone; no duplicate user update",
+  "overall_deadline_utc": "2026-10-08T06:33:12Z",
+  "final_game_accepted": false
+}
