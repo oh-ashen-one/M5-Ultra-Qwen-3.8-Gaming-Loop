@@ -1,5 +1,21 @@
 # Connected-map stage
 
+## Latest measured outcome — 2026-10-06 04:53 UTC
+
+The first native map candidate has **not passed**. The accepted checkpoint remains `d269dc43ac66c39afca4cb98ea53f9e7ed36806f`, the measured 7 × 32 m corridor. The sole queue is paused after a genuine physical traversal rejection; no final visual or ten-minute mission pass is claimed.
+
+- q0054 produced a complete 47-line/3,041-byte local proposal, rejected by its 45-line cap. One hash-pinned recovery preserved that exact tool submission at a bounded 50-line cap as `b28bf88`. It did not extract private reasoning or erase the rejection.
+- q0055 saved the local pavement lookup change as `4918935c9989b942b4dff908dcc9dce6e376a584`. Replay submissions first had empty/early intervals, then lowercase keys. A whitelist-only casing adapter preserved the second submission's timings and captures; 175 controller tests passed on both hosts.
+- q0056 reached native compilation and **failed**. The controller had selected an incomplete lookup span because an inline `if (pv0 != null)` matched before the intended whole-line guard. Two old loop-tail lines remained. This was a controller boundary-selection error; an exact edit accepted by the tool was not proof of valid C#.
+- Controller `466b52edcf111899f756c583243cd3afeae9bc03` added unique whole-line boundary selection and an inline-match regression test. All **177 CPU tests passed on both hosts**. Local Qwen repaired only the full lookup span, saving `b54e706eff48db2ac454a91a89a61e6f34589776`.
+- q0057-fdbb23a9 **compiled and rendered six real frames** over 36 seconds. Build `f4c2acf9cc91fa361866edd65b23d1ffdf948f0d5394501cd513eaed08a144f6` contains AlleyPavement with rendered bounds X6..22, Z8..20 and top Y≈0.14. Walking support passed on the observed route, but neither required outside traversal occurred, vehicle mode was never entered, and outside-capture/support gates failed. See [native rejection and measured trace samples](native-extension-rejection.json).
+
+The trace shows the player stopped near X4.535/Z14.5 when attempting eastward travel. At the E press the player was around X−0.359/Z8.961, while the car was X3.359/Z7.963: outside boarding range. The exact collider causing the walking stop remains to be diagnosed; the trace alone does not establish it. Proposed timing was not actual driving. No further mechanics regressions or fresh visual critic were run after this native rejection. Source `f0ab973030062d378c7f5672985a6494cf83814f` restores the accepted game tree; rejected source and evidence remain preserved. Failure counters are now 10/1, with the original diagnosis history and fixed October 8 06:33:12 UTC cap unchanged.
+
+Next bounded work: identify the blocking collision from the actual scene, then have local Qwen submit the necessary minimal geometry/route correction and an actual boarding/out-and-back replay. Keep physical acceptance intact. Six rendered frames prove engine execution, not an accessible expansion.
+
+## Preserved earlier chronology
+
 The accepted map remains the [measured 7 × 32 m corridor](../../docs/MAP-STATUS.md) at `d269dc43`. Restored source `9062fb8` has the identical game tree. Courier candidate `e45b26d6` remains rejected on visible aim and is not part of the map work.
 
 The first map planner, `q0051-7f3ba74b`, stopped at **04:04:48 UTC** after four source-reading turns without calling `submit_plan`. This was a **tool-turn limit**, not output-token exhaustion, a runtime fault or a compile failure. The planner also requested a nonexistent generated `scene.prefab`; the actual generated street asset is loaded through the existing Bootstrap API. No source edit, asset export, native build, map capture or accepted expansion resulted from this attempt.
