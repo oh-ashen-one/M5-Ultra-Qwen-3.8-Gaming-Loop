@@ -93,19 +93,31 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
             padColor = new Color(0.1f, 0.85f, 0.3f);
             Paint(padRend, padColor, padColor * 0.4f);
 
-            // ---- Beacon column: translucent tall light shaft over the pad ----
+            // ---- Beacon: SHORT thin post marker, NOT a tall occluding column. ----
+            // The previous 7 m glowing shaft ate ~40% of the frame at the pickup
+            // and hid the coupe. A slim 1.2 m post over the green pad points at
+            // the destination without ever blocking the car or the route ahead.
             var beaconGo = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             beaconGo.name = "Beacon";
             beaconGo.transform.SetParent(missionRoot, false);
-            beaconGo.transform.position = new Vector3(1.0f, PAV_TOP + 3.5f, 26.0f);
-            beaconGo.transform.localScale = new Vector3(1.1f, 3.5f, 1.1f); // 7 m tall
+            beaconGo.transform.position = new Vector3(1.0f, PAV_TOP + 0.6f, 26.0f);
+            beaconGo.transform.localScale = new Vector3(0.14f, 0.6f, 0.14f); // thin ~1.2 m post
             var bcol = beaconGo.GetComponent<Collider>();
             if (bcol != null) Destroy(bcol);
             beacon = beaconGo.transform;
             beaconRend = beaconGo.GetComponent<Renderer>();
-            beaconColor = new Color(0.2f, 1f, 0.4f, 0.28f);
-            Paint(beaconRend, beaconColor, beaconColor);
-            SetTransparent(beaconRend, 0.28f);
+            beaconColor = new Color(0.25f, 1f, 0.45f);
+            Paint(beaconRend, beaconColor, beaconColor * 0.6f);
+
+            // Thin flat ground ring (flattened thin cylinder outline) around the
+            // pad adds a readable target halo without any vertical mass.
+            var ring = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            ring.name = "BeaconRing";
+            ring.transform.SetParent(missionRoot, false);
+            ring.transform.position = new Vector3(1.0f, PAV_TOP + 0.03f, 26.0f);
+            ring.transform.localScale = new Vector3(2.2f, 0.01f, 2.2f);
+            Destroy(ring.GetComponent<Collider>());
+            Paint(ring.GetComponent<Renderer>(), new Color(0.2f, 0.9f, 0.35f), new Color(0.2f, 0.9f, 0.35f) * 0.5f);
 
             BuildHud();
 
@@ -332,16 +344,12 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
                 if (m != null)
                 {
                     m.color = beaconColor;
-                    m.SetColor("_EmissionColor", beaconColor);
-                    m.SetFloat("_Mode", 3f);
-                    m.EnableKeyword("_ALPHABLEND_ON");
-                    m.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                    m.renderQueue = 3000;
-                    var c = m.color; c.a = 0.28f; m.color = c;
+                    m.SetColor("_EmissionColor", beaconColor * 0.6f);
+                    m.SetFloat("_Mode", 0f);
                 }
             }
             if (beacon != null)
-                beacon.localScale = new Vector3(1.1f, 3.5f, 1.1f);
+                beacon.localScale = new Vector3(0.14f, 0.6f, 0.14f);
         }
 
         // ---- material helpers ----

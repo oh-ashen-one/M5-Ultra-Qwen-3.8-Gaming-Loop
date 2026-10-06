@@ -174,17 +174,47 @@ namespace ChicagoGame
         public Vector3 offset = new Vector3(0f, 3.1f, -5.2f);
         public float damping = 8f;
         public float lookAhead = 4.0f;
+        public LayerMask collideMask = ~0;
 
         void LateUpdate()
         {
             if (target == null) return;
             var yaw = Quaternion.Euler(0f, target.eulerAngles.y, 0f);
-            var want = target.position + yaw * offset;
+
+            // Chest-height origin so the wall probe ignores the courier's own
+            // capsule and only reacts to architecture behind them.
+            var origin = target.position + Vector3.up * 1.25f;
+            Vector3 desired = yaw * offset;
+            float full = desired.magnitude;
+            Vector3 dir = desired / full;
+
+            // Pull the rig in when a facade sits between target and camera so we
+            // never get jammed against the brick rowhouse; a small margin keeps a
+            // readable gap. When wall < ~1.5 m we also swing the pivot higher and
+            // steeper, framing the whole car body + the fence/lane ahead instead
+            // of a wall edge and car slivers.
+            float dist = full;
+            bool crowding = false;
+            if (Physics.Raycast(origin, dir, out RaycastHit hit, full, collideMask,
+                                QueryTriggerInteraction.Ignore))
+            {
+                dist = Mathf.Max(1.4f, hit.distance - 0.45f);
+                crowding = (full - hit.distance) < 1.5f;
+            }
+
+            Vector3 want = origin + dir * dist - Vector3.up * 1.25f;
+            if (crowding)
+                // Raise the rig and shorten the run so the camera looks down over
+                // the car roof into the open lane rather than into the wall.
+                want += Vector3.up * 0.9f + dir * 0.5f;
+
             transform.position = Vector3.Lerp(transform.position, want, Mathf.Clamp01(damping * Time.deltaTime));
             // Aim slightly down the route so the horizon sits high and the
             // destination (green pad / parcel) reads in the upper-centre frame
-            // while the hood stays near the bottom edge.
-            var look = target.position + Vector3.up * 1.1f + yaw * Vector3.forward * lookAhead;
+            // while the hood stays near the bottom edge. When crowded, drop the
+            // look-ahead so the full car silhouette lands inside the frame.
+            float la = crowding ? lookAhead * 0.55f : lookAhead;
+            var look = target.position + Vector3.up * (crowding ? 0.6f : 1.1f) + yaw * Vector3.forward * la;
             transform.LookAt(look);
         }
     }
