@@ -256,27 +256,30 @@ namespace ChicagoGame
             Vector3 pos = Vector3.Lerp(transform.position, want,
                                        Mathf.Clamp01(damping * Time.deltaTime));
 
-            // Validate the ACTUAL smoothed segment (origin -> pos), whose direction is
-            // not the fixed hdir once the target has yawed, and pull back along that
-            // same segment if a foreign surface intrudes.
-            Vector3 seg = pos - origin;
+            // Validate the ACTUAL smoothed segment using an above-ground pivot derived
+            // from the actor's real visual bounds (chest height) so we never cast or
+            // step from a root that sits at or below the floor surface.
+            float pivotH = Mathf.Clamp(ctr - origin.y, 0.5f, 1.4f);
+            Vector3 pivot = origin + Vector3.up * pivotH;
+            Vector3 seg = pos - pivot;
             float segLen = seg.magnitude;
             if (segLen > 0.02f)
             {
                 Vector3 sd = seg / segLen;
-                if (Physics.Raycast(origin, sd, out RaycastHit v, segLen,
+                if (Physics.Raycast(pivot, sd, out RaycastHit v, segLen,
                                     collideMask, QueryTriggerInteraction.Ignore))
                 {
                     var vt = v.collider ? v.collider.transform : null;
                     bool own = vt == target || (vt && vt.IsChildOf(target));
                     if (!own && v.distance < segLen - clearance)
-                        pos = origin + sd * Mathf.Max(0.05f, v.distance - clearance);
+                        pos = pivot + sd * Mathf.Max(0.05f, v.distance - clearance);
                 }
             }
 
             // Final geometry-aware near-plane guard: if the smoothed lens overlaps any
-            // foreign collider (height differences can hide a low wall), step toward
-            // the target until the lens sits in open space.
+            // foreign collider, step toward the pivot (not raw root) until open.
+            // Clamp each step to remaining distance; never push below walkable surface.
+            float floorY = origin.y + 0.02f; // approximate floor top from root
             for (int k = 0; k < 5; k++)
             {
                 int overlapCount = Physics.OverlapSphereNonAlloc(pos, clearance, near,
@@ -291,10 +294,18 @@ namespace ChicagoGame
                     touchingForeign = true; break;
                 }
                 if (!touchingForeign) break;
-                Vector3 toT = origin - pos; float d = toT.magnitude;
+
+                Vector3 toT = pivot - pos;
+                float d = toT.magnitude;
                 if (d < 1e-4f) break;
-                pos += toT / d * clearance;
+
+                float step = Mathf.Min(clearance, d);
+                Vector3 candidate = pos + toT / d * step;
+                candidate.y = Mathf.Max(candidate.y, floorY + 0.08f);
+                pos = candidate;
             }
+            // Absolute floor guard: camera lens must remain above walkable surface.
+            pos.y = Mathf.Max(pos.y, floorY + 0.08f);
             transform.position = pos;
 
             // Look target: normal pose unchanged. When cramped, aim at the real torso
