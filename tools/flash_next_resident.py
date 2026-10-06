@@ -18,7 +18,7 @@ import psutil
 
 from unity_smoke import renderer_process
 from warmup_resident import gpu_admission, session_token, write_state
-from engine_admission import snapshot, complete_process_scan
+from engine_admission import snapshot, complete_process_scan, hardware_pressure, resource_reasons
 
 
 def main():
@@ -31,6 +31,8 @@ def main():
                         help="Owned controller handoff directory; loaded idle model yields engine slots")
     parser.add_argument("--allow-load", action="store_true")
     parser.add_argument("--allow-one-existing-renderer", action="store_true")
+    parser.add_argument('--authorized-shared-coexistence',action='store_true',
+        help='Explicit owner priority: observe other apps without treating presence as load; preserve actual resource and owned-lease guards')
     args = parser.parse_args()
     if not args.allow_load:
         parser.error("Current owner authorization and --allow-load are required")
@@ -83,7 +85,7 @@ def main():
     existing = renderers()
     baseline=snapshot(args.coordination_dir)['processes']
     baseline=[p for p in baseline if p.get('renderer')]
-    if len(existing) > (1 if args.allow_one_existing_renderer else 0):
+    if not args.authorized_shared_coexistence and len(existing) > (1 if args.allow_one_existing_renderer else 0):
         raise RuntimeError("Renderer count exceeds admitted capacity")
     if psutil.virtual_memory().available < 200 * 1024**3:
         raise RuntimeError("Insufficient pre-load memory headroom")
@@ -107,6 +109,7 @@ def main():
                      "mtp_enabled": False, "qwen4_ple_ssd_offload": False},
         "limits": {"minimum_available_GiB": 64, "maximum_swap_growth_MiB": 512},
         "preserved_external_renderer_pids": existing,
+        "authorized_shared_coexistence":args.authorized_shared_coexistence,
     }
 
     def api(path, timeout=5):
@@ -123,14 +126,15 @@ def main():
             "swap_used_GiB": round(swap.used / 1024**3, 3),
             "swap_growth_MiB": round(max(0, swap.used - baseline_swap) / 1024**2, 3),
         }
-        if memory.available < 64 * 1024**3 or swap.used - baseline_swap > 512 * 1024**2:
-            raise RuntimeError("Memory or swap guard triggered")
+        metrics=hardware_pressure();state['hardware_pressure']=metrics
+        pressure=resource_reasons(memory.available/1024**3,max(0,swap.used-baseline_swap)/1024**2,metrics['thermal_warning'])
+        if pressure:raise RuntimeError('Resource guard: '+','.join(pressure))
         if subprocess.check_output(["stat", "-f", "%Su", "/dev/console"], text=True).strip() in ("root", "loginwindow", ""):
             raise RuntimeError("Desktop session lost")
         if child is not None and child.poll() is not None:
             raise RuntimeError("Owned model server exited")
         renderers()  # Preserve detection of a competing inference service.
-        observed=snapshot(args.coordination_dir,baseline,engine_lease)
+        observed=snapshot(args.coordination_dir,baseline,engine_lease,coexistence=args.authorized_shared_coexistence)
         state['admission_snapshot']=observed
         decision=observed['decision']
         waiting=args.coordination_dir/'capacity-wait.json' if args.coordination_dir else None

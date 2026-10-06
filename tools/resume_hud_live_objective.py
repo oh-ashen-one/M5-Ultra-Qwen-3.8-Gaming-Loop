@@ -17,16 +17,19 @@ FAILURES=['relay-HUD-outside-captureTextRect','relay-HUD-outside-textRect','rela
 CAPACITY_SOURCE='6ff596013fd2bfbc896cb338e1fc6cf7a5a59383'
 CAPACITY_ROUND='q0115-a478e7c8'
 CAPACITY_BLOCKER='Halt: Capacity wait: supervisor paused engine admission; preserve other jobs'
+PRIORITY_BLOCKER='Halt: Explicit controller stop'
 PROOF_HASHES={'positive':'90c005b8bc9c90446705915b310becc4c6e167cfd080c0f2ed62a0e828edb2b3',
     'wrong-timeout':'30a1f089b39f5f195b0424a206dfb2ac74f19a4acf0ca55106e3af59465e6264'}
 
 def validate_pause(old):
     import json
-    if old.get('blocker')==CAPACITY_BLOCKER:
+    priority=(old.get('blocker')==PRIORITY_BLOCKER and old.get('hud_capacity_resume_attempted')
+        and old.get('stage')=='capacity-wait' and not old.get('hud_priority_resume_attempted'))
+    if old.get('blocker')==CAPACITY_BLOCKER or priority:
         expected=dict(source_checkpoint=CAPACITY_SOURCE,last_playable_checkpoint=ACCEPTED,current_round=CAPACITY_ROUND,
             task_index=7,task_failures=24,failure_streak=1,diagnosis_used=True,overall_deadline_epoch=HARD_CAP_EPOCH,
             hud_live_objective_repair_attempted=True)
-        if any(old.get(k)!=v for k,v in expected.items()) or old.get('hud_capacity_resume_attempted'):
+        if any(old.get(k)!=v for k,v in expected.items()) or (old.get('hud_capacity_resume_attempted') and not priority):
             raise Halt('Require exact first capacity yield with qualified HUD source and history intact')
         return
     expected=dict(source_checkpoint=SOURCE,last_playable_checkpoint=ACCEPTED,current_round=ROUND,
@@ -48,7 +51,10 @@ class HudLiveObjective(ConsolidatedHud):
 
     def validate_recovery(self,old):
         validate_pause(old)
-        self.resume_capacity=old.get('blocker')==CAPACITY_BLOCKER
+        self.priority_resume=old.get('blocker')==PRIORITY_BLOCKER
+        if self.priority_resume and not self.c.get('authorized_shared_coexistence'):
+            raise Halt('Priority continuation requires the explicit private authorization setting')
+        self.resume_capacity=old.get('blocker') in (CAPACITY_BLOCKER,PRIORITY_BLOCKER)
         if self.resume_capacity:
             for case,digest in PROOF_HASHES.items():
                 p=self.store.root/'evidence'/(CAPACITY_ROUND+'-'+case)/'consolidated-hud-gate.json'
@@ -63,7 +69,8 @@ class HudLiveObjective(ConsolidatedHud):
 
     def recovery_settings(self):
         if self.resume_capacity:
-            return dict(hud_capacity_resume_attempted=True,recovery_route='same-queue-bounded-capacity-continuation',
+            return dict(hud_capacity_resume_attempted=True,hud_priority_resume_attempted=self.priority_resume,
+                recovery_route='same-queue-bounded-capacity-continuation',
                 recovery_change='Same owner retains locks and checks capacity every30seconds until the fixed cap; reuse passed positive/timeout proof, preserve interrupted no-handoff bundle, then remaining native/regressions/critic only when admitted.')
         return dict(hud_live_objective_repair_attempted=True,recovery_route='local-native-hud-lookup-repair',
             recovery_change='Read RelaySequence.Objective; correct truthful receipt footers; reacquire late-installed HudStatus. Preserve mechanics and native rejection; require actual active relay objective text in the rendered primary panel.')

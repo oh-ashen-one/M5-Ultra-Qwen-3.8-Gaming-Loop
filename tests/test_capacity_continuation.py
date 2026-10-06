@@ -25,6 +25,18 @@ class CapacityContinuationTests(unittest.TestCase):
             self.assertEqual(store.get('task_failures'),24);self.assertEqual(store.get('source_checkpoint'),'qualified')
             self.assertEqual(store.get('overall_deadline_epoch'),HARD_CAP_EPOCH)
 
+    def test_priority_probe_accepts_idle_open_apps_only_with_explicit_authorization(self):
+        from loop_controller.model import MODEL
+        with tempfile.TemporaryDirectory() as d:
+            store=self.store(d)
+            machine=SimpleNamespace(child=None,snapshot=lambda:{'decision':{'active_renderer_pids':[3,40]}})
+            model=SimpleNamespace(api=lambda route:({'status':'healthy','engine_pool':{'loaded_count':1}} if route=='/health'
+                else {'default_model':MODEL,'active_requests':0,'waiting_requests':0}))
+            runner=SimpleNamespace(store=store,machine=machine,model=model,c={'coordination_dir':d})
+            coordinator=CapacityContinuation(runner);self.assertFalse(coordinator.probe()['available'])
+            runner.c['authorized_shared_coexistence']=True
+            self.assertTrue(coordinator.probe()['available'])
+
     def test_deadline_stop_or_resource_fault_precedes_any_further_admission(self):
         for reason in ['Three-day project cap reached','Requested stop','Memory/swap bound exceeded']:
             with self.subTest(reason=reason),tempfile.TemporaryDirectory() as d:

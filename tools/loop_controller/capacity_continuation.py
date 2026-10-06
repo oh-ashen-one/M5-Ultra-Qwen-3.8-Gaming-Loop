@@ -34,7 +34,8 @@ class CapacityContinuation:
         observed=r.machine.snapshot();reasons=[]
         coordination=Path(r.c['coordination_dir'])
         if (coordination/'capacity-wait.json').exists():reasons.append('resident-admission-yielded')
-        if len(observed['decision']['active_renderer_pids'])>1:reasons.append('renderer-capacity')
+        if len(observed['decision']['active_renderer_pids'])>1 and not r.c.get('authorized_shared_coexistence',False):
+            reasons.append('renderer-capacity')
         if (coordination/'engine-request.json').exists() or (coordination/'engine-ack.json').exists():
             reasons.append('engine-handoff-active')
         health=r.model.api('/health');status=r.model.api('/api/status')

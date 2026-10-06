@@ -4,7 +4,7 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import Mock
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
-from engine_admission import ownership, complete_process_scan
+from engine_admission import ownership, complete_process_scan,resource_reasons,thermal_warning
 
 
 class EngineAdmissionTests(unittest.TestCase):
@@ -72,6 +72,32 @@ class EngineAdmissionTests(unittest.TestCase):
     def test_group_members_predating_lease_are_not_owned(self):
         wrong={**self.editor,'start':19,'ppid':1}
         self.assertEqual(ownership([self.blender,self.owner,wrong],[self.blender],self.lease)['foreign_renderer_pids'],[11])
+
+    def test_authorized_idle_blender_and_unreal_do_not_veto_qwen(self):
+        unreal=dict(pid=40,ppid=1,start=25,pgid=40,renderer=True)
+        rows=[self.blender,unreal,self.owner,self.editor]
+        result=ownership(rows,[self.blender],self.lease,coexistence=True)
+        self.assertEqual(result['status'],'available')
+        self.assertEqual(result['owned_renderer_pids'],[11]);self.assertEqual(result['foreign_renderer_pids'],[40])
+        self.assertEqual(resource_reasons(149.94,0,0),[])
+        self.assertEqual(ownership([self.blender,unreal],[self.blender],coexistence=True)['status'],'available')
+
+    def test_actual_memory_swap_and_thermal_pressure_still_block(self):
+        for available,swap,thermal in [(63,0,0),(150,513,0),(150,0,1),(150,0,3)]:
+            with self.subTest(available=available,swap=swap,thermal=thermal):
+                self.assertTrue(resource_reasons(available,swap,thermal))
+        self.assertEqual(thermal_warning('Note: No thermal warning level has been recorded'),0)
+        self.assertEqual(thermal_warning('Thermal_Level = 2'),2)
+        self.assertEqual(thermal_warning('ThermalPressure: critical'),3)
+
+    def test_coexistence_never_adopts_foreign_work_or_waives_owned_engine_bounds(self):
+        invalid={**self.owner,'start':99}
+        result=ownership([self.blender,invalid,self.editor],[self.blender],self.lease,coexistence=True)
+        self.assertIn('lease-owner-missing-or-reused',result['reasons'])
+        self.assertEqual(result['owned_renderer_pids'],[])
+        worker=dict(pid=12,ppid=11,start=22,pgid=11,renderer=True)
+        result=ownership([self.blender,self.owner,self.editor,worker],[self.blender],self.lease,coexistence=True)
+        self.assertIn('multiple-owned-renderers',result['reasons'])
 
 
 if __name__=='__main__':unittest.main()

@@ -5,6 +5,39 @@ import json
 import os
 from pathlib import Path
 import warnings
+import plistlib
+import re
+import subprocess
+
+def resource_reasons(available_gib,swap_growth_mib,thermal_warning=0):
+    reasons=[]
+    if available_gib<64:reasons.append('available-memory-below64GiB')
+    if swap_growth_mib>512:reasons.append('swap-growth-above512MiB')
+    if thermal_warning is not None and thermal_warning>0:reasons.append('OS-thermal-warning')
+    return reasons
+
+def thermal_warning(text):
+    if 'no thermal warning level has been recorded' in text.lower():return 0
+    match=re.search(r'(?:thermal[_ ]*(?:warning(?: level)?|level)|thermalpressure)\s*[:=]\s*(\d+|nominal|fair|serious|critical)',text,re.I)
+    if not match:return None
+    value=match.group(1).lower()
+    return int(value) if value.isdigit() else {'nominal':0,'fair':0,'serious':2,'critical':3}[value]
+
+def hardware_pressure():
+    """Read GPU use and OS thermal warnings without sudo or setting changes.
+
+    GPU utilization is observation, not a fault: Qwen's own busy GPU is desired.
+    Actual memory, swap, OS warnings and graphics/access faults remain guards.
+    """
+    thermal=subprocess.run(['/usr/bin/pmset','-g','therm'],capture_output=True,text=True,timeout=5)
+    if thermal.returncode:raise RuntimeError('Cannot read OS thermal status')
+    gpu=subprocess.run(['/usr/sbin/ioreg','-r','-c','IOAccelerator','-d','1','-a'],capture_output=True,timeout=5)
+    if gpu.returncode:raise RuntimeError('Cannot read GPU status')
+    stats=[]
+    for item in plistlib.loads(gpu.stdout):
+        values=item.get('PerformanceStatistics',{})
+        stats.append({k:values[k] for k in ['Device Utilization %','Renderer Utilization %','Tiler Utilization %'] if k in values})
+    return dict(gpu=stats,thermal_warning=thermal_warning(thermal.stdout),thermal_status=thermal.stdout.strip())
 
 
 def complete_process_scan(attributes, process_module=None):
@@ -25,7 +58,7 @@ def same_identity(a,b):
     return a.get('pid')==b.get('pid') and abs(a.get('start',-1)-b.get('start',-2))<.01
 
 
-def ownership(rows,baseline,lease=None):
+def ownership(rows,baseline,lease=None,coexistence=False):
     """Use one live process snapshot; registered groups survive parent exit."""
     by_pid={p['pid']:p for p in rows};active=[p for p in rows if p.get('renderer')]
     owner=by_pid.get(lease['controller_pid']) if lease else None
@@ -43,14 +76,19 @@ def ownership(rows,baseline,lease=None):
         (owned if descendant or group else foreign).append(p['pid'])
     reasons=[]
     if lease and not valid_owner:reasons.append('lease-owner-missing-or-reused')
-    if len(active)>(2 if lease else 1):reasons.append('renderer-capacity')
-    if foreign:reasons.append('unowned-renderer')
+    if coexistence:
+        if len(owned)>1:reasons.append('multiple-owned-renderers')
+    else:
+        if len(active)>(2 if lease else 1):reasons.append('renderer-capacity')
+        if foreign:reasons.append('unowned-renderer')
     return {'status':'capacity-wait' if reasons else 'available','reasons':reasons,
         'active_renderer_pids':[p['pid'] for p in active],'owned_renderer_pids':owned,
-        'foreign_renderer_pids':foreign,'renderer_cap':2,'owner_identity_valid':valid_owner if lease else None}
+        'foreign_renderer_pids':foreign,'renderer_cap':None if coexistence else 2,
+        'owned_renderer_cap':1 if coexistence else 2,'authorized_shared_coexistence':coexistence,
+        'owner_identity_valid':valid_owner if lease else None}
 
 
-def snapshot(coordination=None,baseline=None,lease=None,process_module=None):
+def snapshot(coordination=None,baseline=None,lease=None,process_module=None,coexistence=False):
     if process_module is None:import psutil as process_module
     from unity_smoke import renderer_process
     rows=[]
@@ -96,6 +134,6 @@ def snapshot(coordination=None,baseline=None,lease=None,process_module=None):
         (lease and (p['pid']==lease.get('controller_pid') or p.get('pgid')==lease.get('engine_pid')))]
     return {'captured_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'host_scope':'local-machine-only',
         'processes':relevant,'slots':slots,'leases':records,'lease':lease,
-        'decision':ownership(rows,list(baseline),lease) if baseline is not None else
+        'decision':ownership(rows,list(baseline),lease,coexistence) if baseline is not None else
             {'status':'observation-only','active_renderer_pids':[p['pid'] for p in rows if p.get('renderer')]},
         'shared_paused':(base/'PAUSED').exists()}

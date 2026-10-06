@@ -54,7 +54,7 @@ class Machine:
 
     def snapshot(self):
         from engine_admission import snapshot
-        return snapshot(self.c['coordination_dir'])
+        return snapshot(self.c['coordination_dir'],coexistence=self.c.get('authorized_shared_coexistence',False))
 
     def guard(self):
         waiting=Path(self.c['coordination_dir'])/'capacity-wait.json'
@@ -71,6 +71,12 @@ class Machine:
         memory, swap = psutil.virtual_memory(), psutil.swap_memory()
         if memory.available < 64 * 1024**3 or swap.used - self.baseline_swap > 512 * 1024**2:
             raise Halt("Memory/swap bound exceeded")
+        if self.c.get('authorized_shared_coexistence') and time.monotonic()>=getattr(self,'next_hardware_check',0):
+            from engine_admission import hardware_pressure,resource_reasons
+            metrics=hardware_pressure();self.next_hardware_check=time.monotonic()+2
+            self.store.set(hardware_pressure=metrics)
+            reasons=resource_reasons(memory.available/1024**3,max(0,swap.used-self.baseline_swap)/1024**2,metrics['thermal_warning'])
+            if reasons:raise Halt('Resource guard: '+','.join(reasons))
         console = subprocess.check_output(["stat", "-f", "%Su", "/dev/console"], text=True).strip()
         if console in ("", "root", "loginwindow"):
             raise Halt("Desktop session unavailable")
@@ -109,7 +115,7 @@ class Machine:
             for process in complete_process_scan(["pid", "exe", "name", "cmdline"], psutil):
                 if renderer_process(process.info["exe"] or "", (process.info["name"] or "").lower(), process.info["cmdline"] or []):
                     existing.append(process.pid)
-            if len(existing) > 1:
+            if len(existing) > 1 and not self.c.get('authorized_shared_coexistence',False):
                 raise Halt("No room for one owned engine beside the existing renderer")
             with gpu_admission("chicago-loop-" + label, len(existing)):
                 yield
