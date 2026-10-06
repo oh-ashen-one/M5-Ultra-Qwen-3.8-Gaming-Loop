@@ -83,9 +83,12 @@ namespace ChicagoGame
             var pad = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             pad.name = "DropPad";
             pad.transform.SetParent(missionRoot, false);
-// Restored to native-verified west bay; accepted F delivery measured 1.19m from X1,
-// while X3.6 produced a 3.22m gap at F.
-pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
+            // Destination pad centred on the DRIVABLE lane (X3.6) at the far end
+            // of the block. Placing it on the west curb (X1) meant a straight
+            // drive down the lane stopped ~2.6 m short of the delivery radius, so
+            // the mission could never actually end while driving. Aligning it with
+            // the parked-coupe lane makes the drive-to-deliver gesture complete.
+            pad.transform.position = new Vector3(3.6f, PAV_TOP + 0.01f, 26);
             pad.transform.localScale = new Vector3(3.6f, 0.02f, 3.6f); // r = 1.8, thin
             var padCol = pad.GetComponent<Collider>();
             if (padCol != null) Destroy(padCol);
