@@ -92,7 +92,8 @@ namespace ChicagoGame
             if (coupe != null) VehicleInteraction.Install(body, coupe, follow);
             CourierMission.Install(body, cam);
             Combat.Install(body, cam);
-            RouteMission.Install(body,cam);
+RouteMission.Install(body,cam);
+RelaySequence.Install(body,cam);
             AudioFX.Install(rig.transform);
             HudStatus.Install(cam);
 
