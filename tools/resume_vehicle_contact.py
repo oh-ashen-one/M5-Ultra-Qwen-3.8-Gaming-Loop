@@ -23,16 +23,19 @@ PATH='Assets/Game/Combat.cs'
 
 
 def diagnose_contacts(rows):
-    samples=[];blocking=[]
+    samples=[];blocking=[];previous=None
     for row in rows:
         p=row.get('vehiclePhysics') or {}
         if row.get('mode')!='vehicle' or not p.get('available'):continue
+        delta=row['time']-previous['time'] if previous else 0
+        speed=(math.hypot(row['vehicle'][0]-previous['vehicle'][0],row['vehicle'][2]-previous['vehicle'][2])/delta
+               if previous and delta>0 else float('inf'))
+        previous=row
         contacts=[c for c in p.get('contacts',[]) if abs(c['normal'][1])<.5
                   and abs(row['time']-c['time'])<.25]
         if not contacts:continue
         sample={k:row.get(k) for k in ('time','keys','vehicle','vehiclePenetration')}
-        sample['physics']=p;samples.append(sample)
-        speed=math.hypot(p['velocity'][0],p['velocity'][2])
+        sample['physics']=p;sample['observed_horizontal_speed']=speed if math.isfinite(speed) else None;samples.append(sample)
         if p.get('throttle',0)>0 and p.get('commandedSpeed',0)>2 and speed<1.5 and any(
                 c['collider']=='Rival' and not c['otherHasBody'] for c in contacts):
             blocking.append(sample)

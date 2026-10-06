@@ -19,7 +19,7 @@ public class LoopVehicleObservation : MonoBehaviour
         public float[] forward, velocity, angularVelocity;
         public Contact[] contacts;
     }
-    readonly Dictionary<int,Contact[]> contacts = new Dictionary<int,Contact[]>();
+    readonly Dictionary<Collider,Contact[]> contacts = new Dictionary<Collider,Contact[]>();
     static float[] V(Vector3 v) { return new [] {v.x,v.y,v.z}; }
     static string Name(Transform t) { var n=t.name; while(t.parent!=null) {t=t.parent;n=t.name+"/"+n;} return n; }
     void Observe(Collision collision) {
@@ -34,11 +34,11 @@ public class LoopVehicleObservation : MonoBehaviour
                 otherHasBody=body!=null,otherKinematic=body!=null&&body.isKinematic,
                 otherMass=body==null?0:body.mass});
         }
-        contacts[other.GetInstanceID()]=records.ToArray();
+        contacts[other]=records.ToArray();
     }
     void OnCollisionEnter(Collision c) { Observe(c); }
     void OnCollisionStay(Collision c) { Observe(c); }
-    void OnCollisionExit(Collision c) { contacts.Remove(c.collider.GetInstanceID()); }
+    void OnCollisionExit(Collision c) { contacts.Remove(c.collider); }
     public static State Capture() {
         var root=LoopSignals.Vehicle;
         if(root==null)return new State {available=false};
