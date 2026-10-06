@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-10-06T06:53:06.344096+00:00",
+  "observed_utc": "2026-10-06T06:59:17.185326+00:00",
   "candidate": "ab3a64ef8cb3511dc02ab3c31a88162f6efe76f9",
   "build_id": "a6d75c6f4d50bc27ecf8fe15e95ca2149e3b81608257582a6893f8cd2a49b796",
   "native_round": "q0072-b5de47c6",
@@ -17,8 +17,9 @@
     "samples": 188,
     "uncovered": 0
   },
-  "current_regressions": "In progress; four passed at observation time",
-  "fresh_critic": "Pending at observation time",
+  "current_regressions": "All ten current-source regressions passed",
+  "all_ten_regressions_passed": true,
+  "fresh_critic": "Active at observation time; one actual model request, none queued",
   "promoted": false,
   "accepted_checkpoint": "d269dc43ac66c39afca4cb98ea53f9e7ed36806f",
   "cloud_pixel_review": {
