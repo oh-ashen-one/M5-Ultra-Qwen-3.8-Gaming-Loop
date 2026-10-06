@@ -318,7 +318,8 @@ class Engines:
         scenario_path = captures / "scenario.json"
         atomic(scenario_path, scenario)
         artifact_before = tree_digest(app)
-        player_code = self.machine.execute("unity-play", [str(executable), "-batchmode", "-force-metal",
+        display_args = ["-screen-fullscreen", "0"] if scenario.get('screen_capture') else ["-batchmode"]
+        player_code = self.machine.execute("unity-play", [str(executable), *display_args, "-force-metal",
             "-screen-width", "960", "-screen-height", "540", "-logFile", "-",
             "--loop-output", str(captures), "--loop-scenario", str(scenario_path), "--loop-capture-id", bundle.name],
             build_project, captures, int(scenario["duration"])+90, protected=[*protected, scenario_path])

@@ -45,6 +45,11 @@ public class LoopRuntime : MonoBehaviour
         public ObjectObservation[] objects;
     }
     [Serializable] public class Final { public string capture_id, unity, graphics, replay_clock; public int samples, errors; public float duration, wallDuration; public bool completed; }
+    [Serializable] public class CaptureReceipt {
+        public string file, renderPath, captureCompletedUtc;
+        public float gameTime; public int frame, width, height;
+        public bool cameraTargetTexture;
+    }
     string output, captureId;
     float started, wallStarted, nextSample;
     int samples, errors, captureIndex;
@@ -62,6 +67,26 @@ public class LoopRuntime : MonoBehaviour
     static string Arg(string key) {
         var args = Environment.GetCommandLineArgs();
         var i = Array.IndexOf(args, key); return i >= 0 && i + 1 < args.Length ? args[i + 1] : null;
+    }
+    void CaptureReceiptFor(string file, string renderPath, Texture2D image, bool targetTexture)
+    {
+        var receipt = new CaptureReceipt {file=file, renderPath=renderPath,
+            captureCompletedUtc=DateTime.UtcNow.ToString("O"), gameTime=LoopInput.Elapsed,
+            frame=Time.frameCount, width=image.width, height=image.height,
+            cameraTargetTexture=targetTexture};
+        File.AppendAllText(Path.Combine(output, "capture-times.jsonl"), JsonUtility.ToJson(receipt)+"\n");
+    }
+    System.Collections.IEnumerator CaptureScreen(int index)
+    {
+        // Record this player's completed normal game view, never the desktop.
+        // Unity documents waiting for the end of rendering before this API.
+        yield return new WaitForEndOfFrame();
+        var image = ScreenCapture.CaptureScreenshotAsTexture();
+        var file = "screen-"+index.ToString("D3")+".png";
+        File.WriteAllBytes(Path.Combine(output, file), image.EncodeToPNG());
+        CaptureReceiptFor(file, "normal-player-screen", image,
+            Camera.main != null && Camera.main.targetTexture != null);
+        Destroy(image);
     }
     void Awake()
     {
@@ -159,8 +184,11 @@ public class LoopRuntime : MonoBehaviour
                 camera.targetTexture = rt; camera.Render(); RenderTexture.active = rt;
                 var image = new Texture2D(CaptureWidth, CaptureHeight, TextureFormat.RGB24, false);
                 image.ReadPixels(new Rect(0, 0, CaptureWidth, CaptureHeight), 0, 0); image.Apply();
-                File.WriteAllBytes(Path.Combine(output, "frame-" + captureIndex.ToString("D3") + ".png"), image.EncodeToPNG());
+                var file = "frame-" + captureIndex.ToString("D3") + ".png";
+                File.WriteAllBytes(Path.Combine(output, file), image.EncodeToPNG());
+                CaptureReceiptFor(file, "explicit-Camera.Render-target", image, camera.targetTexture != null);
                 camera.targetTexture = oldTarget; RenderTexture.active = oldActive; rt.Release();
+                if (LoopInput.Replay.screen_capture) StartCoroutine(CaptureScreen(captureIndex));
                 Destroy(rt); Destroy(image); captureIndex++;
             }
         }
