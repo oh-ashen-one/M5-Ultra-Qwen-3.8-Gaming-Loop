@@ -65,7 +65,9 @@ namespace ChicagoGame
                     ap.transform.position = new Vector3((AX0 + AX1) * 0.5f, 0.14f - wb.size.y * 0.5f, (AZ0 + AZ1) * 0.5f)
                                             - pv0.rotation * Vector3.Scale(b.center, ls);
                     ap.AddComponent<MeshFilter>().sharedMesh = omf.sharedMesh;
-                    ap.AddComponent<MeshRenderer>().sharedMaterial = omr.sharedMaterial;
+                    var rGo = GameObject.Find("road_asphalt");
+                    var rR = rGo != null ? rGo.GetComponent<MeshRenderer>() : null;
+                    ap.AddComponent<MeshRenderer>().sharedMaterial = rR != null ? rR.sharedMaterial : omr.sharedMaterial;
                     var fl = ap.AddComponent<BoxCollider>(); fl.center = b.center; fl.size = b.size;
                 }
             }
