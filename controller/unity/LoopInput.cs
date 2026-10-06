@@ -7,7 +7,7 @@ using UnityEngine;
 public static class LoopInput
 {
     [Serializable] public class Step { public float start, end; public string[] keys; }
-    [Serializable] public class Scenario { public string id, fixture; public float duration; public Step[] steps; public float[] captures; public bool screen_capture; }
+    [Serializable] public class Scenario { public string id, fixture, death_case, death_key; public float duration, death_at; public Step[] steps; public float[] captures; public bool screen_capture; }
     public static Scenario Replay { get; private set; }
     public static float Elapsed { get; internal set; }
     static bool previousLoaded;

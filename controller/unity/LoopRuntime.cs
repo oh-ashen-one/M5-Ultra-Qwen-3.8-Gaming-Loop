@@ -17,6 +17,7 @@ public class LoopRuntime : MonoBehaviour
     public const int CaptureWidth=960, CaptureHeight=540;
     public static float StartedAt { get; private set; }
     [Serializable] public class Sample {
+        public LoopPlayerDeathFixture.State playerDeath;
         public float time, dt, health; public string mode, mission, graphics;
         public float[] player, vehicle; public string[] keys;
         public int frame, shots, hits, pursuit, restarts; public bool camera, hasController, grounded;
@@ -121,6 +122,7 @@ public class LoopRuntime : MonoBehaviour
         gameObject.AddComponent<LoopAimObservation>();
         if(LoopInput.Replay != null && (LoopInput.Replay.fixture=="combat-wall" || LoopInput.Replay.fixture=="combat-near-cover")) gameObject.AddComponent<LoopCombatFixture>();
         if(LoopInput.Replay != null && LoopInput.Replay.fixture=="camera-clearance") gameObject.AddComponent<LoopCameraFixture>();
+        if(LoopInput.Replay != null && LoopInput.Replay.fixture=="player-death") gameObject.AddComponent<LoopPlayerDeathFixture>();
     }
     void OnLog(string message, string stack, LogType type)
     {
@@ -161,6 +163,7 @@ public class LoopRuntime : MonoBehaviour
             var actor=LoopSignals.Player;
             var cc=actor == null ? null : actor.GetComponent<CharacterController>();
             var sample = new Sample {time=elapsed, dt=Time.unscaledDeltaTime, frame=Time.frameCount,
+                playerDeath=LoopPlayerDeathFixture.Capture(),
                 player=Position(LoopSignals.Player), vehicle=Position(LoopSignals.Vehicle), keys=LoopInput.ActiveKeys,
                 mode=LoopSignals.Mode, mission=LoopSignals.Mission, health=LoopSignals.Health,
                 shots=LoopSignals.Shots, hits=LoopSignals.Hits, pursuit=LoopSignals.PursuitLevel, restarts=LoopSignals.Restarts,
