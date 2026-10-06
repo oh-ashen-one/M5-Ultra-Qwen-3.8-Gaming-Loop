@@ -2,6 +2,8 @@
 
 ## Latest measured outcome — 2026-10-06 04:53 UTC
 
+**Recovery observation at 05:05:25 UTC:** the owner explicitly directed continued bounded diagnosis. Controller `722cb62` resumed the sole queue in q0058-e3955810; liveness and one active local-Qwen request (zero waiting) were directly verified. Source `1c68cc7` curates the prior compiled local candidate for a route repair; accepted `d269dc43` stays unchanged. Measured dumpster bounds explain the X4.535 walking stop, and the previous boarding distance was outside range. The new controller allows at most three different normal-input strategies for listed physical native failures, keeps all counters and requires unchanged native acceptance. Unsupported failures/exhaustion persist `RECOVERY-BLOCKER.json` for existing parent oversight, marked pending delivery. See [policy](../../tools/loop_controller/recovery_policy.py) and [state-transition tests](../../tests/test_recovery_policy.py). Both hosts passed 181 CPU tests. This observation proves resumed execution, not a newly accepted map. No duplicate owner, model or schedule was created.
+
 The first native map candidate has **not passed**. The accepted checkpoint remains `d269dc43ac66c39afca4cb98ea53f9e7ed36806f`, the measured 7 × 32 m corridor. The sole queue is paused after a genuine physical traversal rejection; no final visual or ten-minute mission pass is claimed.
 
 - q0054 produced a complete 47-line/3,041-byte local proposal, rejected by its 45-line cap. One hash-pinned recovery preserved that exact tool submission at a bounded 50-line cap as `b28bf88`. It did not extract private reasoning or erase the rejection.
