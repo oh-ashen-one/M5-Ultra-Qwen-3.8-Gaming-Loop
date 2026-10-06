@@ -82,7 +82,7 @@ namespace ChicagoGame
                 var rh = GameObject.Find("RouteHud");
                 var rt = rh ? rh.GetComponentInChildren<TextMesh>(true) : null;
                 string two = rt ? rt.text : "";
-                string foot = _route.RouteStage >= 3 ? "\nDELIVERY COMPLETE" : "";
+                string foot = "\nDELIVERY COMPLETE";
                 s = two + foot;
             }
             else if (_courier != null) s = Courier(_courier);
