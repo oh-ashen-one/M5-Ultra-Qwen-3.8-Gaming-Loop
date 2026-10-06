@@ -74,7 +74,7 @@ class CameraRepair(ThreeDayRunner):
             if files.path(path).read_text().rstrip()!=accepted.rstrip():raise Halt('Local route restoration incomplete: '+name)
         self.store.set(source_checkpoint=self.checkpoint_source('Local Qwen: preserve proven route anchors and boarding'))
 
-    def local_camera_edit(self,ident,evidence,contract):
+    def local_camera_edit(self,ident,evidence,contract,guidance=''):
         files=Files(self.project,self.store);path='Assets/Game/Bootstrap.cs'
         raw=files.path(path).read_text();marker='    public class Follow : MonoBehaviour'
         if raw.count(marker)!=1:raise Halt('Expected one exact Follow source span')
@@ -98,12 +98,12 @@ class CameraRepair(ThreeDayRunner):
             'Any crowding/framing rule should use actual target bounds/view/occlusion or honestly be just collision response. '
             'Preserve ordinary thin-ray shooting semantics as far as possible; no aim, mission, collider or asset edits. '
             'Keep compact. Submit the complete supplied Follow span including its final namespace closing brace through replace_follow. '
-            'Do not include Bootstrap or Walker. Save once; then finish.\nMEASURED:'+json.dumps(contract)+
+            'Do not include Bootstrap or Walker. Save once; then finish.\nCURRENT REVIEW GUIDANCE:'+guidance+'\nMEASURED:'+json.dumps(contract)+
             '\nEXACT CURRENT SPAN:\n'+old,
             [tool('replace_follow','Replace only the supplied exact Follow class span.',{'content':S}),
              tool('finish_task','Finish after saving the camera correction.',{'summary':S})],
             {'replace_follow':replace,'finish_task':lambda _,f:{'ok':True,**f}},
-            images=[('near.png ACTUAL failed close-wall camera',evidence/'captures/frame-001.png'),
+            images=[('near.png ACTUAL current close-wall camera',evidence/'captures/frame-001.png'),
                     ('endpoint.png ACTUAL endpoint wall',evidence/'captures/frame-003.png')],turns=3,reasoning_effort='low')
         changed=files.path(path).read_text()
         if changed==raw:raise Halt('Local camera request saved no correction: '+str(result.get('bounded_stop','no edit')))

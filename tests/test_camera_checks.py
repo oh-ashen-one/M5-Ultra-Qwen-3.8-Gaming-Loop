@@ -2,12 +2,16 @@ import copy
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from loop_controller.camera_checks import inspect_camera
 from loop_controller.core import Halt
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 from probe_camera_clearance import validate_camera_pause,SOURCE,ACCEPTED,BLOCKER
 from repair_camera_clearance import validate_repair_pause,validate_follow_replacement,PROBE,BUILD
+from qualify_camera_repair import validate_qualification_pause,require_ordinary_qualification,REGRESSIONS
+from continue_game_queue import ReadBoundEdits
+from types import SimpleNamespace
 
 def observations():
     return [dict(time=start+i*.1,cameraGeometry=dict(available=True,probeHit=True,
@@ -70,5 +74,31 @@ class CameraTests(unittest.TestCase):
         validate_follow_replacement(span)
         for text in ['public class Other {}',span+'LoopInput',span+'CameraClearanceWall',span+'.enabled=false',span+'x'*21000]:
             with self.assertRaises(ValueError):validate_follow_replacement(text)
+
+    def test_polish_cannot_redesign_accepted_mission_or_boarding(self):
+        edits=ReadBoundEdits(SimpleNamespace(path=lambda *a,**k:None),polish=True)
+        for path in ['Assets/Game/Mission.cs','Assets/Game/VehicleInteraction.cs']:
+            with self.assertRaises(ValueError):edits.allowed(path,'change')
+        edits.allowed('Art/coupe.py','original geometry')
+
+    def test_clearance_fixture_never_substitutes_for_current_ordinary_regressions(self):
+        gate=dict(passed=True,candidate_commit='current',scoped_facts={'mission_anchors':{'passed':True}},
+            regressions=dict(passed=True,regressions=[dict(test=n,gate=dict(passed=True,candidate_commit='current')) for n in REGRESSIONS]))
+        with patch('qualify_camera_repair.require_combat_contracts',return_value=True),patch('qualify_camera_repair.require_aim_contracts',return_value=True):
+            require_ordinary_qualification(gate,'current')
+            for key,value in [('acceptance_fixture','camera-clearance'),('candidate_commit','old'),('scoped_facts',{})]:
+                with self.assertRaises(Halt):require_ordinary_qualification({**gate,key:value},'current')
+            gate['regressions']['regressions'][0]['gate']['candidate_commit']='old'
+            with self.assertRaises(Halt):require_ordinary_qualification(gate,'current')
+
+    def test_qualification_requires_exact_pause_and_current_sealed_camera(self):
+        state=dict(last_playable_checkpoint=ACCEPTED,task_index=7,task_failures=6,failure_streak=1,
+            diagnosis_used=True,overall_deadline_epoch=HARD_CAP_EPOCH,camera_repair_attempted=True,
+            blocker='Camera geometry passes; ordinary route and fresh visual qualification still required',
+            source_checkpoint='current',camera_after_manifest='digest',
+            camera_after_probe=dict(passed=True,candidate='current',acceptance_fixture='camera-clearance'))
+        validate_qualification_pause(state)
+        for key,value in [('camera_qualification_attempted',True),('source_checkpoint','other'),('camera_after_manifest',None),('task_failures',0)]:
+            with self.assertRaises(Halt):validate_qualification_pause({**state,key:value})
 
 if __name__=='__main__':unittest.main()

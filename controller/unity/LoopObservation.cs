@@ -8,19 +8,22 @@ public static class LoopObservation
     [Serializable] public class MissionObject {
         public string name, hierarchy, meshName;
         public float[] position;
-        public bool playerChild, vehicleChild;
+        public bool playerChild, vehicleChild, deliveryTarget;
     }
     public static MissionObject[] MissionObjects(Transform player)
     {
+        var mission=UnityEngine.Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+            .FirstOrDefault(m=>m.GetType().FullName=="ChicagoGame.CourierMission");
+        var target=mission==null?null:mission.GetType().GetField("padRend")?.GetValue(mission) as Renderer;
         return UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None)
-            .Where(r => r.enabled && (r.name == "Parcel" || r.name == "DropPad" || r.name == "Beacon"))
+            .Where(r => r.enabled && (r.name == "Parcel" || r.name == "DropPad" || r.name == "Beacon" || r.name == "BeaconRing" || r==target))
             .Take(12).Select(r => {
                 var t = r.transform; var p = t.position; var path = t.name;
                 for (var parent = t.parent; parent != null; parent = parent.parent) path = parent.name + "/" + path;
                 var filter = r.GetComponent<MeshFilter>();
                 return new MissionObject {name=t.name, hierarchy=path, position=new [] {p.x,p.y,p.z},
                     meshName=filter != null && filter.sharedMesh != null ? filter.sharedMesh.name : null,
-                    playerChild=player != null && t.IsChildOf(player),
+                    deliveryTarget=r==target,playerChild=player != null && t.IsChildOf(player),
                     vehicleChild=LoopSignals.Vehicle != null && t.IsChildOf(LoopSignals.Vehicle)};
             }).ToArray();
     }

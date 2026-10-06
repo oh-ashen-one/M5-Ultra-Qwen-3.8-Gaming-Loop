@@ -20,6 +20,7 @@ def inspect_mission_anchors(rows):
     if not samples:
         return {'passed': False, 'failure': ['mission-object-observations-missing']}
     first, initial = samples[0]
+    marker_gaps=[]
     for name in ('Parcel', 'DropPad', 'Beacon'):
         if name not in initial:
             failures.append('initial-' + name + '-missing')
@@ -27,7 +28,16 @@ def inspect_mission_anchors(rows):
             failures.append('initial-' + name + '-follows-player')
     carried = next((r['time'] for r, obj in samples if actor_child(obj.get('Parcel', {}))), None)
     for row, objects in samples:
-        for name in ('DropPad', 'Beacon', 'Parcel'):
+        targets=[obj for obj in objects.values() if obj.get('deliveryTarget') is True]
+        if len(targets)!=1 or targets[0]['name']!='DropPad':
+            failures.append('actual-delivery-target-unverified')
+        else:
+            for name in ['Beacon']+(['BeaconRing'] if 'BeaconRing' in initial else []):
+                if name not in objects:failures.append(name+'-observation-missing');continue
+                gap=math.dist(xz(objects[name]['position']),xz(targets[0]['position']))
+                marker_gaps.append(gap)
+                if gap>.05:failures.append(name+'-does-not-mark-interaction-target')
+        for name in ('DropPad', 'Beacon', 'Parcel')+ (('BeaconRing',) if 'BeaconRing' in initial else ()):
             obj = objects.get(name)
             if name == 'Parcel' and carried is not None and row['time'] >= carried and (not obj or actor_child(obj)):
                 continue
@@ -82,5 +92,7 @@ def inspect_mission_anchors(rows):
             'returned_seconds': returned, 'pickup_seconds': carried,
             'delivery_seconds': completed['time'] if completed else None,
             'sample_count': len(samples), 'scope': 'fixed-world-objectives-and-input-transitions',
+            'initial_world_positions':{n:o['position'] for n,o in initial.items()},
+            'maximum_marker_target_xz_gap_m':max(marker_gaps) if marker_gaps else None,
             'delivery_input_edges':attempts[-8:],'closest_driving_approach':closest,
             'final_visual_acceptance': False}

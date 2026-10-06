@@ -23,7 +23,7 @@ class MissionAnchorTests(unittest.TestCase):
             (9, [0, 0, 10], True, ['F'], 'vehicle', 'complete'),
         ]:
             objects = [{'name':'Parcel','position':player if carried else [0, .5, 2], 'playerChild':carried},
-                       {'name':'DropPad','position':[0, 0, 10], 'playerChild':False},
+                       {'name':'DropPad','position':[0, 0, 10], 'playerChild':False,'deliveryTarget':True},
                        {'name':'Beacon','position':[0, 3, 10], 'playerChild':False}]
             rows.append(dict(time=time, player=player, vehicle=player, keys=keys, mode=mode,
                              mission=mission, missionObjects=objects))
@@ -45,6 +45,20 @@ class MissionAnchorTests(unittest.TestCase):
         self.assertEqual(facts['delivery_input_edges'][0]['distance_xz_m'],3.22)
         self.assertEqual(facts['delivery_input_edges'][0]['penetration_m'],.001)
         self.assertEqual(facts['closest_driving_approach']['distance_xz_m'],1)
+
+    def test_visible_post_and_ring_must_mark_actual_interaction_target(self):
+        rows=self.rows()
+        for row in rows:row['missionObjects'].append({'name':'BeaconRing','position':[0,.02,10]})
+        facts=inspect_mission_anchors(rows);self.assertTrue(facts['passed'])
+        self.assertEqual(facts['maximum_marker_target_xz_gap_m'],0)
+        for row in rows:row['missionObjects'][-1]['position']=[2.6,.02,10]
+        self.assertIn('BeaconRing-does-not-mark-interaction-target',inspect_mission_anchors(rows)['failure'])
+        rows=self.rows()
+        for row in rows:row['missionObjects'][1]['position']=[2.6,0,10]
+        self.assertIn('Beacon-does-not-mark-interaction-target',inspect_mission_anchors(rows)['failure'])
+        rows=self.rows()
+        for row in rows:row['missionObjects'][1].pop('deliveryTarget')
+        self.assertIn('actual-delivery-target-unverified',inspect_mission_anchors(rows)['failure'])
 
     def test_player_children_cannot_pass_even_with_constant_reported_world_positions(self):
         rows = self.rows()

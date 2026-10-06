@@ -90,6 +90,8 @@ class ReadBoundEdits:
 
     def allowed(self, path, content):
         self.files.path(path,write=True)
+        if self.polish and path in {'Assets/Game/Mission.cs','Assets/Game/VehicleInteraction.cs'}:
+            raise ValueError('Presentation polish preserves accepted mission anchors and boarding. A measured mechanics defect needs a separate scoped repair.')
         code=path.startswith('Assets/Game/') and path.endswith('.cs')
         art=self.polish and path in {'Art/'+name+'.py' for name in ('street','coupe','props','player')}
         if not (code or art):raise ValueError('This job edits game C# only; polish may revise the four existing Art scripts')

@@ -135,7 +135,7 @@ class QueueTests(unittest.TestCase):
                 (5,1,False,['W'],'active',0),(6,1,True,['F'],'active',0),(10,1,True,[],'failed',0),
                 (20,0,False,['R'],'active',1),(21,1,True,['F'],'active',1),(30,10,True,['F'],'complete',1)]:
             objects=[{'name':'Parcel','position':[0,0,z] if carry else [0,.5,2],'playerChild':carry},
-                     {'name':'DropPad','position':[0,0,10],'playerChild':False},
+                     {'name':'DropPad','position':[0,0,10],'playerChild':False,'deliveryTarget':True},
                      {'name':'Beacon','position':[0,3,10],'playerChild':False}]
             rows.append(dict(time=t,player=[0,0,z],vehicle=[0,0,z],mission=mission,restarts=restarts,keys=keys,
                              mode='vehicle' if t==30 else 'foot',visibleText=['Objective: deliver'],missionObjects=objects))
