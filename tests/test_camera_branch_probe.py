@@ -11,6 +11,7 @@ from loop_controller import camera_branch_probe as probe
 from loop_controller.core import Halt,sha
 import resume_camera_branch_diagnosis as recovery
 import resume_camera_completed_diagnosis as completed
+import resume_camera_overlap_micro as overlap
 
 ANCHORS='''            Vector3 want = origin + hdir * hDist + Vector3.up * camY;
             Vector3 pos = Vector3.Lerp(transform.position, want,
@@ -94,6 +95,16 @@ class CameraBranchProbeTests(unittest.TestCase):
         before=copy.deepcopy(state);completed.validate_pause(state);self.assertEqual(state,before)
         for key,value in [('completed_camera_diagnosis_recovered',True),('task_failures',0),('current_round',recovery.ROUND)]:
             with self.subTest(key=key),self.assertRaises(Halt):completed.validate_pause({**state,key:value})
+
+    def test_overlap_micro_recovery_preserves_the_failed_editor_and_all_counters(self):
+        state=dict(source_checkpoint=overlap.SOURCE,last_playable_checkpoint=overlap.ACCEPTED,
+            current_round=overlap.ROUND,task_index=7,task_failures=23,failure_streak=1,diagnosis_used=True,
+            second_street_attempts=4,overall_deadline_epoch=overlap.HARD_CAP_EPOCH,
+            completed_camera_diagnosis_recovered=True,blocker='Halt: Cause-based local editor saved no correction')
+        before=copy.deepcopy(state);overlap.validate_pause(state);self.assertEqual(state,before)
+        for key,value in [('camera_overlap_micro_attempted',True),('task_failures',0),
+                          ('current_round',completed.ROUND),('completed_camera_diagnosis_recovered',False)]:
+            with self.subTest(key=key),self.assertRaises(Halt):overlap.validate_pause({**state,key:value})
 
 
 if __name__=='__main__':unittest.main()
