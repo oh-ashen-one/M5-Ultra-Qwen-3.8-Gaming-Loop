@@ -176,6 +176,16 @@ namespace ChicagoGame
         public float lookAhead = 4.0f;
         public LayerMask collideMask = ~0;
 
+        // Vehicle-mode rig: the chase framing must keep the WHOLE coupe silhouette
+        // (roof + both flanks) with margin. When the car hugs a facade the generic
+        // cramped path collapses to a waist-height 0.18 m hug and jams the lens into
+        // the rear quarter. Vehicle mode therefore keeps a much larger horizontal
+        // floor and a high downward pose so the car never fuses with the wall.
+        public bool vehicle = false;
+        public Vector3 vehicleOffset = new Vector3(0f, 4.3f, -8.2f);
+        public float vehicleMinHoriz = 5.6f;
+        public float vehicleMinY = 3.6f;
+
         readonly RaycastHit[] hits = new RaycastHit[16];
         readonly Collider[] near = new Collider[8];
         Renderer[] rend;
@@ -209,14 +219,17 @@ namespace ChicagoGame
             // wall behind) and vertical (the part that keeps a usable height). Scaling
             // the whole normalized direction — the old dir*maxSafe — collapsed Y to the
             // feet when a close wall forced a tiny distance, giving a waist-height view.
-            Vector3 fullOff = yaw * offset;
+            Vector3 activeOffset = vehicle ? vehicleOffset : offset;
+            Vector3 fullOff = yaw * activeOffset;
             Vector3 horiz = new Vector3(fullOff.x, 0f, fullOff.z);
             float horizFull = horiz.magnitude;
             if (horizFull < 1e-4f) { transform.position = origin + fullOff; return; }
             Vector3 hdir = horiz / horizFull;
 
             const float clearance = 0.25f;   // wall surface + near-plane budget
-            float camY = offset.y;           // normal height until proven cramped
+            float camY = activeOffset.y;     // normal height until proven cramped
+            float crampHorizFloor = vehicle ? vehicleMinHoriz : 0.18f;
+            float crampYFloor = vehicle ? vehicleMinY : 1.35f;
 
             // Horizontal room measured at head height along the back direction.
             Vector3 probeOrigin = origin + Vector3.up * Mathf.Max(1.0f, bodyTop * 0.9f);
@@ -238,13 +251,13 @@ namespace ChicagoGame
                 float avail = hHit - clearance;
                 if (avail < hFull * 0.6f)
                 {
-                    // Back space is short: pure collision response. Lift to an
-                    // overhead/shoulder height (above the torso) and hug the actor
-                    // instead of dropping height — keeps the actor framed AND the
-                    // route visible ahead rather than a waist-height upward stare.
+                    // Back space is short. For the foot rig we hug the actor (small
+                    // floor) but for the coupe we MUST keep the whole silhouette
+                    // framed: never let a near facade pull the lens into the car,
+                    // instead hold a high wide pose and the vehicle horizontal floor.
                     cramped = true;
-                    camY = Mathf.Max(1.35f, bodyTop + 0.25f);
-                    hDist = Mathf.Max(0.18f, avail);
+                    camY = Mathf.Max(crampYFloor, bodyTop + 0.25f);
+                    hDist = Mathf.Max(crampHorizFloor, avail);
                 }
                 else
                 {
