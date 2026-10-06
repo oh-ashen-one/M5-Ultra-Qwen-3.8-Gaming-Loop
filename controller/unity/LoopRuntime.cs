@@ -81,7 +81,13 @@ public class LoopRuntime : MonoBehaviour
         // Record this player's completed normal game view, never the desktop.
         // Unity documents waiting for the end of rendering before this API.
         yield return new WaitForEndOfFrame();
-        var image = ScreenCapture.CaptureScreenshotAsTexture();
+        var previous = RenderTexture.active;
+        RenderTexture.active = null;
+        var image = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
+        try {
+            image.ReadPixels(new Rect(0, 0, image.width, image.height), 0, 0);
+            image.Apply();
+        } finally { RenderTexture.active = previous; }
         var file = "screen-"+index.ToString("D3")+".png";
         File.WriteAllBytes(Path.Combine(output, file), image.EncodeToPNG());
         CaptureReceiptFor(file, "normal-player-screen", image,

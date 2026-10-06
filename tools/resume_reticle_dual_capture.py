@@ -37,21 +37,32 @@ def capture_receipt(bundle, source, gate):
 
 class ReticleDualCapture(CameraNativeOnly):
     def validate_recovery(self, old):
+        recovery = old.get('current_round') == 'q0133-7016b97e'
         expected = dict(status='paused', controller_pid=None, owned_process=None,
             source_checkpoint=SOURCE, last_playable_checkpoint=ACCEPTED, current_round=PRIOR,
             task_index=7, task_failures=24, failure_streak=1, diagnosis_used=True,
             overall_deadline_epoch=HARD_CAP_EPOCH, camera_native_only_attempted=True,
             blocker='Halt: Saved camera native checks complete with model unloaded; local visual criticism remains required')
+        if recovery:
+            expected.update(current_round='q0133-7016b97e', reticle_dual_before_attempted=True,
+                blocker='Halt: Protected controller harness compilation failed; stop gameplay edits and repair infrastructure')
+            failed = self.store.root / 'evidence/q0133-7016b97e'
+            errors = read_json(failed / 'gate.json').get('compile_errors', [])
+            if (not errors or any('ScreenCapture' not in e and 'Scripts have compiler errors' not in e for e in errors)
+                    or (failed / 'captures').exists() or old.get('reticle_capture_module_recovered')):
+                raise Halt('Require the exact preserved missing ScreenCapture module compiler failure')
         outcome = old.get('character_camera_outcome', {})
-        if (any(old.get(k) != v for k, v in expected.items()) or old.get('reticle_dual_before_attempted')
+        if (any(old.get(k) != v for k, v in expected.items()) or (old.get('reticle_dual_before_attempted') and not recovery)
                 or not outcome.get('native_gate', {}).get('passed')
                 or not outcome.get('camera_clearance', {}).get('passed')
                 or not outcome.get('full_regressions', {}).get('passed')):
             raise Halt('Require completed saved-camera native checks and preserved sole-owner history')
         self.resume_capacity = self.priority_resume = self.transport_recovery = self.admission_recovery = False
+        self.capture_module_recovery = recovery
 
     def recovery_settings(self):
-        return dict(reticle_dual_before_attempted=True, recovery_route='reticle-dual-render-red-evidence',
+        return dict(reticle_dual_before_attempted=True, reticle_capture_module_recovered=self.capture_module_recovery,
+            recovery_route='reticle-dual-render-red-evidence',
             recovery_change='Capture actual normal player view and Camera.Render on identical saved source; '
             'keep inference unloaded and preserve prior full gameplay and clearance checks.')
 
