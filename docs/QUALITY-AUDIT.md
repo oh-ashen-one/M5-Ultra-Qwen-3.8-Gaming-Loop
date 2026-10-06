@@ -2,6 +2,8 @@
 
 Audit date: 2026-10-06. This is an audit of the existing local run, not a model benchmark. The visible output remains below the requested standard. The evidence does not isolate intrinsic model capability from the authoring and review workflow.
 
+**Observed outcome, 21:16 UTC:** the first broader visual request exhausted its entire 16,384-token allowance after 68 minutes 38 seconds without saving an artifact. A focused complete-character submission is now active, with exact current source and two verified target/native images; success is pending. Runtime comparison and upstream research have not established a safe fix for the concurrent decode slowdown. See [the preserved failure, changed recovery strategy and measured limits](CHARACTER-RECOVERY.md). Older implementation snapshots below are not evidence that the visual work succeeded.
+
 **Implemented correction status:** [controller28499bc](https://github.com/oh-ashen-one/M5-Ultra-Qwen-3.8-Gaming-Loop/commit/28499bce4c54a29a87c00c23dd3792f8ce482111) was deployed after345 CPU checks passed on both hosts. It fixes actual slot acquisition at both callers, verifies reference/native PNG bytes in each visual API request, and supplies a coherent local character/camera author with Blender/Unity tools and16384output tokens. Its first real request carried two target images and two native before frames. Broader review requires all five targets. These are implemented safeguards and actual request-delivery facts; rendered visual improvement was still pending. The findings below describe the audited workflow before those corrections.
 
 ## Model and execution
