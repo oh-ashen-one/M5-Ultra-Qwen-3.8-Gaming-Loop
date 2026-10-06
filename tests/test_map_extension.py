@@ -5,10 +5,22 @@ from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from qualify_map_extension import inspect_extension
 import resume_map_after_courier as recovery
+import resume_map_plan_completion as plan_recovery
 from loop_controller.core import Halt
 
 
 class MapExtensionTests(unittest.TestCase):
+    def test_read_only_plan_completion_is_one_time_and_exact(self):
+        state=dict(source_checkpoint=plan_recovery.SOURCE,last_playable_checkpoint=plan_recovery.ACCEPTED,
+            current_round=plan_recovery.ROUND,task_index=7,task_failures=8,failure_streak=1,
+            diagnosis_used=True,overall_deadline_epoch=plan_recovery.HARD_CAP_EPOCH,
+            blocker=plan_recovery.BLOCKER,map_after_courier_attempted=True)
+        old=copy.deepcopy(state);plan_recovery.validate_plan_pause(state);self.assertEqual(state,old)
+        for key,value in [('map_plan_completion_attempted',True),('map_extension_plan','already submitted'),
+                          ('current_round','other'),('blocker','resource fault')]:
+            with self.subTest(key=key),self.assertRaises(Halt):
+                plan_recovery.validate_plan_pause({**state,key:value})
+
     def test_new_map_scope_preserves_exact_courier_rejection(self):
         state=dict(source_checkpoint=recovery.SOURCE,last_playable_checkpoint=recovery.ACCEPTED,
             current_round=recovery.ROUND,task_index=7,task_failures=8,failure_streak=1,
