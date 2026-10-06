@@ -94,6 +94,7 @@ namespace ChicagoGame
             Combat.Install(body, cam);
 RouteMission.Install(body,cam);
 RelaySequence.Install(body,cam);
+MissionDirectorHud.Install(body,cam);
             AudioFX.Install(rig.transform);
             HudStatus.Install(cam);
 
