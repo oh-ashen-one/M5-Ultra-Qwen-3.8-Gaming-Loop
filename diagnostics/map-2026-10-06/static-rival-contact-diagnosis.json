@@ -1,0 +1,304 @@
+{
+  "observed_utc": "2026-10-06T06:21:54.452758+00:00",
+  "round": "q0069-016e4b53-contact",
+  "candidate": "cd65b1cb702005da8ec9afb784b5fb94da460bf6",
+  "build_id": "d507def1686dbadaf0ea9f36aaed2353191929401a9a8afae27a52c85fc67563",
+  "cause_verified": true,
+  "static_rival_blocking_samples": 10,
+  "contact_names": [
+    "Props/ltrack/pier_01/pier_base01",
+    "Rival",
+    "Street/facade_base"
+  ],
+  "first_blocking": [
+    {
+      "keys": [
+        "W"
+      ],
+      "observed_horizontal_speed": 1.1211786403690238,
+      "physics": {
+        "angularVelocity": [
+          0,
+          0.4977250397205353,
+          0
+        ],
+        "available": true,
+        "commandedSpeed": 2.5999996662139893,
+        "contacts": [
+          {
+            "boundsCenter": [
+              3.5006322860717773,
+              1.090000033378601,
+              10.949316024780273
+            ],
+            "boundsSize": [
+              0.7600002288818359,
+              1.8999998569488525,
+              0.7600002288818359
+            ],
+            "collider": "Rival",
+            "impulse": [
+              436.7574768066406,
+              0,
+              -2549.680419921875
+            ],
+            "kind": "CapsuleCollider",
+            "normal": [
+              0.16883964836597443,
+              0,
+              -0.9856435060501099
+            ],
+            "otherHasBody": false,
+            "otherKinematic": false,
+            "otherMass": 0,
+            "point": [
+              3.564791440963745,
+              0.5200000405311584,
+              10.574771881103516
+            ],
+            "separation": -0.005672812461853027,
+            "time": 22.37999153137207
+          }
+        ],
+        "forward": [
+          -0.1670517921447754,
+          0,
+          0.9859481453895569
+        ],
+        "steering": 0,
+        "throttle": 1,
+        "velocity": [
+          -0.4343350827693939,
+          3.129243850708008e-7,
+          2.563464641571045
+        ],
+        "yaw": 350.383544921875
+      },
+      "time": 22.383333206176758,
+      "vehicle": [
+        3.2751078605651855,
+        -0.010003307834267616,
+        8.3500337600708
+      ],
+      "vehiclePenetration": 0.004916787147521973
+    },
+    {
+      "keys": [
+        "W"
+      ],
+      "observed_horizontal_speed": 0.29589240316369,
+      "physics": {
+        "angularVelocity": [
+          0,
+          0.5939136743545532,
+          0
+        ],
+        "available": true,
+        "commandedSpeed": 3.1999990940093994,
+        "contacts": [
+          {
+            "boundsCenter": [
+              3.5006322860717773,
+              1.0899999141693115,
+              10.949316024780273
+            ],
+            "boundsSize": [
+              0.7600002288818359,
+              1.899999976158142,
+              0.7600002288818359
+            ],
+            "collider": "Rival",
+            "impulse": [
+              481.5779724121094,
+              0,
+              -3205.572509765625
+            ],
+            "kind": "CapsuleCollider",
+            "normal": [
+              0.14856433868408203,
+              0,
+              -0.9889026880264282
+            ],
+            "otherHasBody": false,
+            "otherKinematic": false,
+            "otherMass": 0,
+            "point": [
+              3.557086706161499,
+              0.5199999809265137,
+              10.573533058166504
+            ],
+            "separation": -0.006229043006896973,
+            "time": 22.479991912841797
+          }
+        ],
+        "forward": [
+          -0.14644552767276764,
+          0,
+          0.9892187118530273
+        ],
+        "steering": 0,
+        "throttle": 1,
+        "velocity": [
+          -0.46862494945526123,
+          2.8312206268310547e-7,
+          3.165499210357666
+        ],
+        "yaw": 351.5790100097656
+      },
+      "time": 22.483333587646484,
+      "vehicle": [
+        3.2471327781677246,
+        -0.010003467090427876,
+        8.359673500061035
+      ],
+      "vehiclePenetration": 0.005401253700256348
+    },
+    {
+      "keys": [
+        "W"
+      ],
+      "observed_horizontal_speed": 0.3537146303708223,
+      "physics": {
+        "angularVelocity": [
+          0,
+          0.6737105846405029,
+          0
+        ],
+        "available": true,
+        "commandedSpeed": 3.7999985218048096,
+        "contacts": [
+          {
+            "boundsCenter": [
+              3.5006322860717773,
+              1.090000033378601,
+              10.949316024780273
+            ],
+            "boundsSize": [
+              0.7600002288818359,
+              1.8999998569488525,
+              0.7600002288818359
+            ],
+            "collider": "Rival",
+            "impulse": [
+              489.8222961425781,
+              0,
+              -3885.18310546875
+            ],
+            "kind": "CapsuleCollider",
+            "normal": [
+              0.1250842660665512,
+              0,
+              -0.9921461343765259
+            ],
+            "otherHasBody": false,
+            "otherKinematic": false,
+            "otherMass": 0,
+            "point": [
+              3.5481643676757812,
+              0.5200000405311584,
+              10.572300910949707
+            ],
+            "separation": -0.006798148155212402,
+            "time": 22.579992294311523
+          }
+        ],
+        "forward": [
+          -0.12268880009651184,
+          0,
+          0.992445170879364
+        ],
+        "steering": 0,
+        "throttle": 1,
+        "velocity": [
+          -0.46621665358543396,
+          -1.6391277313232422e-7,
+          3.7712903022766113
+        ],
+        "yaw": 352.95269775390625
+      },
+      "time": 22.58333396911621,
+      "vehicle": [
+        3.2134580612182617,
+        -0.010003307834267616,
+        8.370497703552246
+      ],
+      "vehiclePenetration": 0.005897402763366699
+    },
+    {
+      "keys": [
+        "W"
+      ],
+      "observed_horizontal_speed": 0.4142011548348901,
+      "physics": {
+        "angularVelocity": [
+          0,
+          0.7592781186103821,
+          0
+        ],
+        "available": true,
+        "commandedSpeed": 4.499998092651367,
+        "contacts": [
+          {
+            "boundsCenter": [
+              3.5006322860717773,
+              1.0899999141693115,
+              10.949316024780273
+            ],
+            "boundsSize": [
+              0.7600002288818359,
+              1.899999976158142,
+              0.7600002288818359
+            ],
+            "collider": "Rival",
+            "impulse": [
+              454.3510437011719,
+              0,
+              -4691.82275390625
+            ],
+            "kind": "CapsuleCollider",
+            "normal": [
+              0.09638800472021103,
+              0,
+              -0.9953437447547913
+            ],
+            "otherHasBody": false,
+            "otherKinematic": false,
+            "otherMass": 0,
+            "point": [
+              3.537259817123413,
+              0.5199999809265137,
+              10.571084976196289
+            ],
+            "separation": -0.008987069129943848,
+            "time": 22.69999122619629
+          }
+        ],
+        "forward": [
+          -0.09638145565986633,
+          0,
+          0.9953444600105286
+        ],
+        "steering": 0,
+        "throttle": 1,
+        "velocity": [
+          -0.4337159991264343,
+          1.6391277313232422e-7,
+          4.479048252105713
+        ],
+        "yaw": 354.46917724609375
+      },
+      "time": 22.700000762939453,
+      "vehicle": [
+        3.1671218872070312,
+        -0.01000303030014038,
+        8.3842134475708
+      ],
+      "vehiclePenetration": 0.008983731269836426
+    }
+  ],
+  "conclusion": "The solid rival capsule has no Rigidbody and blocks the grounded car under throttle. The subsequent turn also collides with the pier base after the approach is shortened by that obstruction.",
+  "scope": "Identical game source and replay; passive external collision, steering and motion instrumentation only.",
+  "next_action": "One local-Qwen dynamic actor body/reset repair; replay unchanged; full native and regression acceptance remain required.",
+  "controller": "a03089a1cdbf931dc5bfb1d45c2b008deffae84d",
+  "controller_cpu_tests_both_hosts": 197
+}
