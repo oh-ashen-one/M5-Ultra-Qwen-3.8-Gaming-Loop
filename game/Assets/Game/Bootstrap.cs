@@ -179,15 +179,12 @@ namespace ChicagoGame
         readonly RaycastHit[] hits = new RaycastHit[16];
         readonly Collider[] near = new Collider[8];
         Renderer[] rend;
-
-        void Awake()
-        {
-            if (target != null) rend = target.GetComponentsInChildren<Renderer>();
-        }
+        Transform cachedTarget;
 
         void LateUpdate()
         {
-            if (target == null) return;
+            if (target == null) { rend = null; cachedTarget = null; return; }
+            if (target != cachedTarget) { cachedTarget = target; rend = target.GetComponentsInChildren<Renderer>(); }
             var yaw = Quaternion.Euler(0f, target.eulerAngles.y, 0f);
 
             Vector3 origin = target.position;
@@ -280,11 +277,14 @@ namespace ChicagoGame
             // Final geometry-aware near-plane guard: if the smoothed lens overlaps any
             // foreign collider (height differences can hide a low wall), step toward
             // the target until the lens sits in open space.
-            for (int k = 0; k < 5 && Physics.OverlapSphereNonAlloc(pos, clearance, near,
-                                                                   collideMask, QueryTriggerInteraction.Ignore) > 0; k++)
+            for (int k = 0; k < 5; k++)
             {
+                int overlapCount = Physics.OverlapSphereNonAlloc(pos, clearance, near,
+                                                                   collideMask, QueryTriggerInteraction.Ignore);
+                if (overlapCount == 0) break;
+
                 bool touchingForeign = false;
-                for (int i = 0; i < near.Length; i++)
+                for (int i = 0; i < overlapCount; i++)
                 {
                     var t = near[i] ? near[i].transform : null;
                     if (t == null || t == target || t.IsChildOf(target)) continue;
