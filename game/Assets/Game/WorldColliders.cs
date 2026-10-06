@@ -36,12 +36,57 @@ namespace ChicagoGame
             // 2) Bound traversal to the visible pavement with edge barriers.
             AddWall(go, new Vector3(PX0 - WALL_T * 0.5f, WALL_H * 0.5f, (PZ0 + PZ1) * 0.5f),
                     new Vector3(WALL_T, WALL_H, (PZ1 - PZ0)));
-            AddWall(go, new Vector3(PX1 + WALL_T * 0.5f, WALL_H * 0.5f, (PZ0 + PZ1) * 0.5f),
-                    new Vector3(WALL_T, WALL_H, (PZ1 - PZ0)));
+            AddWall(go, new Vector3(PX1 + WALL_T * 0.5f, WALL_H * 0.5f, 3.0f),
+                    new Vector3(WALL_T, WALL_H, 10.0f));
+            AddWall(go, new Vector3(PX1 + WALL_T * 0.5f, WALL_H * 0.5f, 25.0f),
+                    new Vector3(WALL_T, WALL_H, 10.0f));
             AddWall(go, new Vector3((PX0 + PX1) * 0.5f, WALL_H * 0.5f, PZ1 + WALL_T * 0.5f),
                     new Vector3((PX1 - PX0) + WALL_T * 2f, WALL_H, WALL_T));
             AddWall(go, new Vector3((PX0 + PX1) * 0.5f, WALL_H * 0.5f, PZ0 - WALL_T * 0.5f),
                     new Vector3((PX1 - PX0) + WALL_T * 2f, WALL_H, WALL_T));
+
+            // 2b) Connected east alley pavement patch (rendered, not invisible),
+            // reusing original pavement mesh/material/rotation/thickness.
+            float AX0 = 6f, AX1 = 22f, AZ0 = 8f, AZ1 = 20f;
+            Transform pv0 = null;
+            var pvGo = GameObject.Find("Pavement");
+            if (pvGo != null) pv0 = pvGo.transform;
+                pv0 = FindDeep(g.transform, "pavement"); if (pv0 != null) break;
+            }
+            if (pv0 != null)
+            {
+                var omf = pv0.GetComponent<MeshFilter>(); var omr = pv0.GetComponent<MeshRenderer>();
+                if (omf != null && omr != null)
+                {
+                    var b = omf.sharedMesh.bounds; var wb = omr.bounds;
+                    var ls = new Vector3((AZ1 - AZ0) / b.size.x, (AX1 - AX0) / b.size.y, 0.14f / b.size.z);
+                    var ap = new GameObject("AlleyPavement");
+                    ap.transform.SetParent(go.transform, false);
+                    ap.transform.rotation = pv0.rotation;
+                    ap.transform.localScale = ls;
+                    ap.transform.position = new Vector3((AX0 + AX1) * 0.5f, 0.14f - wb.size.y * 0.5f, (AZ0 + AZ1) * 0.5f)
+                                            - pv0.rotation * Vector3.Scale(b.center, ls);
+                    ap.AddComponent<MeshFilter>().sharedMesh = omf.sharedMesh;
+                    ap.AddComponent<MeshRenderer>().sharedMaterial = omr.sharedMaterial;
+                    var fl = ap.AddComponent<BoxCollider>(); fl.center = b.center; fl.size = b.size;
+                }
+            }
+            // Bound east (X22) and both Z edges across X6..22; west X6 stays open.
+            AddWall(go, new Vector3(AX1 + WALL_T * 0.5f, WALL_H * 0.5f, (AZ0 + AZ1) * 0.5f),
+                    new Vector3(WALL_T, WALL_H, AZ1 - AZ0));
+            AddWall(go, new Vector3((AX0 + AX1) * 0.5f, WALL_H * 0.5f, AZ1 + WALL_T * 0.5f),
+                    new Vector3(AX1 - AX0 + WALL_T * 2f, WALL_H, WALL_T));
+            AddWall(go, new Vector3((AX0 + AX1) * 0.5f, WALL_H * 0.5f, AZ0 - WALL_T * 0.5f),
+                    new Vector3(AX1 - AX0 + WALL_T * 2f, WALL_H, WALL_T));
+            if (fenceSourcePrefab != null)
+            {
+                PlaceFence(fenceSourcePrefab, go, new Vector3(AX1 - 0.3f, 0f, (AZ0 + AZ1) * 0.5f),
+                    Quaternion.Euler(0f, 90f, 0f), new Vector3((AZ1 - AZ0) / 18f, 1f, 1f));
+                PlaceFence(fenceSourcePrefab, go, new Vector3((AX0 + AX1) * 0.5f, 0f, AZ1 - 0.3f),
+                    Quaternion.identity, new Vector3((AX1 - AX0) / 18f, 1f, 1f));
+                PlaceFence(fenceSourcePrefab, go, new Vector3((AX0 + AX1) * 0.5f, 0f, AZ0 + 0.3f),
+                    Quaternion.identity, new Vector3((AX1 - AX0) / 18f, 1f, 1f));
+            }
 
             // 3) Understandable end barriers using the original fence mesh.
             if (fenceSourcePrefab != null)
