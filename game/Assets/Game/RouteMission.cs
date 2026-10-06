@@ -34,18 +34,25 @@ namespace ChicagoGame
 
         Transform missionHud;
         Vector3 hudScale0 = Vector3.one;
+        Vector3 missionPos0 = Vector3.zero;
+        bool missionCached;
         Transform card;
+
+        Transform hudStatus;
+        Vector3 hsPos0 = Vector3.zero;
+        Vector3 hsScale0 = Vector3.one;
+        bool hsCached;
 
         void BuildHud()
         {
             var go = new GameObject("RouteHud");
             go.transform.SetParent(cam.transform, false);
-            go.transform.localPosition = new Vector3(0f, 0.40f, 1.6f);
+            go.transform.localPosition = new Vector3(0.52f, 0.85f, 1.6f);
             go.transform.localRotation = Quaternion.identity;
             hud = go.AddComponent<TextMesh>();
             hud.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             hud.fontSize = 40;
-            hud.characterSize = 0.02f;
+            hud.characterSize = 0.0175f;
             hud.anchor = TextAnchor.UpperCenter;
             hud.alignment = TextAlignment.Center;
             hud.color = new Color(0.45f, 0.95f, 1f);
@@ -55,17 +62,20 @@ namespace ChicagoGame
             if (mh != null)
             {
                 missionHud = mh.transform;
+                missionPos0 = mh.transform.localPosition;
                 hudScale0 = mh.transform.localScale;
-                Transform c = Find("HudCard");
-                if (c != null)
-                {
-                    var clone = Instantiate(c.gameObject, go.transform);
-                    card = clone.transform;
-                    card.localPosition = new Vector3(0f, -0.11f, 0.025f);
-                    card.localRotation = Quaternion.identity;
-                    card.localScale = new Vector3(2.2f, 0.34f, 0.01f);
-                    var col = card.GetComponent<Collider>(); if (col != null) col.enabled = false;
-                }
+                missionCached = true;
+            }
+
+            Transform c = Find("HudCard");
+            if (c != null)
+            {
+                var clone = Instantiate(c.gameObject, go.transform);
+                card = clone.transform;
+                card.localPosition = new Vector3(0f, -0.06f, 0.025f);
+                card.localRotation = Quaternion.identity;
+                card.localScale = new Vector3(1.75f, 0.23f, 0.01f);
+                var col = card.GetComponent<Collider>(); if (col != null) col.enabled = false;
             }
             if (card != null) card.gameObject.SetActive(false);
         }
@@ -74,14 +84,61 @@ namespace ChicagoGame
         {
             if (hud == null) return;
             bool chapter = RouteStage >= 1;
-            if (missionHud != null)
-                missionHud.localScale = chapter ? hudScale0 * 0.6f : hudScale0;
+
+            if (hudStatus == null)
+            {
+                var hs = GameObject.Find("HudStatus");
+                if (hs != null)
+                {
+                    hudStatus = hs.transform;
+                    hsPos0 = hs.transform.localPosition;
+                    hsScale0 = hs.transform.localScale;
+                    hsCached = true;
+                }
+            }
+
+            if (missionCached)
+            {
+                if (chapter)
+                {
+                    missionHud.localPosition = new Vector3(-1.05f, -0.70f, 1.6f);
+                    missionHud.localScale = hudScale0 * 0.9f;
+                }
+                else
+                {
+                    missionHud.localPosition = missionPos0;
+                    missionHud.localScale = hudScale0;
+                }
+            }
+
+            if (hsCached)
+            {
+                if (chapter) hudStatus.localPosition = new Vector3(-1.55f, 0.85f, 1.6f);
+                else hudStatus.localPosition = hsPos0;
+                hudStatus.localScale = hsScale0;
+            }
+
             if (card != null) card.gameObject.SetActive(chapter && hud.text.Length > 0);
+
+            if (tintedMat != null)
+            {
+                if (RouteStage == 1)
+                {
+                    tintedMat.color = new Color(0.10f, 0.50f, 0.48f);
+                    tintedMat.SetColor("_EmissionColor", new Color(0.015f, 0.10f, 0.09f));
+                }
+                else if (RouteStage == 2)
+                {
+                    tintedMat.color = new Color(0.12f, 0.48f, 0.18f);
+                    tintedMat.SetColor("_EmissionColor", new Color(0.015f, 0.08f, 0.02f));
+                }
+            }
+
             if (!chapter) return;
 
             if (RouteStage == 2)
             {
-                hud.text = "\u2605 EAST DEAD-DROP COMPLETE \u2605\nThis route stage is finished.";
+                hud.text = "\u2605 EAST DEAD-DROP COMPLETE \u2605\nChapter complete";
                 return;
             }
 
@@ -93,16 +150,16 @@ namespace ChicagoGame
             if (inCar)
             {
                 int d = Mathf.RoundToInt(XZDist(veh.position, tgt));
-                hud.text = "EAST DEAD-DROP\nDrive to the cache (" + d + "m)\nPress E to exit when close";
+                hud.text = "EAST DEAD-DROP\nDrive to cache (" + d + "m)  E to exit";
             }
             else if (reachedInVehicle)
             {
                 int d = Mathf.RoundToInt(XZDist(player.transform.position, tgt));
-                hud.text = "EAST DEAD-DROP\nWalk to the cache (" + d + "m)\nPress F to place it";
+                hud.text = "EAST DEAD-DROP\nWalk to cache (" + d + "m)  F to place";
             }
             else
             {
-                hud.text = "EAST DEAD-DROP\nEnter the coupe (E)\nDrive east to the cache";
+                hud.text = "EAST DEAD-DROP\nEnter the coupe (E)";
             }
         }
         void Update()
