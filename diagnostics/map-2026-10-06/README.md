@@ -1,6 +1,10 @@
 # Connected-map stage
 
-## Latest measured outcome — 2026-10-06 06:25 UTC
+## Latest measured outcome — 2026-10-06 06:35 UTC
+
+**All ten regressions pass; fresh local visual verdict is FIX.** The critic confirms physical walking/driving out-and-back, collider continuity and clean support, but rejects the unreadable entrance and bare tan slab without visible alley boundaries. It requests a clear fence opening, visible original-mesh walls, matching street material and later limited prop dressing. See [complete independent verdict](rival-repair-visual-fix.json) and [all ten receipts](rival-repair-regressions.json). No map promotion occurred: the prior baseline and rejected candidate remain preserved.
+
+Controller **`4497cb4`**, **198 CPU tests passing on both hosts**, continues the same queue with three exact local-Qwen presentation edits. It restores the physically proven **`d5260465`**, matches the existing asphalt material, hides only decorative noncolliding original fence pieces across the already physical opening, and uses the existing original facade mesh/material for visible walls aligned with current outer barrier footprints. Gameplay, all existing colliders and the proven replay stay intact; new current-source native traversal, all ten regressions and fresh local critique remain mandatory. This is a bounded alley readability repair before larger connected streets and meaningful mission pacing, not final Chicago polish. No duplicate image delivery or new owner.
 
 **Cause-based repair passes the unchanged native map replay:** local Qwen saved **`d5260465`**, adding only a real 80 kg rival Rigidbody and clearing its motion on R reset. Native q0070 compiled and rendered nine frames. With the exact previously failed inputs, walking now reaches **6.533 m outside** and returns at **15.97 s**; the vehicle reaches **13.768 m outside** and returns at **33.63 s**. Walking support is **188/188**, vehicle rendered support passes, and both modes have actual outside captures. This supports the diagnosed static-actor cause without a fourth timing variation. See [current-source native proof](rival-repair-native-pass.json).
 

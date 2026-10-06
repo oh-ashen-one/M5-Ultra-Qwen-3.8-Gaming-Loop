@@ -1,0 +1,20 @@
+{
+  "observed_utc": "2026-10-06T06:35:44.993209+00:00",
+  "candidate": "d526046537d456bb224a247e88d190157286e2d2",
+  "all_ten_regressions_passed": true,
+  "review": {
+    "fixes": [
+      "Make the connector mouth readable from inside the corridor: open the right-side fence/prop line at Z≈8..20 with a clear visible gap, curb cut, and pavement visually continuing from Street/road_asphalt into the extension (frame-000.png shows a continuous fence/bollard line with no legible opening).",
+      "Give the X>6 extension legible alley geometry: line both sides (near Z=8 and Z=20) with existing original brick building/wall meshes with colliders and terminate the far end (X≈22) with a visible wall/fence so the player sees a bounded alley instead of the infinite backdrop plane seen in frame-001.png and frame-005.png.",
+      "Unify the pavement: the extension renders as a flat tan slab while frame-000.png's corridor is grey asphalt with sidewalk slabs; apply the same asphalt/pavement material plus curbs so the junction reads as one continuous street.",
+      "Dress the alley with a few existing original props (dumpster, bollard, lamppost, fence segment), keeping their colliders, so the exterior reads as a Chicago side alley rather than an empty test pad.",
+      "Minor: on the drive-return in frame-008.png the car ends nose-in against the corridor fence/dumpster; widen or funnel the re-entry lane inside X=6 so the return path does not snag on perimeter props."
+    ],
+    "ok": true,
+    "summary": "Functionally the connector works. The trace proves a single east-side leg (WorldCollision/AlleyPavement, X6..22, Z8..20) outside the old X-1..6 / Z-2..30 bounds: on foot 15 outside samples (~1.6s), max 6.53m beyond the boundary, physically returned inside by 15.97s; in the car 48 outside samples (~5s), max 13.77m beyond, returned inside by 33.63s — both outside visits exceed the 1s visibility minimum, no R reset occurred during either leg, and walk/world/motor/courier/failure-retry/combat regressions all pass with colliders intact; rendered support sampling is clean (188 samples, 0 uncovered). In frame-000.png (t=8.58s) the player stands in the original grey-asphalt corridor with readable HUD/controls text, but the right-side fence/bollard line reads as continuous with no legible opening at Z8..20. In frame-001.png (t=12.90s) the walking-outside capture shows the extension as a bare flat tan slab with no walls, curbs, or props, merging into the flat backdrop horizon. In frame-005.png (t=26.85s) the driving-outside capture shows the same unbounded tan plane under the blue coupe — the junction is not understandable from inside and the surface material does not match the corridor asphalt. In frame-008.png (t=35.00s) the return capture shows the car stopped nose-against the corridor fence/dumpster under the MISSION FAILED screen (timeout, no reset). Core/camera/missions/assets/controls are preserved per the regression set. The scoped foundation logic passes; the presentation half of the scope (coherent visible pavement, understandable junction) needs the fixes below.",
+    "verdict": "FIX"
+  },
+  "promoted": false,
+  "accepted_checkpoint": "d269dc43ac66c39afca4cb98ea53f9e7ed36806f",
+  "next_scope": "Local original-mesh alley presentation: matching street surface, visible entrance and real outer walls; unchanged physical replay and acceptance."
+}
