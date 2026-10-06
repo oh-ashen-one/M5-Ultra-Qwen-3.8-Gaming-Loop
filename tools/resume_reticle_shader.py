@@ -98,7 +98,8 @@ class ReticleShader(ReticleSource):
             '\nSHIPPED HUD SHADER AS API/PIPELINE CONTEXT ONLY; DO NOT MODIFY:\n' + files.path('Assets/Resources/HudOpaque.shader').read_text(),
             [tool('finish_source', 'Save the complete matching original shader and reticle C# implementation.',
                   {'reticle_span': {'type': 'string'}, 'shader_source': {'type': 'string'}})], {'finish_source': save},
-            images=images, visual_contract=contract(images, [TARGETS[2]], 2), turns=2, reasoning_effort='xhigh')
+            images=images, visual_contract=contract(images, [TARGETS[2]], 2), turns=2, reasoning_effort='xhigh',
+            retained_assistant=getattr(self, 'retained_assistant', None))
         atomic(self.store.root / 'evidence' / (ident + '-reticle-author.json'), result)
         if not result.get('ok') or not files.path(SHADER).exists() or files.path(BOOT).read_text() == original:
             raise Halt('Local reticle shader source incomplete; preserve the bounded response and files')
