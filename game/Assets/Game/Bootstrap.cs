@@ -177,13 +177,22 @@ MissionDirectorHud.Install(body,cam);
         // framed ahead instead of shoved to a corner or hidden behind the lens.
         public Vector3 offset = new Vector3(0f, 3.1f, -5.2f);
         public float damping = 8f;
-        public float lookAhead = 4.0f;
+        // Slightly shorter lead than before: the actual exported frames showed the
+        // horizon sitting too low with a small actor and wasted sky. A tighter
+        // look-ahead tips the lens down a touch, raising the horizon and enlarging
+        // the (already de-crowded) exported humanoid while keeping the route ahead.
+        public float lookAhead = 2.5f;
         public LayerMask collideMask = ~0;
 
         readonly RaycastHit[] hits = new RaycastHit[16];
         readonly Collider[] near = new Collider[8];
         Renderer[] rend;
         Transform cachedTarget;
+
+        // Restrained center-ray reticle. Drawn in OnPostRender (the camera's own
+        // render loop, not OnGUI) at the exact screen centre, which is the camera
+        // forward ray that Combat.HandleFire casts (cam.position / cam.forward).
+        Material reticleMat;
 
         void LateUpdate()
         {
@@ -332,6 +341,66 @@ MissionDirectorHud.Install(body,cam);
                 float lookY = Mathf.Clamp(ctr - origin.y, 1.0f, bodyTop);
                 transform.LookAt(origin + Vector3.up * lookY + yaw * Vector3.forward * 1.4f);
             }
+        }
+
+        // ---- restrained center-ray reticle (rendered in the camera loop) ----
+        // OnPostRender runs after the camera has drawn opaque/transparent geometry, so
+        // the marker is part of Camera.Render (not an OnGUI overlay) and is never
+        // occluded by the scene once we clear the depth buffer for the overlay pass.
+        void OnPostRender()
+        {
+            var cam = GetComponent<Camera>();
+            if (cam == null || cam.targetTexture != null) return; // on-screen camera only
+
+            if (reticleMat == null)
+            {
+                var sh = Shader.Find("Sprites/Default");
+                if (sh == null) sh = Shader.Find("Unlit/Color");
+                if (sh == null) return;
+                reticleMat = new Material(sh) { hideFlags = HideFlags.HideAndDontSave };
+            }
+
+            GL.PushMatrix();
+            reticleMat.SetPass(0);
+            GL.LoadPixelMatrix();
+            // Drop the scene depth so the thin crosshair always reads on top of the
+            // rendered world without needing an external ZTest-always shader.
+            GL.Clear(true, false, Color.clear);
+
+            float w = Screen.width, h = Screen.height;
+            float cx = w * 0.5f, cy = h * 0.5f;   // == cam.transform.forward ray
+            float gap = 6f, len = 14f, th = 2.2f, bd = 1.6f;
+            Color ink = new Color(0f, 0f, 0f, 0.85f);
+            Color line = new Color(1f, 1f, 1f, 0.95f);
+
+            // Horizontal bar (with a centre gap), then vertical, each as a dark
+            // backing + white core for contrast over lit brick or shadowed asphalt.
+            Bar(cx - gap - len, cy - bd, cx - gap, cy + bd, ink);
+            Bar(cx + gap, cy - bd, cx + gap + len, cy + bd, ink);
+            Bar(cx - gap - len, cy - th, cx - gap, cy + th, line);
+            Bar(cx + gap, cy - th, cx + gap + len, cy + th, line);
+            Bar(cx - bd, cy - gap - len, cx + bd, cy - gap, ink);
+            Bar(cx - bd, cy + gap, cx + bd, cy + gap + len, ink);
+            Bar(cx - th, cy - gap - len, cx + th, cy - gap, line);
+            Bar(cx - th, cy + gap, cx + th, cy + gap + len, line);
+            // Centre dot sits exactly on the aim ray.
+            Bar(cx - 3f, cy - 3f, cx + 3f, cy + 3f, ink);
+            Bar(cx - 1.6f, cy - 1.6f, cx + 1.6f, cy + 1.6f, line);
+
+            GL.PopMatrix();
+        }
+
+        static void Bar(float x0, float y0, float x1, float y1, Color c)
+        {
+            GL.Begin(GL.TRIANGLES);
+            GL.Color(c);
+            GL.Vertex3(x0, y0, 0f);
+            GL.Vertex3(x1, y0, 0f);
+            GL.Vertex3(x1, y1, 0f);
+            GL.Vertex3(x0, y0, 0f);
+            GL.Vertex3(x1, y1, 0f);
+            GL.Vertex3(x0, y1, 0f);
+            GL.End();
         }
     }
 }
