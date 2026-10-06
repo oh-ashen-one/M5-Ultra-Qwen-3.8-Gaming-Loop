@@ -226,7 +226,7 @@ namespace ChicagoGame
             return false;
         }
 
-        static void AddWall(GameObject parent, Vector3 pos, Vector3 size)
+        public static void AddWall(GameObject parent, Vector3 pos, Vector3 size)
         {
             var w = new GameObject("Barrier");
             w.transform.SetParent(parent.transform, false);
