@@ -1,0 +1,47 @@
+{
+  "observed_utc": "2026-10-06T13:10:56.105199+00:00",
+  "source": "3f5a0ef117c20fabf75d72495831ed75997af25b",
+  "accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+  "scope": "Short East Dead-Drop chapter; not final game or ten-minute acceptance",
+  "corrected_review": {
+    "accepted": true,
+    "candidate": "3f5a0ef117c20fabf75d72495831ed75997af25b",
+    "evidence": "evidence/q0100-f61ea8a1",
+    "final_game_accepted": false,
+    "native_pass": true,
+    "original_fix_preserved": true,
+    "review": {
+      "fixes": [
+        "The legacy '★ DELIVERY COMPLETE ★ / R to reset' banner persists through the entire east-dead-drop chapter (frames 003/009/010/011) and stacks over the HEALTH/WANTED panel, so the screen shows a stale completion notice contradicting the active objective. Clear it (or move it below the main objective panel) once the new RouteMission activates.",
+        "The legacy green Beacon/BeaconRing at (1, ~0.2-0.74, 26) still glows brightly right beside the car at t=15.2s while the objective reads 50m — a bright green goal-like cue at zero distance next to a '50m away' instruction is misleading, especially since green is also the cache's completed color. Dim/remove completed legacy markers so the cyan cache is the sole goal cue.",
+        "Dark HUD panels clip off the top canvas edge in frames 011 and 012 (cut-off empty rectangles at the top border), and the health/notification boxes overlap each other. Fix panel layout/clamping so boxes do not overlap or slide off-screen.",
+        "Completion camera at t=33.10 (frame-011) is at ground level, edge-on to the cache with the car roof blocking the frame; pull the camera up/back on chapter completion so the placed cache and vehicle are both legible under the 'COMPLETE' banner.",
+        "Proof gap: no frame at the exact ~32.53s F-press moment (only bracketed by 30.97 prompt and 33.10 complete). Capture one frame showing the actor at the cache mid-placement to close the visual-proof limitation."
+      ],
+      "ok": true,
+      "summary": "The scoped mission-complete check is supported by coherent frame+trace evidence for the NEW east cache chapter, not the legacy leg. Trace anchors (activation 14.35s, vehicle arrival 30.20s, E exit 30.63s, F completion 32.53s, R reset 34.03s) match the frames: t=15.2 shows driving with \"Drive to the cache (50m)\" (correct distance to the new (50,.14,18) cache, while the vehicle is 1.1m from the already-completed legacy pad); t=30.27 shows the driving approach to the cyan cache marker at 5m; t=30.97 shows the actual on-foot approach with the visible blocky actor beside the cache and \"Walk to the cache (3m) / Press F\"; t=33.10 shows \"EAST DEAD-DROP COMPLETE\" with the cache marker having flipped cyan→green (placement state change); t=34.60 shows a genuine post-reset state (health 100, yellow parcel back on the street, courier grab objective, legacy delivery banner gone). The exact F-press instant (~32.53s) has no dedicated frame, but it is tightly bracketed by the 3m \"Press F\" prompt and the completion/marker-change frame, so the interaction is visually evidenced rather than merely asserted. The main objective panel is readable and non-overlapping in every frame. Remaining defects are HUD/marker readability and camera polish, which stay open as visual findings and do not block this mission-core scope.",
+      "verdict": "PASS",
+      "verified_capture_time_citations": {
+        "frame-003.png": 15.2,
+        "frame-009.png": 30.268277809980393,
+        "frame-010.png": 30.968277809980393,
+        "frame-011.png": 33.10206129914633,
+        "frame-012.png": 34.60206129914633
+      }
+    }
+  },
+  "original_review_verdict": "FIX",
+  "original_review_preserved": true,
+  "mechanical_tests": {
+    "chapter": "PASS",
+    "legacy_regressions": 10
+  },
+  "continuation": {
+    "round": "q0101-b3301b17",
+    "stage": "local-east-street-facade-module",
+    "active_model_requests": 1,
+    "waiting_model_requests": 0,
+    "controller_revision": "b003752c04e21da21ad99f0d5c7451cbf1e9d879"
+  },
+  "final_game_accepted": false
+}
