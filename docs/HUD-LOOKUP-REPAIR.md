@@ -11,3 +11,5 @@ Repair candidate `6ff5960` changes only `game/Assets/Game/MissionDirectorHud.cs`
 Native acceptance now additionally requires the displayed relay lines to match the actual live `RelaySequence.Objective`. Empty and stale-objective examples fail the CPU checks. The full native positive, wrong-order/timeout/reset and no-handoff cases, ten legacy regressions and fresh pixel review remain required. Existing failures are retained while the consolidated-HUD diagnostic runs, so one early gate no longer hides other observed presentation faults. There are 299 passing CPU tests on both hosts; these do not replace native qualification.
 
 The original route remains 59.633 seconds including the 27.100-second relay. This presentation repair adds no mission duration and is not final game acceptance.
+
+The repaired candidate now passes the [native positive contract](../diagnostics/map-2026-10-06/hud-live-objective-native-pass.json), including actual live relay text, all observed phase receipts and post-completion reset. Remaining red/regression/pixel checks continue before full scoped qualification.

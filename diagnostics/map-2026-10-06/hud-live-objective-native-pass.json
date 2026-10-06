@@ -1,0 +1,88 @@
+{
+  "date": "2026-10-06",
+  "scope": "Focused consolidated HUD hierarchy, truthful receipts and early positioning repair",
+  "source": "6ff596013fd2bfbc896cb338e1fc6cf7a5a59383",
+  "build_id": "a9502126a4dc176769ffed720136e6c49c80dd0ec4efc481fb6dcd1c39eb51e8",
+  "changed_game_files": [
+    "game/Assets/Game/MissionDirectorHud.cs"
+  ],
+  "local_qwen_commits": [
+    "6ff5960 Local Qwen: relay late-installed-health-panel",
+    "ee871af Local Qwen: relay chapter-completed-receipt",
+    "5c9a3bc Local Qwen: relay relay-completed-receipts",
+    "3c3f109 Local Qwen: relay actual-relay-objective"
+  ],
+  "original_rejected_source": "a64f4bbd5f56b0c15bc105664b04ad60c1a4e283",
+  "original_rejection_preserved": true,
+  "positive_native": {
+    "passed": true,
+    "relay": {
+      "activations": [
+        32.53333282470703
+      ],
+      "case": "positive",
+      "completion_latched_after_deadline": true,
+      "completions": [
+        59.63333511352539
+      ],
+      "failure": null,
+      "final_game_accepted": false,
+      "measured_relay_seconds": 27.10000228881836,
+      "ordered_interactions": [
+        {
+          "count": 1,
+          "player": [
+            53.580528259277344,
+            0.19500255584716797,
+            25.94631576538086
+          ],
+          "time": 38.63333511352539
+        },
+        {
+          "count": 2,
+          "player": [
+            41.100528717041016,
+            0.19500064849853516,
+            9.946314811706543
+          ],
+          "time": 49.03333282470703
+        },
+        {
+          "count": 3,
+          "player": [
+            28.620527267456055,
+            0.19499874114990234,
+            25.94631576538086
+          ],
+          "time": 59.63333511352539
+        }
+      ],
+      "passed": true,
+      "red_waiting_is_not_mission_duration": true,
+      "resets": [
+        80.03333282470703
+      ],
+      "timeouts": [],
+      "wrong_orders": []
+    },
+    "hud": {
+      "passed": true,
+      "failure": null,
+      "phases": [
+        "carrying",
+        "dead-drop",
+        "grab",
+        "relay",
+        "relay-complete"
+      ],
+      "reset_grab_samples": 30
+    }
+  },
+  "cpu_tests": {
+    "passed": true,
+    "count_each_host": 299
+  },
+  "qualification_status": "Positive native contract passed. Red/reset cases, ten regressions and fresh local scoped visual review continue; full HUD qualification pending.",
+  "broad_accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+  "final_game_accepted": false
+}
