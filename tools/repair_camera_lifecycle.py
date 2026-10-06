@@ -69,6 +69,9 @@ class CameraLifecycle(CameraQualification):
         if any(sha((self.project/p).read_bytes())!=h for p,h in others.items()):raise Halt('Lifecycle correction changed unrelated gameplay')
         candidate=self.checkpoint_source('Local Qwen: refresh camera target cache and honor overlap result count')
         self.store.set(source_checkpoint=candidate)
+        self.verify_and_continue(ident,candidate)
+
+    def verify_and_continue(self,ident,candidate):
         bundle,camera=CameraRepair.camera_probe(self,ident+'-walls',candidate)
         rows=[json.loads(x) for x in (bundle/'captures/trace.jsonl').read_text().splitlines()]
         caches=[r.get('cameraGeometry',{}) for r in rows if r.get('time',0)>1]

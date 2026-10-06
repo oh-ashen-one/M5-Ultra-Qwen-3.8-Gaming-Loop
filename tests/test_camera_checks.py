@@ -6,6 +6,7 @@ from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from loop_controller.camera_checks import inspect_camera,inspect_target_transitions
 from repair_camera_lifecycle import validate_lifecycle_pause,SOURCE as LIFECYCLE_SOURCE,BLOCKER as LIFECYCLE_BLOCKER
+from resume_camera_lifecycle_validation import validate_observer_pause,SOURCE as OBSERVER_SOURCE
 from loop_controller.core import Halt
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 from probe_camera_clearance import validate_camera_pause,SOURCE,ACCEPTED,BLOCKER
@@ -121,5 +122,13 @@ class CameraTests(unittest.TestCase):
         original=copy.deepcopy(state);validate_lifecycle_pause(state);self.assertEqual(state,original)
         for key,value in [('camera_lifecycle_attempted',True),('source_checkpoint','other'),('task_failures',0),('blocker','resource fault')]:
             with self.assertRaises(Halt):validate_lifecycle_pause({**state,key:value})
+
+    def test_observer_recovery_never_resets_or_reauthors_saved_game(self):
+        state=dict(source_checkpoint=OBSERVER_SOURCE,last_playable_checkpoint=ACCEPTED,task_index=7,
+            task_failures=6,failure_streak=1,diagnosis_used=True,overall_deadline_epoch=HARD_CAP_EPOCH,
+            camera_lifecycle_attempted=True,blocker='Halt: Camera repair native runtime failed: compile-build')
+        original=copy.deepcopy(state);validate_observer_pause(state);self.assertEqual(state,original)
+        for key,value in [('source_checkpoint','other'),('task_failures',0),('camera_observer_recovery_attempted',True),('blocker','resource fault')]:
+            with self.assertRaises(Halt):validate_observer_pause({**state,key:value})
 
 if __name__=='__main__':unittest.main()

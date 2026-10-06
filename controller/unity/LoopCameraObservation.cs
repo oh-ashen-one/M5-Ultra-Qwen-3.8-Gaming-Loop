@@ -39,8 +39,8 @@ public static class LoopCameraObservation
         var follow=Follow();var cached=follow.GetType().GetField("rend",BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic)?.GetValue(follow) as Renderer[];
         var expected=actor.GetComponentsInChildren<Renderer>();
         result.expectedRendererCount=expected.Length;result.cachedRendererCount=cached==null?0:cached.Count(r=>r!=null);
-        result.rendererCacheMatchesTarget=cached!=null && expected.Length>0 && expected.Select(r=>r.GetInstanceID()).OrderBy(i=>i)
-            .SequenceEqual(cached.Where(r=>r!=null).Select(r=>r.GetInstanceID()).OrderBy(i=>i));
+        result.rendererCacheMatchesTarget=cached!=null && expected.Length>0 && expected.Length==result.cachedRendererCount
+            && expected.All(r=>cached.Any(c=>c==r));
         result.cameraPosition=Vec(camera.transform.position);result.cameraForward=Vec(camera.transform.forward);
         var pivot=actor.position+Vector3.up*1.25f;
         var desired=Quaternion.Euler(0,actor.eulerAngles.y,0)*offset;var full=desired.magnitude;
