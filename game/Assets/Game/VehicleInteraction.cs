@@ -88,13 +88,7 @@ namespace ChicagoGame
 
             if (!_driving)
             {
-                // Forgiving, readable boarding: treat the car's horizontal
-                // footprint (half-length + a doorway band) as the interaction
-                // zone. The prior 1.0 m ClosestPoint gate failed whenever the
-                // collider box sat behind a parked-car shoulder, so a player
-                // standing right next to the door was still locked out and the
-                // drive leg never started.
-                if (e && NearCar(_player.transform.position))
+                if (e && Vector3.Distance(_player.transform.position, GetComponent<Collider>().ClosestPoint(_player.transform.position)) < 1.0f)
                     Enter();
                 return;
             }
@@ -204,20 +198,6 @@ namespace ChicagoGame
             if (f != null) current = (int)f.GetValue(null);
             else if (p != null) current = (int)p.GetValue(null);
             Set("Restarts", current + 1);
-        }
-
-        bool NearCar(Vector3 p)
-        {
-            // Horizontal footprint test: local half extents of the body box plus
-            // a ~1.1 m boarding band. Rotation-aware so it still works after the
-            // car has been driven and left at an angle. The prior 1.0 m
-            // ClosestPoint gate rejected a player standing at the door because
-            // the parked-coupe shoulder pushed the collider's nearest point out
-            // of reach, so the drive leg never began.
-            Vector3 local = transform.InverseTransformPoint(p);
-            float hx = VEHICLE_WIDTH * 0.5f + 1.1f;
-            float hz = VEHICLE_LENGTH * 0.5f + 1.1f;
-            return Mathf.Abs(local.x) <= hx && Mathf.Abs(local.z) <= hz;
         }
 
         bool GroundRaycast(Vector3 from, out RaycastHit hit)
