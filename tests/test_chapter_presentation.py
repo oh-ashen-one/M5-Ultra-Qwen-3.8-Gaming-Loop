@@ -15,10 +15,12 @@ class ChapterPresentationTests(unittest.TestCase):
             ('MissionHud',[.08,.09,.30,.14],[.05,.07,.40,.16]),
             ('HudStatus',[.06,.84,.21,.88],[.04,.81,.31,.91])]]
         rows=[]
+        for p in panels:
+            p['captureTextRect']=p['textRect'].copy();p['captureCardRect']=p['cardRect'].copy()
         for t in range(1,15):
             stage=0 if t==1 or t>=11 else (2 if t==10 else 1)
             rows.append(dict(time=t,restarts=int(t>=11),routeChapter=dict(stage=stage,hudPanels=copy.deepcopy(panels),
-                cacheBoundsCenter=[50,1.14,18],cacheBoundsSize=[2,2,1.5],emissiveRenderers=1)))
+                cacheBoundsCenter=[50,1.14,18],cacheBoundsSize=[2,2,1.5],emissiveRenderers=1,captureAspect=16/9,liveAspect=4/3)))
         return rows
 
     def test_real_projected_panels_and_cache_bounds_pass(self):
@@ -43,6 +45,23 @@ class ChapterPresentationTests(unittest.TestCase):
                     'LoopInput.Replay;', 'missionHud.gameObject.SetActive(false);','void Update() {}']:
             with self.subTest(raw=raw),self.assertRaises(ValueError):validate_visual_span(raw)
         with self.assertRaises(ValueError):validate_visual_span('foreach (var c in GetComponents<Collider>()) {}',True)
+
+    def test_capture_projection_cannot_hide_live_viewport_failures_or_missing_proof(self):
+        rows=self.rows();rows[3]['routeChapter']['hudPanels'][0]['captureCardRect'][2]=1.2
+        self.assertFalse(inspect_presentation(rows)['passed'])
+        rows=self.rows();del rows[3]['routeChapter']['captureAspect']
+        self.assertFalse(inspect_presentation(rows)['passed'])
+        rows=self.rows();rows[3]['routeChapter']['hudPanels'][0]['cardRect'][2]=1.2
+        self.assertFalse(inspect_presentation(rows)['passed'])
+
+    def test_repair_requires_the_measured_double_ground_height_and_exact_failure_set(self):
+        from resume_measured_chapter_layout import validate_failure,SOURCE,FAILURES
+        gate=dict(passed=True,candidate_commit=SOURCE,presentation_geometry=dict(passed=False,
+            failure=FAILURES,examples=[dict(cache_bounds_center=[50,1.28,18],cache_bounds_size=[2,2,1.5])]))
+        validate_failure(gate)
+        for changed in [{**gate,'passed':False},{**gate,'candidate_commit':'different'},
+                        {**gate,'presentation_geometry':{**gate['presentation_geometry'],'failure':[]}}]:
+            with self.assertRaises(Halt):validate_failure(changed)
 
     def test_exact_input_reuse_only_adds_an_interaction_capture(self):
         old=dict(duration=36,steps=[dict(start=4,end=5,keys=['W'])],captures=[3,31,33,35])

@@ -39,8 +39,8 @@ def validate_pause(old):
     if not outcome.get('accepted') or outcome.get('review',{}).get('verdict')!='PASS':
         raise Halt('Preserve a different facade verdict')
 
-def validate_visual_span(content,marker=False):
-    if not isinstance(content,str) or len(content.encode())>6000 or len(content.splitlines())>(55 if marker else 140):
+def validate_visual_span(content,marker=False,max_lines=140):
+    if not isinstance(content,str) or len(content.encode())>6000 or len(content.splitlines())>(55 if marker else max_lines):
         raise ValueError('Keep this exact visual span within its bounded edit size')
     for term in ('LoopRuntime','LoopRouteObservation','LoopInput','void Update(', 'void ActivateCache(',
                  'class LoopSignals','Destroy(', 'CreatePrimitive','System.IO','GetCommandLineArgs'):

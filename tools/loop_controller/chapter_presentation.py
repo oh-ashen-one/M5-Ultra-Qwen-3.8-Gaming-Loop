@@ -39,6 +39,19 @@ def inspect_presentation(rows):
         for i,(name,a) in enumerate(cards):
             for other,b in cards[i+1:]:
                 if overlaps(a,b):failures.add('overlapping-'+name+'-'+other)
+        capture_cards=[]
+        if not math.isclose(chapter.get('captureAspect',0),16/9,abs_tol=.001):
+            failures.add('native-capture-projection-unverified')
+        for name in ('RouteHud','MissionHud','HudStatus'):
+            panel=panels.get(name,{});t=panel.get('captureTextRect');c=panel.get('captureCardRect')
+            if not rect(t) or not rect(c):failures.add(name+'-capture-projection-missing');continue
+            if min(c[:2])<.015 or max(c[2:])>.985:failures.add(name+'-capture-offscreen')
+            if t[0]<c[0]-.01 or t[1]<c[1]-.01 or t[2]>c[2]+.01 or t[3]>c[3]+.01:
+                failures.add(name+'-capture-text-outside-backing')
+            capture_cards.append((name,c))
+        for i,(name,a) in enumerate(capture_cards):
+            for other,b in capture_cards[i+1:]:
+                if overlaps(a,b):failures.add('capture-overlapping-'+name+'-'+other)
         center=chapter.get('cacheBoundsCenter');size=chapter.get('cacheBoundsSize')
         if not isinstance(center,list) or not isinstance(size,list) or len(center)!=3 or len(size)!=3 or not all(math.isfinite(v) for v in center+size):
             failures.add('cache-rendered-bounds-missing')
@@ -50,8 +63,9 @@ def inspect_presentation(rows):
             failures.add('cache-emission-not-limited-to-accent')
         if len(examples)<2 or stage==2 and not any(x['stage']==2 for x in examples):
             examples.append(dict(time=row['time'],stage=stage,panels=panels,
-                cache_bounds_center=center,cache_bounds_size=size,emissive_renderers=chapter.get('emissiveRenderers')))
+                cache_bounds_center=center,cache_bounds_size=size,emissive_renderers=chapter.get('emissiveRenderers'),
+                live_aspect=chapter.get('liveAspect'),capture_aspect=chapter.get('captureAspect')))
     if active<5:failures.add('active-chapter-presentation-unverified')
     if reset<3:failures.add('presentation-reset-unverified')
     return dict(passed=not failures,failure=sorted(failures) or None,active_samples=active,
-        reset_samples=reset,examples=examples,scope='Projected UI geometry and physical cache bounds; actual pixel review remains required.')
+        reset_samples=reset,examples=examples,scope='Live-window and native-capture UI geometry, physical cache bounds; actual pixel review remains required.')

@@ -1,0 +1,16 @@
+{
+  "round": "q0103-995b06ea",
+  "source": "47e1b8a7bf210268f99deb884b3bd2d628940620",
+  "published": true,
+  "native_chapter": "PASS",
+  "presentation": "FIX",
+  "regressions": "not run after presentation rejection",
+  "critic": "not run",
+  "gate_sha256": "67eb693bf07ec6e726c41ab67d5c6ff101412b0a1ca004a2e837c5b1dedf8341",
+  "measured_cache_base_y": 0.2799999714,
+  "required_pavement_y": 0.14,
+  "cause": "Local expression used (aPos.y + 0.14f) although the anchor already has Y0.14.",
+  "hud_cause": "Fixed layout assumed the960x540capture aspect; live viewport is narrower. Preserve and require both views.",
+  "repair": "Local-only HUD coordinate/card repair and removal of duplicate ground offset; no changed game progress, anchor, source mesh or replay input.",
+  "final_game_accepted": false
+}

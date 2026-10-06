@@ -14,6 +14,7 @@ public class LoopInputPump : MonoBehaviour
 [DefaultExecutionOrder(32000)]
 public class LoopRuntime : MonoBehaviour
 {
+    public const int CaptureWidth=960, CaptureHeight=540;
     public static float StartedAt { get; private set; }
     [Serializable] public class Sample {
         public float time, dt, health; public string mode, mission, graphics;
@@ -150,11 +151,11 @@ public class LoopRuntime : MonoBehaviour
             if (camera == null) { errors++; captureIndex++; }
             else {
                 // An actual frame of the running candidate, not an editor scene.
-                var rt = new RenderTexture(960, 540, 24, RenderTextureFormat.ARGB32);
+                var rt = new RenderTexture(CaptureWidth, CaptureHeight, 24, RenderTextureFormat.ARGB32);
                 var oldTarget = camera.targetTexture; var oldActive = RenderTexture.active;
                 camera.targetTexture = rt; camera.Render(); RenderTexture.active = rt;
-                var image = new Texture2D(960, 540, TextureFormat.RGB24, false);
-                image.ReadPixels(new Rect(0, 0, 960, 540), 0, 0); image.Apply();
+                var image = new Texture2D(CaptureWidth, CaptureHeight, TextureFormat.RGB24, false);
+                image.ReadPixels(new Rect(0, 0, CaptureWidth, CaptureHeight), 0, 0); image.Apply();
                 File.WriteAllBytes(Path.Combine(output, "frame-" + captureIndex.ToString("D3") + ".png"), image.EncodeToPNG());
                 camera.targetTexture = oldTarget; RenderTexture.active = oldActive; rt.Release();
                 Destroy(rt); Destroy(image); captureIndex++;
