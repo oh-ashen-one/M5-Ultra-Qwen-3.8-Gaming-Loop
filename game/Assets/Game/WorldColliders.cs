@@ -236,7 +236,7 @@ namespace ChicagoGame
             bc.size = size;
         }
 
-        static void PlaceFence(GameObject prefab, GameObject parent, Vector3 pos,
+        public static void PlaceFence(GameObject prefab, GameObject parent, Vector3 pos,
                               Quaternion rot, Vector3 scale)
         {
             var inst = Object.Instantiate(prefab, parent.transform, false);
