@@ -26,9 +26,10 @@ MAP_TASK = dict(id='connected-map-extension', phase='world', checks=[], maximum=
     'The old rectangle is X-1..6,Z-2..30. This accepts only one traversed connector, never the whole map or ten-minute mission.')
 
 
-def outside_distance(position):
+def outside_distance(position, prior_bounds=None):
     x, _, z = position
-    return max(-1-x, x-6, -2-z, z-30, 0)
+    rectangles=prior_bounds or [[-1,6,-2,30]]
+    return min(max(lo_x-x,x-hi_x,lo_z-z,z-hi_z,0) for lo_x,hi_x,lo_z,hi_z in rectangles)
 
 
 def accepted_map_images(runner, record):
@@ -49,7 +50,7 @@ def accepted_map_images(runner, record):
     return [('ACTUAL accepted connected map t'+str(times[p.name]),p) for p in frames[:2]]
 
 
-def inspect_extension(rows):
+def inspect_extension(rows, prior_bounds=None):
     failed=[];facts={}
     for mode,key in [('foot','player'),('vehicle','vehicle')]:
         selected=[r for r in rows if r.get('mode')==mode and r.get('time',0)>=4]
@@ -58,11 +59,11 @@ def inspect_extension(rows):
             p=row.get(key)
             if not isinstance(p,list) or len(p)!=3 or not all(math.isfinite(v) for v in p):
                 failed.append(mode+'-invalid-position');continue
-            if outside_distance(p)>=6:excursions.append((i,row))
+            if outside_distance(p,prior_bounds)>=6:excursions.append((i,row))
         returning=None
         if len(excursions)>=10:
             first_i,first=excursions[0];last_i,last=excursions[-1]
-            returning=next((r for r in selected[last_i+1:] if outside_distance(r[key])==0),None)
+            returning=next((r for r in selected[last_i+1:] if outside_distance(r[key],prior_bounds)==0),None)
             if last['time']-first['time']<1:failed.append(mode+'-outside-duration')
             leg=[r for r in rows if first['time']<=r['time']<=(returning or last)['time']]
             if (not returning or any(r.get('restarts',0)!=first.get('restarts',0) or 'R' in r.get('keys',[]) for r in leg)):
@@ -78,10 +79,39 @@ def inspect_extension(rows):
         if mode=='foot' and selected and sum(bool(r.get('grounded')) for r in selected)/len(selected)<.95:
             failed.append('walking-not-grounded')
         facts[mode]={'outside_samples':len(excursions),
-            'maximum_distance_beyond_old_boundary_m':max([outside_distance(r[key]) for _,r in excursions] or [0]),
+            'maximum_distance_beyond_old_boundary_m':max([outside_distance(r[key],prior_bounds) for _,r in excursions] or [0]),
             'physical_return_seconds':returning['time'] if returning else None}
     return dict(passed=not failed, failure=failed, old_bounds_xz=[-1,6,-2,30],
+                prior_rendered_rectangles_xz=prior_bounds or [[-1,6,-2,30]],
                 traversal=facts, area_claim='Only observed connected traversal; no gross map-area acceptance')
+
+
+def qualify_extension_native(runner,task,ident,candidate,probe):
+    """Qualify this candidate, including requalification after a presentation edit."""
+    bundle,gate=runner.native(task,ident,candidate,probe)
+    if gate.get('passed'):
+        rows=[json.loads(line) for line in (bundle/'captures/trace.jsonl').read_text().splitlines()]
+        bounds=task.get('prior_bounds')
+        extension=inspect_extension(rows,bounds);support=pavement_coverage(bundle)
+        driving=[r for r in rows if r.get('mode')=='vehicle']
+        supported=bool(driving) and all(any(
+            s['min'][0]<=r['vehicle'][0]<=s['max'][0] and
+            s['min'][2]<=r['vehicle'][2]<=s['max'][2] and
+            abs(s['max'][1]-r['vehicle'][1])<.5 for s in support['surfaces']) for r in driving)
+        if not supported:
+            extension['passed']=False;extension['failure'].append('vehicle-rendered-support')
+        for mode,key in [('foot','player'),('vehicle','vehicle')]:
+            if not any(abs(r['time']-t)<=.25 and r.get('mode')==mode and
+                       outside_distance(r[key],bounds)>=6 for t in probe['captures'] for r in rows):
+                extension['passed']=False;extension['failure'].append(mode+'-outside-capture-missing')
+        gate['scoped_facts'].update(map_extension=extension,rendered_walking_support=support)
+        if not extension['passed'] or not support['passed']:
+            gate.update(passed=False,failure=extension['failure']+([] if support['passed'] else ['rendered-pavement-support']))
+    if gate.get('passed'):
+        gate['regressions']=runner.regress(TASKS[6],ident,candidate)
+        if not gate['regressions']['passed']:gate.update(passed=False,failure=gate['regressions']['failure'])
+    atomic(bundle/'scoped-gate.json',gate)
+    return bundle,gate
 
 
 def promote_qualified_extension(runner,task,bundle,gate,review):
@@ -95,7 +125,8 @@ def promote_qualified_extension(runner,task,bundle,gate,review):
             or not all(c['gate'].get('passed') and c['gate'].get('candidate_commit')==gate['candidate_commit'] for c in checks)
             or not facts.get('map_extension',{}).get('passed')
             or not facts.get('rendered_walking_support',{}).get('passed')
-            or not facts.get('prop_clone_parity',{'passed':True}).get('passed')):
+            or not facts.get('prop_clone_parity',{'passed':True}).get('passed')
+            or not facts.get('door_layer_order',{'passed':True}).get('passed')):
         raise Halt('Map promotion requires actual traversal, support, all ten regressions and complete critic PASS')
     candidate=gate['candidate_commit']
     changed=git(runner.repo,'diff','--name-only',candidate,'HEAD','--','game').splitlines()
@@ -106,7 +137,8 @@ def promote_qualified_extension(runner,task,bundle,gate,review):
         raise Halt('Qualified map capture identity changed')
     record=dict(candidate=candidate,evidence=str(bundle.relative_to(runner.store.root)),
         accepted_utc=now(),review=review,scope=task['outcome'],final_game_accepted=False,
-        capture_manifest_sha256=manifest_hash)
+        capture_manifest_sha256=manifest_hash,
+        prior_rendered_rectangles_xz=task.get('prior_bounds',[[-1,6,-2,30]]))
     note=runner.project/'Notes'/('map-'+bundle.name+'.json');atomic(note,record)
     git(runner.repo,'add','--',str(note.relative_to(runner.repo)))
     git(runner.repo,'-c','user.name=Evidence controller',
@@ -143,29 +175,7 @@ def qualify_one_extension(runner, *, integrated_builder=False):
         candidate=runner.checkpoint_source('Local Qwen: first connected map extension')
         runner.store.set(source_checkpoint=candidate,candidate_commit=candidate)
         probe=result.get('scenario') or runner.propose_replay(task,ident)['scenario']
-        bundle,gate=runner.native(task,ident,candidate,probe)
-        if gate.get('passed'):
-            rows=[json.loads(line) for line in (bundle/'captures/trace.jsonl').read_text().splitlines()]
-            extension=inspect_extension(rows);support=pavement_coverage(bundle)
-            driving=[r for r in rows if r.get('mode')=='vehicle']
-            supported=bool(driving) and all(any(
-                s['min'][0]<=r['vehicle'][0]<=s['max'][0] and
-                s['min'][2]<=r['vehicle'][2]<=s['max'][2] and
-                abs(s['max'][1]-r['vehicle'][1])<.5 for s in support['surfaces']) for r in driving)
-            if not supported:
-                extension['passed']=False;extension['failure'].append('vehicle-rendered-support')
-            probe_captures=probe['captures']
-            for mode,key in [('foot','player'),('vehicle','vehicle')]:
-                if not any(abs(r['time']-t)<=.25 and r.get('mode')==mode and
-                           outside_distance(r[key])>=6 for t in probe_captures for r in rows):
-                    extension['passed']=False;extension['failure'].append(mode+'-outside-capture-missing')
-            gate['scoped_facts'].update(map_extension=extension,rendered_walking_support=support)
-            if not extension['passed'] or not support['passed']:
-                gate.update(passed=False,failure=extension['failure']+([] if support['passed'] else ['rendered-pavement-support']))
-        if gate.get('passed'):
-            gate['regressions']=runner.regress(TASKS[6],ident,candidate)
-            if not gate['regressions']['passed']:gate.update(passed=False,failure=gate['regressions']['failure'])
-        atomic(bundle/'scoped-gate.json',gate)
+        bundle,gate=qualify_extension_native(runner,task,ident,candidate,probe)
         if not gate.get('passed'):
             runner.reject_scoped(task,ident,gate,candidate);continue
         review=runner.review(task,ident,bundle,gate)

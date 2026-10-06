@@ -211,6 +211,6 @@ class LocalModel:
                                          tool=function["name"], error_type=type(error).__name__, message=str(error)[:1600])
                     messages.append({"role": "tool", "tool_call_id": call["id"], "content": json.dumps(result)})
                     atomic(private / "history.json", messages)
-                    if function["name"] in ("submit_plan", "submit_review", "finish_task") and result.get("ok"):
+                    if function["name"] in ("submit_plan", "submit_review", "finish_task", "finish_source") and result.get("ok"):
                         return result
         return {"bounded_stop": "turns", "summary": "Tool-turn budget exhausted; preserve partial work for the next task."}

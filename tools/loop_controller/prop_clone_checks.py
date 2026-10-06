@@ -6,6 +6,28 @@ CLONES=(('Props/alley_props/bollard01','WorldCollision/AlleyBollardS',(8,8.8)),
         ('Props/alley_props/dumpster_a','WorldCollision/AlleyDumpster',(16,9.5)))
 
 
+def inspect_door_layers(objects):
+    """The cloned solid stone backing must not hide the original wood panel."""
+    def one(name):
+        found=[o for o in objects if o.get('name')==name and o.get('kind')=='renderer' and o.get('enabled',True)]
+        return found[0] if len(found)==1 else None
+    panel=one('WorldCollision/ServiceDoor');stone=one('WorldCollision/ServiceDoorSurround')
+    if not panel or not stone:
+        return dict(passed=False,failure=['missing-unique-door-renderers'])
+    try:
+        p=panel['boundsCenter'];s=stone['boundsCenter'];ps=panel['boundsSize'];ss=stone['boundsSize']
+        finite=all(math.isfinite(v) for v in p+s+ps+ss) and min(ps+ss)>0
+        front=(s[2]-ss[2]/2)-(p[2]-ps[2]/2)
+        center=s[2]-p[2]
+        passed=finite and .005<=front<=.02 and .065<=center<=.075 and abs(p[0]-s[0])<.005
+    except (KeyError,IndexError,TypeError,ValueError):
+        return dict(passed=False,failure=['invalid-door-native-bounds'])
+    return dict(passed=passed,failure=[] if passed else ['wood-door-hidden-or-displaced'],
+                wood_front_ahead_of_stone_m=front,wood_center_outward_offset_m=center,
+                panel_bounds_center=p,stone_bounds_center=s,
+                scope='Native geometry only; actual rendered door readability needs fresh visual review')
+
+
 def inspect_alley_clones(objects):
     failures=[];facts=[]
     for original,clone,target in CLONES:

@@ -77,14 +77,14 @@ def review_captures(task,bundle):
                 when=scenario['captures'][int(frame.stem.split('-')[-1])]
                 near=min(rows,key=lambda row:abs(row['time']-when))
                 if (abs(near['time']-when)<=.25 and near.get('mode')==mode
-                        and near.get(key) and outside_distance(near[key])>=6):
+                        and near.get(key) and outside_distance(near[key],task.get('prior_bounds'))>=6):
                     selected.append(frame);break
         junction=[]
         for frame in frames:
             when=scenario['captures'][int(frame.stem.split('-')[-1])]
             near=min(rows,key=lambda row:abs(row['time']-when))
             if (abs(near['time']-when)<=.25 and near.get('mode')=='foot' and near.get('player')
-                    and 0<outside_distance(near['player'])<=2):
+                    and 0<outside_distance(near['player'],task.get('prior_bounds'))<=2):
                 junction=[frame];break
         # A measured junction view replaces the redundant opening image. Keep
         # four actual images plus the reference within the established budget.
