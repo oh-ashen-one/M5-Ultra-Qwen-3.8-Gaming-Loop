@@ -143,9 +143,9 @@ namespace ChicagoGame
         }
         void UpdateObj()
         {
-            if (Complete) Objective = "INTERCEPT RUNNERS 3/3\nAll stopped, no escapes\nStopped 3 / Escaped 0\nR reset";
+            if (Complete) Objective = "INTERCEPTION COMPLETE\nAll stopped, no escapes\nStopped 3 / Escaped 0\nRelay complete | R reset";
             else if (Failed)
-            { string why = Escaped > 0 ? "Runner escaped!" : "Health depleted"; Objective = "MISSION FAILED\n" + why + "\nStopped " + Stopped + " / Escaped " + Escaped + "\nR reset"; }
+            { string why = Escaped > 0 ? "Runner escaped!" : "Health depleted"; Objective = "INTERCEPTION FAILED\n" + why + "\nStopped " + Stopped + " / Escaped " + Escaped + "\nRelay complete | R reset"; }
             else Objective = "INTERCEPT RUNNERS " + Stopped + "/3\nMove to aim; Mouse0 fire\nStopped " + Stopped + " / Escaped " + Escaped + "\nRelay complete | R reset";
         }
         void Cleanup()
