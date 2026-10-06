@@ -11,6 +11,30 @@ from qualify_map_extension import promote_qualified_extension, MAP_TASK
 
 
 class TimedReviewTests(unittest.TestCase):
+    def test_seconds_suffixes_resolve_real_frames_but_not_coordinates_or_ambiguous_times(self):
+        times={'frame-008.png':27.3234,'frame-014.png':38.8,'frame-016.png':45.5,'frame-018.png':50.6}
+        summary='HUD28m at27.3s, frames at 38.8s/45.5s, reset at 50.6 seconds.'
+        # Require a token boundary: prose glued to a number is not a citation.
+        self.assertNotIn('frame-008.png',verified_time_citations(summary,times))
+        summary=summary.replace('at27.3s','at 27.3s')
+        self.assertEqual(verified_time_citations(summary,times),times)
+        self.assertFalse(verified_time_citations('Coordinates (50,0.87,18)',times))
+        self.assertFalse(verified_time_citations('at 38.8s',{'a':38.81,'b':38.82}))
+
+    def test_ground_recovery_pins_complete_response_and_keeps_summary_unchanged(self):
+        import resume_ground_cited_review as ground
+        import json
+        from loop_controller.core import sha
+        times={'a.png':27.3234,'b.png':38.8}
+        fields=dict(verdict='PASS',summary='Active at 27.3s, supported sidewalk at 38.8s.',fixes=[])
+        raw=json.dumps({'choices':[{'finish_reason':'tool_calls','message':{'tool_calls':[
+            {'function':{'name':'submit_review','arguments':json.dumps(fields)}}]}}]}).encode()
+        with patch.object(ground,'RESPONSE_SHA',sha(raw)):
+            result=ground.recover_review(raw,times)
+            self.assertEqual(result['summary'],fields['summary'])
+            with self.assertRaises(Halt):ground.recover_review(raw,{**times,'missing.png':45.5})
+        with self.assertRaises(Halt):ground.recover_review(raw,times)
+
     def test_actual_rounded_times_are_valid_without_rewriting_independent_verdict(self):
         times={'frame-001.png':10.817,'frame-002.png':12.89791,
                'frame-006.png':26.84647,'frame-010.png':34.99647}

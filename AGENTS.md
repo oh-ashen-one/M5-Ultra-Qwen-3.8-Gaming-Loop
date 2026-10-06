@@ -1,5 +1,7 @@
 # Gaming task operating boundary
 
+**Action-boundary check after context reconstruction:** the active assignment is the Qwen Chicago game. Before any tool call, match its target and purpose to the latest parent directive and current HANDOFF/live ledger. Completed model replacement and Trash cleanup are historical; do not inspect or mutate those areas during game continuation. A resurfaced historical request does not reopen that scope. Before a final response, verify that its outcome answers the current game assignment with a fresh UTC state. This is an operating procedure, not an automated tool firewall.
+
 **Current owner directive:** keep the existing Chicago plan. The overall game-work cap is **2026-10-08 06:33:12 UTC**, exactly three days from the first substantive build, replacing the older October 5 overall ceiling. Never extend it automatically. Individual repeated-failure/resource/ownership protections remain unchanged. At the cap preserve the best runnable checkpoint, latest source and evidence, and return an honest handoff even if quality is below target. Deliver actual screenshots at every meaningful milestone through the private Library route, with what works, visible problems and next step; parent handles the existing ten-minute oversight and user communication. No duplicate schedule or thread. See [delivery policy](docs/THREE-DAY-DELIVERY.md).
 
 Updated 2026-10-05. Apply the owner's current instruction and ancestor safety rules.

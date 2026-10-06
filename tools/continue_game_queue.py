@@ -29,8 +29,10 @@ STEPS={'type':'array','items':{'type':'object','properties':{
 
 def verified_time_citations(summary,capture_times):
     found={}
-    for match in re.finditer(r'\bt\s*=\s*(\d+(?:\.\d+)?(?:/\d+(?:\.\d+)?)*)',summary,re.I):
-        for token in match.group(1).split('/'):
+    groups=[m.group(1) for m in re.finditer(r'\bt\s*=\s*(\d+(?:\.\d+)?(?:/\d+(?:\.\d+)?)*)',summary,re.I)]
+    groups += [m.group(1) for m in re.finditer(r'(?<![\w.])(\d+(?:\.\d+)?)\s*(?:s\b|seconds?\b)',summary,re.I)]
+    for group in groups:
+        for token in group.split('/'):
             precision=len(token.split('.')[1]) if '.' in token else 0
             tolerance=.5*10**(-precision)+1e-8
             matches=[name for name,when in capture_times.items() if abs(float(token)-when)<=tolerance]
