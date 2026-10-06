@@ -3,10 +3,20 @@ import sys
 import unittest
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from resume_hud_presentation_polish import inspect_polish
+from resume_hud_presentation_polish import inspect_polish, exact_content, compact
 
 
 class HudPresentationPolishTests(unittest.TestCase):
+    def test_transport_decode_requires_same_exact_scoped_source(self):
+        import json
+        source = 'var mat = Shader.Find("Unlit/Color");\nmat.color = new Color(.06f,.07f,.085f,1f);'
+        accept = lambda value, _: compact(value) == compact(source)
+        encoded = json.dumps(source)[1:-1]
+        self.assertEqual(exact_content(encoded, accept, ''), source)
+        self.assertEqual(exact_content(source, accept, ''), source)
+        with self.assertRaises(ValueError): exact_content(encoded + 'Destroy(player);', accept, '')
+        with self.assertRaises(ValueError): exact_content('System.IO.File.Delete("x");', accept, '')
+
     def row(self):
         def panel(name, text):
             return dict(name=name, text=text, cardShader='Unlit/Color', cardColor=[.06, .07, .085, 1],
