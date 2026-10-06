@@ -176,14 +176,16 @@ namespace ChicagoGame
                     var b = omf.sharedMesh.bounds;
                     var srcRot = fw.transform.rotation;
                     var r90 = Quaternion.Euler(0f, 90f, 0f) * srcRot;
-                    var names = new[] { "AlleySouthWall", "AlleyNorthWall", "AlleyEndWall" };
-                    var centers = new[] { new Vector3(14f, 4.4f, 7.75f), new Vector3(14f, 4.4f, 20.25f), new Vector3(22.25f, 4.4f, 14f) };
-                    var rots = new[] { r90, r90, srcRot };
+                    // East (X22) AlleyEndWall removed: it is now an interior
+                    // junction into the connected street (ConnectedStreet owns
+                    // only the new OUTER edges + the X22 Z20..28 west-nub).
+                    var names = new[] { "AlleySouthWall", "AlleyNorthWall" };
+                    var centers = new[] { new Vector3(14f, 4.4f, 7.75f), new Vector3(14f, 4.4f, 20.25f) };
+                    var rots = new[] { r90, r90 };
                     var scales = new[]
                     {
                         new Vector3(16f / b.size.x, 0.5f / b.size.y, 8.8f / b.size.z),
-                        new Vector3(16f / b.size.x, 0.5f / b.size.y, 8.8f / b.size.z),
-                        new Vector3(12f / b.size.x, 0.5f / b.size.y, 8.8f / b.size.z)
+                        new Vector3(16f / b.size.x, 0.5f / b.size.y, 8.8f / b.size.z)
                     };
                     for (int i = 0; i < 2; i++)
                     {
