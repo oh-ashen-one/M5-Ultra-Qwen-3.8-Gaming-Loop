@@ -14,7 +14,7 @@ from loop_controller.continuous_tasks import TASKS
 from repair_camera_clearance import CameraRepair
 from qualify_moving_encounter import checked
 
-PRIOR = 'q0128-3f59c879'
+PRIOR = 'q0130-54104f1e'
 PREVIEW = 'evidence/' + PRIOR + '-character-preview'
 REVIEW = PREVIEW + '/character-pixel-inspection.json'
 MARKER = '    public class Follow : MonoBehaviour'
