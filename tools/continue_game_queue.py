@@ -59,7 +59,9 @@ def review_captures(task,bundle):
             if (abs(near['time']-when)<=.25 and near.get('mode')=='foot' and near.get('player')
                     and 0<outside_distance(near['player'])<=2):
                 junction=[frame];break
-        chosen=sorted(set([frames[0],*junction,*selected,frames[-1]]))
+        # A measured junction view replaces the redundant opening image. Keep
+        # four actual images plus the reference within the established budget.
+        chosen=sorted(set([*(junction or [frames[0]]),*selected,frames[-1]]))
     if 'mission_complete' in task.get('checks',[]) and trace.exists():
         rows=[json.loads(line) for line in trace.read_text().splitlines()]
         observed=[]

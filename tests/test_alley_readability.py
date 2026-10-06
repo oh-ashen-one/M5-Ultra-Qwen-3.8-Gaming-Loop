@@ -61,5 +61,5 @@ class AlleyReadabilityTests(unittest.TestCase):
             (c/'trace.jsonl').write_text('\n'.join(json.dumps(x) for x in rows))
             chosen,mapping=review_captures({'id':'connected-map-extension'},bundle)
             self.assertEqual([p.name for p in chosen],
-                ['frame-000.png','frame-001.png','frame-002.png','frame-004.png','frame-005.png'])
+                ['frame-001.png','frame-002.png','frame-004.png','frame-005.png'])
             self.assertEqual(mapping['frame-001.png'],10.7)
