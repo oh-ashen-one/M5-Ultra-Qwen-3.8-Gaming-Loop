@@ -1,6 +1,10 @@
 # Connected-map stage
 
-## Latest measured outcome — 2026-10-06 06:22 UTC
+## Latest measured outcome — 2026-10-06 06:25 UTC
+
+**Cause-based repair passes the unchanged native map replay:** local Qwen saved **`d5260465`**, adding only a real 80 kg rival Rigidbody and clearing its motion on R reset. Native q0070 compiled and rendered nine frames. With the exact previously failed inputs, walking now reaches **6.533 m outside** and returns at **15.97 s**; the vehicle reaches **13.768 m outside** and returns at **33.63 s**. Walking support is **188/188**, vehicle rendered support passes, and both modes have actual outside captures. This supports the diagnosed static-actor cause without a fourth timing variation. See [current-source native proof](rival-repair-native-pass.json).
+
+At **06:24:46 UTC** the sole controller was **running the required regressions**: walking had passed and the next native player was active. All ten regressions and fresh local visual critique are still required before promotion; accepted **`d269dc43`** remains unchanged. A new actual driving-outside frame is confirmed privately in Library. The new walking capture is byte-identical to the prior supported-walking image, so its existing Library item is reused with the new run provenance. These images remain crude WIP, not final visual quality or ten-minute acceptance.
 
 **Actual contact cause established:** q0069 reran the unchanged grounded source and replay with passive external collision and steering instrumentation. Ten measured samples establish the solid Rival capsule as a static obstacle: it has no Rigidbody. At t22.70, actual horizontal travel was **0.414 m/s** despite commanded **4.5 m/s**, with a real collision impulse opposing forward travel. Steering input is observed separately; the subsequent turn also contacts `pier_base01` after that blocked approach. See [contact names, bounds, normals, impulses and motion](static-rival-contact-diagnosis.json). This is direct contact evidence, not a diagnosis inferred only from a screenshot or low displacement.
 

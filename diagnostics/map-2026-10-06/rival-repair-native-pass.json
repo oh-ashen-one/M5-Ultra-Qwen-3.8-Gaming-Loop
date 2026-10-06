@@ -1,0 +1,157 @@
+{
+  "observed_utc": "2026-10-06T06:24:46.163702+00:00",
+  "round": "q0070-1baf81f6",
+  "candidate": "d526046537d456bb224a247e88d190157286e2d2",
+  "build_id": "38a6323f49994ddd521dd7304fbc04c3fa0d6d8bf3a0af9ae571d58991b32e76",
+  "native_build_runtime_passed": true,
+  "map_traversal": {
+    "passed": true,
+    "failure": [],
+    "old_bounds_xz": [
+      -1,
+      6,
+      -2,
+      30
+    ],
+    "traversal": {
+      "foot": {
+        "outside_samples": 15,
+        "maximum_distance_beyond_old_boundary_m": 6.533334732055664,
+        "physical_return_seconds": 15.966666221618652
+      },
+      "vehicle": {
+        "outside_samples": 48,
+        "maximum_distance_beyond_old_boundary_m": 13.76791000366211,
+        "physical_return_seconds": 33.63333511352539
+      }
+    },
+    "area_claim": "Only observed connected traversal; no gross map-area acceptance"
+  },
+  "walking_support": {
+    "passed": true,
+    "samples": 188,
+    "uncovered_samples": 0,
+    "first_uncovered": [],
+    "radius_m": 0.32,
+    "surfaces": [
+      {
+        "name": "Street/road_asphalt",
+        "min": [
+          2.6499996185302734,
+          -0.06999915186315775,
+          0
+        ],
+        "max": [
+          13.649999618530273,
+          0.05000346805900335,
+          14
+        ]
+      },
+      {
+        "name": "Pavement",
+        "min": [
+          -1,
+          -0.000001214444637298584,
+          -2
+        ],
+        "max": [
+          6,
+          0.14000045508146286,
+          30
+        ]
+      },
+      {
+        "name": "WorldCollision/AlleyPavement",
+        "min": [
+          6,
+          -0.0000027418136596679688,
+          8
+        ],
+        "max": [
+          22,
+          0.1400010734796524,
+          20
+        ]
+      },
+      {
+        "name": "Street/sidewalk",
+        "min": [
+          -0.7999999523162842,
+          2.2351741790771484e-8,
+          14
+        ],
+        "max": [
+          2.4000000953674316,
+          0.14000078290700912,
+          28
+        ]
+      },
+      {
+        "name": "Street/sidewalk",
+        "min": [
+          -0.7999999523162842,
+          2.2351741790771484e-8,
+          0
+        ],
+        "max": [
+          2.4000000953674316,
+          0.14000078290700912,
+          14
+        ]
+      },
+      {
+        "name": "Street/road_asphalt",
+        "min": [
+          2.6499996185302734,
+          -0.06999915186315775,
+          14
+        ],
+        "max": [
+          13.649999618530273,
+          0.05000346805900335,
+          28
+        ]
+      }
+    ],
+    "scope": "Flat rendered-surface bounds support the route; actual frame review is also required."
+  },
+  "vehicle_rendered_support": true,
+  "outside_capture_modes": [
+    "foot",
+    "vehicle"
+  ],
+  "captures": [
+    {
+      "source_frame": "frame-002.png",
+      "replay_seconds": 13.69791,
+      "capture_file_mtime_utc": "2026-10-06T06:23:14.011504+00:00",
+      "sha256": "dcf9c58513627f75a827b6da3787eb3030217fb68d1bd0db9fadf5ca0b4cc335"
+    },
+    {
+      "source_frame": "frame-006.png",
+      "replay_seconds": 27.84647,
+      "capture_file_mtime_utc": "2026-10-06T06:23:30.853842+00:00",
+      "sha256": "ab22be8e822a5371e5c06f43b4bd512597c73af03f8d0a4cd4fc9ea7dd10e2f8"
+    }
+  ],
+  "regressions": [
+    {
+      "round": "q0070-1baf81f6-regression-walk",
+      "passed": true,
+      "failure": null
+    }
+  ],
+  "acceptance": {
+    "map_native_passed": true,
+    "regressions_completed_at_snapshot": 1,
+    "regressions_required": 10,
+    "fresh_critic_completed": false,
+    "extension_promoted": false,
+    "accepted_checkpoint": "d269dc43ac66c39afca4cb98ea53f9e7ed36806f"
+  },
+  "authorship": {
+    "gameplay": "Local Qwen, two scoped Combat.cs edits: dynamic body and legitimate reset state.",
+    "controller": "Cloud-authored passive contact diagnosis and protected acceptance.",
+    "replay": "Exact previously failed q0067 inputs preserved; no timing changes."
+  }
+}
