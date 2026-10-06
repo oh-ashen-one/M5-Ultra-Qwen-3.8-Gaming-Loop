@@ -1,0 +1,416 @@
+{
+  "observed_utc": "2026-10-06T14:07:14.557784+00:00",
+  "round": "q0105-4643cf8b",
+  "source": "c53cb5d79437823562d57f74b3b1fd7f0761b43d",
+  "published": true,
+  "gate": {
+    "passed": true,
+    "failure": null,
+    "candidate_commit": "c53cb5d79437823562d57f74b3b1fd7f0761b43d",
+    "build_id": "a46e7aafcc5fe18ba2bfcaa8a84bcd36d2f3c60f5685338a7de2c7ae96d7041a",
+    "duration": 36.016666412353516,
+    "frame_count": 15,
+    "chapter_contract": {
+      "activations": [
+        14.350000381469727
+      ],
+      "arrivals": [
+        30.200000762939453
+      ],
+      "completions": [
+        32.53333282470703
+      ],
+      "exits": [
+        30.633333206176758
+      ],
+      "failure": null,
+      "final_game_accepted": false,
+      "passed": true,
+      "resets": [
+        34.03333282470703
+      ],
+      "scope": "chapter-completion"
+    },
+    "presentation_geometry": {
+      "active_samples": 185,
+      "examples": [
+        {
+          "cache_bounds_center": [
+            50,
+            0.8738682866096497,
+            18.00200653076172
+          ],
+          "cache_bounds_size": [
+            2.5347137451171875,
+            1.4677366018295288,
+            1.3459892272949219
+          ],
+          "capture_aspect": 1.7777777910232544,
+          "emissive_renderers": 1,
+          "live_aspect": 1.3333333730697632,
+          "panels": {
+            "HudStatus": {
+              "captureCardRect": [
+                0.1565435230731964,
+                0.8572609424591064,
+                0.4119081497192383,
+                0.9333215355873108
+              ],
+              "captureTextRect": [
+                0.16242903470993042,
+                0.8826856017112732,
+                0.22524572908878326,
+                0.925089418888092
+              ],
+              "cardRect": [
+                0.04205805063247681,
+                0.8572609424591064,
+                0.38254421949386597,
+                0.9333215355873108
+              ],
+              "name": "HudStatus",
+              "text": "HEALTH 76\nWANTED . . .",
+              "textRect": [
+                0.04990538954734802,
+                0.8826856017112732,
+                0.13366097211837769,
+                0.925089418888092
+              ],
+              "visible": true
+            },
+            "MissionHud": {
+              "captureCardRect": [
+                0.1606212705373764,
+                0.06702954322099686,
+                0.46127021312713623,
+                0.17565475404262543
+              ],
+              "captureTextRect": [
+                0.2260727435350418,
+                0.07610416412353516,
+                0.39134731888771057,
+                0.1499270796775818
+              ],
+              "cardRect": [
+                0.047495037317276,
+                0.06702954322099686,
+                0.44836029410362244,
+                0.17565475404262543
+              ],
+              "name": "MissionHud",
+              "text": "★ DELIVERY COMPLETE ★\nThe parcel has been delivered.\nR to reset",
+              "textRect": [
+                0.1347636580467224,
+                0.07610416412353516,
+                0.35512974858283997,
+                0.1499270796775818
+              ],
+              "visible": true
+            },
+            "RouteHud": {
+              "captureCardRect": [
+                0.4499894380569458,
+                0.8313575387001038,
+                0.8389595746994019,
+                0.9470069408416748
+              ],
+              "captureTextRect": [
+                0.5148388743400574,
+                0.8457241654396057,
+                0.7777222394943237,
+                0.9250891208648682
+              ],
+              "cardRect": [
+                0.4333192706108093,
+                0.8313575387001038,
+                0.9519460797309875,
+                0.9470069408416748
+              ],
+              "name": "RouteHud",
+              "text": "EAST DEAD-DROP\nDrive to cache (50m)  E to exit",
+              "textRect": [
+                0.5197851657867432,
+                0.8457241654396057,
+                0.87029629945755,
+                0.9250891208648682
+              ],
+              "visible": true
+            }
+          },
+          "stage": 1,
+          "time": 14.350000381469727
+        },
+        {
+          "cache_bounds_center": [
+            50,
+            0.8738682866096497,
+            18.00200653076172
+          ],
+          "cache_bounds_size": [
+            2.5347137451171875,
+            1.4677366018295288,
+            1.3459892272949219
+          ],
+          "capture_aspect": 1.7777777910232544,
+          "emissive_renderers": 1,
+          "live_aspect": 1.3333333730697632,
+          "panels": {
+            "HudStatus": {
+              "captureCardRect": [
+                0.15654323995113373,
+                0.8572609424591064,
+                0.41190826892852783,
+                0.9333213567733765
+              ],
+              "captureTextRect": [
+                0.16242913901805878,
+                0.8826850056648254,
+                0.22524578869342804,
+                0.9250888228416443
+              ],
+              "cardRect": [
+                0.04205766320228577,
+                0.8572609424591064,
+                0.3825443685054779,
+                0.9333213567733765
+              ],
+              "name": "HudStatus",
+              "text": "HEALTH 76\nWANTED . . .",
+              "textRect": [
+                0.04990553855895996,
+                0.8826850056648254,
+                0.13366106152534485,
+                0.9250888228416443
+              ],
+              "visible": true
+            },
+            "MissionHud": {
+              "captureCardRect": [
+                0.16062095761299133,
+                0.06702923774719238,
+                0.46127036213874817,
+                0.17565447092056274
+              ],
+              "captureTextRect": [
+                0.2260724902153015,
+                0.07610385864973068,
+                0.39134731888771057,
+                0.1499267965555191
+              ],
+              "cardRect": [
+                0.04749462008476257,
+                0.06702923774719238,
+                0.44836050271987915,
+                0.17565447092056274
+              ],
+              "name": "MissionHud",
+              "text": "★ DELIVERY COMPLETE ★\nThe parcel has been delivered.\nR to reset",
+              "textRect": [
+                0.13476333022117615,
+                0.07610385864973068,
+                0.35512974858283997,
+                0.1499267965555191
+              ],
+              "visible": true
+            },
+            "RouteHud": {
+              "captureCardRect": [
+                0.4499894380569458,
+                0.8313575387001038,
+                0.8389603495597839,
+                0.947007417678833
+              ],
+              "captureTextRect": [
+                0.5148391127586365,
+                0.8457242250442505,
+                0.7777222394943237,
+                0.9250888228416443
+              ],
+              "cardRect": [
+                0.4333192706108093,
+                0.8313575387001038,
+                0.9519470930099487,
+                0.947007417678833
+              ],
+              "name": "RouteHud",
+              "text": "EAST DEAD-DROP\nDrive to cache (50m)  E to exit",
+              "textRect": [
+                0.519785463809967,
+                0.8457242250442505,
+                0.87029629945755,
+                0.9250888228416443
+              ],
+              "visible": true
+            }
+          },
+          "stage": 1,
+          "time": 14.466666221618652
+        },
+        {
+          "cache_bounds_center": [
+            50,
+            0.8738682866096497,
+            18.00200653076172
+          ],
+          "cache_bounds_size": [
+            2.5347137451171875,
+            1.4677366018295288,
+            1.3459892272949219
+          ],
+          "capture_aspect": 1.7777777910232544,
+          "emissive_renderers": 1,
+          "live_aspect": 1.3333333730697632,
+          "panels": {
+            "HudStatus": {
+              "captureCardRect": [
+                0.15654297173023224,
+                0.857261061668396,
+                0.4119081497192383,
+                0.9333223700523376
+              ],
+              "captureTextRect": [
+                0.16242972016334534,
+                0.8826857209205627,
+                0.2252456396818161,
+                0.9250890016555786
+              ],
+              "cardRect": [
+                0.042057305574417114,
+                0.857261061668396,
+                0.38254421949386597,
+                0.9333223700523376
+              ],
+              "name": "HudStatus",
+              "text": "HEALTH 60\nWANTED . . .",
+              "textRect": [
+                0.04990631341934204,
+                0.8826857209205627,
+                0.13366085290908813,
+                0.9250890016555786
+              ],
+              "visible": true
+            },
+            "MissionHud": {
+              "captureCardRect": [
+                0.16062088310718536,
+                0.06702906638383865,
+                0.46127021312713623,
+                0.17565497756004333
+              ],
+              "captureTextRect": [
+                0.22607243061065674,
+                0.07610446959733963,
+                0.39134764671325684,
+                0.1499272882938385
+              ],
+              "cardRect": [
+                0.04749453067779541,
+                0.06702906638383865,
+                0.44836029410362244,
+                0.17565497756004333
+              ],
+              "name": "MissionHud",
+              "text": "★ DELIVERY COMPLETE ★\nThe parcel has been delivered.\nR to reset",
+              "textRect": [
+                0.13476324081420898,
+                0.07610446959733963,
+                0.3551301956176758,
+                0.1499272882938385
+              ],
+              "visible": true
+            },
+            "RouteHud": {
+              "captureCardRect": [
+                0.4499894380569458,
+                0.8313577175140381,
+                0.8389594554901123,
+                0.947007417678833
+              ],
+              "captureTextRect": [
+                0.47988614439964294,
+                0.84572434425354,
+                0.8126747608184814,
+                0.925089418888092
+              ],
+              "cardRect": [
+                0.4333192706108093,
+                0.8313577175140381,
+                0.951945960521698,
+                0.947007417678833
+              ],
+              "name": "RouteHud",
+              "text": "★ EAST DEAD-DROP COMPLETE ★\nChapter complete",
+              "textRect": [
+                0.4731815457344055,
+                0.84572434425354,
+                0.9168996810913086,
+                0.925089418888092
+              ],
+              "visible": true
+            }
+          },
+          "stage": 2,
+          "time": 32.53333282470703
+        }
+      ],
+      "failure": null,
+      "passed": true,
+      "reset_samples": 20,
+      "scope": "Live-window and native-capture UI geometry, physical cache bounds; actual pixel review remains required."
+    }
+  },
+  "frames": [
+    {
+      "file": "frame-003.png",
+      "time": 15.2,
+      "sha256": "1d7ab25ad9b0700714cab8d317983d30ab7f72008deef1fd3ab63b896651bb30",
+      "file_mtime_utc": "2026-10-06T14:06:28.761090+00:00"
+    },
+    {
+      "file": "frame-010.png",
+      "time": 30.968277809980393,
+      "sha256": "15157d2ec955fc6490d9af93e13713b1b495d37bd4f05622947d915cb7733e7b",
+      "file_mtime_utc": "2026-10-06T14:06:49.096887+00:00"
+    },
+    {
+      "file": "frame-011.png",
+      "time": 32.55,
+      "sha256": "241ce9b40662be0d9422c235eb4c0a598d1b8d21e6a1b1adfb289a8ec35937c4",
+      "file_mtime_utc": "2026-10-06T14:06:51.142007+00:00"
+    },
+    {
+      "file": "frame-012.png",
+      "time": 33.10206129914633,
+      "sha256": "493031d0ab7ae58016aed57db2000262199eddcdebd6b785deba5db59850e61f",
+      "file_mtime_utc": "2026-10-06T14:06:51.835738+00:00"
+    },
+    {
+      "file": "frame-013.png",
+      "time": 34.60206129914633,
+      "sha256": "c0e302ae2ca0f8a25414f543cc13de48541348308475dd49053ba17d7d63c3a8",
+      "file_mtime_utc": "2026-10-06T14:06:53.789018+00:00"
+    }
+  ],
+  "hashes": {
+    "chapter-gate.json": "e3d8f4ab90995d68c668cad631ae31216d1bf66ac075648c9224cd05e83784a1",
+    "captures/scenario.json": "ef6840d16d9c8f1b9f5c4edeb4a1761af53dc62a4e8e9c9e9bbf7218816b95f9",
+    "captures/trace.jsonl": "dd4e11d61336ebdaefea0c65e85179fc40709975e04daba330fff4c3e2f6c02f"
+  },
+  "hash_scope": "Native presentation artifact before later regression annotations",
+  "regressions_at_snapshot": [],
+  "fresh_review": "pending",
+  "cloud_pixel_review": {
+    "improved": [
+      "Compact separated HUD panels leave the middle of the street visible",
+      "Courier receipt remains readable and secondary",
+      "Cache body is muted rather than neon, with grounded rendered bounds"
+    ],
+    "remaining": [
+      "Cache and vehicle partly obscure the actor near completion",
+      "Simple character/vehicle art",
+      "Repetitive facades and uniform ground without curbs/markings",
+      "Meaningful connected ten-minute pacing"
+    ]
+  },
+  "final_game_accepted": false
+}
