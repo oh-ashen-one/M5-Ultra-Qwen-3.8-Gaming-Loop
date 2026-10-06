@@ -211,6 +211,8 @@ class Engines:
     def __init__(self, config, store, machine, source_root):
         self.c, self.store, self.machine = config, store, machine
         self.source_root = Path(source_root)
+        from .build_reuse import BuildReuse
+        self.build_reuse = BuildReuse()
 
     def blender(self, project, script, action_id):
         from .core import Files
@@ -276,7 +278,10 @@ class Engines:
         build = bundle / "build"
         build.mkdir()
         app = build / "ChicagoLocalSlice.app"
-        build_code = self.machine.execute("unity-build", [self.c["unity"], "-batchmode", "-nographics",
+        from .build_reuse import build_key, tree_digest
+        reuse_key = build_key(build_project, self.c['unity'], candidate_commit)
+        reused = self.build_reuse.restore(reuse_key, build)
+        build_code = 0 if reused else self.machine.execute("unity-build", [self.c["unity"], "-batchmode", "-nographics",
             "-projectPath", str(build_project), "-refreshImportMode", "InProcess",
             "-executeMethod", "LoopBuild.Build", "-logFile", "-"],
             build_project, build, 900, {"LOOP_BUILD_OUTPUT": str(app)}, protected)
@@ -287,7 +292,8 @@ class Engines:
                 raise Halt("Protected Unity harness changed")
         receipt = {"candidate_commit": candidate_commit, "build_exit": build_code,
                    "compile_errors": failure_lines[-30:], "harness_sha256": sha(json.dumps(expected, sort_keys=True).encode()),
-                   "acceptance_fixture": scenario.get('fixture')}
+                   "acceptance_fixture": scenario.get('fixture'), "compile_reused": reused,
+                   "build_input_sha256": reuse_key}
         if build_code or failure_lines or not (build / "build-result.json").exists():
             receipt.update(passed=False, failure="compile-build", diagnostic=errors[-7000:])
             atomic(bundle / "gate.json", receipt)
@@ -304,16 +310,21 @@ class Engines:
         captures.mkdir()
         scenario_path = captures / "scenario.json"
         atomic(scenario_path, scenario)
+        artifact_before = tree_digest(app)
         player_code = self.machine.execute("unity-play", [str(executable), "-batchmode", "-force-metal",
             "-screen-width", "960", "-screen-height", "540", "-logFile", "-",
             "--loop-output", str(captures), "--loop-scenario", str(scenario_path), "--loop-capture-id", bundle.name],
             build_project, captures, int(scenario["duration"])+90, protected=[*protected, scenario_path])
+        if tree_digest(app) != artifact_before:
+            raise Halt('Native player changed its compiled artifact')
         receipt.update(evaluate_runtime(captures, scenario, player_code, bundle.name))
         receipt["build_id"] = sha(encode_directory(app))
         receipt["capture_id"] = bundle.name
         atomic(bundle / "gate.json", receipt)
         from .scene_inventory import require_complete_inventory
         require_complete_inventory(receipt)
+        if receipt.get('passed') and not reused:
+            self.build_reuse.remember(reuse_key, build)
         return receipt
 
 

@@ -12,6 +12,8 @@ public static class LoopRouteObservation
         public int visibleRenderers;
         public float[] textRect, cardRect;
         public float[] captureTextRect, captureCardRect;
+        public string cardShader;
+        public float[] cardColor;
     }
     [Serializable] public class State {
         public bool present, valid, complete, cacheExists, cacheActive, actorChild, originalMeshReuse;
@@ -85,7 +87,14 @@ public static class LoopRouteObservation
         value.visible=renderer!=null && renderer.enabled && renderer.gameObject.activeInHierarchy && value.text.Length>0;
         if(renderer!=null) {value.textRect=Rect(renderer,camera);value.captureTextRect=Rect(renderer,camera,true);}
         var card=go.GetComponentsInChildren<Renderer>().FirstOrDefault(r=>r!=renderer && r.enabled);
-        if(card!=null) {value.cardRect=Rect(card,camera);value.captureCardRect=Rect(card,camera,true);}
+        if(card!=null) {
+            value.cardRect=Rect(card,camera);value.captureCardRect=Rect(card,camera,true);
+            var material=card.sharedMaterial;
+            if(material!=null) {
+                value.cardShader=material.shader!=null?material.shader.name:"";
+                if(material.HasProperty("_Color")) {var c=material.color;value.cardColor=new[]{c.r,c.g,c.b,c.a};}
+            }
+        }
         return value;
     }
     static float[] Rect(Renderer renderer,Camera camera,bool capture=false)
