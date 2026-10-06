@@ -99,6 +99,7 @@ namespace ChicagoGame
             // --- Warm fill light so the longer street reads (no new art). ---
             AddFill(parent, new Vector3(32f, 4f, 16f), 20f, 2.5f);
             AddFill(parent, new Vector3(50f, 4f, 18f), 20f, 2.5f);
+            EastStreetDetail.Install(parent);
         }
 
         static void Facade(GameObject parent, string nm, Mesh m, Material mat,
