@@ -126,6 +126,8 @@ namespace ChicagoGame
                     if (srcs[i] == null) continue;
                     var inst = Object.Instantiate(srcs[i]); inst.name = names[i];
                     inst.transform.SetParent(go.transform, true);
+                    inst.transform.rotation = srcs[i].transform.rotation;
+                    inst.transform.localScale = srcs[i].transform.lossyScale;
                     var mn = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
                     var mx = new Vector3(float.MinValue, float.MinValue, float.MinValue);
                     foreach (var rr in inst.GetComponentsInChildren<Renderer>())
