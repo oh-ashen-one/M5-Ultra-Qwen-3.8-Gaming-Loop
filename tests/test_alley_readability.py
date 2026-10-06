@@ -12,6 +12,20 @@ from loop_controller.core import Halt
 
 
 class AlleyReadabilityTests(unittest.TestCase):
+    def test_saved_visual_recovery_preserves_partial_source_and_failure_history(self):
+        import resume_alley_saved_visuals as saved
+        s=dict(source_checkpoint=saved.SOURCE,last_playable_checkpoint=saved.ACCEPTED,
+            current_round=saved.ROUND,task_index=7,task_failures=17,failure_streak=1,
+            diagnosis_used=True,overall_deadline_epoch=saved.HARD_CAP_EPOCH,
+            alley_readability_recovery_attempted=True,last_valid_replay={},
+            blocker='Halt: Scoped readability edit not saved; prior local source preserved')
+        original=copy.deepcopy(s)
+        with patch.object(saved,'replay_identity',return_value=saved.REPLAY):
+            saved.validate_saved_visual_pause(s);self.assertEqual(s,original)
+            for key,value in [('source_checkpoint','other'),('task_failures',0),
+                              ('blocker','native regression'),('alley_saved_visuals_attempted',True)]:
+                with self.assertRaises(Halt):saved.validate_saved_visual_pause({**s,key:value})
+
     def test_recovery_cannot_reset_failures_or_admit_an_unrelated_pause(self):
         s=dict(source_checkpoint=r.SOURCE,last_playable_checkpoint=r.ACCEPTED,current_round=r.ROUND,
             task_index=7,task_failures=17,failure_streak=1,diagnosis_used=True,
