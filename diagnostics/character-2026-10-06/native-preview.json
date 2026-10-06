@@ -1,0 +1,81 @@
+{
+  "recorded_utc": "2026-10-06T22:33:01Z",
+  "scope": "Actual native Metal replay captures; not final visual acceptance",
+  "before": {
+    "source": "c9aa15bdb02f0e81edd04c50598a28dc6092ae00",
+    "build_id": "fc0f116b6d10fb3bd9a6e1807bc2024fb4a677781e6d4aa438c1e5c1486034cd",
+    "capture_id": "q0126-657b9ebf-positive"
+  },
+  "after": {
+    "source": "f662881799825c81419f83259badd027918d9c45",
+    "build_id": "34390d8f04abe155c615bcbce2e86002badbed7bda040cba220a8e2be9ee78de",
+    "capture_id": "q0130-54104f1e-character-preview",
+    "native_preview_passed": true,
+    "duration_seconds": 18,
+    "runtime_errors": 0,
+    "frame_count": 3
+  },
+  "timestamp_note": "UTC values below are original PNG file modification/write times on the execution host. The renderer recorded replay time but did not record a separate wall-clock exposure timestamp. These are not Library upload times.",
+  "frames": [
+    {
+      "file": "Chicago-before-character-c9aa15b-t3.2s.png",
+      "phase": "before",
+      "replay_seconds": 3.2,
+      "capture_file_write_utc": "2026-10-06T19:38:28.709733Z",
+      "bytes": 194425,
+      "sha256": "e13c184f9a31bcea76a7d1ea54d344e59f79aa30b17535cc1e61ae6f77672291"
+    },
+    {
+      "file": "Chicago-new-character-f6628817-t3.2s.png",
+      "phase": "after",
+      "replay_seconds": 3.2,
+      "capture_file_write_utc": "2026-10-06T22:22:57.640110Z",
+      "bytes": 209963,
+      "sha256": "5347d8383ff82d411ae2c803f19deaf83f6b3f863cb57f2993706e0fb5b475ab"
+    },
+    {
+      "file": "Chicago-driving-camera-before-repair-f6628817-t17s.png",
+      "phase": "after",
+      "replay_seconds": 17,
+      "capture_file_write_utc": "2026-10-06T22:23:13.760576Z",
+      "bytes": 113784,
+      "sha256": "d4edcb4253ab98ec270280193df312d9d8c7be0b20bbab1f4f1f2262a81e1077"
+    }
+  ],
+  "visual_inspection": {
+    "actual_pixels_inspected": true,
+    "improvement": "Coherent humanoid proportions and assembled rounded limbs replace the earlier box-like/displaced figure.",
+    "remaining": [
+      "Segmented primitive appearance remains below target art quality.",
+      "Character is crowded against the left facade.",
+      "Driving camera is close and crowded; a clear rendered center-ray reticle is absent."
+    ],
+    "character_final_accepted": false
+  },
+  "continuation": {
+    "baseline_source": "f662881799825c81419f83259badd027918d9c45",
+    "pre_camera_native_gameplay_passed": true,
+    "pre_camera_build_id": "8ea5adb09cc726cfcc7bf7a8507b876ed340be247de8d026f422728d4b184842",
+    "saved_camera_source": "8fd4c9e5bb93455bfe5e4b2207f52f279a1e70d3",
+    "camera_author_output_tokens": 5904,
+    "camera_author_total_seconds": 92.29,
+    "camera_author_decode_tps": 69.96,
+    "new_camera_native_test": "pending after resident memory-guard stop",
+    "accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188"
+  },
+  "resource_stop": {
+    "first_available_GiB": 59.701,
+    "second_available_GiB": 63.293,
+    "required_available_GiB": 64,
+    "swap_growth_MiB": 0,
+    "one_recovery_after_available_GiB": 226.778,
+    "second_automatic_retry": false,
+    "guard_relaxed": false,
+    "other_workloads_modified": false
+  },
+  "library_delivery": {
+    "all_three_saved": true,
+    "local_identity_metadata_applied": true,
+    "route": "Authorized direct-create fallback after prepared uploads unavailable; Library identities remain private."
+  }
+}
