@@ -1,18 +1,23 @@
 {
-  "action_id": "r0003-1aa6d5c4-builder-3-tool-0",
+  "action_id": "q0048-8e962e4d-export-only-0-tool-0",
   "author": "local-Qwen",
   "files": [
     {
-      "bytes": 113723,
-      "path": "ArtSources/coupe/source.blend",
-      "sha256": "7119a08ca806a392751e9ac38abec853884dd033ee4f3a482df19474db2c0e7e"
+      "bytes": 555,
+      "path": "ArtSources/coupe/provenance.json",
+      "sha256": "c99365e7af42520c7a6e93e663181fa3dc0434031fb305df8c1418a3aaac3d42"
     },
     {
-      "bytes": 90556,
+      "bytes": 114228,
+      "path": "ArtSources/coupe/source.blend",
+      "sha256": "49dad43e75e1061f384dd48dac8d383110ebf734a021d6fa10d4f5c82633786a"
+    },
+    {
+      "bytes": 90988,
       "path": "Assets/Resources/Generated/coupe/scene.fbx",
-      "sha256": "49f1bc760b934bdc0aad9d8dd8521418199fbb28ce78e1e402304fc512380b57"
+      "sha256": "c13a9f2624186925758a311158aa112c0e5587834257f67ead5ca8b720d531a1"
     }
   ],
   "script": "Art/coupe.py",
-  "script_sha256": "4e6776a52c22b3a4f18c7b3e67bc968dccac92596334a1f1b188cc5307fdc499"
+  "script_sha256": "9630f574cc8107be2e986e6f5718fe1c92b72f552841b7932e27f1ef0ff408f6"
 }
