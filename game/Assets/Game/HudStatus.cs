@@ -65,10 +65,7 @@ namespace ChicagoGame
             if (hp == lastHp && w == lastWanted) return;
             lastHp = hp; lastWanted = w;
 
-            string stars = "";
-            for (int i = 0; i < 3; i++) stars += i < w ? " *" : " .";
-
-            tm.text = "HEALTH " + hp + "\nWANTED" + stars;
+            tm.text = "HEALTH " + hp + "\nWANTED " + w + " / 3";
             tm.color = hp > 60 ? new Color(0.55f, 1f, 0.55f)
                      : hp > 25 ? new Color(1f, 0.85f, 0.3f)
                                : new Color(1f, 0.35f, 0.3f);
