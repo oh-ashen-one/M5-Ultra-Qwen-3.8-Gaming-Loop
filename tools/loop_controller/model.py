@@ -152,7 +152,7 @@ class LocalModel:
                 ('role', 'content', 'reasoning_content', 'reasoning') if k in retained_assistant})
             messages.append({'role': 'user', 'content':
                 'The previous response hit its output cap without saving a file. Use that retained work; '
-                'do not repeat the analysis. Thinking effort is now low. Call finish_source now with '
+                'do not repeat the analysis. Thinking effort remains ' + reasoning_effort + '. Call finish_source now with '
                 'one complete, compact usable source file within the available output budget.'})
         self.store.event("role-start", role=role, session_id=session_id, images=image_records)
         unsupported_calls = 0

@@ -18,6 +18,7 @@ MARKER = '        // ---- restrained center-ray reticle'
 
 
 class ReticleSource(CharacterCamera):
+    reticle_output_tokens = 8192
     def validate_recovery(self, old):
         expected = dict(status='paused', controller_pid=None, owned_process=None,
             current_round=PRIOR, source_checkpoint=SOURCE, last_playable_checkpoint=ACCEPTED,
@@ -73,7 +74,7 @@ class ReticleSource(CharacterCamera):
             ('BEFORE ACTUAL Camera.Render target PNG at 3.2 seconds', self.before / 'captures/frame-000.png'),
             ('BEFORE ACTUAL normal player-screen PNG at 3.2 seconds', self.before / 'captures/screen-000.png')]
         shader = files.path('Assets/Resources/HudOpaque.shader').read_text()
-        self.c.update(working_context_tokens=65536, output_tokens=8192, model_timeout_seconds=600)
+        self.c.update(working_context_tokens=65536, output_tokens=self.reticle_output_tokens, model_timeout_seconds=600)
         result = self.model.session('builder', ident + '-reticle-source',
             'You are local Qwen, sole game-code author. Repair the concrete reticle rendering defect using the exact APIs and actual images.',
             'The camera source passed its 95-second gameplay replay, all ten regressions, and the wall/near-plane '
@@ -90,7 +91,7 @@ class ReticleSource(CharacterCamera):
             'detection, mission/health/input changes or source outside the selected span. Choose a sound minimal '
             'rendering solution; do not merely remove one guard without checking dimensions, shader color behavior '
             'and the actual render path. High thinking effort is enabled for this integration; return the complete '
-            'compact replacement through finish_source within 8192 output tokens. No planning essay is needed.\n'
+            f'compact replacement through finish_source within {self.reticle_output_tokens} output tokens. No planning essay is needed.\n'
             'VERIFIED API CONTEXT: Unity 6000 Built-in pipeline calls MonoBehaviour.OnPostRender on a Camera component '
             'after its scene render, including Camera.Render. The external capture saves/restores camera.targetTexture '
             'and RenderTexture.active around Camera.Render to a 960x540 RenderTexture, then ReadPixels. A separate '
@@ -105,7 +106,8 @@ class ReticleSource(CharacterCamera):
             '\nEXACT REPLACEABLE RETICLE SPAN (no closing class or namespace braces):\n' + selected.old,
             [tool('finish_source', 'Save the complete reticle-only replacement span; native verification follows.',
                   {'content': {'type': 'string'}})], {'finish_source': save},
-            images=images, visual_contract=contract(images, [TARGETS[2]], 2), turns=2, reasoning_effort='xhigh')
+            images=images, visual_contract=contract(images, [TARGETS[2]], 2), turns=2, reasoning_effort='xhigh',
+            retained_assistant=getattr(self, 'retained_assistant', None))
         atomic(self.store.root / 'evidence' / (ident + '-reticle-author.json'), result)
         if not result.get('ok') or files.path(BOOT).read_text() == original:
             raise Halt('No complete reticle source saved; preserve the bounded local response for diagnosis')

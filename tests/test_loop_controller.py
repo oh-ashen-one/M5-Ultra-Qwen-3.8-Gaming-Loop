@@ -225,10 +225,14 @@ class ControllerTests(unittest.TestCase):
             return {'choices':[{'finish_reason':'tool_calls','message':{'role':'assistant','reasoning_content':'private fixture text','tool_calls':[
                 {'id':'1','type':'function','function':{'name':'finish_task','arguments':'{}'}}]}}]}
         model.api=api
-        for name,kwargs in [('small',{'reasoning_effort':'low'}),('critic',{})]:
+        for name,kwargs in [('small',{'reasoning_effort':'low'}),('critic',{}),
+                ('retained', {'reasoning_effort':'xhigh', 'retained_assistant':
+                    {'role':'assistant','reasoning_content':'private retained fixture'}})]:
             result=model.session(name,name,'system','prompt',[tool('finish_task','finish',{})],{'finish_task':lambda *_:{'ok':True}},**kwargs)
             self.assertTrue(result['ok'])
-        self.assertEqual([v['reasoning_effort'] for v in requests],['low','xhigh'])
+        self.assertEqual([v['reasoning_effort'] for v in requests],['low','xhigh','xhigh'])
+        self.assertIn('Thinking effort remains xhigh', requests[-1]['messages'][3]['content'])
+        self.assertEqual(requests[-1]['messages'][2]['reasoning_content'], 'private retained fixture')
         self.assertTrue(all(v['chat_template_kwargs']=={'enable_thinking':True,'preserve_thinking':True} for v in requests))
         receipt=json.loads(self.store.db.execute("SELECT result FROM actions WHERE id='small-0'").fetchone()[0])
         self.assertEqual(receipt['reasoning_effort'],'low');self.assertEqual(receipt['response_accounting']['parsed_tool_calls'],1)
