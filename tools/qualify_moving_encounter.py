@@ -89,13 +89,19 @@ def next_design(r,ident,gate):
     raise Halt('Moving encounter qualified and next connected scope saved; seal physical/action acceptance and continue implementation')
 
 
-def qualify(r,ident,candidate,escape,escape_gate,original):
+def qualify(r,ident,candidate,escape,escape_gate,original,positive_probe=None,prior_escape=False):
     proposals=probes(original);gates={};bundles={'escape':escape}
+    if positive_probe is not None: proposals['positive']=positive_probe
     for case in ('escape','positive','inactive'):
         r.store.set(stage='native-moving-encounter-'+case);r.store.report()
         bundle=escape if case=='escape' else r.store.root/'evidence'/(ident+'-'+case)
         gate=escape_gate if case=='escape' else r.engines.unity(r.project,bundle,proposals[case],candidate)
-        gate=checked(bundle,gate,case);gates[case]=gate;bundles[case]=bundle
+        if case=='escape' and prior_escape:
+            if (gate.get('candidate_commit')!=candidate or not gate.get('passed') or
+                not gate.get('interception',{}).get('passed') or gate['interception'].get('case')!='escape'):
+                raise Halt('Prior escape evidence must already pass on this exact source')
+        else: gate=checked(bundle,gate,case)
+        gates[case]=gate;bundles[case]=bundle
         r.store.set(moving_encounter_native={k:dict(evidence=str(bundles[k].relative_to(r.store.root)),
             passed=v.get('passed'),failure=v.get('failure')) for k,v in gates.items()});r.store.report()
         if not gate.get('passed'): raise Halt('Moving encounter '+case+' needs measured diagnosis: '+json.dumps(gate.get('failure')))
