@@ -156,7 +156,9 @@ namespace ChicagoGame
                     _rb.linearVelocity = vel;
                 }
             }
-            if (e) Exit();
+
+            // Stepping out of the coupe is door input as well: blocked dead.
+            if (e && !dead) Exit();
         }
 
         void Enter()
