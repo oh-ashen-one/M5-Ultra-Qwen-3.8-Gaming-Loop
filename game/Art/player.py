@@ -1,15 +1,26 @@
-# ORIGINAL clothed courier - first art increment (Blender 5.2)
-# World: meters, +Z up, +Y forward. Build with presentation root at Z=0;
-# local foot soles sit at Z=0. Parent once, then lift player_root to Z=0.79.
-# Evaluated world soles are near +0.79 and crown near 2.6m. Unity unchanged.
-# Pivot bend axes: POSITIVE rotation about local +X swings limb forward(+Y).
-# Shoulder/elbow/hip/knee are empties; mesh parts overlap pivots so bends
-# stay covered by cloth. Parenting done exactly once via matrix_parent_inverse.
-import bpy, bmesh
+# ORIGINAL clothed courier - art increment 2 (Blender 5.2)
+# World: meters, +Z up. Visual built facing +Y with feet at Z=0; presentation
+# root then lifted to Z=0.79. Unity controller/camera unchanged.
+# Increment 2 goals kept inside the tested width envelope (~0.61 m) and 1.8 m
+# build: (A) lofted super-elliptical jacket/torso/sleeves/trousers with soft
+# square shoulders and beveled joint/hand/shoe reads - no barrel tube, no
+# prominent ball caps; (B) a static +pi Z pre-rotation on the visual root fixes
+# the native Blender->Unity axis conversion where local +Y front lands facing
+# the trailing camera, re-aiming the face along player forward/aim. The pre-
+# rotation is applied to the VISUAL root only; lift (.79), world-preserving
+# matrix_parent_inverse parenting and the l/r dictionaries are untouched.
+# (C) Original keyframe motion authored on spine/head/shoulder/elbow/hip/knee
+# pivots in ONE shared action per pivot at 30 fps, six ranges documented below.
+# Because the +pi root pre-rotation flips each child's local forward axis, a
+# positive authored swing-angle is multiplied by FX=-1 so it swings world-
+# forward. Walk/jog are presentation clips; real on-foot speed (3.2 m/s) and
+# the existing E boarding/driving trigger are NOT changed by this build.
+import bpy, bmesh, math
 from mathutils import Vector
 
 SC = bpy.context
 CO = SC.collection
+FX = -1.0  # local-forward inversion imposed by the +pi visual-root pre-rotation
 
 for ob in list(bpy.data.objects):
     bpy.data.objects.remove(ob, do_unlink=True)
@@ -18,9 +29,14 @@ for me in list(bpy.data.meshes):
 for cl in [c for c in bpy.data.collections if c != CO]:
     bpy.data.collections.remove(cl)
 
+# --- frame plan: Idle 1..61, Walk 71..101, Jog 111..135,
+#     Aim 145..175, Board 185..209, Drive 219..279  (30 fps, gaps pinned rest)
+SC.scene.frame_start = 1
+SC.scene.frame_end = 279
+SC.scene.render.fps = 30
+
 def MAT(n, c, rough=0.8, metal=0.0):
-    m = bpy.data.materials.new(n)
-    m.use_nodes = True
+    m = bpy.data.materials.new(n); m.use_nodes = True
     b = m.node_tree.nodes.get("Principled BSDF")
     b.inputs["Base Color"].default_value = (*c, 1.0)
     b.inputs["Roughness"].default_value = rough
@@ -29,163 +45,224 @@ def MAT(n, c, rough=0.8, metal=0.0):
 
 M_SKIN = MAT("Skin_Warm", (0.42, 0.27, 0.19), 0.55)
 M_JKT  = MAT("Jacket_Charcoal", (0.065, 0.065, 0.075), 0.85)
-M_TRIM = MAT("Trim_JacketDark", (0.028, 0.028, 0.034), 0.7)
-M_JEANS= MAT("Jeans_DarkBlue", (0.055, 0.075, 0.135), 0.9)
-M_SHOE = MAT("Shoe_Black", (0.025, 0.025, 0.03), 0.5)
-M_HAIR = MAT("Hair_Black", (0.02, 0.016, 0.013), 0.5)
-M_PIST = MAT("Pistol_Steel", (0.085, 0.085, 0.1), 0.35, 0.8)
+M_TRIM = MAT("Trim_JacketDark", (0.028, 0.028, 0.034), 0.70)
+M_JEANS= MAT("Jeans_DarkBlue", (0.055, 0.075, 0.135), 0.90)
+M_SHOE = MAT("Shoe_Black", (0.025, 0.025, 0.03), 0.50)
+M_HAIR = MAT("Hair_Black", (0.02, 0.016, 0.013), 0.50)
+M_PIST = MAT("Pistol_Steel", (0.085, 0.085, 0.10), 0.35, 0.80)
+M_EYE  = MAT("Eye_Dark", (0.015, 0.015, 0.02), 0.4)
 
-def OBJ(n, bm, m):
-    me = bpy.data.meshes.new(n)
-    bm.to_mesh(me)
-    bm.free()
-    me.materials.append(m)
-    o = bpy.data.objects.new(n, me)
-    CO.objects.link(o)
+def shade_bevel(o, w=0.006, ang=0.70):
+    for p in o.data.polygons: p.use_smooth = True
+    m = o.modifiers.new("bev", "BEVEL")
+    m.width = w; m.segments = 2; m.limit_method = "ANGLE"
+    m.angle_limit = ang; m.use_clamp_overlap = True; m.miter_outer = "MITER_ARC"
+    try: m.harden_normals = True
+    except Exception: pass
     return o
 
-def BALL(n, c, r, m, s=None, seg=12):
-    bm = bmesh.new()
-    bmesh.ops.create_uvsphere(bm, u_segments=seg,
-        v_segments=max(6, seg // 2), radius=r)
-    if s:
-        bmesh.ops.scale(bm, vec=Vector(s), verts=bm.verts)
-    o = OBJ(n, bm, m)
-    o.location = c
-    return o
+def OBJ(n, bm, mat):
+    me = bpy.data.meshes.new(n); bm.to_mesh(me); bm.free()
+    me.materials.append(mat)
+    o = bpy.data.objects.new(n, me); CO.objects.link(o); return o
 
-def BOX(n, c, sz, m, s=None):
-    bm = bmesh.new()
-    bmesh.ops.create_cube(bm, size=1.0)
+def superring(xh, yh, n, seg, yb):
+    out = []
+    for i in range(seg):
+        th = 2*math.pi*i/seg; c = abs(math.cos(th)); s = abs(math.sin(th))
+        yv = yh if math.sin(th) >= 0 else yh*yb
+        r = ((c/xh)**n + (s/yv)**n) ** (-1.0/n)
+        out.append((math.cos(th)*r, math.sin(th)*r))
+    return out
+
+def LOFT(n, levels, mat, capT=True, capB=True, seg=22, w=0.006):
+    bm = bmesh.new(); rings = []
+    for z, xh, yh, q, yb, xs, ys in levels:
+        pts = superring(xh, yh, q, seg, yb)
+        rings.append([bm.verts.new((x+xs, y+ys, z)) for (x, y) in pts])
+    for i in range(len(rings)-1):
+        a, b = rings[i], rings[i+1]; k = len(a)
+        for j in range(k):
+            bm.faces.new((a[j], a[(j+1)%k], b[(j+1)%k], b[j]))
+    if capB: bm.faces.new(list(reversed(rings[0])))
+    if capT: bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return shade_bevel(OBJ(n, bm, mat), w)
+
+def BOX(n, c, sz, mat, w=0.008):
+    bm = bmesh.new(); bmesh.ops.create_cube(bm, size=1.0)
     bmesh.ops.scale(bm, vec=Vector(sz), verts=bm.verts)
-    if s:
-        bmesh.ops.scale(bm, vec=Vector(s), verts=bm.verts)
-    o = OBJ(n, bm, m)
-    o.location = c
-    return o
+    o = OBJ(n, bm, mat); o.location = c; return shade_bevel(o, w)
 
-def TUBE(n, a, b, r0, r1, m, sx=1.0, sy=1.0, seg=12):
-    a, b = Vector(a), Vector(b)
-    d = b - a
+def SPH(n, c, r, mat, s=None, seg=22):
     bm = bmesh.new()
-    bmesh.ops.create_cone(bm, cap_ends=True, cap_tris=False,
-        segments=seg, radius1=r0, radius2=r1, depth=d.length)
-    if sx != 1.0 or sy != 1.0:
-        bmesh.ops.scale(bm, vec=Vector((sx, sy, 1.0)), verts=bm.verts)
-    o = OBJ(n, bm, m)
-    o.location = (a + b) / 2
-    o.rotation_mode = "QUATERNION"
-    o.rotation_quaternion = d.to_track_quat("Z", "Y")
-    return o
-
-def CAPS(n, a, b, r, m):
-    o = TUBE(n, a, b, r, r, m)
-    BALL(n + "_a", a, r, m)
-    BALL(n + "_b", b, r, m)
-    return o
+    bmesh.ops.create_uvsphere(bm, u_segments=seg, v_segments=max(8, seg//2), radius=r)
+    if s: bmesh.ops.scale(bm, vec=Vector(s), verts=bm.verts)
+    o = OBJ(n, bm, mat); o.location = c; return shade_bevel(o, 0.001)
 
 def EMP(n, loc, size=0.07):
     e = bpy.data.objects.new(n, None)
-    e.empty_display_type = "SPHERE"
-    e.empty_display_size = size
-    e.location = loc
-    CO.objects.link(e)
-    return e
+    e.empty_display_type = "SPHERE"; e.empty_display_size = size
+    e.location = loc; CO.objects.link(e); return e
 
 def PAR(o, p):
-    o.parent = p
-    o.matrix_parent_inverse = p.matrix_world.inverted()
+    o.parent = p; o.matrix_parent_inverse = p.matrix_world.inverted()
 
-root = EMP("player_root", (0.0, 0.0, 0.0), 0.12)
-sh = {}
-el = {}
-hip = {}
-kn = {}
-
-for key, side in (("l", 1), ("r", -1)):
-    sh[key]  = EMP(f"pivot_shoulder_{key}", (0.195 * side, 0.0, 1.47))
-    el[key]  = EMP(f"pivot_elbow_{key}",    (0.215 * side, 0.0, 1.17))
-    hip[key] = EMP(f"pivot_hip_{key}",      (0.095 * side, 0.0, 0.95))
-    kn[key]  = EMP(f"pivot_knee_{key}",     (0.095 * side, 0.0, 0.50))
-
-head = EMP("pivot_head", (0.0, 0.0, 1.52))
-
+root = EMP("player_root", (0, 0, 0), 0.12)
+spine = EMP("pivot_spine", (0, 0, 1.0), 0.08)
+head = EMP("pivot_head", (0, 0, 1.52))
+sh, el, hip, kn = {}, {}, {}, {}
+for key, s in (("l", 1), ("r", -1)):
+    sh[key]  = EMP(f"pivot_shoulder_{key}", (0.185*s, 0, 1.47))
+    el[key]  = EMP(f"pivot_elbow_{key}",    (0.205*s, 0, 1.18))
+    hip[key] = EMP(f"pivot_hip_{key}",      (0.095*s, 0, 0.95))
+    kn[key]  = EMP(f"pivot_knee_{key}",     (0.100*s, 0, 0.50))
 SC.view_layer.update()
-
 for key in ("l", "r"):
-    PAR(sh[key], root)
     PAR(hip[key], root)
-PAR(head, root)
-
+PAR(spine, root)
 SC.view_layer.update()
-
+for key in ("l", "r"):
+    PAR(sh[key], spine)
+PAR(head, spine)
+SC.view_layer.update()
 for key in ("l", "r"):
     PAR(el[key], sh[key])
     PAR(kn[key], hip[key])
-
 SC.view_layer.update()
 
+L = lambda z, xh, yh, q=2.4, yb=1.0, ys=0.0: (z, xh, yh, q, yb, 0.0, ys)
 parts = {}
-def add(o, key):
-    parts.setdefault(key, []).append(o)
+def add(o, key): parts.setdefault(key, []).append(o)
 
-add(TUBE("jkt_torso", (0,0,0.97), (0,0,1.50), 0.165, 0.185, M_JKT, 1.15, 0.72), "root")
-add(TUBE("jkt_collar",(0,0.005,1.48),(0,0.015,1.575),0.095,0.070,M_TRIM,1.1,0.9), "root")
-add(TUBE("jkt_hem",  (0,0,0.945),(0,0,1.01),0.185,0.172,M_TRIM,1.18,0.75), "root")
-add(TUBE("pant_pelvis",(0,0,0.86),(0,0,1.00),0.165,0.18,M_JEANS,1.15,0.72), "root")
-add(TUBE("belt_waist", (0,0,0.975),(0,0,1.015),0.185,0.178,M_TRIM,1.2,0.78), "root")
-add(TUBE("neck", (0,0,1.47),(0,0,1.60), 0.062, 0.058, M_SKIN), "head")
-add(BALL("head", (0,0,1.69), 0.105, M_SKIN, (0.95, 1.08, 1.15)), "head")
-add(BOX("nose", (0, 0.108, 1.665), (0.032, 0.03, 0.034), M_SKIN), "head")
-add(BALL("hair_top", (0, -0.01, 1.722), 0.113, M_HAIR, (1.0, 1.05, 0.92)), "head")
-add(BOX("hair_back", (0, -0.075, 1.64), (0.17, 0.06, 0.13), M_HAIR), "head")
+# lofted torso / jacket body (soft-square superellipse, flattened back)
+add(LOFT("jkt_torso", [L(1.00,0.148,0.118,2.3,0.92,-0.004), L(1.12,0.158,0.126,2.4,0.86,-0.010),
+     L(1.26,0.168,0.132,2.5,0.82,-0.014), L(1.37,0.166,0.128,2.7,0.80,-0.014),
+     L(1.46,0.150,0.116,3.2,0.82,-0.012)], M_JKT, False, False), "spine")
+add(LOFT("jkt_hem", [L(0.93,0.168,0.132,2.4,0.82,-0.012), L(0.965,0.176,0.140,2.2,0.80,-0.010),
+     L(1.00,0.170,0.134,2.4,0.86,-0.010)], M_TRIM, True, True), "spine")
+add(LOFT("jkt_collar", [L(1.445,0.076,0.080,2.6,1.0,0.006), L(1.52,0.082,0.086,2.6,1.0,0.012),
+     L(1.565,0.060,0.070,3.0,1.06,0.014)], M_TRIM), "spine")
+add(BOX("jkt_placket", (0, 0.128, 1.21), (0.014, 0.022, 0.42), M_TRIM), "spine")
+for s in (1, -1):
+    add(BOX(f"jkt_pocket_{'l' if s>0 else 'r'}", (0.085*s, 0.126, 1.075), (0.055, 0.020, 0.10), M_TRIM), "spine")
+add(LOFT("pants_pelvis", [L(0.84,0.150,0.118,2.4,0.86,-0.006), L(0.95,0.156,0.124,2.5,0.84,-0.010),
+     L(1.00,0.152,0.120,2.6,0.82,-0.012)], M_JEANS), "root")
+add(LOFT("belt_waist", [L(0.982,0.158,0.126,2.5,0.82,-0.010), L(1.016,0.160,0.128,2.5,0.82,-0.010)], M_TRIM), "root")
+add(LOFT("neck", [L(1.44,0.058,0.060,2.2), L(1.52,0.060,0.062,2.2)], M_SKIN), "spine")
 
-for key, side in (("l", 1), ("r", -1)):
-    sA = (0.195 * side, 0.0, 1.47)
-    sE = (0.215 * side, 0.0, 1.17)
-    sW = (0.232 * side, 0.0, 0.93)
-    add(BALL(f"jkt_delt_{key}", sA, 0.105, M_JKT, (1.05, 1.0, 0.95)), key + "sh")
-    add(TUBE(f"jkt_sleeve_{key}", sA, sE, 0.086, 0.080, M_JKT), key + "sh")
-    add(BALL(f"jkt_delt_cap_{key}", sE, 0.080, M_JKT), key + "sh")
-    add(TUBE(f"jkt_fore_{key}", sE, sW, 0.073, 0.066, M_JKT), key + "el")
-    add(BALL(f"jkt_cuff_{key}", (0.230 * side, 0.0, 0.905), 0.070, M_TRIM), key + "el")
-    add(BALL(f"hand_{key}_w", sW, 0.058, M_SKIN), key + "el")
-    add(BOX(f"hand_{key}", (0.234 * side, 0.012, 0.852), (0.058, 0.10, 0.115), M_SKIN), key + "el")
-    add(BOX(f"thumb_{key}", (0.205 * side, 0.058, 0.882), (0.028, 0.055, 0.032), M_SKIN), key + "el")
-    hA = (0.095 * side, 0.0, 0.95)
-    hK = (0.095 * side, 0.0, 0.50)
-    hAn = (0.100 * side, 0.0, 0.11)
-    add(BALL(f"pant_hip_{key}", hA, 0.116, M_JEANS), key + "hip")
-    add(TUBE(f"pant_thigh_{key}", hA, hK, 0.102, 0.092, M_JEANS), key + "hip")
-    add(BALL(f"pant_knee_{key}", hK, 0.09, M_JEANS), key + "knee")
-    add(TUBE(f"pant_shin_{key}", hK, hAn, 0.084, 0.07, M_JEANS), key + "knee")
-    add(BALL(f"pant_ankle_{key}", hAn, 0.072, M_JEANS), key + "knee")
-    add(BOX(f"shoe_{key}", (0.10 * side, 0.05, 0.046), (0.115, 0.30, 0.09), M_SHOE), key + "knee")
-    add(BOX(f"toe_{key}", (0.10 * side, 0.205, 0.040), (0.108, 0.10, 0.078), M_SHOE), key + "knee")
+# head / face (smooth, restrained features)
+add(SPH("head", (0, 0, 1.685), 1.0, M_SKIN, (0.088, 0.100, 0.110)), "head")
+add(BOX("nose", (0, 0.092, 1.672), (0.030, 0.030, 0.034), M_SKIN), "head")
+for s in (1, -1):
+    add(BOX(f"eye_{'l' if s>0 else 'r'}", (0.040*s, 0.086, 1.700), (0.030, 0.012, 0.015), M_EYE), "head")
+    add(BOX(f"brow_{'l' if s>0 else 'r'}", (0.040*s, 0.088, 1.726), (0.034, 0.012, 0.010), M_HAIR), "head")
+add(SPH("hair_cap", (0, -0.008, 1.712), 1.0, M_HAIR, (0.092, 0.104, 0.084)), "head")
+add(BOX("hair_back", (0, -0.078, 1.64), (0.15, 0.05, 0.14), M_HAIR), "head")
 
-# Right-hand pistol mirrors the right forearm (-X) and is carried by rel.
-add(BOX("pistol_slide", (-0.234, 0.10, 0.845), (0.032, 0.21, 0.05), M_PIST), "rel")
-add(BOX("pistol_grip",  (-0.232, -0.025, 0.76), (0.028, 0.055, 0.115), M_PIST), "rel")
+# arms: lofted sleeve + squared delt read + beveled cuff/hand
+for key, s in (("l", 1), ("r", -1)):
+    add(BOX(f"delt_{key}", (0.188*s, 0, 1.445), (0.096, 0.112, 0.104), M_JKT, 0.016), key+"sh")
+    add(LOFT(f"sleeve_{key}", [L(1.47,0.082,0.086,2.4), L(1.32,0.080,0.084,2.4), L(1.18,0.076,0.080,2.5)], M_JKT, w=0.004), key+"sh")
+    add(LOFT(f"fore_{key}", [L(1.18,0.070,0.074,2.4), L(1.06,0.066,0.070,2.4), L(0.95,0.060,0.064,2.6)], M_JKT, w=0.004), key+"el")
+    add(BOX(f"cuff_{key}", (0.215*s, 0, 0.95), (0.052, 0.062, 0.052), M_TRIM), key+"el")
+    add(BOX(f"palm_{key}", (0.222*s, 0.012, 0.90), (0.050, 0.084, 0.074), M_SKIN), key+"el")
+    add(BOX(f"fingers_{key}", (0.222*s, 0.052, 0.864), (0.046, 0.050, 0.062), M_SKIN), key+"el")
+    add(BOX(f"thumb_{key}", (0.198*s, 0.040, 0.894), (0.022, 0.046, 0.026), M_SKIN), key+"el")
 
-SC.view_layer.update()
+# legs: lofted tapered trousers, beveled knee pad, pant cuff, shaped shoe
+for key, s in (("l", 1), ("r", -1)):
+    add(LOFT(f"thigh_{key}", [L(0.95,0.100,0.104,2.4,0.86,-0.006), L(0.72,0.092,0.096,2.5,0.84,-0.010),
+         L(0.50,0.086,0.090,2.6,0.84,-0.012)], M_JEANS, w=0.004), key+"hip")
+    add(BOX(f"kneepad_{key}", (0.100*s, 0.060, 0.50), (0.086, 0.052, 0.096), M_JEANS), key+"knee")
+    add(LOFT(f"shin_{key}", [L(0.50,0.082,0.086,2.5,0.86,-0.006), L(0.30,0.072,0.076,2.6,0.86,-0.008),
+         L(0.13,0.062,0.066,2.8,0.88,-0.010)], M_JEANS, w=0.004), key+"knee")
+    add(BOX(f"pantcuff_{key}", (0.105*s, 0.0, 0.152), (0.072, 0.080, 0.050), M_JEANS), key+"knee")
+    add(BOX(f"shoe_{key}", (0.105*s, 0.052, 0.040), (0.086, 0.20, 0.060), M_SHOE, 0.014), key+"knee")
+    add(BOX(f"toe_{key}", (0.105*s, 0.183, 0.046), (0.082, 0.092, 0.062), M_SHOE, 0.022), key+"knee")
 
-keys = {
-    "root": root,
-    "head": head,
-    "lsh": sh["l"], "lel": el["l"],
-    "rsh": sh["r"], "rel": el["r"],
-    "lhip": hip["l"], "lknee": kn["l"],
-    "rhip": hip["r"], "rknee": kn["r"]
-}
-
-for key, objs in parts.items():
-    for o in objs:
-        PAR(o, keys[key])
+# right-hand handgun carried by the right elbow (rel)
+add(BOX("pistol_slide", (-0.222, 0.10, 0.90), (0.030, 0.20, 0.046), M_PIST, 0.004), "rel")
+add(BOX("pistol_grip", (-0.222, -0.018, 0.846), (0.026, 0.050, 0.10), M_PIST, 0.004), "rel")
 
 SC.view_layer.update()
+keys = {"root": root, "spine": spine, "head": head,
+        "lsh": sh["l"], "rsh": sh["r"], "lel": el["l"], "rel": el["r"],
+        "lhip": hip["l"], "rhip": hip["r"], "lknee": kn["l"], "rknee": kn["r"]}
+for k, objs in parts.items():
+    for o in objs: PAR(o, keys[k])
+SC.view_layer.update()
 
-# Presentation lift only: evaluated mesh soles become near +0.79.
+# Presentation transform. The +pi Z pre-rotation is the native axis fix: the
+# FBX/Unity import maps this rig's local +Y front onto the rear-facing camera,
+# so a static half-turn about the visual root's +Z re-aims the face along the
+# controller's forward/aim vector. Translation (lift) and children are intact.
 root.location = (0.0, 0.0, 0.79)
+root.rotation_euler = (0.0, 0.0, math.pi)
 SC.view_layer.update()
 
-print("courier v1 built:", len(bpy.data.objects), "objects")
+ALLP = ["spine","head","lsh","rsh","lel","rel","lhip","rhip","lknee","rknee"]
+def setrest(f):
+    for n in ALLP:
+        keys[n].rotation_euler = (0, 0, 0)
+        keys[n].keyframe_insert("rotation_euler", frame=f)
+
+setrest(1)
+# Idle 1..61  (breathing / weight shift / head sway; loop-continuous at rest)
+play({"spine":[(16,(0.018,0,0)),(31,(0,0,0)),(46,(-0.012,0,0))],
+      "head":[(16,(0.004,0.05,0)),(31,(0.01,0,0)),(46,(-0.004,-0.05,0))],
+      "lsh":[(16,(0.02,0,0)),(31,(0,0,0)),(46,(-0.02,0,0))],
+      "rsh":[(16,(-0.02,0,0)),(31,(0,0,0)),(46,(0.02,0,0))]})
+# Walk 71..101  (one opposing cycle, loop seam at -0.30)
+play({"lhip":[(71,(-0.30,0,0)),(79,(0,0,0)),(86,(0.34,0,0)),(93,(0.05,0,0)),(101,(-0.30,0,0))],
+      "lknee":[(71,(-0.15,0,0)),(79,(-0.55,0,0)),(86,(-0.05,0,0)),(93,(-0.30,0,0)),(101,(-0.15,0,0))],
+      "rhip":[(71,(0.34,0,0)),(79,(0.05,0,0)),(86,(-0.30,0,0)),(93,(0,0,0)),(101,(0.34,0,0))],
+      "rknee":[(71,(-0.05,0,0)),(79,(-0.30,0,0)),(86,(-0.15,0,0)),(93,(-0.55,0,0)),(101,(-0.05,0,0))],
+      "lsh":[(71,(0.30,0,0)),(79,(0,0,0)),(86,(-0.34,0,0)),(93,(-0.05,0,0)),(101,(0.30,0,0))],
+      "rsh":[(71,(-0.34,0,0)),(79,(-0.05,0,0)),(86,(0.30,0,0)),(93,(0,0,0)),(101,(-0.34,0,0))],
+      "lel":[(71,(0.30,0,0)),(86,(0.45,0,0)),(101,(0.30,0,0))],
+      "rel":[(71,(0.45,0,0)),(86,(0.30,0,0)),(101,(0.45,0,0))],
+      "spine":[(71,(0.02,0,0)),(86,(0.02,0,0)),(101,(0.02,0,0))]})
+# Jog 111..135  (larger amp / faster cycle, knee clearance)
+play({"lhip":[(111,(-0.50,0,0)),(117,(0,0,0)),(123,(0.60,0,0)),(129,(0.10,0,0)),(135,(-0.50,0,0))],
+      "lknee":[(111,(-0.30,0,0)),(117,(-0.90,0,0)),(123,(-0.05,0,0)),(129,(-0.45,0,0)),(135,(-0.30,0,0))],
+      "rhip":[(111,(0.60,0,0)),(117,(0.10,0,0)),(123,(-0.50,0,0)),(129,(0,0,0)),(135,(0.60,0,0))],
+      "rknee":[(111,(-0.05,0,0)),(117,(-0.45,0,0)),(123,(-0.30,0,0)),(129,(-0.90,0,0)),(135,(-0.05,0,0))],
+      "lsh":[(111,(0.50,0,0)),(117,(0,0,0)),(123,(-0.60,0,0)),(129,(-0.10,0,0)),(135,(0.50,0,0))],
+      "rsh":[(111,(-0.60,0,0)),(117,(-0.10,0,0)),(123,(0.50,0,0)),(129,(0,0,0)),(135,(-0.60,0,0))],
+      "lel":[(111,(0.90,0,0)),(123,(1.10,0,0)),(135,(0.90,0,0))],
+      "rel":[(111,(1.10,0,0)),(123,(0.90,0,0)),(135,(1.10,0,0))],
+      "spine":[(111,(0.12,0,0)),(123,(0.12,0,0)),(135,(0.12,0,0))]})
+# Aim 145..175  (right weapon forward + left support, restrained breath)
+play({"spine":[(145,(0.10,0,0)),(160,(0.12,0,0)),(175,(0.10,0,0))],
+      "lsh":[(145,(1.30,0,0)),(165,(1.33,0,0)),(175,(1.30,0,0))],
+      "rsh":[(145,(1.30,0,0)),(165,(1.32,0,0)),(175,(1.30,0,0))],
+      "lel":[(145,(0.45,0,0)),(165,(0.50,0,0)),(175,(0.45,0,0))],
+      "rel":[(145,(0.45,0,0)),(165,(0.46,0,0)),(175,(0.45,0,0))]})
+# Board 185..209  (lean + right-hand reach into car, staggered feet)
+play({"spine":[(185,(0.50,0,0)),(197,(0.52,0,0)),(209,(0.50,0,0))],
+      "rsh":[(185,(1.55,0,0)),(197,(1.62,0,0)),(209,(1.55,0,0))],
+      "rel":[(185,(-0.20,0,0)),(197,(-0.15,0,0)),(209,(-0.20,0,0))],
+      "lsh":[(185,(0.80,0,0)),(209,(0.80,0,0))],
+      "lhip":[(185,(0.20,0,0)),(209,(0.20,0,0))],
+      "lknee":[(185,(-0.25,0,0)),(209,(-0.25,0,0))],
+      "rhip":[(185,(-0.10,0,0)),(209,(-0.10,0,0))]})
+# Drive 219..279  (seated thighs/shins, hands toward wheel, body sway)
+play({"spine":[(219,(0.18,0,0)),(249,(0.20,0,0)),(279,(0.18,0,0))],
+      "head":[(219,(0,0.03,0)),(249,(0,-0.03,0)),(279,(0,0.03,0))],
+      "lsh":[(219,(1.00,0,0)),(249,(1.02,0,0)),(279,(1.00,0,0))],
+      "rsh":[(219,(1.00,0,0)),(249,(0.98,0,0)),(279,(1.00,0,0))],
+      "lel":[(219,(0.70,0,0)),(249,(0.72,0,0)),(279,(0.70,0,0))],
+      "rel":[(219,(0.70,0,0)),(249,(0.68,0,0)),(279,(0.70,0,0))],
+      "lhip":[(219,(1.00,0,0)),(279,(1.00,0,0))],
+      "lknee":[(219,(-1.00,0,0)),(279,(-1.00,0,0))],
+      "rhip":[(219,(0.92,0,0)),(279,(0.92,0,0))],
+      "rknee":[(219,(-0.94,0,0)),(279,(-0.94,0,0))]})
+
+# Pin inter-clip gaps to rest so no state bleeds across a range boundary.
+for a, b in [(62,70),(102,110),(136,144),(176,184),(210,218)]:
+    setrest(a); setrest(b)
+
+SC.scene.frame_set(1)
+print("courier v2:", len(bpy.data.objects), "objects; clips",
+      "1-61 71-101 111-135 145-175 185-209 219-279 @30fps")
