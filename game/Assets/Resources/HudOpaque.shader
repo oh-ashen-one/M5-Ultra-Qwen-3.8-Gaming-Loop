@@ -6,8 +6,11 @@ Shader "Chicago/HudOpaque"
     }
     SubShader
     {
+        Tags { "Queue" = "2999" }
         Pass
         {
+            ZTest Always
+            ZWrite Off
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -34,7 +37,7 @@ Shader "Chicago/HudOpaque"
 
             fixed4 frag(v2f i) : SV_Target
             {
-                return _Color;
+                return fixed4(_Color.rgb, 1);
             }
             ENDCG
         }
