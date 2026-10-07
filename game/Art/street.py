@@ -311,7 +311,7 @@ for k, dx in enumerate((-4.5, -1.5)):
         box("surf_shutR%d_%d" % (k, kk), (0.16, 0.06, 1.90), (dx + 0.78, -0.16, zz), "wood")
 
 for k, (px, pz) in enumerate(((-5.0, 0.62), (0.0, 0.62), (5.0, 0.62))):
-    bpy.ops.mesh.primitive_icosphere_add(subdivisions=1, radius=0.28, location=(px, -0.42, pz))
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1, radius=0.28, location=(px, -0.42, pz))
     bo = bpy.context.active_object
     bo.name = "surf_bush%02d" % k
     bo.scale = (1.4, 1.0, 0.9)
