@@ -237,8 +237,8 @@ namespace ChicagoGame
 
             var run = go.AddComponent<CounterExfilRunner>();
             run.Slot = i; run.Label = LABEL[i]; run.StartHp = HP[i];
-            run.DriveSpeed = SPEED[i]; run.Coupe = coupe => { };   // replaced below
-            run.Coupe = LoopSignals.Vehicle;
+            run.DriveSpeed = SPEED[i];
+            run.Coupe = LoopSignals.Vehicle;               // the real coupe root, nothing else
             run.LaneEast = LaneEast; run.LaneWest = LaneWest;
             run.Agent = ag; run.Body = rb;
             run.SetOnLane(x);
