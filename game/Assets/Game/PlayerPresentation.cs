@@ -1,231 +1,43 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ChicagoGame
-{
-    public sealed class PlayerPresentation : MonoBehaviour
-    {
-        Transform body;
-        Transform visual;
-        Animation anim;
-        string idleClip, walkClip, jogClip;
-        string aimIdleClip, aimWalkClip, aimJogClip;
-        string baseClip, upperClip;
-        float aimWeight, lastShot = -999f;
-        Vector3 lastPos;
-        bool posValid, wasDead, wasVehicle;
-        int lastRestarts = int.MinValue;
+namespace ChicagoGame { public sealed class PlayerPresentation : MonoBehaviour { Transform body, visual; Animation anim; string idleClip, walkClip, jogClip, aimClip, baseClip; float aimWeight, lastShot=-999f; Vector3 lastPos; bool posValid, upperActive, wasDead, wasVehicle; int lastRestarts=int.MinValue;
 
-        public static void Install(GameObject body)
-        {
-            if (body == null) return;
-            Transform v = FindVisual(body.transform);
-            if (v == null) return;
-            Animation a = v.GetComponent<Animation>();
-            if (a == null) a = v.gameObject.AddComponent<Animation>();
-            a.playAutomatically = false;
-            a.cullingType = AnimationCullingType.AlwaysAnimate;
-            PlayerPresentation p = body.GetComponent<PlayerPresentation>();
-            if (p == null) p = body.AddComponent<PlayerPresentation>();
-            p.body = body.transform;
-            p.visual = v;
-            p.anim = a;
-            p.Prepare();
-        }
+public static void Install(GameObject body){ if(body==null)return; Transform v=FindVisual(body.transform); if(v==null)return; Animation a=v.GetComponent<Animation>(); if(a==null)a=v.gameObject.AddComponent<Animation>(); a.playAutomatically=false; a.cullingType=AnimationCullingType.AlwaysAnimate; PlayerPresentation p=body.GetComponent<PlayerPresentation>(); if(p==null)p=body.AddComponent<PlayerPresentation>(); p.body=body.transform; p.visual=v; p.anim=a; p.Prepare(); }
 
-        static Transform FindVisual(Transform root)
-        {
-            var t = root.Find("PlayerVisual");
-            if (t != null) return t;
-            for (int i = 0; i < root.childCount; ++i)
-            {
-                var c = FindVisual(root.GetChild(i));
-                if (c != null) return c;
-            }
-            return null;
-        }
+static Transform FindVisual(Transform r){ if(r==null)return null; var t=r.Find("PlayerVisual"); if(t!=null)return t; for(int i=0;i<r.childCount;++i){ var c=FindVisual(r.GetChild(i)); if(c!=null)return c; } return null; }
 
-        void OnEnable()
-        {
-            baseClip = null; upperClip = null; aimWeight = 0f; posValid = false; lastShot = -999f;
-            if (anim != null)
-            {
-                anim.SetLayerWeight(1, 0f);
-                wasDead = DeathAuthority.IsDead;
-                anim.enabled = !wasDead;
-            }
-        }
+static Transform FindDescendant(Transform r,string w){ if(r==null)return null; if(Strip(r.name)==Strip(w))return r; for(int i=0;i<r.childCount;++i){ var c=FindDescendant(r.GetChild(i),w); if(c!=null)return c; } return null; }
 
-        void Prepare()
-        {
-            if (anim == null) return;
-            anim.Stop();
-            anim.playAutomatically = false;
-            var loaded = Resources.LoadAll<AnimationClip>("Generated/player/scene");
-            var names = new List<string>();
-            for (int i = 0; i < loaded.Length; ++i)
-            {
-                var c = loaded[i];
-                if (c == null || c.length < 0.1f || c.name.StartsWith("__preview__")) continue;
-                c.wrapMode = WrapMode.Loop;
-                c.legacy = true;
-                if (anim.GetClip(c.name) == null) anim.AddClip(c, c.name);
-                if (!names.Contains(c.name)) names.Add(c.name);
-            }
-            idleClip = Resolve(names, "Idle", "idle", "IdlePose", "A_0", "0");
-            walkClip = Resolve(names, "Walk", "walk", "Walking", "A_1", "1");
-            jogClip = Resolve(names, "Jog", "jog", "Run", "A_2", "2");
-            aimIdleClip = Resolve(names, "AimIdle", "Aim_Idle", "aim_idle", "Aim", "Aim_0", "3");
-            aimWalkClip = Resolve(names, "AimWalk", "Aim_Walk", "aim_walk", "Aim_1", "4");
-            aimJogClip = Resolve(names, "AimJog", "Aim_Jog", "aim_jog", "Aim_2", "5");
-            if (string.IsNullOrEmpty(idleClip) && names.Count > 0) idleClip = names[0];
-            SetLayer(idleClip, 0); SetLayer(walkClip, 0); SetLayer(jogClip, 0);
-            SetLayer(aimIdleClip, 1); SetLayer(aimWalkClip, 1); SetLayer(aimJogClip, 1);
-        }
+void OnEnable(){ baseClip=null; posValid=false; aimWeight=0f; upperActive=false; lastShot=-999f; lastRestarts=LoopSignals.Restarts; wasDead=anim!=null&&DeathAuthority.IsDead; wasVehicle=false; if(anim!=null){ ReleaseUpper(); anim.enabled=!wasDead; } }
 
-        static string Resolve(List<string> names, params string[] wanted)
-        {
-            for (int w = 0; w < wanted.Length; ++w)
-            {
-                string want = Strip(wanted[w]);
-                for (int i = 0; i < names.Count; ++i)
-                    if (Strip(names[i]) == want) return names[i];
-            }
-            return null;
-        }
+void Prepare(){ if(anim==null)return; anim.Stop(); anim.playAutomatically=false; lastRestarts=LoopSignals.Restarts; var loaded=Resources.LoadAll<AnimationClip>("Generated/player/scene"); if(loaded==null)return; var names=new List<string>(); foreach(var o in loaded){ var c=o as AnimationClip; if(c==null||c.length<0.1f||c.name.StartsWith("__preview__"))continue; c.legacy=true; c.wrapMode=c.name=="Board"?WrapMode.Once:WrapMode.Loop; if(anim.GetClip(c.name)==null)anim.AddClip(c,c.name); if(!names.Contains(c.name))names.Add(c.name); } idleClip=Resolve(names,"Idle"); walkClip=Resolve(names,"Walk"); jogClip=Resolve(names,"Jog"); aimClip=Resolve(names,"Aim"); ConfigureLower(idleClip); ConfigureLower(walkClip); ConfigureLower(jogClip); ConfigureUpper(); }
 
-        static string Strip(string s)
-        {
-            if (string.IsNullOrEmpty(s)) return "";
-            return s.Replace("_", "").Replace("-", "").Replace(" ", "").ToLowerInvariant();
-        }
+static string Resolve(List<string> names,params string[] wanted){ for(int w=0;w<wanted.Length;++w){ var want=Strip(wanted[w]); for(int i=0;i<names.Count;++i)if(Strip(names[i])==want)return names[i]; } return null; }
 
-        void SetLayer(string name, int layer)
-        {
-            if (string.IsNullOrEmpty(name)) return;
-            var s = anim[name];
-            if (s != null) s.layer = layer;
-        }
+static string Strip(string s){ return string.IsNullOrEmpty(s)?"":s.Replace("_","").Replace("-","").Replace(" ","").ToLowerInvariant(); }
 
-        void Fade(string name, int layer, float fade)
-        {
-            if (string.IsNullOrEmpty(name) || anim.GetClip(name) == null) return;
-            var s = anim[name];
-            s.layer = layer;
-            if (!anim.IsPlaying(name))
-                anim.CrossFade(name, Mathf.Max(0.01f, fade), PlayMode.StopSameLayer);
-        }
+void ConfigureLower(string n){ if(string.IsNullOrEmpty(n))return; var s=anim[n]; if(s==null)return; s.layer=0; s.weight=1f; s.enabled=false; }
 
-        void Update()
-        {
-            if (anim == null) return;
-            bool dead = DeathAuthority.IsDead;
-            string mode = LoopSignals.Mode;
-            bool vehicle = mode != null &&
-                (mode.IndexOf("Veh", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 mode.IndexOf("Drive", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
-                 mode.IndexOf("Car", System.StringComparison.OrdinalIgnoreCase) >= 0);
+void ConfigureUpper(){ if(string.IsNullOrEmpty(aimClip))return; var s=anim[aimClip]; if(s==null)return; s.layer=1; s.weight=0f; s.enabled=false; s.speed=1f; s.ClearMixingTransforms(); Transform spine=FindDescendant(visual,"pivot_spine"); if(spine==null&&body!=null)spine=FindDescendant(body,"pivot_spine"); if(spine!=null)s.AddMixingTransform(spine,true); }
 
-            if (dead)
-            {
-                if (!wasDead)
-                {
-                    anim.enabled = false;
-                    baseClip = null; upperClip = null; aimWeight = 0f; posValid = false; lastShot = -999f;
-                    anim.SetLayerWeight(1, 0f);
-                    wasDead = true;
-                }
-                return;
-            }
-            if (wasDead)
-            {
-                wasDead = false;
-                anim.enabled = true;
-                baseClip = null; upperClip = null; aimWeight = 0f; posValid = false; lastShot = -999f;
-            }
+void ReleaseUpper(){ aimWeight=0f; upperActive=false; if(anim==null||string.IsNullOrEmpty(aimClip))return; var s=anim[aimClip]; if(s!=null){ s.weight=0f; s.enabled=false; } }
 
-            if (vehicle)
-            {
-                if (!wasVehicle)
-                {
-                    wasVehicle = true;
-                    baseClip = null; upperClip = null; aimWeight = 0f; posValid = false; lastShot = -999f;
-                    anim.SetLayerWeight(1, 0f);
-                }
-                return;
-            }
-            if (wasVehicle)
-            {
-                wasVehicle = false;
-                baseClip = null; upperClip = null; aimWeight = 0f; posValid = false; lastShot = -999f;
-            }
+void FadeBase(string n){ if(anim==null||string.IsNullOrEmpty(n))return; var s=anim[n]; if(s==null)return; s.layer=0; if(!anim.IsPlaying(n)||!s.enabled||s.weight<=0.001f){ s.time=0f; anim.CrossFade(n,0.16f,PlayMode.StopSameLayer); } }
 
-            if (visual == null || !visual.gameObject.activeInHierarchy)
-            {
-                posValid = false; baseClip = null; upperClip = null; aimWeight = 0f; lastShot = -999f;
-                anim.SetLayerWeight(1, 0f);
-                return;
-            }
-            if (string.IsNullOrEmpty(idleClip) && string.IsNullOrEmpty(walkClip) && string.IsNullOrEmpty(jogClip)) return;
-
-            if (LoopSignals.Restarts != lastRestarts)
-            {
-                lastRestarts = LoopSignals.Restarts;
-                anim.Stop();
-                baseClip = null; upperClip = null; aimWeight = 0f; posValid = false; lastShot = -999f;
-                anim.SetLayerWeight(1, 0f);
-            }
-            if (body == null) return;
-
-            Vector3 pos = body.position;
-            float dt = Time.unscaledDeltaTime;
-            float speed = 0f;
-            if (posValid && dt > 0.0001f)
-            {
-                speed = Vector2.Distance(new Vector2(pos.x - lastPos.x, pos.z - lastPos.z), Vector2.zero) / dt;
-                if (speed > 18f) speed = 0f;
-            }
-            lastPos = pos; posValid = true;
-
-            if (LoopInput.Pressed(KeyCode.Mouse0)) lastShot = Time.unscaledTime;
-            bool aiming = LoopInput.Held(KeyCode.Mouse1) || Time.unscaledTime - lastShot < 0.45f;
-            bool moving = speed > 0.35f;
-            bool shift = LoopInput.Held(KeyCode.LeftShift);
-
-            string wantBase = moving ? (shift ? jogClip : walkClip) : idleClip;
-            if (!string.IsNullOrEmpty(wantBase) && wantBase != baseClip)
-            {
-                Fade(wantBase, 0, 0.16f);
-                baseClip = wantBase;
-            }
-
-            float cycle = moving ? Mathf.Clamp(speed / 3.2f, 0.55f, 1.45f) : 1f;
-            if (baseClip == jogClip) cycle *= 0.78f;
-            if (cycle < 0.45f) cycle = 0.45f;
-
-            if (!string.IsNullOrEmpty(baseClip))
-            {
-                var s = anim[baseClip];
-                if (s != null) s.speed = cycle;
-            }
-
-            aimWeight = Mathf.MoveTowards(aimWeight, aiming ? 1f : 0f, Time.unscaledDeltaTime * 4.5f);
-            anim.SetLayerWeight(1, aimWeight);
-
-            if (aimWeight > 0.01f)
-            {
-                string wantUpper = moving ? (shift ? aimJogClip : aimWalkClip) : aimIdleClip;
-                if (!string.IsNullOrEmpty(wantUpper) && wantUpper != upperClip)
-                {
-                    Fade(wantUpper, 1, 0.16f);
-                    upperClip = wantUpper;
-                }
-                if (!string.IsNullOrEmpty(upperClip))
-                {
-                    var s = anim[upperClip];
-                    if (s != null) s.speed = moving ? cycle : 1f;
-                }
-            }
-        }
-    }
-}
+void Update(){ if(anim==null)return; bool dead=DeathAuthority.IsDead; string mode=LoopSignals.Mode; bool vehicle=false; if(!string.IsNullOrEmpty(mode)) vehicle=mode.IndexOf("Veh",System.StringComparison.OrdinalIgnoreCase)>=0||mode.IndexOf("Drive",System.StringComparison.OrdinalIgnoreCase)>=0||mode.IndexOf("Car",System.StringComparison.OrdinalIgnoreCase)>=0;
+ if(LoopSignals.Restarts!=lastRestarts){ lastRestarts=LoopSignals.Restarts; anim.Stop(); baseClip=null; posValid=false; lastShot=-999f; ReleaseUpper(); if(!dead&&!vehicle)anim.enabled=true; }
+ if(dead){ if(!wasDead){ wasDead=true; baseClip=null; posValid=false; lastShot=-999f; ReleaseUpper(); } anim.enabled=false; return; }
+ if(wasDead){ wasDead=false; baseClip=null; posValid=false; lastShot=-999f; ReleaseUpper(); anim.enabled=true; }
+ if(vehicle){ if(!wasVehicle){ wasVehicle=true; anim.Stop(); baseClip=null; posValid=false; lastShot=-999f; ReleaseUpper(); } anim.enabled=false; return; }
+ if(wasVehicle){ wasVehicle=false; baseClip=null; posValid=false; lastShot=-999f; ReleaseUpper(); anim.enabled=true; }
+ if(visual==null||!visual.gameObject.activeInHierarchy){ if(baseClip!=null||upperActive||posValid){ baseClip=null; posValid=false; ReleaseUpper(); } lastShot=-999f; return; }
+ if(!anim.enabled)anim.enabled=true; if(body==null){ posValid=false; return; }
+ Vector3 pos=body.position; float dt=Time.deltaTime,speed=0f; if(posValid&&dt>0.0001f){ Vector2 d=new Vector2(pos.x-lastPos.x,pos.z-lastPos.z); speed=d.magnitude/dt; if(speed>18f)speed=0f; } lastPos=pos; posValid=true;
+ if(LoopInput.Pressed(KeyCode.Mouse0))lastShot=Time.time; bool aiming=LoopInput.Held(KeyCode.Mouse1)||Time.time-lastShot<0.45f; bool moving=speed>0.35f; bool shift=LoopInput.Held(KeyCode.LeftShift);
+ string wantBase=moving?(shift&&!string.IsNullOrEmpty(jogClip)?jogClip:(!string.IsNullOrEmpty(walkClip)?walkClip:idleClip)):idleClip;
+ if(!string.IsNullOrEmpty(wantBase)){ var wantState=anim[wantBase]; if(wantState!=null&&(wantBase!=baseClip||!anim.IsPlaying(wantBase)||(dt>0f&&(!wantState.enabled||wantState.weight<=0.001f)))){ FadeBase(wantBase); baseClip=wantBase; } }
+ float cycle=moving?Mathf.Clamp(speed/3.2f,0.55f,1.45f):1f; if(baseClip==jogClip)cycle*=0.78f; if(cycle<0.45f)cycle=0.45f;
+ if(!string.IsNullOrEmpty(baseClip)){ var bs=anim[baseClip]; if(bs!=null){ bs.layer=0; if(Mathf.Abs(bs.speed-cycle)>0.001f)bs.speed=cycle; } }
+ if(string.IsNullOrEmpty(aimClip))return; aimWeight=Mathf.MoveTowards(aimWeight,aiming?1f:0f,dt*4.5f); var us=anim[aimClip]; if(us==null)return; us.layer=1; if(aiming||aimWeight>0f){ if(!upperActive||!us.enabled){ us.time=0f; us.speed=moving?cycle:1f; anim.Play(aimClip,0f,PlayMode.StopSameLayer); upperActive=true; } us.weight=aimWeight; float uSpeed=moving?cycle:1f; if(Mathf.Abs(us.speed-uSpeed)>0.001f)us.speed=uSpeed; } else { us.weight=0f; if(us.enabled)us.enabled=false; upperActive=false; } }
+}}
