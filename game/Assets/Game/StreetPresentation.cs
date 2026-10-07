@@ -42,6 +42,52 @@ namespace ChicagoGame
                 new float[]{ 92, 34, 6, 5, 24,135, 0.40f, 0.32f},
             };
             foreach (var s in sp) Tower(root, s);
+            foreach (var s in sp) Tower(root, s);
+            // Two bounded visual-only ground slabs from the ORIGINAL facade mesh via
+            // the proven Place mapping (rot = basis, so wS.x->X, wS.y->Y, wS.z->Z).
+            // 0.24 m thick, top 0.21 m. North X-18..22 / Z33.5..81.5 (bounds Z>=32),
+            // East X64..156 / Z4..60 (bounds X>=64); both outside playable
+            // X-1..6/Z-2..30, alley X6..22/Z8..20, east X22..60/Z8..28. Asphalt is a
+            // read-only lookup, cloned onto the two NEW renderers only.
+            Material asphaltMat = null;
+            foreach (var r in Object.FindObjectsOfType<MeshRenderer>(false))
+            {
+                if (r == null || r.gameObject.name != "road_asphalt") continue;
+                var om = r.sharedMaterial;
+                if (om != null && om.mainTexture != null) { asphaltMat = om; break; }
+            }
+            Place(root, facadeMesh, new Color(0.2f, 0.195f, 0.19f), basis,
+                  new Vector3(2f, 0.09f, 57.5f), new Vector3(40f, 0.24f, 48f));
+            var north = root.transform.GetChild(root.transform.childCount - 1);
+            north.name = "FarGroundNorth";
+            var nR = north.GetComponent<MeshRenderer>();
+            if (nR != null && asphaltMat != null)
+            {
+                var nm = new Material(asphaltMat);
+                var nb = asphaltMat.mainTextureScale;
+                nm.mainTextureScale = new Vector2(Mathf.Max(0.5f, nb.x * 2f), Mathf.Max(0.5f, nb.y * 40f / 24f));
+                nm.color = new Color(0.74f, 0.72f, 0.69f, 1f);
+                if (nm.HasProperty("_Metallic")) nm.SetFloat("_Metallic", 0f);
+                if (nm.HasProperty("_Glossiness")) nm.SetFloat("_Glossiness", 0.08f);
+                if (nm.HasProperty("_EmissionColor")) nm.SetColor("_EmissionColor", Color.black);
+                nR.sharedMaterial = nm;
+            }
+            Place(root, facadeMesh, new Color(0.2f, 0.195f, 0.19f), basis,
+                  new Vector3(110f, 0.09f, 32f), new Vector3(92f, 0.24f, 56f));
+            var east = root.transform.GetChild(root.transform.childCount - 1);
+            east.name = "FarGroundEast";
+            var eR = east.GetComponent<MeshRenderer>();
+            if (eR != null && asphaltMat != null)
+            {
+                var em = new Material(asphaltMat);
+                var eb = asphaltMat.mainTextureScale;
+                em.mainTextureScale = new Vector2(Mathf.Max(0.5f, eb.x * 92f / 24f), Mathf.Max(0.5f, eb.y * 56f / 24f));
+                em.color = new Color(0.74f, 0.72f, 0.69f, 1f);
+                if (em.HasProperty("_Metallic")) em.SetFloat("_Metallic", 0f);
+                if (em.HasProperty("_Glossiness")) em.SetFloat("_Glossiness", 0.08f);
+                if (em.HasProperty("_EmissionColor")) em.SetColor("_EmissionColor", Color.black);
+                eR.sharedMaterial = em;
+            }
             Tiling();
             Detail();
             RenderSettings.fog = true;
