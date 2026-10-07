@@ -29,10 +29,114 @@ SC.scene.render.fps = 30
 
 def MAT(n, c, rough=0.8, metal=0.0):
     m = bpy.data.materials.new(n); m.use_nodes = True
-    b = m.node_tree.nodes.get("Principled BSDF")
-    b.inputs["Base Color"].default_value = (*c, 1.0)
-    b.inputs["Roughness"].default_value = rough
-    b.inputs["Metallic"].default_value = metal
+    nt = m.node_tree; b = nt.nodes.get('Principled BSDF')
+    if b is None:
+        b = nt.nodes.new('ShaderNodeBsdfPrincipled')
+        out = nt.nodes.get('Material Output')
+        if out is None:
+            out = nt.nodes.new('ShaderNodeOutputMaterial')
+        nt.links.new(b.outputs['BSDF'], out.inputs['Surface'])
+    cc = (*c, 1.0)
+    b.inputs['Base Color'].default_value = cc
+    try:
+        m.diffuse_color = cc
+    except Exception:
+        pass
+    b.inputs['Roughness'].default_value = rough
+    b.inputs['Metallic'].default_value = metal
+    if n in ('Jacket_Charcoal', 'Jacket_Highlight', 'Jeans_DarkBlue', 'Jeans_Seam'):
+        S = 256
+        name = n + '_Tex'
+        img = bpy.data.images.get(name)
+        if img is None or img.size[0] != S or img.size[1] != S:
+            if img is not None:
+                bpy.data.images.remove(img)
+            img = bpy.data.images.new(name, S, S, alpha=False, float_buffer=False)
+            try:
+                img.colorspace_settings.name = 'sRGB'
+            except Exception:
+                pass
+            try:
+                img.generated_width = S
+                img.generated_height = S
+                img.generated_color = cc
+            except Exception:
+                pass
+            r0 = float(c[0]); g0 = float(c[1]); b0 = float(c[2])
+            denim = 'Jeans' in n
+            px = [0.0] * (S * S * 4)
+            twopi = 6.283185307179586
+            for y in range(S):
+                yf = (y + 0.5) / S
+                yv = yf * twopi
+                sy1 = math.sin(yv * 0.73)
+                sy2 = math.sin(yv * 2.31)
+                wy = abs(math.sin(y * 0.5235987756))
+                row = y * S * 4
+                for x in range(S):
+                    xf = (x + 0.5) / S
+                    xv = xf * twopi
+                    lo = math.sin(xv * 1.13) * sy1
+                    md = math.sin(xv * 3.77) * sy2
+                    hi = math.sin(x * 0.41 + y * 0.61) * math.cos(x * 0.73 - y * 0.53)
+                    wx = abs(math.sin(x * 0.5235987756))
+                    weave = (wx + wy) * 0.5 - 0.5
+                    hashv = (math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1.0
+                    grain = hashv - 0.5
+                    v = 0.24 * lo + 0.12 * md + 0.08 * hi + 0.10 * weave + 0.06 * grain
+                    if denim:
+                        rr = r0 + v * 0.021 + max(0.0, v) * 0.006
+                        gg = g0 + v * 0.026 + max(0.0, v) * 0.004
+                        bb = b0 + v * 0.032
+                    else:
+                        rr = r0 + v * 0.014 + max(0.0, v) * 0.003
+                        gg = g0 + v * 0.014
+                        bb = b0 + v * 0.018
+                    if rr < 0.0:
+                        rr = 0.0
+                    elif rr > 1.0:
+                        rr = 1.0
+                    if gg < 0.0:
+                        gg = 0.0
+                    elif gg > 1.0:
+                        gg = 1.0
+                    if bb < 0.0:
+                        bb = 0.0
+                    elif bb > 1.0:
+                        bb = 1.0
+                    rr = rr ** 0.4545 if rr > 0.0 else 0.0
+                    gg = gg ** 0.4545 if gg > 0.0 else 0.0
+                    bb = bb ** 0.4545 if bb > 0.0 else 0.0
+                    p = row + x * 4
+                    px[p] = rr; px[p + 1] = gg; px[p + 2] = bb; px[p + 3] = 1.0
+            try:
+                import array
+                img.pixels.foreach_set(array.array('f', px))
+            except Exception:
+                try:
+                    img.pixels[:] = px
+                except Exception:
+                    for i, val in enumerate(px):
+                        img.pixels[i] = val
+            try:
+                img.pack()
+            except Exception:
+                pass
+        ti = nt.nodes.new('ShaderNodeTexImage')
+        ti.image = img
+        ti.location = (-520, 180)
+        try:
+            ti.extension = 'REPEAT'
+            ti.interpolation = 'LINEAR'
+        except Exception:
+            pass
+        try:
+            tc = nt.nodes.new('ShaderNodeTexCoord')
+            tc.location = (-760, 180)
+            nt.links.new(tc.outputs['UV'], ti.inputs['Vector'])
+        except Exception:
+            pass
+        nt.links.new(ti.outputs['Color'], b.inputs['Base Color'])
     return m
 
 M_SKIN  = MAT("Skin_Warm", (0.44, 0.285, 0.205), 0.52)
@@ -57,9 +161,45 @@ def shade_bevel(o, w=0.006, ang=0.70):
     return o
 
 def OBJ(n, bm, mat):
-    me = bpy.data.meshes.new(n); bm.to_mesh(me); bm.free()
+    me = bpy.data.meshes.new(n)
+    bm.to_mesh(me)
+    bm.free()
     me.materials.append(mat)
-    o = bpy.data.objects.new(n, me); CO.objects.link(o); return o
+    uvl = me.uv_layers.active
+    if uvl is None or len(uvl.data) != len(me.loops):
+        if uvl is not None:
+            try:
+                me.uv_layers.remove(uvl)
+            except Exception:
+                pass
+        uvl = me.uv_layers.new(name='UVMap')
+    sc = 5.5
+    if mat is not None:
+        if 'Jeans' in mat.name:
+            sc = 4.5
+        elif 'Jacket' in mat.name:
+            sc = 6.0
+    for p in me.polygons:
+        nx = p.normal[0]; ny = p.normal[1]; nz = p.normal[2]
+        ax = abs(nx); ay = abs(ny); az = abs(nz)
+        if ax >= ay and ax >= az:
+            mode = 0
+        elif ay >= ax and ay >= az:
+            mode = 1
+        else:
+            mode = 2
+        for li in p.loop_indices:
+            co = me.vertices[me.loops[li].vertex_index].co
+            if mode == 0:
+                u = co.y; v = co.z
+            elif mode == 1:
+                u = co.x; v = co.z
+            else:
+                u = co.x; v = co.y
+            uvl.data[li].uv = (u * sc, v * sc)
+    o = bpy.data.objects.new(n, me)
+    CO.objects.link(o)
+    return o
 
 def superring(xh, yh, n, seg, yb):
     out = []
