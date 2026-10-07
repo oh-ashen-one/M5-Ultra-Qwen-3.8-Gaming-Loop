@@ -12,6 +12,16 @@ namespace ChicagoGame
         public Transform Cache;
         public string Objective;
 
+        // ---- death integration (RouteMission) -------------------------------
+        // DeathAuthority owns the single decision; this chapter only freezes,
+        // reports and refuses to advance. FailReason carries a more specific
+        // pre-existing failure (a genuine timeout or interception recorded by
+        // the run) so the existing MissionBoard can show that reason instead of
+        // generic wording. Nothing here ever writes health, Restarts or input.
+        public string FailReason;
+        string objectiveBeforeDeath;
+        bool deathHeld;
+
         GameObject player;
         Camera cam;
         TextMesh hud;
