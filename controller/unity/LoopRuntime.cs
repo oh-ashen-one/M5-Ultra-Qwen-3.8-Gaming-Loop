@@ -33,6 +33,7 @@ public class LoopRuntime : MonoBehaviour
         public LoopRelayObservation.State relay;
         public LoopInterceptionObservation.State interception;
         public LoopCounterExfilObservation.State counterExfil;
+        public LoopCharacterObservation.State characterPresentation;
     }
     [Serializable] public class ObjectObservation {
         public string entityId;
@@ -181,7 +182,8 @@ public class LoopRuntime : MonoBehaviour
                 missionObjects=LoopObservation.MissionObjects(actor),rivals=LoopCombatObservation.Capture(),
                 cameraGeometry=LoopCameraObservation.Capture(),vehiclePhysics=LoopVehicleObservation.Capture(),
                 routeChapter=LoopRouteObservation.Capture(),relay=LoopRelayObservation.Capture(),
-                interception=LoopInterceptionObservation.Capture(),counterExfil=LoopCounterExfilObservation.Capture()};
+                interception=LoopInterceptionObservation.Capture(),counterExfil=LoopCounterExfilObservation.Capture(),
+                characterPresentation=LoopCharacterObservation.Capture()};
             File.AppendAllText(Path.Combine(output, "trace.jsonl"), JsonUtility.ToJson(sample) + "\n"); samples++;
         }
         var captures = LoopInput.Replay.captures;
