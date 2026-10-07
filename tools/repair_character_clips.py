@@ -75,7 +75,9 @@ class RepairCharacterClips(CapacityAuthor):
             'max460lines/30KB. No tools, XML, JSON, FILE markers, prose, filesystem I/O or export calls. '
             'Only bpy,bmesh,math,mathutils. Keep the bounded repair focused; the source will be saved, '
             'exported and inspected before separate local Unity integration.\nEXACT SOURCE:\n'+original,
-            [],{},turns=1,reasoning_effort='xhigh',tool_choice='none')
+            [],{},turns=1,reasoning_effort='xhigh',tool_choice='none',
+            retained_assistant=getattr(self,'retained',None),
+            retained_instruction='Continue the exact retained local repair without restarting analysis. Return the COMPLETE repaired Art/player.py as final Python NOW. The diagnosed execution, side placement, axis and endpoint issues are already covered. Preserve the existing original design; no new features, tools or prose. Save one bounded usable file promptly with the same xhigh setting.')
         response=self.store.root/'private/sessions'/session/'response-000.json'
         source=complete_source(read_json(response),max_lines=460,max_bytes=30000)
         if sha(source.encode())==SCRIPT_SHA:raise Halt('No local clip repair returned')
