@@ -70,19 +70,53 @@ namespace ChicagoGame
             asm.transform.SetParent(par.transform, false);
             var rot = Quaternion.Euler(0f, yaw, 0f) * basis;
             var fog = RenderSettings.fogColor;
+            float hs = Hash(x + "," + z);
             var brick = new Color(0.30f, 0.11f, 0.085f);
             var cool = new Color(0.30f, 0.34f, 0.40f);
             var tint = Color.Lerp(Color.Lerp(brick, cool, hue), fog, fk);
             tint = new Color(tint.r * (0.86f + 0.30f * hue), tint.g * (0.86f + 0.30f * hue),
                              tint.b * (0.90f + 0.28f * hue));
+            // Ground context: a thin pavement apron plus a dark plinth so each
+            // tower meets the street instead of floating over bare ground.
+            // Both sit on Y0, same proven Place mapping, no terrain, no collider.
+            var grit = Color.Lerp(new Color(0.23f, 0.21f, 0.19f), fog, Mathf.Min(0.92f, fk + 0.30f));
+            Place(asm, facadeMesh, grit, rot, new Vector3(x, 0.07f, z),
+                  new Vector3(w + 2.4f + 1.6f * hs, 0.14f, d + 2.4f + 1.6f * hs));
+            var plinth = Color.Lerp(new Color(0.15f, 0.13f, 0.12f), fog, fk * 0.80f);
+            Place(asm, facadeMesh, plinth, rot, new Vector3(x, 0.66f, z),
+                  new Vector3(w + 0.5f, 1.32f, d + 0.5f));
             Place(asm, facadeMesh, tint, rot, new Vector3(x, h * 0.5f, z), new Vector3(w, h, d));
+            // Bounded window/spandrel bands: barely overscaled thin slabs of the
+            // ORIGINAL facade mesh read as shadowed window strips. Band count is
+            // capped so no assembly exceeds 9 renderers.
+            var band = Color.Lerp(new Color(0.055f, 0.055f, 0.075f), fog, fk * 0.55f);
+            int n = h > 30f ? 2 : 1;
+            for (int i = 0; i < n; i++)
+            {
+                float y = h * (0.40f + 0.27f * i + 0.05f * hs);
+                Place(asm, facadeMesh, band, rot, new Vector3(x, y, z),
+                      new Vector3(w + 0.16f, Mathf.Clamp(h * 0.11f, 0.9f, 2.6f), d + 0.16f));
+            }
+            // Cornice band under the parapet gives the silhouette a stone cap.
+            var stone = Color.Lerp(new Color(0.60f, 0.56f, 0.50f), fog, fk);
+            Place(asm, facadeMesh, stone, rot, new Vector3(x, h - 0.55f, z),
+                  new Vector3(w + 0.34f, 0.70f, d + 0.34f));
             var rT = Color.Lerp(new Color(0.10f, 0.12f, 0.15f), fog, fk);
             if (roofMesh != null)
                 Place(asm, roofMesh, rT, rot, new Vector3(x, h + 0.06f, z),
                       new Vector3(w * 1.06f, 0.36f, d * 1.06f));
-            if (h > 33f && chimneyMesh != null)
-                Place(asm, chimneyMesh, rT, rot, new Vector3(x + w * 0.2f, h + h * 0.07f + 0.3f, z - d * 0.2f),
-                      new Vector3(1.1f, h * 0.14f, 1.1f));
+            // Rooftop variation on the taller blocks: one setback penthouse and
+            // the original chimney mesh, both resting on the roof slab.
+            if (h > 33f)
+            {
+                float ch = Mathf.Clamp(h * 0.09f, 1.4f, 4.5f);
+                Place(asm, facadeMesh, Color.Lerp(tint, Color.black, 0.22f), rot,
+                      new Vector3(x - w * 0.10f, h + 0.24f + ch * 0.5f, z + d * 0.08f),
+                      new Vector3(w * 0.46f, ch, d * 0.46f));
+                if (chimneyMesh != null)
+                    Place(asm, chimneyMesh, rT, rot, new Vector3(x + w * 0.2f, h + h * 0.07f + 0.3f, z - d * 0.2f),
+                          new Vector3(1.1f, h * 0.14f, 1.1f));
+            }
         }
 
         // Proven local->world box mapping (localX->Z, localY->X, localZ->Y),
