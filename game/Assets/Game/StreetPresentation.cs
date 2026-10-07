@@ -24,22 +24,22 @@ namespace ChicagoGame
             // x,z,w,d,h,yaw,fogK,hue  (16 assemblies, behind outer walls only)
             var sp = new float[][]
             {
-                new float[]{ 96, 12, 5, 5, 30,180, 0.06f, 0.05f},
-                new float[]{112, 22, 6, 6, 46,180, 0.20f, 0.12f},
-                new float[]{126, 16, 5, 5, 38,180, 0.34f, 0.02f},
-                new float[]{140, 26, 7, 7, 62,180, 0.46f, 0.00f},
-                new float[]{150, 12, 4, 4, 26,180, 0.55f, 0.30f},
-                new float[]{120, 31, 5, 6, 34,180, 0.30f, 0.18f},
-                new float[]{104, 32, 6, 5, 22,180, 0.12f, 0.26f},
-                new float[]{  2, 44, 6, 6, 24,  0, 0.18f, 0.10f},
-                new float[]{ -4, 52, 5, 5, 30,  0, 0.30f, 0.22f},
-                new float[]{  6, 58, 7, 6, 40,  0, 0.40f, 0.02f},
-                new float[]{  0, 66, 5, 5, 26,  0, 0.50f, 0.16f},
-                new float[]{  8, 74, 6, 6, 34,  0, 0.58f, 0.28f},
-                new float[]{ 70, 44, 6, 6, 28,135, 0.22f, 0.12f},
-                new float[]{ 82, 52, 5, 5, 22,135, 0.34f, 0.24f},
-                new float[]{ 66, 35, 5, 6, 18,135, 0.16f, 0.06f},
-                new float[]{ 92, 34, 6, 5, 24,135, 0.40f, 0.32f},
+                new float[]{ -14, 40, 7, 6, 16,  0, 0.16f, 0.20f},
+                new float[]{  -4, 41, 8, 6, 20,  0, 0.14f, 0.08f},
+                new float[]{   6, 40, 7, 6, 15,  0, 0.15f, 0.26f},
+                new float[]{  15, 42, 8, 7, 22,  0, 0.18f, 0.12f},
+                new float[]{ -16, 58, 9, 9, 38,  0, 0.40f, 0.02f},
+                new float[]{  -2, 66, 10,10, 52,  0, 0.46f, 0.00f},
+                new float[]{  12, 60, 8, 8, 30,  0, 0.42f, 0.18f},
+                new float[]{  22, 72, 9, 9, 44,  0, 0.52f, 0.10f},
+                new float[]{  72, 10, 8, 7, 18, 90, 0.16f, 0.10f},
+                new float[]{  73, 20, 7, 6, 22, 90, 0.14f, 0.24f},
+                new float[]{  72, 30, 8, 7, 16, 90, 0.15f, 0.06f},
+                new float[]{  74, 40, 9, 7, 24, 90, 0.18f, 0.30f},
+                new float[]{  92, 14, 9, 9, 40,135, 0.40f, 0.12f},
+                new float[]{ 104, 26,10,10, 58,135, 0.46f, 0.02f},
+                new float[]{  90, 40, 8, 8, 32,135, 0.44f, 0.22f},
+                new float[]{ 112, 48, 9, 9, 48,135, 0.52f, 0.32f},
             };
             foreach (var s in sp) Tower(root, s);
             // Two bounded visual-only ground slabs from the ORIGINAL facade mesh via
