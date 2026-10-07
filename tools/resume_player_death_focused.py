@@ -77,6 +77,8 @@ class FocusedDeath(PlayerDeathSource):
     phases=PHASES
     phase_turns=10
     allow_unchanged_phases=()
+    phase_context_tokens=49152
+    phase_readonly={}
     def validate_recovery(self, old):
         validate_boundary(old)
         self.red = old['player_death_red_outcome']
@@ -101,7 +103,8 @@ class FocusedDeath(PlayerDeathSource):
         results = []
         for label, names, instruction in self.phases:
             writable = {'Assets/Game/'+n for n in names}
-            readable = writable | {AUTHORITY}
+            readable = writable | {AUTHORITY} | {'Assets/Game/'+name
+                for name in self.phase_readonly.get(label,())}
             original = {p: files.path(p).read_text() for p in writable}
             phase_protected = {p: sha(files.path(p).read_bytes()) for p in baseline if p not in writable}
             edits = ReadBoundEdits(files)
@@ -134,7 +137,7 @@ class FocusedDeath(PlayerDeathSource):
                     raise Halt('Focused local author changed protected other-phase source')
                 return dict(ok=True, summary=fields['summary'], phase=label, local_authored=True,
                     changed_files=[p for p,v in original.items() if files.path(p).read_text() != v])
-            self.c.update(working_context_tokens=49152, output_tokens=16384, model_timeout_seconds=600)
+            self.c.update(working_context_tokens=self.phase_context_tokens, output_tokens=16384, model_timeout_seconds=600)
             self.store.set(stage='local-death-'+label);self.store.report()
             result = self.model.session('builder',ident+'-death-'+label,
                 'You are local Qwen, sole game-code author. Save complete scoped integration edits through tools.',
