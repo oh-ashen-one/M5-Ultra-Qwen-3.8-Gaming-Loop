@@ -24,6 +24,8 @@ def validate_boundary(old):
         raise Halt('Require the measured real success-route failure and unchanged source/history')
 
 class RepairCounterPropulsion(CapacityAuthor):
+    source_context_tokens=65536
+    source_output_tokens=16384
     def validate_recovery(self,old):
         validate_boundary(old);self.prior=old['counter_exfil_source_outcome']
         self.resume_capacity=self.priority_resume=self.transport_recovery=self.admission_recovery=False
@@ -56,7 +58,7 @@ class RepairCounterPropulsion(CapacityAuthor):
             candidate=self.checkpoint_source('Local Qwen: bound physical runner propulsion and compact the Armed hint')
             self.store.set(source_checkpoint=candidate);self.store.report()
             return dict(ok=True,local_authored=True,candidate=candidate,changed_files=[RUNNER,MISSION],native_verified=False)
-        self.c.update(working_context_tokens=65536,output_tokens=16384,model_timeout_seconds=600)
+        self.c.update(working_context_tokens=self.source_context_tokens,output_tokens=self.source_output_tokens,model_timeout_seconds=600)
         result=self.model.session('builder',ident+'-propulsion-source',
             'You are local Qwen, sole gameplay author. Save a focused correction from the measured native failure.',
             'MEASURED: the real1200kg coupe was driven west and parked across the lane at(9.553,-.01,17.827), '
@@ -88,7 +90,8 @@ class RepairCounterPropulsion(CapacityAuthor):
             '\nEXACT HINT PROPERTY:\n'+hint,
             [tool('finish_source','Save actual complete runner plus only the selected spawn and hint spans.',
                 {'runner_source':{'type':'string'},'spawn_method':{'type':'string'},'hint_property':{'type':'string'}})],
-            {'finish_source':save},turns=3,reasoning_effort='xhigh')
+            {'finish_source':save},turns=3,reasoning_effort='xhigh',
+            retained_assistant=getattr(self,'retained_author',None),retained_instruction=getattr(self,'retained_instruction',None))
         atomic(self.store.root/'evidence'/(ident+'-propulsion-source.json'),result)
         if not result.get('ok'):raise Halt('Preserve actual runner propulsion failure and local source; focused repair incomplete')
         self.store.set(counter_exfil_propulsion_result=result,counter_exfil_source_outcome=dict(self.prior,candidate=result['candidate'],propulsion_repair=result));self.store.report()
