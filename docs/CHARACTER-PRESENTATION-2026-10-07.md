@@ -30,3 +30,11 @@ The plain-artifact path saved `01ba3c7` in139.83seconds. The actual Blender fail
 The model is grounded and has a clearer continuous clothing silhouette, but remains faceted and stiff and faces the trailing camera. Nine pivots show zero local motion during actual travel; no animation clip is present. The original capsule remains1.75m high/.32m radius and all game C# is unchanged. This is an early asset milestone only. The accepted full gameplay fallback stays `de0b3360`; no character, final-quality or ten-minute claim is made.
 
 The failed first export had rewritten provenance while retaining old binary assets. The adapter now starts in empty staging and promotes only successful fresh `.blend`/FBX bytes with matching hashes and source identity. Failed/partial exports preserve prior game assets/provenance and keep a separate failure record; checkpoint labels no longer imply export success after failure. Original faulty receipts remain available as historical evidence.
+
+## Clip source and focused repair
+
+Local Qwen saved clothing, facing and six-clip source `6ebecc05`. Its real export `q0193-ca4cfa26` failed at an undefined `play` helper; static review also found both sides' limb lofts centered on the body midline despite world-preserving parenting. Rotation-axis comments and consistent clip endpoint keys require local verification. This candidate is unaccepted.
+
+The corrected adapter preserved the preceding successful asset bytes and provenance exactly: FBX `64b36368c724411dfeca61a8a149261e63b68a960edee6220190ac736bf39b40`, Blender source `eae69a958901a7160365c576b0688e18cdc58d4ed1bf6c2aebf1179bad16bfb4`. The failed export receipt is preserved with SHA-256 `987a6571b76038875588232572e0b5df3e6ad2ab9354a9b62a7f3b65b5f54bc6`.
+
+The focused local repair `q0194-959438ec` reached its32,768-token response boundary after400.98seconds, with no complete source applied. Its exact non-tool response is retained privately for completion, with unchanged model/xhigh and native context. Only completed public Python may save. Passive native observation distinguishes enabled renderers from Unity visibility; neither substitutes for actual readable pixels or measured joint motion.
