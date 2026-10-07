@@ -17,12 +17,121 @@ for ob in list(scene.objects):
 def mat(nm, col, rough=0.85, metal=0.0):
     m = bpy.data.materials.get(nm) or bpy.data.materials.new(nm)
     m.use_nodes = True
-    b = m.node_tree.nodes.get("Principled BSDF")
+    nt = m.node_tree
+    b = nt.nodes.get("Principled BSDF")
     b.inputs["Base Color"].default_value = (col[0], col[1], col[2], 1.0)
     b.inputs["Roughness"].default_value = rough
     b.inputs["Metallic"].default_value = metal
+    img = IMGMAP.get(nm)
+    if img and img in bpy.data.images:
+        t = nt.nodes.new("ShaderNodeTexImage")
+        t.image = bpy.data.images[img]
+        t.location = (-600, 200)
+        uv = nt.nodes.new("ShaderNodeUVMap")
+        uv.location = (-820, 200)
+        nt.links.new(uv.outputs["UV"], t.inputs["Vector"])
+        tint = TINTMAP.get(nm)
+        out = t.outputs["Color"]
+        if tint:
+            mx = nt.nodes.new("ShaderNodeMixRGB")
+            mx.blend_type = "MULTIPLY"
+            mx.inputs["Fac"].default_value = 1.0
+            mx.inputs["Color2"].default_value = (tint[0], tint[1], tint[2], 1.0)
+            mx.location = (-380, 200)
+            nt.links.new(t.outputs["Color"], mx.inputs["Color1"])
+            out = mx.outputs["Color"]
+        nt.links.new(out, b.inputs["Base Color"])
     return m
 
+
+IMGMAP = {
+    "brick": "t_brick", "darkbrick": "t_brick",
+    "limestone": "t_stone", "concrete": "t_conc",
+    "asphalt": "t_asph", "wood": "t_wood",
+}
+TINTMAP = {"darkbrick": (0.55, 0.50, 0.50)}
+TEX = {
+    "brick": (4.0, 1.0), "darkbrick": (4.0, 1.0),
+    "limestone": (2.0, 2.0), "concrete": (2.0, 2.0),
+    "asphalt": (4.0, 4.0), "wood": (1.0, 0.5),
+}
+
+
+def _h(x, y, s):
+    n = (x * 73856093) ^ (y * 19349663) ^ (s * 83492791)
+    n = ((n ^ (n >> 13)) * 1274126177) & 0xFFFFFFFF
+    return ((n ^ (n >> 16)) & 0xFFFF) / 65535.0
+
+
+def _vn(u, v, N, s):
+    fx = u * N; fy = v * N; xi = int(fx); yi = int(fy)
+    xf = fx - xi; yf = fy - yi
+    x0 = xi % N; x1 = (xi + 1) % N; y0 = yi % N; y1 = (yi + 1) % N
+    a = _h(x0, y0, s); b = _h(x1, y0, s); c = _h(x0, y1, s); d = _h(x1, y1, s)
+    sx = xf * xf * (3 - 2 * xf); sy = yf * yf * (3 - 2 * yf)
+    return a + (b - a) * sx + (c - a) * sy + (a - b - c + d) * sx * sy
+
+
+def _fb(u, v, N, s, o=2):
+    val = 0.0; amp = 1.0; f = N; t = 0.0
+    for i in range(o):
+        val += amp * _vn(u, v, f, s + i * 17); t += amp; amp *= 0.5; f *= 2
+    return val / t
+
+
+def gen(nm, s, mode):
+    N = 512
+    if nm in bpy.data.images:
+        bpy.data.images.remove(bpy.data.images[nm])
+    im = bpy.data.images.new(nm, N, N, alpha=False)
+    im.colorspace_settings.name = "sRGB"
+    px = [0.0] * (N * N * 4)
+    for y in range(N):
+        v = y / N; row = y * N
+        for x in range(N):
+            u = x / N
+            if mode == "brick":
+                bw = 0.0625; rh = 1 / 12.0; ri = int(v * 12)
+                bx = (u - (ri % 2) * 0.5 * bw) % bw; by = v - ri * rh
+                mo = bx < 0.013 or bx > bw - 0.013 or by < 0.006 or by > rh - 0.006
+                if mo:
+                    rr, gg, bb = 0.60, 0.58, 0.54
+                else:
+                    ti = _h(int(u * 16), ri, s + 3)
+                    rr = 0.40 + 0.12 * ti; gg = 0.12 + 0.05 * ti; bb = 0.09 + 0.04 * ti
+                    if ti < 0.35:
+                        rr *= 0.72; gg *= 0.74; bb *= 0.78
+                    n1 = _fb(u, v, 48, s + 5)
+                    rr += (n1 - 0.5) * 0.06; gg += (n1 - 0.5) * 0.05; bb += (n1 - 0.5) * 0.04
+            elif mode == "stone":
+                m1 = _fb(u, v, 8, s + 1); st = _fb(u, v * 0.6, 5, s + 7)
+                jr = (v * 6) % 1.0; j = 0.6 if (jr < 0.03 or jr > 0.97) else 1.0
+                rr = (0.30 + 0.30 * m1 + 0.05 * st) * j
+                gg = (0.28 + 0.30 * m1 + 0.05 * st) * j
+                bb = (0.24 + 0.26 * m1 + 0.04 * st) * j
+            elif mode == "concrete":
+                g = _fb(u, v, 40, s + 2); bl = _fb(u, v, 5, s + 9)
+                b0 = 0.33 + 0.10 * (g - 0.5) + 0.06 * (bl - 0.5)
+                rr = gg = b0; bb = b0 * 0.98
+            elif mode == "asphalt":
+                g = _fb(u, v, 90, s + 4); p = _fb(u, v, 6, s + 11)
+                b0 = 0.075 + 0.05 * (g - 0.5) + 0.03 * (p - 0.5)
+                rr = gg = b0; bb = b0 * 1.06
+            else:
+                g = _fb(u * 9, v * 1.4, 6, s + 6); b0 = 0.16 + 0.12 * g
+                rr = b0; gg = b0 * 0.6; bb = b0 * 0.4
+            i = (row + x) * 4
+            px[i] = max(0.0, min(1.0, rr)); px[i + 1] = max(0.0, min(1.0, gg))
+            px[i + 2] = max(0.0, min(1.0, bb)); px[i + 3] = 1.0
+    im.pixels.foreach_set(px)
+    return im
+
+
+gen("t_brick", 11, "brick")
+gen("t_stone", 23, "stone")
+gen("t_conc", 37, "concrete")
+gen("t_asph", 53, "asphalt")
+gen("t_wood", 71, "wood")
 
 M = {
     "brick":    mat("brick", (0.300, 0.110, 0.085)),
@@ -49,6 +158,25 @@ def box(nm, dims, loc, m, rx=0.0, rz=0.0, parent=root):
     ob.data.materials.clear()
     ob.data.materials.append(M[m])
     ob.parent = parent
+    md = ob.data
+    us, vs = TEX.get(m, (1.0, 1.0))
+    for pl in md.loops:
+        c = md.vertices[pl.vertex_index].co
+        ax = 0
+        if abs(c[1]) >= abs(c[0]) and abs(c[1]) >= abs(c[2]):
+            ax = 1
+        elif abs(c[0]) >= abs(c[2]):
+            ax = 0
+        else:
+            ax = 2
+        if ax == 1:
+            u, v = c[0], c[2]
+        elif ax == 0:
+            u, v = c[1], c[2]
+        else:
+            u, v = c[0], c[1]
+        pl.uv = (u / us, v / vs)
+    md.update()
     return ob
 
 
@@ -157,5 +285,34 @@ for ei, ey in enumerate((1.35, 3.20, 4.95, 6.75)):
         box(t + "_sill",   (0.36, 1.26, 0.14), (EF - 0.17, ey, ez - 0.86), "stone")
         box(t + "_lintel", (0.26, 1.16, 0.24), (EF - 0.12, ey, ez + 0.92), "stone")
         box(t + "_mullV",  (0.07, 0.09, 1.30), (EF - 0.14, ey, ez), "trim")
+
+M["leaf"] = mat("foliage", (0.13, 0.17, 0.07), 0.9)
+IMGMAP["foliage"] = ""
+
+for k, dx in enumerate((-5.4, 5.4)):
+    box("surf_pipe%02d" % k, (0.12, 0.12, 8.2), (dx, -0.16, 4.0), "steel")
+    box("surf_elbow%02d" % k, (0.12, 0.40, 0.12), (dx, -0.30, 8.1), "steel")
+    box("surf_drain%02d" % k, (0.22, 0.30, 0.10), (dx, -0.30, 0.12), "steel")
+
+for k, dx in enumerate((-2.2, 2.2)):
+    box("surf_meter%02d" % k, (0.34, 0.16, 0.50), (dx, -0.16, 1.50), "steel")
+
+for k, dx in enumerate((-3.0, 3.0)):
+    box("surf_vent%02d" % k, (0.50, 0.28, 0.34), (dx, -0.16, 7.40), "steel")
+
+for k, dx in enumerate((-4.5, -1.5)):
+    for kk, zz in enumerate((4.55, 6.75)):
+        box("surf_shutL%d_%d" % (k, kk), (0.16, 0.06, 1.90), (dx - 0.78, -0.16, zz), "wood")
+        box("surf_shutR%d_%d" % (k, kk), (0.16, 0.06, 1.90), (dx + 0.78, -0.16, zz), "wood")
+
+for k, (px, pz) in enumerate(((-5.0, 0.62), (0.0, 0.62), (5.0, 0.62))):
+    bpy.ops.mesh.primitive_icosphere_add(subdivisions=1, radius=0.28, location=(px, -0.42, pz))
+    bo = bpy.context.active_object
+    bo.name = "surf_bush%02d" % k
+    bo.scale = (1.4, 1.0, 0.9)
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    bo.data.materials.clear()
+    bo.data.materials.append(M["leaf"])
+    bo.parent = root
 
 print("street module objects:", len(scene.objects), "mats:", len(M))
