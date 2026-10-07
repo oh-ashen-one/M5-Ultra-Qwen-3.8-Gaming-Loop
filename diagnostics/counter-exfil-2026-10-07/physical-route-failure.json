@@ -1,0 +1,432 @@
+{
+  "candidate": "9df6c96af1ccd25d3115a44434a23aec0537d273",
+  "build_id": "6956b38e78106c8ae4239ef8564eed1e6ce2fee2c61e45b10606e56078baecd0",
+  "evidence": "q0176-57452fa8-success-attempt",
+  "native_execution_passed": true,
+  "reported_completion": null,
+  "reported_failure": 109.23332977294922,
+  "actual_success": false,
+  "measurements": [
+    {
+      "time": 100.33333587646484,
+      "mode": "foot",
+      "health": 28.0,
+      "player": [
+        8.053206443786621,
+        0.13499993085861206,
+        17.86333656311035
+      ],
+      "car": [
+        9.552762985229492,
+        -0.009999990463256836,
+        17.82686424255371
+      ],
+      "shots": 21,
+      "hits": 12,
+      "killed": 0,
+      "complete": false,
+      "reason": "",
+      "actors": [
+        {
+          "name": "CounterExfilRunner2",
+          "hp": 3,
+          "alive": true,
+          "position": [
+            18.506284713745117,
+            0.1399996280670166,
+            16.72690200805664
+          ],
+          "hold": "0"
+        },
+        {
+          "name": "CounterExfilRunner3",
+          "hp": 3,
+          "alive": true,
+          "position": [
+            21.30618667602539,
+            0.1400003433227539,
+            16.823829650878906
+          ],
+          "hold": "0"
+        },
+        {
+          "name": "CounterExfilRunner1",
+          "hp": 6,
+          "alive": true,
+          "position": [
+            13.258259773254395,
+            0.1399996280670166,
+            16.600292205810547
+          ],
+          "hold": "0"
+        }
+      ]
+    },
+    {
+      "time": 105.43333435058594,
+      "mode": "foot",
+      "health": 28.0,
+      "player": [
+        15.093207359313965,
+        0.13499993085861206,
+        16.103336334228516
+      ],
+      "car": [
+        6.214513301849365,
+        -0.010000228881835938,
+        17.77532196044922
+      ],
+      "shots": 23,
+      "hits": 12,
+      "killed": 0,
+      "complete": false,
+      "reason": "",
+      "actors": [
+        {
+          "name": "CounterExfilRunner2",
+          "hp": 3,
+          "alive": true,
+          "position": [
+            12.218473434448242,
+            0.1399996280670166,
+            16.565086364746094
+          ],
+          "hold": "0"
+        },
+        {
+          "name": "CounterExfilRunner3",
+          "hp": 3,
+          "alive": true,
+          "position": [
+            15.342897415161133,
+            0.1399996280670166,
+            16.688251495361328
+          ],
+          "hold": "0"
+        },
+        {
+          "name": "CounterExfilRunner1",
+          "hp": 6,
+          "alive": true,
+          "position": [
+            7.363107681274414,
+            0.1399996280670166,
+            16.391300201416016
+          ],
+          "hold": "0"
+        }
+      ]
+    },
+    {
+      "time": 106.83333587646484,
+      "mode": "foot",
+      "health": 28.0,
+      "player": [
+        15.093207359313965,
+        0.13499993085861206,
+        16.103336334228516
+      ],
+      "car": [
+        4.706854820251465,
+        -0.010000228881835938,
+        17.78993797302246
+      ],
+      "shots": 30,
+      "hits": 12,
+      "killed": 0,
+      "complete": false,
+      "reason": "",
+      "actors": [
+        {
+          "name": "CounterExfilRunner2",
+          "hp": 3,
+          "alive": true,
+          "position": [
+            10.49227523803711,
+            0.1399996280670166,
+            16.515296936035156
+          ],
+          "hold": "0"
+        },
+        {
+          "name": "CounterExfilRunner3",
+          "hp": 3,
+          "alive": true,
+          "position": [
+            15.342901229858398,
+            0.1399996280670166,
+            16.68826675415039
+          ],
+          "hold": "0"
+        },
+        {
+          "name": "CounterExfilRunner1",
+          "hp": 6,
+          "alive": true,
+          "position": [
+            5.826771259307861,
+            0.1399996280670166,
+            16.350107192993164
+          ],
+          "hold": "0"
+        }
+      ]
+    },
+    {
+      "time": 109.03333282470703,
+      "mode": "foot",
+      "health": 28.0,
+      "player": [
+        13.013206481933594,
+        0.13499993085861206,
+        12.583335876464844
+      ],
+      "car": [
+        2.335573673248291,
+        -0.010000010021030903,
+        17.836177825927734
+      ],
+      "shots": 30,
+      "hits": 12,
+      "killed": 0,
+      "complete": false,
+      "reason": "",
+      "actors": [
+        {
+          "name": "CounterExfilRunner2",
+          "hp": 3,
+          "alive": true,
+          "position": [
+            7.779257297515869,
+            0.1399996280670166,
+            16.41571807861328
+          ],
+          "hold": "0"
+        },
+        {
+          "name": "CounterExfilRunner3",
+          "hp": 3,
+          "alive": true,
+          "position": [
+            13.098397254943848,
+            0.1399996280670166,
+            16.60113525390625
+          ],
+          "hold": "0"
+        },
+        {
+          "name": "CounterExfilRunner1",
+          "hp": 6,
+          "alive": true,
+          "position": [
+            3.4123382568359375,
+            0.1399996280670166,
+            16.35019874572754
+          ],
+          "hold": "0"
+        }
+      ]
+    },
+    {
+      "time": 112.03333282470703,
+      "mode": "foot",
+      "health": 28.0,
+      "player": [
+        7.031982898712158,
+        0.13499993085861206,
+        15.520174026489258
+      ],
+      "car": [
+        1.7079098224639893,
+        -0.010000169277191162,
+        17.85772705078125
+      ],
+      "shots": 30,
+      "hits": 12,
+      "killed": 0,
+      "complete": false,
+      "reason": "LEAD RUNNER REACHED THE WEST EXIT",
+      "actors": [
+        {
+          "name": "CounterExfilRunner2",
+          "hp": 3,
+          "alive": true,
+          "position": [
+            7.532555103302002,
+            0.1399996280670166,
+            16.403270721435547
+          ],
+          "hold": "0"
+        },
+        {
+          "name": "CounterExfilRunner3",
+          "hp": 3,
+          "alive": true,
+          "position": [
+            12.851691246032715,
+            0.1399996280670166,
+            16.588687896728516
+          ],
+          "hold": "0"
+        },
+        {
+          "name": "CounterExfilRunner1",
+          "hp": 6,
+          "alive": true,
+          "position": [
+            3.1927568912506104,
+            0.1399996280670166,
+            16.35017967224121
+          ],
+          "hold": "0"
+        }
+      ]
+    },
+    {
+      "time": 114.03333282470703,
+      "mode": "foot",
+      "health": 28.0,
+      "player": [
+        3.7468159198760986,
+        0.13499993085861206,
+        15.896513938903809
+      ],
+      "car": [
+        1.7079098224639893,
+        -0.010000169277191162,
+        17.85772705078125
+      ],
+      "shots": 30,
+      "hits": 12,
+      "killed": 0,
+      "complete": false,
+      "reason": "LEAD RUNNER REACHED THE WEST EXIT",
+      "actors": [
+        {
+          "name": "CounterExfilRunner2",
+          "hp": 3,
+          "alive": true,
+          "position": [
+            7.532555103302002,
+            0.1399996280670166,
+            16.403270721435547
+          ],
+          "hold": "0"
+        },
+        {
+          "name": "CounterExfilRunner3",
+          "hp": 3,
+          "alive": true,
+          "position": [
+            12.851691246032715,
+            0.1399996280670166,
+            16.588687896728516
+          ],
+          "hold": "0"
+        },
+        {
+          "name": "CounterExfilRunner1",
+          "hp": 6,
+          "alive": true,
+          "position": [
+            3.1927568912506104,
+            0.1399996280670166,
+            16.35017967224121
+          ],
+          "hold": "0"
+        }
+      ]
+    },
+    {
+      "time": 119.03333282470703,
+      "mode": "foot",
+      "health": 100.0,
+      "player": [
+        0.0,
+        0.13499993085861206,
+        1.7000000476837158
+      ],
+      "car": [
+        3.359421491622925,
+        -0.009999990463256836,
+        7.96269416809082
+      ],
+      "shots": 0,
+      "hits": 0,
+      "killed": 0,
+      "complete": false,
+      "reason": "",
+      "actors": []
+    }
+  ],
+  "shot_summary": [
+    {
+      "time": 105.19999694824219,
+      "heading_degrees": 306.6330764343702,
+      "first_collider": "AlleyNorthWall",
+      "new_hits": 0
+    },
+    {
+      "time": 105.4000015258789,
+      "heading_degrees": 306.1132957073742,
+      "first_collider": "AlleyNorthWall",
+      "new_hits": 0
+    },
+    {
+      "time": 105.5999984741211,
+      "heading_degrees": 306.0203315279882,
+      "first_collider": "AlleyNorthWall",
+      "new_hits": 0
+    },
+    {
+      "time": 105.80000305175781,
+      "heading_degrees": 306.0036545922232,
+      "first_collider": "AlleyNorthWall",
+      "new_hits": 0
+    },
+    {
+      "time": 106.0,
+      "heading_degrees": 306.00065553551843,
+      "first_collider": "AlleyNorthWall",
+      "new_hits": 0
+    },
+    {
+      "time": 106.19999694824219,
+      "heading_degrees": 306.0001086942343,
+      "first_collider": "AlleyNorthWall",
+      "new_hits": 0
+    },
+    {
+      "time": 106.4000015258789,
+      "heading_degrees": 306.0000311316313,
+      "first_collider": "AlleyNorthWall",
+      "new_hits": 0
+    },
+    {
+      "time": 106.5999984741211,
+      "heading_degrees": 306.0000311316313,
+      "first_collider": "AlleyNorthWall",
+      "new_hits": 0
+    },
+    {
+      "time": 106.80000305175781,
+      "heading_degrees": 306.0000311316313,
+      "first_collider": "AlleyNorthWall",
+      "new_hits": 0
+    }
+  ],
+  "diagnosis": {
+    "gameplay": "Velocity-forced runner pushes unoccupied coupe west around1.1m/s, preventing a maintained pin while the player walks.",
+    "acceptance_input": "Cloud-authored0.1second A turn supplies54degrees and leaves northwest aim; all9real shots miss. Correct inputs, not camera or combat."
+  },
+  "sealed": {
+    "gate.json": "a4c1304d58b969d97394851dd4e37c2820ec83ec14d5c6f486aa46b42b798b8e",
+    "success-attempt.json": "03b87d9d7a97e5616a2c5ef8b92fda259390d5f73fee53566885c9c5254f766f",
+    "captures/scenario.json": "2229395b12f3270cb8c1fb9e781e5826f4f3a07af31ad5471d0be982f717aa23",
+    "captures/trace.jsonl": "8a08ed09bed73c474e26fe8c44022b656766d7ff500fbe1cca10110e340e46fa",
+    "captures/aim-shots.jsonl": "4f727bddad22cbe3a6dcc45ee9e2a8e239a2ca5d99a3a991b35fa6be9e72d47c",
+    "captures/counter-exfil-contacts.jsonl": "07afb53b93ff66e53cc8afcd7e8baa241c654415481985be2043516bb36a9745"
+  },
+  "accepted_fallback": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+  "final_game_accepted": false
+}
