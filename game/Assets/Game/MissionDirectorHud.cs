@@ -11,7 +11,8 @@ namespace ChicagoGame
         static MissionDirectorHud _inst;
         GameObject _player; Camera _cam;
         TextMesh _board; Renderer[] _hide; Transform _hudStatus;
-        RelaySequence _relay; RouteMission _route; CourierMission _courier; InterceptionMission _interception;
+        RelaySequence _relay; RouteMission _route; CourierMission _courier;
+        InterceptionMission _interception; CounterExfilMission _counter;
 
         // Board palette, single source of truth. BoardColor is exactly the
         // colour Setup installs the board with, so a released death hands the
@@ -24,6 +25,7 @@ namespace ChicagoGame
         public static void Install(GameObject player, Camera cam)
         {
             if (_inst != null) return;
+            CounterExfilMission.Install(player, cam);
             var go = new GameObject("MissionDirectorHud");
             _inst = go.AddComponent<MissionDirectorHud>();
             _inst._player = player; _inst._cam = cam;
@@ -81,6 +83,7 @@ namespace ChicagoGame
             if (!_relay) _relay = FindAny<RelaySequence>();
             if (!_route) _route = FindAny<RouteMission>();
             if (!_courier) _courier = FindAny<CourierMission>();
+            if (!_counter) _counter = FindAny<CounterExfilMission>();
 
             var _interception = FindAny<InterceptionMission>();
 
@@ -93,12 +96,23 @@ namespace ChicagoGame
             // recorded first is kept ahead of the death line instead of being
             // overwritten by it.
             bool down = DeathAuthority.IsDead;
-            string s = down ? DeathBoard(_interception) : null;
+            string s = down ? DeathBoard(_interception, _counter) : null;
 
             if (s == null)
             {
-                if (_interception != null && _interception.Active)
+                if (_counter != null && _counter.BoardPriority)
+                    s = _counter.Objective;
+                else if (_interception != null && _interception.Active)
                     s = _interception.Objective;
+                else if (_counter != null && _counter.Armed)
+                {
+                    string old = _interception != null ? _interception.Objective : null;
+                    string line = _counter.HudLine;
+                    if (!string.IsNullOrEmpty(old))
+                        s = string.IsNullOrEmpty(line) ? old : old + "\n" + line;
+                    else if (!string.IsNullOrEmpty(line))
+                        s = line;
+                }
                 else if (_relay != null && _relay.Active)
                 {
                     string two = _relay.Objective ?? "OBJECTIVE UNAVAILABLE";
@@ -136,11 +150,12 @@ namespace ChicagoGame
         /// line follows it, so history is reported rather than overwritten;
         /// where no such record exists nothing is invented and only the
         /// depleted health is stated. The chapter consulted most recently -
-        /// the interception - is offered first, then the dead-drop chain, then
-        /// the route.</summary>
-        string DeathBoard(InterceptionMission im)
+        /// the counter-exfil, then the interception, then the dead-drop chain,
+        /// then the route.</summary>
+        string DeathBoard(InterceptionMission im, CounterExfilMission ce)
         {
-            string why = im != null ? im.FailReason : null;
+            string why = ce != null ? ce.FailReason : null;
+            if (string.IsNullOrEmpty(why) && im != null) why = im.FailReason;
             if (string.IsNullOrEmpty(why) && _relay != null) why = _relay.FailReason;
             if (string.IsNullOrEmpty(why) && _route != null) why = _route.FailReason;
             if (string.IsNullOrEmpty(why))
