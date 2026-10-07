@@ -50,6 +50,9 @@ def validate_source(path,content):
     # Its pre-existing using/read accessor is validated separately by the caller.
 
 class ImplementCounterExfil(CapacityAuthor):
+    author_context_tokens=98304
+    author_output_tokens=32768
+    focused_instruction=''
     def validate_recovery(self,old):
         validate_boundary(old)
         self.survey=old['counter_exfil_preflight']
@@ -67,7 +70,7 @@ class ImplementCounterExfil(CapacityAuthor):
             if fields['path'] not in READ|NEW:raise ValueError('Read exact supplied APIs or new chapter modules only')
             return edits.read(action,fields)
         def protected():
-            if any(sha(files.path(p).read_bytes())!=h for p,h in baseline.items() if p!=HUD):
+            if any(sha(files.path(p).read_bytes())!=h for p,h in baseline.items() if p not in NEW|{HUD}):
                 raise Halt('First incident changed a protected accepted source or asset')
         def check(path,content):
             # Keep the existing legacy read-only accessor, but permit no new reflection.
@@ -93,7 +96,7 @@ class ImplementCounterExfil(CapacityAuthor):
             return dict(ok=True,local_authored=True,summary=fields['summary'],candidate=self.store.get('source_checkpoint'),
                 changed_files=sorted(NEW|{HUD}),native_verified=False,final_game_accepted=False)
         context=[]
-        for path in sorted(READ):
+        for path in sorted(READ|{p for p in NEW if files.path(p).is_file()}):
             source=files.path(path).read_text()
             # Supply Bootstrap installation/Walker exactly; the protected Follow
             # class remains available through read_file if a concrete API is needed.
@@ -102,10 +105,10 @@ class ImplementCounterExfil(CapacityAuthor):
                 value=read('context',dict(path=path,start_line=start,line_count=min(200,last-start+1)))
                 context.append(path+' line'+str(start)+'\n'+value['content'])
         contract=(self.engines.source_root/'docs/COUNTER-EXFIL-ACCEPTANCE.md').read_text()
-        self.c.update(working_context_tokens=98304,output_tokens=32768,model_timeout_seconds=600)
+        self.c.update(working_context_tokens=self.author_context_tokens,output_tokens=self.author_output_tokens,model_timeout_seconds=600)
         result=self.model.session('builder',ident+'-counter-exfil-source',
             'You are local Qwen, sole substantive game-code author. The design is fixed. Save usable C# now through tools.',
-            contract+'\nIMPLEMENTATION BOUNDARY: Save two compact modules CounterExfilMission.cs and CounterExfilRunner.cs '
+            contract+'\n'+self.focused_instruction+'\nIMPLEMENTATION BOUNDARY: Save two compact modules CounterExfilMission.cs and CounterExfilRunner.cs '
             'and integrate installation/HUD in existing MissionDirectorHud.cs. No other existing source is writable. '
             'Combat already damages any genuinely hit live RivalAgent; reuse that exact API rather than editing combat. '
             'Install once via MissionDirectorHud.Install with its real player/camera; keep existing old death/failure '
