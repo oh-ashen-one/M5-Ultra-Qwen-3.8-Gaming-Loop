@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace ChicagoGame
 {
@@ -17,9 +18,9 @@ namespace ChicagoGame
     // teleport, no climbing through a barrier.
     //
     // A pin is PROVEN, never assumed: it needs real sustained CONTACT with the
-    // courier's own coupe (OnCollisionEnter/Stay on this body, filtered to that
-    // one root) AND real failure to make westward progress while the body is
-    // still pressing west. Proximity or a ray alone never qualifies. The
+    // courier's own coupe (OnCollisionEnter/Stay/Exit on this body, filtered to
+    // that one root) AND real failure to make westward progress while the body
+    // is still pressing west. Proximity or a ray alone never qualifies. The
     // uninterrupted hold clock is reset the instant either half is lost, so
     // driving the coupe away releases a live pin on the next step, and nothing
     // about a pin is cached once it lapses.
@@ -43,10 +44,14 @@ namespace ChicagoGame
         public Rigidbody Body;
 
         // ---- qualification constants ----
-        const float ContactWindow = 0.12f;   // OnCollisionStay is per fixed step; 2 steps of grace
         const float BlockedRate = 0.30f;     // m/s of real westward travel still counted as "held"
         const float MeasuredTime = 0.5f;     // no verdict from an unmeasured body
         public const float Qualify = 0.8f;   // uninterrupted obstruction needed to qualify a pin
+
+        const float MidEastX = 22.0f;
+        const float MidEastZ = 16.5738f;
+        const float MidWestX = 6.0f;
+        const float MidWestZ = 16.0057f;
 
         // ---- live physical state, derived only from real physics ----
         float lastContact = -999f;
@@ -57,16 +62,24 @@ namespace ChicagoGame
         float prevX;
         bool prevValid;
         bool downHandled;
+        readonly List<Collider> coupeContacts = new List<Collider>();
 
         // ---- ordinary public read-only observation ----
         public int Hp { get { return Agent != null ? Mathf.Max(0, Agent.hp) : 0; } }
         public int HpAtStart { get { return StartHp; } }
         public bool Alive { get { return Agent != null && Agent.alive; } }
         public bool Killed { get { return Agent != null && !Agent.alive; } }
-        public bool ContactNow { get { return Time.time - lastContact <= ContactWindow; } }
+        public bool ContactNow
+        {
+            get
+            {
+                TrimCoupeContacts();
+                return Coupe != null && coupeContacts.Count > 0 && lastContact >= -1f;
+            }
+        }
         public bool BlockedNow { get { return observed > MeasuredTime && westEma < BlockedRate; } }
         /// <summary>True only while a qualified pin is being maintained right now.</summary>
-        public bool Pinned { get { return Alive && ContactNow && BlockedNow && hold >= Qualify; } }
+        public bool Pinned { get { return !DeathAuthority.IsDead && Alive && ContactNow && BlockedNow && hold >= Qualify; } }
         /// <summary>Uninterrupted contact+blocked clock, zeroed on any separation.</summary>
         public float HoldSeconds { get { return hold; } }
         /// <summary>Total seconds this actor has actually spent pin-qualified.</summary>
@@ -76,13 +89,21 @@ namespace ChicagoGame
         public float X { get { return transform.position.x; } }
         public float Z { get { return transform.position.z; } }
 
-        /// <summary>z of the one validated lane at world x (survey endpoints, no invented offset).</summary>
+        /// <summary>z of the one validated lane at world x (piecewise survey, no invented offset).</summary>
         public float LaneZ(float x)
         {
-            float span = LaneEast.x - LaneWest.x;
-            if (Mathf.Abs(span) < 0.01f) return LaneWest.z;
-            float t = (LaneEast.x - x) / span;
-            return Mathf.Lerp(LaneEast.z, LaneWest.z, t);
+            if (x >= LaneEast.x) return LaneEast.z;
+            if (x <= LaneWest.x) return LaneWest.z;
+            if (x >= MidEastX) return LerpZ(LaneEast.x, LaneEast.z, MidEastX, MidEastZ, x);
+            if (x >= MidWestX) return LerpZ(MidEastX, MidEastZ, MidWestX, MidWestZ, x);
+            return LerpZ(MidWestX, MidWestZ, LaneWest.x, LaneWest.z, x);
+        }
+
+        static float LerpZ(float x0, float z0, float x1, float z1, float x)
+        {
+            float span = x0 - x1;
+            if (Mathf.Abs(span) < 0.0001f) return z0;
+            return Mathf.Lerp(z0, z1, (x0 - x) / span);
         }
 
         /// <summary>Place on the validated lane; gravity settles the rest.</summary>
@@ -156,20 +177,63 @@ namespace ChicagoGame
 
         void OnCollisionEnter(Collision c) { Touch(c); }
         void OnCollisionStay(Collision c) { Touch(c); }
+        void OnCollisionExit(Collision c) { Release(c); }
 
         void Touch(Collision c)
         {
             if (!Alive) return;
             if (!IsCoupe(c)) return;
+            Collider col = c.collider;
+            if (col == null) return;
+
+            if (!coupeContacts.Contains(col))
+            {
+                coupeContacts.Add(col);
+                if (coupeContacts.Count == 1) hold = 0f;
+            }
             lastContact = Time.time;
+        }
+
+        void Release(Collision c)
+        {
+            if (!IsCoupe(c)) return;
+            Collider col = c.collider;
+            if (col != null) coupeContacts.Remove(col);
+
+            if (coupeContacts.Count == 0)
+            {
+                lastContact = -999f;
+                hold = 0f;
+            }
+        }
+
+        void TrimCoupeContacts()
+        {
+            for (int i = coupeContacts.Count - 1; i >= 0; i--)
+            {
+                Collider c = coupeContacts[i];
+                if (c == null || !c.isActiveAndEnabled || !IsCoupeCollider(c))
+                    coupeContacts.RemoveAt(i);
+            }
+
+            if (coupeContacts.Count == 0 && lastContact > -1f)
+            {
+                lastContact = -999f;
+                hold = 0f;
+            }
         }
 
         bool IsCoupe(Collision c)
         {
-            if (Coupe == null || c == null) return false;
-            var col = c.collider != null ? c.collider.transform : null;
-            if (col == null) return false;
-            return col == Coupe || col.IsChildOf(Coupe);
+            if (c == null) return false;
+            return IsCoupeCollider(c.collider);
+        }
+
+        bool IsCoupeCollider(Collider c)
+        {
+            if (c == null || Coupe == null) return false;
+            var t = c.transform;
+            return t == Coupe || t.IsChildOf(Coupe);
         }
 
         bool BlockedAlong(Vector3 dir, float dist)
