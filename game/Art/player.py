@@ -1,36 +1,28 @@
-# ORIGINAL clothed courier - art increment 2 (Blender 5.2)
+# ORIGINAL clothed courier - art increment 2 (Blender 5.2) local repair
 # World: meters, +Z up. Visual built facing +Y with feet at Z=0; presentation
-# root then lifted to Z=0.79. Unity controller/camera unchanged.
-# Increment 2 goals kept inside the tested width envelope (~0.61 m) and 1.8 m
-# build: (A) lofted super-elliptical jacket/torso/sleeves/trousers with soft
-# square shoulders and beveled joint/hand/shoe reads - no barrel tube, no
-# prominent ball caps; (B) a static +pi Z pre-rotation on the visual root fixes
-# the native Blender->Unity axis conversion where local +Y front lands facing
-# the trailing camera, re-aiming the face along player forward/aim. The pre-
-# rotation is applied to the VISUAL root only; lift (.79), world-preserving
-# matrix_parent_inverse parenting and the l/r dictionaries are untouched.
-# (C) Original keyframe motion authored on spine/head/shoulder/elbow/hip/knee
-# pivots in ONE shared action per pivot at 30 fps, six ranges documented below.
-# Because the +pi root pre-rotation flips each child's local forward axis, a
-# positive authored swing-angle is multiplied by FX=-1 so it swings world-
-# forward. Walk/jog are presentation clips; real on-foot speed (3.2 m/s) and
-# the existing E boarding/driving trigger are NOT changed by this build.
+# root lifted to Z=0.79 and statically pre-rotated +pi Z for Unity facing.
+# Repairs kept bounded: missing play() helper added; sleeve/forearm/thigh/shin
+# lofts are moved to their actual side before world-preserving parenting;
+# FX=-1 is repaired to FX=+1 because the root Z half-turn changes world facing,
+# not the local Euler semantics. Spine/head are up-Z, so saved forward-intent
+# X values are negated to bend toward local +Y. Clip endpoints/gaps are pinned.
 import bpy, bmesh, math
 from mathutils import Vector
 
 SC = bpy.context
 CO = SC.collection
-FX = -1.0  # local-forward inversion imposed by the +pi visual-root pre-rotation
+FX = 1.0
+UP_Z = {"spine", "head"}
 
 for ob in list(bpy.data.objects):
     bpy.data.objects.remove(ob, do_unlink=True)
 for me in list(bpy.data.meshes):
     bpy.data.meshes.remove(me)
+for ac in list(bpy.data.actions):
+    bpy.data.actions.remove(ac, do_unlink=True)
 for cl in [c for c in bpy.data.collections if c != CO]:
     bpy.data.collections.remove(cl)
 
-# --- frame plan: Idle 1..61, Walk 71..101, Jog 111..135,
-#     Aim 145..175, Board 185..209, Drive 219..279  (30 fps, gaps pinned rest)
 SC.scene.frame_start = 1
 SC.scene.frame_end = 279
 SC.scene.render.fps = 30
@@ -131,7 +123,12 @@ for key in ("l", "r"):
     PAR(kn[key], hip[key])
 SC.view_layer.update()
 
-L = lambda z, xh, yh, q=2.4, yb=1.0, ys=0.0: (z, xh, yh, q, yb, 0.0, ys)
+def L(z, xh, yh, q=2.4, yb=1.0, ys=0.0, xs=0.0):
+    return (z, xh, yh, q, yb, xs, ys)
+
+def LS(z, xh, yh, xs, q=2.4, yb=1.0, ys=0.0):
+    return (z, xh, yh, q, yb, xs, ys)
+
 parts = {}
 def add(o, key): parts.setdefault(key, []).append(o)
 
@@ -161,22 +158,38 @@ add(SPH("hair_cap", (0, -0.008, 1.712), 1.0, M_HAIR, (0.092, 0.104, 0.084)), "he
 add(BOX("hair_back", (0, -0.078, 1.64), (0.15, 0.05, 0.14), M_HAIR), "head")
 
 # arms: lofted sleeve + squared delt read + beveled cuff/hand
+# Sleeve and forearm lofts now carry real side X offsets before world-preserving PAR.
 for key, s in (("l", 1), ("r", -1)):
     add(BOX(f"delt_{key}", (0.188*s, 0, 1.445), (0.096, 0.112, 0.104), M_JKT, 0.016), key+"sh")
-    add(LOFT(f"sleeve_{key}", [L(1.47,0.082,0.086,2.4), L(1.32,0.080,0.084,2.4), L(1.18,0.076,0.080,2.5)], M_JKT, w=0.004), key+"sh")
-    add(LOFT(f"fore_{key}", [L(1.18,0.070,0.074,2.4), L(1.06,0.066,0.070,2.4), L(0.95,0.060,0.064,2.6)], M_JKT, w=0.004), key+"el")
+    add(LOFT(f"sleeve_{key}", [
+        LS(1.47,0.082,0.086,0.185*s,2.4,1.0,0.0),
+        LS(1.32,0.080,0.084,0.195*s,2.4,1.0,0.0),
+        LS(1.18,0.076,0.080,0.205*s,2.5,1.0,0.0),
+    ], M_JKT, w=0.004), key+"sh")
+    add(LOFT(f"fore_{key}", [
+        LS(1.18,0.070,0.074,0.205*s,2.4,1.0,0.0),
+        LS(1.06,0.066,0.070,0.212*s,2.4,1.0,0.0),
+        LS(0.95,0.060,0.064,0.222*s,2.6,1.0,0.0),
+    ], M_JKT, w=0.004), key+"el")
     add(BOX(f"cuff_{key}", (0.215*s, 0, 0.95), (0.052, 0.062, 0.052), M_TRIM), key+"el")
     add(BOX(f"palm_{key}", (0.222*s, 0.012, 0.90), (0.050, 0.084, 0.074), M_SKIN), key+"el")
     add(BOX(f"fingers_{key}", (0.222*s, 0.052, 0.864), (0.046, 0.050, 0.062), M_SKIN), key+"el")
     add(BOX(f"thumb_{key}", (0.198*s, 0.040, 0.894), (0.022, 0.046, 0.026), M_SKIN), key+"el")
 
 # legs: lofted tapered trousers, beveled knee pad, pant cuff, shaped shoe
+# Thigh and shin lofts now carry real side X offsets before world-preserving PAR.
 for key, s in (("l", 1), ("r", -1)):
-    add(LOFT(f"thigh_{key}", [L(0.95,0.100,0.104,2.4,0.86,-0.006), L(0.72,0.092,0.096,2.5,0.84,-0.010),
-         L(0.50,0.086,0.090,2.6,0.84,-0.012)], M_JEANS, w=0.004), key+"hip")
+    add(LOFT(f"thigh_{key}", [
+        LS(0.95,0.100,0.104,0.095*s,2.4,0.86,-0.006),
+        LS(0.72,0.092,0.096,0.098*s,2.5,0.84,-0.010),
+        LS(0.50,0.086,0.090,0.100*s,2.6,0.84,-0.012),
+    ], M_JEANS, w=0.004), key+"hip")
     add(BOX(f"kneepad_{key}", (0.100*s, 0.060, 0.50), (0.086, 0.052, 0.096), M_JEANS), key+"knee")
-    add(LOFT(f"shin_{key}", [L(0.50,0.082,0.086,2.5,0.86,-0.006), L(0.30,0.072,0.076,2.6,0.86,-0.008),
-         L(0.13,0.062,0.066,2.8,0.88,-0.010)], M_JEANS, w=0.004), key+"knee")
+    add(LOFT(f"shin_{key}", [
+        LS(0.50,0.082,0.086,0.100*s,2.5,0.86,-0.006),
+        LS(0.30,0.072,0.076,0.102*s,2.6,0.86,-0.008),
+        LS(0.13,0.062,0.066,0.105*s,2.8,0.88,-0.010),
+    ], M_JEANS, w=0.004), key+"knee")
     add(BOX(f"pantcuff_{key}", (0.105*s, 0.0, 0.152), (0.072, 0.080, 0.050), M_JEANS), key+"knee")
     add(BOX(f"shoe_{key}", (0.105*s, 0.052, 0.040), (0.086, 0.20, 0.060), M_SHOE, 0.014), key+"knee")
     add(BOX(f"toe_{key}", (0.105*s, 0.183, 0.046), (0.082, 0.092, 0.062), M_SHOE, 0.022), key+"knee")
@@ -193,76 +206,117 @@ for k, objs in parts.items():
     for o in objs: PAR(o, keys[k])
 SC.view_layer.update()
 
-# Presentation transform. The +pi Z pre-rotation is the native axis fix: the
-# FBX/Unity import maps this rig's local +Y front onto the rear-facing camera,
-# so a static half-turn about the visual root's +Z re-aims the face along the
-# controller's forward/aim vector. Translation (lift) and children are intact.
+# Presentation transform. The +pi Z pre-rotation re-aims the visual hierarchy;
+# it does not reverse local Euler meaning. Down-Z limbs still bend toward +X
+# toward local +Y. Spine/head are up-Z, so UP_Z negates saved forward intent.
 root.location = (0.0, 0.0, 0.79)
 root.rotation_euler = (0.0, 0.0, math.pi)
 SC.view_layer.update()
 
 ALLP = ["spine","head","lsh","rsh","lel","rel","lhip","rhip","lknee","rknee"]
-def setrest(f):
-    for n in ALLP:
-        keys[n].rotation_euler = (0, 0, 0)
-        keys[n].keyframe_insert("rotation_euler", frame=f)
+for n in ALLP:
+    if n not in keys: raise KeyError(n)
+for ob in keys.values():
+    ob.animation_data_clear()
 
-setrest(1)
+def keyrot(n, f, r):
+    if n not in keys: raise KeyError(n)
+    ob = keys[n]
+    if ob.animation_data is None: ob.animation_data_create()
+    sx = -1.0 if n in UP_Z else 1.0
+    ob.rotation_euler = (FX*sx*float(r[0]), float(r[1]), float(r[2]))
+    for i in range(3):
+        ob.keyframe_insert("rotation_euler", index=i, frame=int(f), replace=True)
+
+def pin(a, b=None):
+    if b is None: b = a
+    for n in ALLP:
+        keyrot(n, a, (0.0, 0.0, 0.0))
+        keyrot(n, b, (0.0, 0.0, 0.0))
+
+def play(a, b, d):
+    pin(a, b)
+    for n, pts in d.items():
+        if n not in keys: raise KeyError(n)
+        for f, r in pts:
+            keyrot(n, f, r)
+
+# Pin true rest at frame 1, then author the six clips.
+pin(1, 1)
+
 # Idle 1..61  (breathing / weight shift / head sway; loop-continuous at rest)
-play({"spine":[(16,(0.018,0,0)),(31,(0,0,0)),(46,(-0.012,0,0))],
-      "head":[(16,(0.004,0.05,0)),(31,(0.01,0,0)),(46,(-0.004,-0.05,0))],
-      "lsh":[(16,(0.02,0,0)),(31,(0,0,0)),(46,(-0.02,0,0))],
-      "rsh":[(16,(-0.02,0,0)),(31,(0,0,0)),(46,(0.02,0,0))]})
-# Walk 71..101  (one opposing cycle, loop seam at -0.30)
-play({"lhip":[(71,(-0.30,0,0)),(79,(0,0,0)),(86,(0.34,0,0)),(93,(0.05,0,0)),(101,(-0.30,0,0))],
-      "lknee":[(71,(-0.15,0,0)),(79,(-0.55,0,0)),(86,(-0.05,0,0)),(93,(-0.30,0,0)),(101,(-0.15,0,0))],
-      "rhip":[(71,(0.34,0,0)),(79,(0.05,0,0)),(86,(-0.30,0,0)),(93,(0,0,0)),(101,(0.34,0,0))],
-      "rknee":[(71,(-0.05,0,0)),(79,(-0.30,0,0)),(86,(-0.15,0,0)),(93,(-0.55,0,0)),(101,(-0.05,0,0))],
-      "lsh":[(71,(0.30,0,0)),(79,(0,0,0)),(86,(-0.34,0,0)),(93,(-0.05,0,0)),(101,(0.30,0,0))],
-      "rsh":[(71,(-0.34,0,0)),(79,(-0.05,0,0)),(86,(0.30,0,0)),(93,(0,0,0)),(101,(-0.34,0,0))],
-      "lel":[(71,(0.30,0,0)),(86,(0.45,0,0)),(101,(0.30,0,0))],
-      "rel":[(71,(0.45,0,0)),(86,(0.30,0,0)),(101,(0.45,0,0))],
-      "spine":[(71,(0.02,0,0)),(86,(0.02,0,0)),(101,(0.02,0,0))]})
+play(1, 61, {"spine":[(16,(0.018,0,0)),(31,(0,0,0)),(46,(-0.012,0,0))],
+             "head":[(16,(0.004,0.05,0)),(31,(0.01,0,0)),(46,(-0.004,-0.05,0))],
+             "lsh":[(16,(0.02,0,0)),(31,(0,0,0)),(46,(-0.02,0,0))],
+             "rsh":[(16,(-0.02,0,0)),(31,(0,0,0)),(46,(0.02,0,0))]})
+
+# Walk 71..101  (one opposing cycle, loop seam preserved)
+play(71, 101, {
+    "lhip":[(71,(-0.30,0,0)),(79,(0,0,0)),(86,(0.34,0,0)),(93,(0.05,0,0)),(101,(-0.30,0,0))],
+    "lknee":[(71,(-0.15,0,0)),(79,(-0.55,0,0)),(86,(-0.05,0,0)),(93,(-0.30,0,0)),(101,(-0.15,0,0))],
+    "rhip":[(71,(0.34,0,0)),(79,(0.05,0,0)),(86,(-0.30,0,0)),(93,(0,0,0)),(101,(0.34,0,0))],
+    "rknee":[(71,(-0.05,0,0)),(79,(-0.30,0,0)),(86,(-0.15,0,0)),(93,(-0.55,0,0)),(101,(-0.05,0,0))],
+    "lsh":[(71,(0.30,0,0)),(79,(0,0,0)),(86,(-0.34,0,0)),(93,(-0.05,0,0)),(101,(0.30,0,0))],
+    "rsh":[(71,(-0.34,0,0)),(79,(-0.05,0,0)),(86,(0.30,0,0)),(93,(0,0,0)),(101,(-0.34,0,0))],
+    "lel":[(71,(0.30,0,0)),(86,(0.45,0,0)),(101,(0.30,0,0))],
+    "rel":[(71,(0.45,0,0)),(86,(0.30,0,0)),(101,(0.45,0,0))],
+    "spine":[(71,(0.02,0,0)),(86,(0.02,0,0)),(101,(0.02,0,0))]})
+
 # Jog 111..135  (larger amp / faster cycle, knee clearance)
-play({"lhip":[(111,(-0.50,0,0)),(117,(0,0,0)),(123,(0.60,0,0)),(129,(0.10,0,0)),(135,(-0.50,0,0))],
-      "lknee":[(111,(-0.30,0,0)),(117,(-0.90,0,0)),(123,(-0.05,0,0)),(129,(-0.45,0,0)),(135,(-0.30,0,0))],
-      "rhip":[(111,(0.60,0,0)),(117,(0.10,0,0)),(123,(-0.50,0,0)),(129,(0,0,0)),(135,(0.60,0,0))],
-      "rknee":[(111,(-0.05,0,0)),(117,(-0.45,0,0)),(123,(-0.30,0,0)),(129,(-0.90,0,0)),(135,(-0.05,0,0))],
-      "lsh":[(111,(0.50,0,0)),(117,(0,0,0)),(123,(-0.60,0,0)),(129,(-0.10,0,0)),(135,(0.50,0,0))],
-      "rsh":[(111,(-0.60,0,0)),(117,(-0.10,0,0)),(123,(0.50,0,0)),(129,(0,0,0)),(135,(-0.60,0,0))],
-      "lel":[(111,(0.90,0,0)),(123,(1.10,0,0)),(135,(0.90,0,0))],
-      "rel":[(111,(1.10,0,0)),(123,(0.90,0,0)),(135,(1.10,0,0))],
-      "spine":[(111,(0.12,0,0)),(123,(0.12,0,0)),(135,(0.12,0,0))]})
-# Aim 145..175  (right weapon forward + left support, restrained breath)
-play({"spine":[(145,(0.10,0,0)),(160,(0.12,0,0)),(175,(0.10,0,0))],
-      "lsh":[(145,(1.30,0,0)),(165,(1.33,0,0)),(175,(1.30,0,0))],
-      "rsh":[(145,(1.30,0,0)),(165,(1.32,0,0)),(175,(1.30,0,0))],
-      "lel":[(145,(0.45,0,0)),(165,(0.50,0,0)),(175,(0.45,0,0))],
-      "rel":[(145,(0.45,0,0)),(165,(0.46,0,0)),(175,(0.45,0,0))]})
+play(111, 135, {
+    "lhip":[(111,(-0.50,0,0)),(117,(0,0,0)),(123,(0.60,0,0)),(129,(0.10,0,0)),(135,(-0.50,0,0))],
+    "lknee":[(111,(-0.30,0,0)),(117,(-0.90,0,0)),(123,(-0.05,0,0)),(129,(-0.45,0,0)),(135,(-0.30,0,0))],
+    "rhip":[(111,(0.60,0,0)),(117,(0.10,0,0)),(123,(-0.50,0,0)),(129,(0,0,0)),(135,(0.60,0,0))],
+    "rknee":[(111,(-0.05,0,0)),(117,(-0.45,0,0)),(123,(-0.30,0,0)),(129,(-0.90,0,0)),(135,(-0.05,0,0))],
+    "lsh":[(111,(0.50,0,0)),(117,(0,0,0)),(123,(-0.60,0,0)),(129,(-0.10,0,0)),(135,(0.50,0,0))],
+    "rsh":[(111,(-0.60,0,0)),(117,(-0.10,0,0)),(123,(0.50,0,0)),(129,(0,0,0)),(135,(-0.60,0,0))],
+    "lel":[(111,(0.90,0,0)),(123,(1.10,0,0)),(135,(0.90,0,0))],
+    "rel":[(111,(1.10,0,0)),(123,(0.90,0,0)),(135,(1.10,0,0))],
+    "spine":[(111,(0.12,0,0)),(123,(0.12,0,0)),(135,(0.12,0,0))]})
+
+# Aim 145..175  (right weapon toward face/local +Y + left support, restrained breath)
+play(145, 175, {
+    "spine":[(145,(0.10,0,0)),(160,(0.12,0,0)),(175,(0.10,0,0))],
+    "lsh":[(145,(1.30,0,0)),(165,(1.33,0,0)),(175,(1.30,0,0))],
+    "rsh":[(145,(1.30,0,0)),(165,(1.32,0,0)),(175,(1.30,0,0))],
+    "lel":[(145,(0.45,0,0)),(165,(0.50,0,0)),(175,(0.45,0,0))],
+    "rel":[(145,(0.45,0,0)),(165,(0.46,0,0)),(175,(0.45,0,0))]})
+
 # Board 185..209  (lean + right-hand reach into car, staggered feet)
-play({"spine":[(185,(0.50,0,0)),(197,(0.52,0,0)),(209,(0.50,0,0))],
-      "rsh":[(185,(1.55,0,0)),(197,(1.62,0,0)),(209,(1.55,0,0))],
-      "rel":[(185,(-0.20,0,0)),(197,(-0.15,0,0)),(209,(-0.20,0,0))],
-      "lsh":[(185,(0.80,0,0)),(209,(0.80,0,0))],
-      "lhip":[(185,(0.20,0,0)),(209,(0.20,0,0))],
-      "lknee":[(185,(-0.25,0,0)),(209,(-0.25,0,0))],
-      "rhip":[(185,(-0.10,0,0)),(209,(-0.10,0,0))]})
+play(185, 209, {
+    "spine":[(185,(0.50,0,0)),(197,(0.52,0,0)),(209,(0.50,0,0))],
+    "rsh":[(185,(1.55,0,0)),(197,(1.62,0,0)),(209,(1.55,0,0))],
+    "rel":[(185,(-0.20,0,0)),(197,(-0.15,0,0)),(209,(-0.20,0,0))],
+    "lsh":[(185,(0.80,0,0)),(209,(0.80,0,0))],
+    "lhip":[(185,(0.20,0,0)),(209,(0.20,0,0))],
+    "lknee":[(185,(-0.25,0,0)),(209,(-0.25,0,0))],
+    "rhip":[(185,(-0.10,0,0)),(209,(-0.10,0,0))]})
+
 # Drive 219..279  (seated thighs/shins, hands toward wheel, body sway)
-play({"spine":[(219,(0.18,0,0)),(249,(0.20,0,0)),(279,(0.18,0,0))],
-      "head":[(219,(0,0.03,0)),(249,(0,-0.03,0)),(279,(0,0.03,0))],
-      "lsh":[(219,(1.00,0,0)),(249,(1.02,0,0)),(279,(1.00,0,0))],
-      "rsh":[(219,(1.00,0,0)),(249,(0.98,0,0)),(279,(1.00,0,0))],
-      "lel":[(219,(0.70,0,0)),(249,(0.72,0,0)),(279,(0.70,0,0))],
-      "rel":[(219,(0.70,0,0)),(249,(0.68,0,0)),(279,(0.70,0,0))],
-      "lhip":[(219,(1.00,0,0)),(279,(1.00,0,0))],
-      "lknee":[(219,(-1.00,0,0)),(279,(-1.00,0,0))],
-      "rhip":[(219,(0.92,0,0)),(279,(0.92,0,0))],
-      "rknee":[(219,(-0.94,0,0)),(279,(-0.94,0,0))]})
+play(219, 279, {
+    "spine":[(219,(0.18,0,0)),(249,(0.20,0,0)),(279,(0.18,0,0))],
+    "head":[(219,(0,0.03,0)),(249,(0,-0.03,0)),(279,(0,0.03,0))],
+    "lsh":[(219,(1.00,0,0)),(249,(1.02,0,0)),(279,(1.00,0,0))],
+    "rsh":[(219,(1.00,0,0)),(249,(0.98,0,0)),(279,(1.00,0,0))],
+    "lel":[(219,(0.70,0,0)),(249,(0.72,0,0)),(279,(0.70,0,0))],
+    "rel":[(219,(0.70,0,0)),(249,(0.68,0,0)),(279,(0.70,0,0))],
+    "lhip":[(219,(1.00,0,0)),(279,(1.00,0,0))],
+    "lknee":[(219,(-1.00,0,0)),(279,(-1.00,0,0))],
+    "rhip":[(219,(0.92,0,0)),(279,(0.92,0,0))],
+    "rknee":[(219,(-0.94,0,0)),(279,(-0.94,0,0))]})
 
 # Pin inter-clip gaps to rest so no state bleeds across a range boundary.
 for a, b in [(62,70),(102,110),(136,144),(176,184),(210,218)]:
-    setrest(a); setrest(b)
+    pin(a, b)
+
+# Single action per pivot, no NLA tracks, and stable timeline endpoints.
+for n in ALLP:
+    ob = keys[n]
+    if ob.animation_data is None or ob.action is None:
+        raise RuntimeError("missing action: " + n)
+    for fc in ob.action.fcurves:
+        fc.extrapolation = 'CONSTANT'
 
 SC.scene.frame_set(1)
-print("courier v2:", len(bpy.data.objects), "objects; clips",
+print("courier v2 repaired:", len(bpy.data.objects), "objects; clips",
       "1-61 71-101 111-135 145-175 185-209 219-279 @30fps")
