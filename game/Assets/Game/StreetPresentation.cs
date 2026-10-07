@@ -177,27 +177,82 @@ namespace ChicagoGame
         // warm-lit window panes and a per-lot tint on cornice/base/pier trims.
         static void Detail()
         {
-            int i = 0;
+            // Restrained, deterministic surface pass over the ORIGINAL Street and
+            // EastStreetDetail renderers only. Each material is copied from that
+            // renderer's own image-backed Standard material, so every facade/road
+            // image binding, mesh, UV set, transform and culling state stays as
+            // exported; nothing is added, moved, hidden, re-scaled or cleared. Only
+            // the colour multiply, metallic and smoothness are nudged (matte brick,
+            // matte asphalt, no specular sheen, no saturation lift) and a minority
+            // of window panes gain a faint warm interior response while the rest
+            // read as dark recesses. Seeds are read-only: original name plus the
+            // quantised world bounds centre, never written back to any transform.
             foreach (var r in Object.FindObjectsOfType<MeshRenderer>(false))
             {
-                if (r.transform.root == null || r.transform.root.name != "EastStreetDetail") continue;
-                var n = r.gameObject.name; var om = r.sharedMaterial; if (om == null) continue;
-                float h = Hash(n + i); i++;
-                if (n.Contains("_glass"))
+                var root = r.transform.root; if (root == null) continue;
+                var rn = root.name;
+                if (rn != "Street" && rn != "EastStreetDetail") continue;
+                var om = r.sharedMaterial; if (om == null) continue;
+                var n = r.gameObject.name; var b = r.bounds;
+
+                bool pave = n == "StreetPavement" || n == "road_asphalt" ||
+                            n == "StreetSouthWall" || n == "StreetNorthWall" ||
+                            n == "StreetEastWall" || n == "StreetWestNubWall";
+                bool glass = (n.Contains("glass") || n.Contains("window")) &&
+                             om.HasProperty("_EmissionColor");
+                bool trim = n.StartsWith("cornice") || n.StartsWith("facade_base") ||
+                            n.StartsWith("pier") || n.StartsWith("sill") ||
+                            n.StartsWith("lintel") || n.StartsWith("stoop");
+                bool roof = n.StartsWith("roof") || n.StartsWith("chimney") ||
+                            n.StartsWith("parapet") || n.StartsWith("bulkhead");
+                bool brick = n.StartsWith("facade") || n.Contains("brick");
+                if (!pave && !glass && !trim && !roof && !brick) continue;
+
+                int lx = Mathf.RoundToInt(b.center.x * 0.5f);
+                int lz = Mathf.RoundToInt(b.center.z * 0.5f);
+                float lot = Hash(rn + "L" + lx + "," + lz);   // lot identity
+                float h = Hash(n + lx + "," + lz);            // per-element
+
+                var m = new Material(om);
+                if (m.HasProperty("_Metallic")) m.SetFloat("_Metallic", glass ? 0.05f : 0f);
+                if (m.HasProperty("_Glossiness"))
+                    m.SetFloat("_Glossiness",
+                        glass ? 0.26f + 0.18f * h :
+                        roof ? 0.05f + 0.06f * h :
+                        pave ? 0.07f + 0.05f * lot :
+                               0.10f + 0.10f * lot);
+
+                if (!pave)
                 {
-                    if (h > 0.46f) continue;
-                    var m = new Material(om);
-                    float g = 0.03f + 0.11f * h;
-                    m.EnableKeyword("_EMISSION");
-                    m.SetColor("_EmissionColor", new Color(g, g * 0.80f, g * 0.55f, 1f));
-                    r.material = m;
+                    Color c = m.color;
+                    if (glass)
+                    {
+                        float dim = 0.60f + 0.18f * lot;      // recessed, not mirrored
+                        c = new Color(c.r * dim, c.g * dim, c.b * (dim + 0.08f), c.a);
+                        bool lit = h > 0.74f;                 // few panes only
+                        float g = lit ? 0.020f + 0.038f * lot : 0f;
+                        m.SetColor("_EmissionColor", new Color(g, g * 0.86f, g * 0.62f, 1f));
+                        if (lit) m.EnableKeyword("_EMISSION"); else m.DisableKeyword("_EMISSION");
+                    }
+                    else if (trim)
+                    {
+                        float k = 0.88f + 0.14f * lot;        // stone lintels / piers
+                        c = new Color(c.r * k, c.g * k * 0.99f, c.b * (k * 1.02f), c.a);
+                    }
+                    else if (roof)
+                    {
+                        float k = 0.74f + 0.12f * lot;        // tar roofs, soot stacks
+                        c = new Color(c.r * k, c.g * k * 0.99f, c.b * k, c.a);
+                    }
+                    else
+                    {
+                        float k = 0.93f + 0.12f * lot;        // per-lot exposure
+                        float w = 0.015f + 0.045f * lot;      // brownstone / grey drift
+                        c = new Color(c.r * (k + w), c.g * k, c.b * (k - w * 0.7f), c.a);
+                    }
+                    m.color = c;
                 }
-                else if (n.StartsWith("cornice") || n.StartsWith("facade_base") || n.StartsWith("pier"))
-                {
-                    var m = new Material(om);
-                    m.color = new Color(0.92f + 0.16f * h, 0.92f + 0.16f * h, 0.95f + 0.10f * h, 1f);
-                    r.material = m;
-                }
+                r.material = m;
             }
         }
 
