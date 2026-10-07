@@ -220,11 +220,6 @@ namespace ChicagoGame
             foreach (var r in go.GetComponentsInChildren<Rigidbody>()) Destroy(r);
             foreach (var c in go.GetComponentsInChildren<Collider>()) Destroy(c);
 
-            go.transform.position = new Vector3(x, 0.30f, Mathf.Lerp(LaneEast.z, LaneWest.z,
-                (LaneEast.x - x) / Mathf.Max(0.01f, LaneEast.x - LaneWest.x)), 0.30f);
-            go.transform.position = new Vector3(x, 0.30f, Mathf.Lerp(LaneEast.z, LaneWest.z,
-                (LaneEast.x - x) / Mathf.Max(0.01f, LaneEast.x - LaneWest.x)));
-
             var col = go.AddComponent<CapsuleCollider>();
             col.center = new Vector3(0f, 0.95f, 0f); col.height = 1.9f; col.radius = 0.38f;
             var rb = go.AddComponent<Rigidbody>();
