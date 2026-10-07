@@ -78,7 +78,7 @@ namespace ChicagoGame
             hud.characterSize = 0.0175f;
             hud.anchor = TextAnchor.UpperCenter;
             hud.alignment = TextAlignment.Center;
-            hud.color = new Color(0.45f, 0.95f, 1f);
+            hud.color = HudColor;
             hud.text = "";
 
             var mh = GameObject.Find("MissionHud");
