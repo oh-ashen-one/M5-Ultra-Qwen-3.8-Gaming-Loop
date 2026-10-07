@@ -199,18 +199,74 @@ namespace ChicagoGame
         }
         void UpdateObj()
         {
+            // A downed courier never keeps reading a live or even a completed
+            // interception line: the failure copy outranks both, and a failure
+            // this chapter genuinely recorded first leads that copy. The
+            // counters behind the healthy copy are untouched either way.
+            if (Down) { Objective = DeathBoardText(); return; }
             if (Complete) Objective = "INTERCEPTION COMPLETE\nAll stopped, no escapes\nStopped 3 / Escaped 0\nRelay complete | R reset";
             else if (Failed)
             { string why = Escaped > 0 ? "Runner escaped!" : "Health depleted"; Objective = "INTERCEPTION FAILED\n" + why + "\nStopped " + Stopped + " / Escaped " + Escaped + "\nRelay complete | R reset"; }
             else Objective = "INTERCEPT RUNNERS " + Stopped + "/3\nMove to aim; Mouse0 fire\nStopped " + Stopped + " / Escaped " + Escaped + "\nRelay complete | R reset";
         }
+
+        // ---- death hold -------------------------------------------------
+        // Freeze the chapter without rewriting it. Stopped, Escaped, Spawned,
+        // resolved, receiptDone, armedAt, an already-earned Complete and any
+        // genuine earlier failure all stay exactly where the courier left them
+        // - a dead runner banks no stop, no escape and unwinds none of them -
+        // and only the visible objective reports the death. The first held
+        // frame freezes the temporary runners mid-stride so no line is crossed
+        // posthumously, and marks the mission failed unless it is already
+        // won. Only the ordinary Restarts edge in Cleanup clears the hold, so
+        // R can always recover a downed courier.
+        void HoldForDeath()
+        {
+            if (!deathHeld)
+            {
+                deathHeld = true;
+                objectiveBeforeDeath = Objective;
+                if (!Complete) Failed = true;
+                FreezeAll();
+            }
+            Objective = DeathBoardText();
+        }
+
+        void ReleaseDeath()
+        {
+            if (!deathHeld) return;
+            deathHeld = false;
+            Objective = objectiveBeforeDeath;
+            objectiveBeforeDeath = null;
+        }
+
+        /// <summary>Board copy for a downed courier, built with real line
+        /// breaks so the TextMesh actually wraps onto separate lines. A more
+        /// specific failure this chapter recorded first - a runner that really
+        /// escaped, a spawn that could not happen - is kept ahead of the death
+        /// line and is never replaced by it; where no such record exists only
+        /// the depleted health is named, no cause is invented, and the
+        /// ordinary R reset that releases the death latch is always stated.</summary>
+        string DeathBoardText()
+        {
+            if (!string.IsNullOrEmpty(FailReason))
+                return FailReason + "\nCOURIER DOWN - HEALTH DEPLETED\nPRESS R TO RESTART";
+            return "COURIER DOWN\nHEALTH DEPLETED\nPRESS R TO RESTART";
+        }
+
         void Cleanup()
         {
             Active = Complete = Failed = false; Stopped = Escaped = Spawned = 0;
             receiptDone = false; Objective = null;
+            // The same ordinary R that releases the DeathAuthority latch wipes
+            // this chapter's own report, so a fresh loop never inherits a
+            // dead courier's freeze or his recorded reason.
+            FailReason = null; deathHeld = false; objectiveBeforeDeath = null;
             for (int i = 0; i < 3; i++)
             { if (runners[i]) Destroy(runners[i]); runners[i] = null; agents[i] = null; bodies[i] = null; resolved[i] = false; }
         }
-        float ReadHealth() { return LoopSignals.Health; }
+        // Read-only convenience: every death decision goes through the one
+        // authority, never through a private health test of this chapter's.
+        float ReadHealth() { return DeathAuthority.CurrentHealth(); }
     }
 }
