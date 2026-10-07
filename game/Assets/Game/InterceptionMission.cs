@@ -52,7 +52,28 @@ namespace ChicagoGame
 
         void Update()
         {
-            if (LoopSignals.Restarts != lastRestarts) { lastRestarts = LoopSignals.Restarts; Cleanup(); return; }
+            if (LoopSignals.Restarts != lastRestarts)
+            {
+                // Ordinary R is the only event that ever releases the
+                // DeathAuthority latch, so the same edge has to clear this
+                // chapter's own freeze and destroy every temporary runner: a
+                // fresh loop inherits neither a held board nor a downed
+                // courier's frozen escort.
+                lastRestarts = LoopSignals.Restarts;
+                Cleanup();
+                return;
+            }
+
+            // Death outranks the whole interception, read before anything can
+            // be armable: while the courier is down the finished relay cannot
+            // activate this chapter, the receipt is not banked, no runner
+            // spawns, no stop or completion is scored and no escape is
+            // recorded. Genuine earlier receipts - stops, an escape really
+            // clocked, Spawned, an earned Complete - stay exactly as he left
+            // them; only the visible objective reports the failure.
+            if (DeathAuthority.IsDead) { HoldForDeath(); return; }
+            ReleaseDeath();
+
             if (!Active)
             {
                 if (relay && relay.AllComplete) { Active = true; armedAt = Time.time; UpdateObj(); }
@@ -62,10 +83,15 @@ namespace ChicagoGame
             {
                 Objective = "INTERCEPT RUNNERS 0/3\nMove to aim; Mouse0 fire\nStopped 0 / Escaped 0\nRelay complete | R reset";
                 if (Time.time - armedAt < RECEIPT) return;
-                receiptDone = true;
             }
             if (Complete || Failed) return;
-            if (ReadHealth() <= 0) { Failed = true; FreezeAll(); UpdateObj(); return; }
+            // Second live read of the same authority: a lethal hit landing
+            // inside this very frame, after the gate above, banks neither the
+            // receipt nor a stop, spawn or completion. Death wins
+            // simultaneous objective input. Healthy pacing is untouched -
+            // the receipt still closes on the same RECEIPT deadline.
+            if (DeathAuthority.IsDead) { HoldForDeath(); return; }
+            receiptDone = true;
             for (int i = 0; i < 3; i++)
                 if (runners[i] == null && Time.time - armedAt >= RECEIPT + STAGGER[i]) SpawnRunner(i);
             for (int i = 0; i < 3; i++)
