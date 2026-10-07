@@ -123,6 +123,7 @@ public class LoopRuntime : MonoBehaviour
         if(LoopInput.Replay != null && (LoopInput.Replay.fixture=="combat-wall" || LoopInput.Replay.fixture=="combat-near-cover")) gameObject.AddComponent<LoopCombatFixture>();
         if(LoopInput.Replay != null && LoopInput.Replay.fixture=="camera-clearance") gameObject.AddComponent<LoopCameraFixture>();
         if(LoopInput.Replay != null && LoopInput.Replay.fixture=="player-death") gameObject.AddComponent<LoopPlayerDeathFixture>();
+        if(LoopInput.Replay != null && LoopInput.Replay.fixture=="counter-exfil-survey") gameObject.AddComponent<LoopCounterExfilSurvey>();
     }
     void OnLog(string message, string stack, LogType type)
     {
