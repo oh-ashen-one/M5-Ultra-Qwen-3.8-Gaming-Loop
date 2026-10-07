@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Record the old healthy route and first real Counter-Exfil activation/escape probe."""
+import json
 from resume_camera_native_only import CameraNativeOnly
 from resolve_death_pixel_review import SOURCE as ACCEPTED
 from implement_counter_exfil import TASK
@@ -7,6 +8,7 @@ from resume_three_day_queue import main
 from qualify_moving_encounter import checked
 from loop_controller.core import Halt,atomic,read_json
 from loop_controller.delivery_policy import HARD_CAP_EPOCH,queue_milestone
+from loop_controller.counter_exfil_checks import inspect_activation_escape
 
 def activation_probe(original):
     scenario=dict(original)
@@ -54,9 +56,12 @@ class ProbeCounterExfil(CameraNativeOnly):
             raise Halt('Counter-Exfil source failed the unchanged healthy route prerequisite')
         scenario=activation_probe(original);bundle=self.store.root/'evidence'/(ident+'-activation-escape')
         raw=self.engines.unity(self.project,bundle,scenario,self.source)
-        outcome['activation_escape']=dict(native=raw,evidence=bundle.name,semantic_review='pending');save()
+        semantic=inspect_activation_escape([json.loads(line) for line in (bundle/'captures/trace.jsonl').read_text().splitlines()]) if raw.get('passed') else dict(passed=False,failure=['native-prerequisite'])
+        semantic.update(candidate=self.source,build_id=raw.get('build_id'),evidence=bundle.name)
+        atomic(bundle/'counter-exfil-probe-gate.json',semantic)
+        outcome['activation_escape']=dict(native=raw,evidence=bundle.name,semantic=semantic);save()
         frames=sorted((bundle/'captures').glob('frame-*.png'))
-        if frames:queue_milestone(self.store,'native-milestone',TASK,bundle,raw,frames,
+        if frames:queue_milestone(self.store,'native-milestone',TASK,bundle,{**raw,'passed':raw.get('passed') and semantic.get('passed'),'counter_exfil_scope':semantic},frames,
             {f'frame-{i:03d}.png':t for i,t in enumerate(scenario['captures'])})
         raise Halt('First Counter-Exfil native recordings preserved; inspect actual activation/escape/reset before success route')
 
