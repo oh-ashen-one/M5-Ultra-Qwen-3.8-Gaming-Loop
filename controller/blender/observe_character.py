@@ -37,8 +37,10 @@ def main():
         sample=dict(frame=frame,joints=[],meshes=[])
         for obj in sorted(scene.objects,key=lambda o:o.name):
             if obj.type=='MESH':
+                matrix=obj.evaluated_get(depsgraph).matrix_world.to_3x3()
                 sample['meshes'].append(dict(name=obj.name,parent=obj.parent.name if obj.parent else None,
-                    bounds=bounds(obj,depsgraph)))
+                    bounds=bounds(obj,depsgraph),local_y_world=vector(matrix@Vector((0,1,0))),
+                    local_z_world=vector(matrix@Vector((0,0,1)))))
             elif obj.type in ('EMPTY','ARMATURE'):
                 evaluated=obj.evaluated_get(depsgraph)
                 sample['joints'].append(dict(name=obj.name,parent=obj.parent.name if obj.parent else None,
