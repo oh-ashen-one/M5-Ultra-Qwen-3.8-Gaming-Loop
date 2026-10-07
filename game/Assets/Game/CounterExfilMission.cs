@@ -274,12 +274,12 @@ namespace ChicagoGame
 
             var col = go.AddComponent<CapsuleCollider>();
             col.center = new Vector3(0f, 0.95f, 0f); col.height = 1.9f; col.radius = 0.38f;
-            var slide = new PhysicMaterial("CounterExfilRunnerSliding");
+            var slide = new PhysicsMaterial("CounterExfilRunnerSliding");
             slide.staticFriction = 0.02f;
             slide.dynamicFriction = 0.02f;
-            slide.frictionCombine = PhysicMaterialCombine.Minimum;
+            slide.frictionCombine = PhysicsMaterialCombine.Minimum;
             slide.bounciness = 0f;
-            slide.bounceCombine = PhysicMaterialCombine.Minimum;
+            slide.bounceCombine = PhysicsMaterialCombine.Minimum;
             col.material = slide;
 
             var rb = go.AddComponent<Rigidbody>();

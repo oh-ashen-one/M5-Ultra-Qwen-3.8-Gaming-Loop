@@ -164,14 +164,14 @@ namespace ChicagoGame
             if (hold >= Qualify) pinTotal += dt;
         }
 
-        /// <summary>Cancel commanded forward drive. The body stays dynamic and
-        /// slows by bounded braking/friction; a live actor is never force-pinned.</summary>
+        /// <summary>Cancel commanded forward drive. A terminal living body has its existing horizontal
+        /// velocity cleared once while remaining dynamic and subject to gravity.</summary>
         public void CoastToStop()
         {
             if (Body == null || !Alive || Body.isKinematic) return;
             stopRequested = true;
+            Body.velocity = new Vector3(0f, Body.velocity.y, 0f);
         }
-
         void OnCollisionEnter(Collision c) { Touch(c); }
         void OnCollisionStay(Collision c) { Touch(c); }
         void OnCollisionExit(Collision c) { Release(c); }
