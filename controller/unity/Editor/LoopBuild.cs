@@ -27,6 +27,7 @@ public static class LoopBuild
                 scenes = new [] {"Assets/LoopHarness/Generated/Loop.unity"}, locationPathName=output,
                 target=BuildTarget.StandaloneOSX, options=BuildOptions.Development });
             if (report.summary.result != BuildResult.Succeeded) throw new Exception("Build did not succeed: " + report.summary.result);
+            LoopCharacterImportObservation.Save(Path.GetDirectoryName(output));
             File.WriteAllText(Path.Combine(Path.GetDirectoryName(output), "build-result.json"),
                 "{\"passed\":true,\"unity\":\"" + Application.unityVersion + "\",\"errors\":" + report.summary.totalErrors + "}");
             EditorApplication.Exit(0);
