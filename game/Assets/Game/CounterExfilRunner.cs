@@ -3,32 +3,11 @@ using System.Collections.Generic;
 
 namespace ChicagoGame
 {
-    // ---------------------------------------------------------------------
-    // One westbound exfil runner of the Counter-Exfil chapter.
+    // Westbound counter-exfil runner.
     //
-    // The actor IS the original courier: the same Generated/player/scene mesh,
-    // stripped of inherited physics exactly like the existing interception
-    // runners, then given one honest solid capsule plus a dynamic rigidbody so
-    // the world, the aim ray and the coupe all agree it is real and hittable.
-    //
-    // Movement is pure physics: a commanded westbound velocity along the one
-    // corridor the native survey actually qualified for a westbound capsule
-    // ("central-westbound"), gravity left untouched, lateral correction only
-    // when a real sweep test says the space is open. No transform traversal, no
-    // teleport, no climbing through a barrier.
-    //
-    // A pin is PROVEN, never assumed: it needs real sustained CONTACT with the
-    // courier's own coupe (OnCollisionEnter/Stay/Exit on this body, filtered to
-    // that one root) AND real failure to make westward progress while the body
-    // is still pressing west. Proximity or a ray alone never qualifies. The
-    // uninterrupted hold clock is reset the instant either half is lost, so
-    // driving the coupe away releases a live pin on the next step, and nothing
-    // about a pin is cached once it lapses.
-    //
-    // This component never writes health, hp, alive, Restarts, Shots, Hits,
-    // Mode, Mission or any signal. hp/alive belong to Combat, which damages any
-    // genuinely hit live RivalAgent through its own existing path.
-    // ---------------------------------------------------------------------
+    // Motion is finite physics only: no live horizontal velocity overwrites,
+    // no frozen live pins, no hidden clamps. Contact qualification remains based
+    // on real coupe contacts plus measured lack of westward progress.
     public sealed class CounterExfilRunner : MonoBehaviour
     {
         // ---- wired once by CounterExfilMission ----
@@ -53,6 +32,13 @@ namespace ChicagoGame
         const float MidWestX = 6.0f;
         const float MidWestZ = 16.0057f;
 
+        // ---- bounded propulsion ----
+        const float DriveAccel = 2.0f;       // finite, mass-respecting acceleration
+        const float DriveGain = 2.5f;
+        const float LaneSideRate = 0.45f;
+        const float LaneSideAccel = 1.3f;
+        const float LaneSideGain = 2.5f;
+
         // ---- live physical state, derived only from real physics ----
         float lastContact = -999f;
         float westEma;
@@ -62,6 +48,7 @@ namespace ChicagoGame
         float prevX;
         bool prevValid;
         bool downHandled;
+        bool stopRequested;
         readonly List<Collider> coupeContacts = new List<Collider>();
 
         // ---- ordinary public read-only observation ----
@@ -115,9 +102,9 @@ namespace ChicagoGame
         }
 
         /// <summary>
-        /// One physics step of the chapter, driven by the mission so a frozen or
-        /// dead chapter drives nothing at all. Returns nothing; every observable
-        /// is read back afterwards.
+        /// One physics step of the chapter. Horizontal motion is applied as a
+        /// finite force scaled by the body's mass. Gravity and contacts remain
+        /// authoritative; an obstructed body stops by physics, not by script.
         /// </summary>
         public void PhysicsStep(float dt)
         {
@@ -145,34 +132,44 @@ namespace ChicagoGame
             westEma = Mathf.Lerp(westEma, Mathf.Clamp(west, -6f, 6f), 0.3f);
             prevX = p.x; prevValid = true; observed += dt;
 
-            // Keep pressing west every step: the solver, not a script, decides
-            // whether the body moves. That is what makes a held body and a
-            // shoved body look different from the outside.
-            Vector3 vel = Body.linearVelocity;
-            vel.x = -DriveSpeed;
-            vel.z = 0f;
+            bool contact = ContactNow;
+            Vector3 v = Body.linearVelocity;
+            float target = stopRequested ? 0f : DriveSpeed;
+            float westVel = -v.x;
+
+            Vector3 acc = Vector3.zero;
+            acc.x = -Mathf.Clamp((target - westVel) * DriveGain, -DriveAccel, DriveAccel);
+
             float dz = LaneZ(p.x) - p.z;
-            if (Mathf.Abs(dz) > 0.35f)
+            if (!contact && Mathf.Abs(dz) > 0.35f)
             {
-                Vector3 side = dz > 0f ? Vector3.forward : Vector3.back;
-                if (!BlockedAlong(side, DriveSpeed * dt * 2f + 0.02f))
-                    vel.z = Mathf.Sign(dz) * DriveSpeed * 0.5f;
+                float sideDir = dz > 0f ? 1f : -1f;
+                float desiredZ = Mathf.Clamp(dz * 1.2f, -LaneSideRate, LaneSideRate);
+                float sideAcc = Mathf.Clamp((desiredZ - v.z) * LaneSideGain, -LaneSideAccel, LaneSideAccel);
+
+                if (sideAcc != 0f)
+                {
+                    Vector3 side = new Vector3(0f, 0f, sideDir);
+                    if (!BlockedAlong(side, 0.10f))
+                        acc.z = sideAcc;
+                }
             }
-            Body.linearVelocity = vel;   // vel.y untouched: gravity still owns it
+
+            float mass = Mathf.Max(0.01f, Body.mass);
+            Body.AddForce(acc * mass, ForceMode.Force);
 
             // ---- pin accounting: contact AND blocked, or the clock restarts ----
-            bool held = ContactNow && BlockedNow;
+            bool held = contact && BlockedNow;
             hold = held ? hold + dt : 0f;
             if (hold >= Qualify) pinTotal += dt;
         }
 
-        /// <summary>Softly cancel the westward drive (chapter over). A living
-        /// body stays dynamic - a pinned actor is never left frozen.</summary>
+        /// <summary>Cancel commanded forward drive. The body stays dynamic and
+        /// slows by bounded braking/friction; a live actor is never force-pinned.</summary>
         public void CoastToStop()
         {
             if (Body == null || !Alive || Body.isKinematic) return;
-            Vector3 v = Body.linearVelocity; v.x = 0f; v.z = 0f;
-            Body.linearVelocity = v;
+            stopRequested = true;
         }
 
         void OnCollisionEnter(Collision c) { Touch(c); }

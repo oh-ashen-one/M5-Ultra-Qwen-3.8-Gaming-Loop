@@ -128,7 +128,7 @@ namespace ChicagoGame
                 int d = CoupeDistance;
                 return d < 0
                     ? "EXFIL ARMED | coupe unavailable"
-                    : "EXFIL ARMED coupe " + d + "m | E board, F launch";
+                    : "EXFIL ARMED coupe " + d + "m|E board,F launch";
             }
         }
         public string Objective { get { return objective; } }
@@ -274,6 +274,14 @@ namespace ChicagoGame
 
             var col = go.AddComponent<CapsuleCollider>();
             col.center = new Vector3(0f, 0.95f, 0f); col.height = 1.9f; col.radius = 0.38f;
+            var slide = new PhysicMaterial("CounterExfilRunnerSliding");
+            slide.staticFriction = 0.02f;
+            slide.dynamicFriction = 0.02f;
+            slide.frictionCombine = PhysicMaterialCombine.Minimum;
+            slide.bounciness = 0f;
+            slide.bounceCombine = PhysicMaterialCombine.Minimum;
+            col.material = slide;
+
             var rb = go.AddComponent<Rigidbody>();
             rb.mass = 80f; rb.useGravity = true; rb.drag = 0f;
             rb.constraints = RigidbodyConstraints.FreezeRotation;
@@ -297,7 +305,6 @@ namespace ChicagoGame
 
             _actors[i] = go; _runners[i] = run;
         }
-
         void RecordEscape(int i)
         {
             _escaped[i] = true; escapedCount++;
