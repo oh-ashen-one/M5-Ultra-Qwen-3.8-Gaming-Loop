@@ -14,6 +14,9 @@ TASK = dict(id='chapter-player-death-green', phase='mission', visual_facing=Fals
 
 
 class PlayerDeathGreen(CameraNativeOnly):
+    def prior_cases(self, ident):
+        return []
+
     def validate_recovery(self, old):
         expected = dict(status='paused', controller_pid=None, owned_process=None,
             last_playable_checkpoint=ACCEPTED, task_index=7, task_failures=24,
@@ -40,11 +43,19 @@ class PlayerDeathGreen(CameraNativeOnly):
     def work(self):
         ident = self.begin(TASK, 'native-chapter-player-death-green')
         original = read_json(self.store.root / 'evidence/q0132-45fc0624-positive/captures/scenario.json')
-        outcome = dict(candidate=self.source, cases=[], positive='pending', regressions='pending', final_game_accepted=False)
+        prior = self.prior_cases(ident)
+        names = [row.get('case') for row in prior]
+        if (len(names)!=len(set(names)) or any(name not in CASES for name in names)
+                or any(not row.get('passed') or row.get('candidate')!=self.source
+                    or not row.get('build_id') or not row.get('evidence') for row in prior)):
+            raise Halt('Reused native cases require successful source-matched evidence')
+        outcome = dict(candidate=self.source, cases=prior, positive='pending', regressions='pending', final_game_accepted=False)
         path = self.store.root / 'evidence' / (ident + '-player-death-green.json')
         def save():
             atomic(path, outcome); self.store.set(player_death_green_outcome=outcome); self.store.report()
+        save()
         for case in CASES:
+            if case in names:continue
             bundle = self.store.root / 'evidence' / (ident + '-' + case)
             native = self.engines.unity(self.project, bundle, death_probe(original, case), self.source)
             if not native.get('passed'):

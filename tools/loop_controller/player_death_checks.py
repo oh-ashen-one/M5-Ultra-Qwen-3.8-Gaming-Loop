@@ -1,5 +1,6 @@
 """External zero-health boundary diagnostics; no fabricated objective completion."""
 import math
+import re
 import struct
 
 CASES = {
@@ -27,6 +28,15 @@ def death_probe(original, case):
         death_at=at, death_key=key, coverage='mission-core', duration=at+7,
         steps=prefix + [dict(start=a, end=b, keys=k) for a,b,k in extra],
         captures=[3.2, at+.25, at+2.5, reset+.5, reset+3])
+
+
+def visible_death_notice(board):
+    text = board.get('text', '').lower()
+    death = any(x in text for x in ('dead','died','health depleted','health lost','failed'))
+    # "Restart" is the same user-facing R action as "reset"/"retry". Require
+    # the explicit key as well; an unrelated restart message is insufficient.
+    reset = re.search(r'\br\b', text) and re.search(r'\b(reset|retry|restart)\b', text)
+    return bool(board.get('visible') and death and reset)
 
 
 def inspect_player_death(rows, injection, case):
@@ -75,8 +85,7 @@ def inspect_player_death(rows, injection, case):
                     or state.get('spawned', 0) > before.get('spawned', 0)):
                 failures.append('objective-progression-after-zero-health')
             board = next((p for p in row.get('routeChapter', {}).get('hudPanels', []) if p.get('name') == 'MissionBoard'), {})
-            text = board.get('text', '').lower()
-            if not board.get('visible') or not any(x in text for x in ('dead','died','health depleted','health lost','failed')) or not any(x in text for x in ('reset','retry')):
+            if not visible_death_notice(board):
                 failures.append('death-failure-and-reset-not-visible')
     after = [r for r in rows if reset+.4 <= r.get('time', 0) <= reset+1.2 and r.get('restarts') == 1]
     if len(after) < 4:

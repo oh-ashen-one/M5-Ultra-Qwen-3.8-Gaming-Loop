@@ -3,7 +3,7 @@ import sys
 import unittest
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from loop_controller.player_death_checks import CASES, death_probe, inspect_player_death
+from loop_controller.player_death_checks import CASES, death_probe, inspect_player_death, visible_death_notice
 
 
 class PlayerDeathChecks(unittest.TestCase):
@@ -30,6 +30,26 @@ class PlayerDeathChecks(unittest.TestCase):
     def test_complete_gated_death_and_real_reset_contract(self):
         case, rows, injection = self.evidence()
         self.assertTrue(inspect_player_death(rows, injection, case)['passed'])
+
+    def test_restart_copy_is_valid_only_with_visible_death_and_explicit_r(self):
+        for action in ('R reset','R to retry','PRESS R TO RESTART'):
+            self.assertTrue(visible_death_notice(dict(visible=True,text='HEALTH DEPLETED\n'+action)))
+        for text in ('PRESS R TO RESTART','HEALTH DEPLETED\nF to restart',
+                'HEALTH DEPLETED\nautomatic restart','HEALTH DEPLETED\nR to continue'):
+            self.assertFalse(visible_death_notice(dict(visible=True,text=text)))
+        self.assertFalse(visible_death_notice(dict(visible=False,text='HEALTH DEPLETED\nR restart')))
+
+    def test_restart_copy_does_not_hide_late_hud_or_gameplay_failures(self):
+        case,rows,injection=self.evidence()
+        for row in rows:
+            if 'routeChapter' in row:
+                row['routeChapter']['hudPanels'][0]['text']='COURIER DOWN\nHEALTH DEPLETED\nPRESS R TO RESTART'
+        self.assertTrue(inspect_player_death(rows,injection,case)['passed'])
+        rows[0]['routeChapter']['hudPanels'][0]['text']='PARCEL IN HAND\nR reset'
+        rows[1]['shots']+=1
+        result=inspect_player_death(rows,injection,case)
+        self.assertIn('death-failure-and-reset-not-visible',result['failure'])
+        self.assertIn('player-can-fire-while-dead',result['failure'])
 
     def test_simultaneous_completion_is_not_hidden_by_later_failed_hud(self):
         case, rows, injection = self.evidence()
