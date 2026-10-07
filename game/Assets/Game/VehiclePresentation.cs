@@ -84,7 +84,7 @@ public sealed class VehiclePresentation : MonoBehaviour {
     path[5] = Vector3.Lerp(hip + f * (-0.11f * sc) + l * (0.17f * sc), seated, 0.35f);
     path[6] = seated;
     float y0 = start.y, y1 = seated.y;
-    for (int k = 1; k < 6; k++) { float frac = k / 6f; Vector3 p = path[k]; p.y = Mathf.Lerp(y0, y1, frac); path[k] = p; }
+    for (int k = 1; k < 6; k++) { float frac = k<4?k/6f:k<5?0.94f:0.98f; Vector3 p = path[k]; p.y = Mathf.Lerp(y0, y1, frac); path[k] = p; }
     int i = (int)(t * 6f); if (i < 0) i = 0; if (i > 5) i = 5; float u = t * 6f - i;
     return Curve(path[Mathf.Max(0, i - 1)], path[i], path[Mathf.Min(6, i + 1)], path[Mathf.Min(6, i + 2)], u);
 }
