@@ -58,6 +58,14 @@ namespace ChicagoGame
         float activatedAt, activeTime;
         bool deathHeld; string objectiveBeforeDeath;
 
+        // Real on-foot east->west crossing evidence. Sampled only while the
+        // chapter is live, and only from a living courier on foot: standing
+        // beyond the line never counts, only an observed crossing does. Both
+        // samples and their timestamps are wiped by the ordinary R reset.
+        bool footEastOfExit;   // a foot sample really seen east of the line
+        bool crossedWest;      // a later foot sample really seen west of it
+        float crossedAt, settledAt;
+
         readonly CounterExfilRunner[] _runners = new CounterExfilRunner[3];
         readonly GameObject[] _actors = new GameObject[3];
         readonly bool[] _killed = new bool[3];
@@ -67,12 +75,26 @@ namespace ChicagoGame
         Vector3 seatAnchor; float seatAnchorTime;
 
         const float RECEIPT = 1.5f;            // this chapter's own readout
-        const float EXIT_X = 3.2f;             // validated west exit (survey endpoint 3.0 + margin)
-        const float EXIT_Z = 16.006f, EXIT_HALF_Z = 3.5f;
+        // The validated west exit IS the surveyed central corridor's own west
+        // end (x 3.0, z 16.0057). The accepted band is that route's own
+        // physical half-width - coupe half-width 0.9 m plus a courier capsule
+        // radius 0.32 m plus a small margin - so a wide unqualified side street
+        // can never satisfy the exit.
+        const float EXIT_X = 3.2f, EXIT_Z = 16.0057f, EXIT_HALF_Z = 1.5f;
+        const float CROSS_ARM = 0.6f;          // seen this far east before crossing
         const float LANE_EAST_X = 47.0f, LANE_WEST_X = 8.0f;
         const float MAX_SEAT_SPEED = 0.25f, STILL_TIME = 0.30f;
-        static readonly Vector3 LaneEast = new Vector3(47.605f, 0f, 17.4603f);
-        static readonly Vector3 LaneWest = new Vector3(3.0f, 0f, 16.0057f);
+        // The surveyed piecewise central corridor, ordered east -> west: the
+        // lane follows these exact waypoints. A straight endpoint-to-endpoint
+        // interpolation is NOT the surveyed path and is not used.
+        static readonly Vector3[] LanePath = {
+            new Vector3(47.605f, 0f, 17.4603f),
+            new Vector3(22f,     0f, 16.5738f),
+            new Vector3(6f,      0f, 16.0057f),
+            new Vector3(3f,      0f, 16.0057f)
+        };
+        static readonly Vector3 LaneEast = LanePath[0];
+        static readonly Vector3 LaneWest = LanePath[LanePath.Length - 1];
         static readonly float[] BACK = { 11.0f, 8.0f, 5.2f };     // lengthwise separation, one lane
         static readonly int[] HP = { 6, 3, 3 };
         static readonly float[] SPEED = { 1.7f, 1.35f, 1.35f };
