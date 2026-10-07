@@ -216,7 +216,11 @@ namespace ChicagoGame
                 if (r == null || _killed[i] || _escaped[i]) continue;
                 if (r.X <= EXIT_X && !r.Pinned) { RecordEscape(i); return; }
             }
-            if (spawnedAll && escapedCount == 0 && Settled() && FootAtWestExit())
+            // Resolution clock first, so a kill landing this frame is already
+            // counted when the crossing sample asks whether the run is settled.
+            if (Settled()) { if (settledAt <= 0f) settledAt = Time.time; } else settledAt = 0f;
+            SampleFoot();
+            if (spawnedAll && escapedCount == 0 && Settled() && FootCrossedExit())
             {
                 complete = true; StopDrive();
             }
