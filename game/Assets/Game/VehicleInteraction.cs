@@ -86,8 +86,16 @@ namespace ChicagoGame
                 return;
             }
 
+            // LETHAL GATE (one shared authority). The ordinary R edge above has
+            // already been honoured, so from here on the installed DeathAuthority
+            // decides: zero health stops boarding, exiting, throttle and
+            // steering on the very frame the health signal is spent, whatever
+            // order the chapter scripts happen to run in.
+            bool dead = DeathAuthority.IsDead;
+
             if (!_driving)
             {
+                if (dead) return;   // a dead courier cannot open a door
                 if (e && Vector3.Distance(_player.transform.position, GetComponent<Collider>().ClosestPoint(_player.transform.position)) < 1.0f)
                     Enter();
                 return;
@@ -97,26 +105,44 @@ namespace ChicagoGame
             float throttle = LoopInput.MoveY;
             float steer = LoopInput.MoveX;
 
-            _speed += throttle * 6f * Time.deltaTime;
-            _speed = Mathf.Clamp(_speed, -3f, 8f);
-            if (Mathf.Abs(throttle) < 0.01f)
-                _speed = Mathf.MoveTowards(_speed, 0f, 4f * Time.deltaTime);
+            Quaternion rot = transform.rotation;
 
-            // Steering: set Y rotation via physics
-            float turn = 90f * Mathf.Clamp01(Mathf.Abs(_speed) / 4f) * Mathf.Sign(_speed);
-            float newYaw = transform.eulerAngles.y + steer * turn * Time.deltaTime;
-            Quaternion rot = Quaternion.Euler(0f, newYaw, 0f);
-            _rb.MoveRotation(rot);
+            if (!dead)
+            {
+                _speed += throttle * 6f * Time.deltaTime;
+                _speed = Mathf.Clamp(_speed, -3f, 8f);
+                if (Mathf.Abs(throttle) < 0.01f)
+                    _speed = Mathf.MoveTowards(_speed, 0f, 4f * Time.deltaTime);
 
-            // Desired velocity in car forward (horizontal only)
-            Vector3 forward = rot * Vector3.forward;
-            forward.y = 0f;
-            Vector3 targetVel = forward * _speed;
-            targetVel.y = _rb.linearVelocity.y;
+                // Steering: set Y rotation via physics
+                float turn = 90f * Mathf.Clamp01(Mathf.Abs(_speed) / 4f) * Mathf.Sign(_speed);
+                float newYaw = transform.eulerAngles.y + steer * turn * Time.deltaTime;
+                rot = Quaternion.Euler(0f, newYaw, 0f);
+                _rb.MoveRotation(rot);
 
-            // No artificial speed-kill: rely on the collider/wall contact and
-            // real drag to stop the car under held throttle.
-            _rb.linearVelocity = targetVel;
+                // Desired velocity in car forward (horizontal only)
+                Vector3 forward = rot * Vector3.forward;
+                forward.y = 0f;
+                Vector3 targetVel = forward * _speed;
+                targetVel.y = _rb.linearVelocity.y;
+
+                // No artificial speed-kill: rely on the collider/wall contact and
+                // real drag to stop the car under held throttle.
+                _rb.linearVelocity = targetVel;
+            }
+            else
+            {
+                // Dead courier at the wheel: no throttle, no steering input and
+                // no residual slide. ONLY the horizontal pair is cleared, so
+                // gravity and the ground snap below keep settling the coupe as
+                // usual, and the yaw is left untouched because a dead wheel
+                // must not keep carving a turn into the street.
+                _speed = 0f;
+                Vector3 vel = _rb.linearVelocity;
+                vel.x = 0f;
+                vel.z = 0f;
+                _rb.linearVelocity = vel;
+            }
 
             // Ground snap: compare against collider bottom, only correct downward float (never launch up)
             if (GroundRaycast(transform.position, out var hit))
