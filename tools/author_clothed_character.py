@@ -49,6 +49,8 @@ def validate_art(content):
 
 
 class ClothedCharacter(CapacityAuthor):
+    response_tokens = 16384
+
     def validate_recovery(self, old):
         validate_boundary(old)
         self.resume_capacity = self.priority_resume = self.transport_recovery = self.admission_recovery = False
@@ -87,7 +89,7 @@ class ClothedCharacter(CapacityAuthor):
                 stage='clothed-character-source-saved')
             self.store.report()
             return result
-        self.c.update(working_context_tokens=98304, output_tokens=16384, model_timeout_seconds=1200)
+        self.c.update(working_context_tokens=98304, output_tokens=self.response_tokens, model_timeout_seconds=600)
         result = self.model.session('builder', ident+'-clothed-character',
             'You are local Qwen, the sole original Blender character author. Deliver one complete usable source artifact through finish_source.',
             'Inspect the attached native front/back/combat pixels and neighborhood/alley targets. '
@@ -116,7 +118,7 @@ class ClothedCharacter(CapacityAuthor):
             'FBX with add_leaf_bones=False; authoring script must not read/write files or invoke export. Supported '
             'Blender5.2 APIs: use mathutils.Euler(...).to_matrix().to_4x4(), not Matrix.Euler. Use bpy/bmesh/mathutils '
             'only as needed. Save in the next response with finish_source: max36KB/700lines; thinking enabled xhigh, '
-            '16384tokens. No broad planning essay, no camera or mission work.\nEXACT CURRENT SCRIPT:\n'+original,
+            f'{self.response_tokens}tokens. No broad planning essay, no camera or mission work.\nEXACT CURRENT SCRIPT:\n'+original,
             [tool('finish_source', 'Save the complete original articulated clothed Blender character; early export follows.',
                 {'content': {'type': 'string'}})], {'finish_source': save},
             images=images, visual_contract=packet, turns=2, reasoning_effort='xhigh')
