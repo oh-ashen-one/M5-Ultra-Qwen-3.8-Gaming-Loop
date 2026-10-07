@@ -125,6 +125,29 @@ namespace ChicagoGame
             foreach (var r in _hide) if (r) r.enabled = false;
         }
 
+        /// <summary>Board copy for a downed courier, chosen before any chapter
+        /// is consulted so a health-depleted failure always beats live and
+        /// completed chapter text. Built with real line breaks so the TextMesh
+        /// actually wraps onto separate lines, and always names the ordinary R
+        /// reset - the only event that releases the DeathAuthority latch.
+        /// Where a chapter genuinely recorded a more specific failure first
+        /// (a runner that really escaped, a relay window that really expired,
+        /// the route's own recorded reason) that reason leads and the death
+        /// line follows it, so history is reported rather than overwritten;
+        /// where no such record exists nothing is invented and only the
+        /// depleted health is stated. The chapter consulted most recently -
+        /// the interception - is offered first, then the dead-drop chain, then
+        /// the route.</summary>
+        string DeathBoard(InterceptionMission im)
+        {
+            string why = im != null ? im.FailReason : null;
+            if (string.IsNullOrEmpty(why) && _relay != null) why = _relay.FailReason;
+            if (string.IsNullOrEmpty(why) && _route != null) why = _route.FailReason;
+            if (string.IsNullOrEmpty(why))
+                return "COURIER DOWN\nHEALTH DEPLETED\nPRESS R TO RESTART";
+            return why + "\nCOURIER DOWN - HEALTH DEPLETED\nPRESS R TO RESTART";
+        }
+
         string Courier(CourierMission cm)
         {
             string m = ReadStr("Mission");
