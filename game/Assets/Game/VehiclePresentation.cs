@@ -21,7 +21,56 @@ public sealed class VehiclePresentation : MonoBehaviour {
         if (body == null) return;
         var p = body.GetComponent<VehiclePresentation>(); if (p == null) p = body.AddComponent<VehiclePresentation>();
         p.body = body.transform; p.visRef = Find(body.transform, "PlayerVisual"); p.lastRestarts = LoopSignals.Restarts;
+        FinishSurfaces(LoopSignals.Vehicle);
     }
+
+static void FinishSurfaces(Transform root) {
+    if (root == null) return;
+    var rs = root.GetComponentsInChildren<Renderer>(true);
+    if (rs == null || rs.Length == 0) return;
+    var clones = new Dictionary<Material, Material>();
+    for (int i = 0; i < rs.Length; ++i) {
+        var r = rs[i]; if (r == null) continue;
+        var shared = r.sharedMaterials;
+        if (shared == null || shared.Length == 0) continue;
+        var owned = new Material[shared.Length];
+        for (int k = 0; k < shared.Length; ++k) owned[k] = shared[k];
+        bool dirty = false;
+        for (int j = 0; j < shared.Length; ++j) {
+            var src = shared[j]; if (src == null) continue;
+            string n = Strip(src.name);
+            bool d2 = n.StartsWith("coupepaintdark");
+            bool p1 = !d2 && n.StartsWith("coupepaint");
+            bool trim = n.StartsWith("coupotrim");
+            bool rim = n.StartsWith("couperim");
+            bool chrome = n.StartsWith("coupechrome");
+            bool lamp = n.StartsWith("coupelamp");
+            bool tail = n.StartsWith("coupetail");
+            if (!(d2 || p1 || trim || rim || chrome || lamp || tail)) continue;
+            Material cl;
+            if (!clones.TryGetValue(src, out cl) || cl == null) {
+                cl = new Material(src);
+                cl.name = src.name;
+                clones[src] = cl;
+            }
+            Color c;
+            float met, g;
+            if (p1) { c = new Color(0.030f, 0.130f, 0.620f, 1f); met = 0.30f; g = 0.72f; }
+            else if (d2) { c = new Color(0.016f, 0.075f, 0.380f, 1f); met = 0.30f; g = 0.68f; }
+            else if (rim) { c = new Color(0.300f, 0.310f, 0.330f, 1f); met = 0.70f; g = 0.32f; }
+            else if (chrome) { c = new Color(0.750f, 0.760f, 0.780f, 1f); met = 0.70f; g = 0.55f; }
+            else if (trim) { c = new Color(0.020f, 0.022f, 0.026f, 1f); met = 0.10f; g = 0.28f; }
+            else if (lamp) { c = new Color(0.900f, 0.900f, 0.850f, 1f); met = 0f; g = 0.50f; }
+            else { c = new Color(0.450f, 0.020f, 0.020f, 1f); met = 0f; g = 0.40f; }
+            cl.SetColor("_Color", c);
+            if (cl.HasProperty("_Metallic")) cl.SetFloat("_Metallic", met);
+            if (cl.HasProperty("_Glossiness")) cl.SetFloat("_Glossiness", g);
+            owned[j] = cl; dirty = true;
+        }
+        if (dirty) r.sharedMaterials = owned;
+    }
+    clones.Clear();
+}
 
     void EnsureProxy() {
         if (!hasBasis && visRef != null && body != null) { visualBasis = Quaternion.Inverse(body.rotation) * visRef.rotation; visualScale = visRef.localScale; hasBasis = true; }
