@@ -318,14 +318,17 @@ namespace ChicagoGame
             if (hud != null) hud.color = HudColor;
         }
 
-        /// <summary>Board copy for a downed courier. A more specific
-        /// pre-existing failure reason is kept ahead of it, but the depleted
-        /// health and the R reset are always named.</summary>
+        /// <summary>Board copy for a downed courier, built with real line breaks
+        /// so the TextMesh actually wraps onto separate lines. A more specific
+        /// failure the run genuinely recorded first is kept ahead of the death
+        /// line and is never replaced by it; where no such record exists only
+        /// the depleted health is stated - no invented cause - and the ordinary
+        /// R reset that releases the death latch is always named.</summary>
         string FailureText()
         {
             if (!string.IsNullOrEmpty(FailReason))
-                return FailReason + "\\nHEALTH DEPLETED - PRESS R";
-            return "COURIER DOWN\\nHEALTH DEPLETED - PRESS R";
+                return FailReason + "\nCOURIER DOWN - HEALTH DEPLETED\nPRESS R TO RESTART";
+            return "COURIER DOWN\nHEALTH DEPLETED\nPRESS R TO RESTART";
         }
 
         void ActivateCache()
