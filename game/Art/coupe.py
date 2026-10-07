@@ -144,7 +144,7 @@ prism('deck', [(-0.72, -1.06), (0.72, -1.06), (0.64, -2.02), (-0.64, -2.02)],
 # front and rear centre shells close hood/deck to the front/rear ends; width
 # stays inside wheel inner faces so wheels remain separate.
 prism('front_lower', [(-0.68, 0.44), (0.68, 0.44), (0.62, 0.96), (-0.62, 0.96)],
-      1, 1.84, 2.24, 'paint')
+      1, 0.96, 2.12, 'paint')
 prism('rear_lower', [(-0.66, 0.44), (0.66, 0.44), (0.60, 0.94), (-0.60, 0.94)],
       1, -2.20, -1.06, 'paint')
 # front/rear end caps fill the last few centimetres to bumper/lamp mounts.
@@ -152,13 +152,14 @@ box('nose', (1.42, 0.16, 0.50), (0, 2.17, 0.70), 'paint2')
 box('tail', (1.38, 0.16, 0.48), (0, -2.16, 0.70), 'paint2')
 # outer fender quarters ride above the wheel crown and tie body sides to the
 # end caps. They do not intersect actual wheel solids (wheel crown z=0.80).
-for sx in (-0.90, 0.90):
+for sx in (-1, 1):
     t = 'L' if sx < 0 else 'R'
-    box('front_fender_' + t, (0.20, 0.88, 0.20), (sx, 1.16, 0.92), 'paint')
-    box('rear_fender_' + t, (0.20, 0.88, 0.20), (sx, -1.16, 0.92), 'paint')
-    box('front_shoulder_' + t, (0.22, 0.36, 0.16), (sx * 0.95, 0.78, 0.90), 'paint')
-    box('rear_shoulder_' + t, (0.22, 0.40, 0.16), (sx * 0.95, -0.90, 0.90), 'paint')
-
+    prism('front_fender_' + t,
+          [(0.80, 0.82), (2.10, 0.84), (2.10, 0.95), (0.80, 0.98)],
+          0, 0.66 * sx, 0.92 * sx, 'paint')
+    prism('rear_fender_' + t,
+          [(-0.90, 0.82), (-2.10, 0.84), (-2.10, 0.94), (-0.90, 0.98)],
+          0, 0.66 * sx, 0.92 * sx, 'paint')
 box("rocker_L", (0.12, 2.20, 0.14), (-0.78, 0.00, 0.44), "trim")
 box("rocker_R", (0.12, 2.20, 0.14), (0.78, 0.00, 0.44), "trim")
 box("bumper_f", (1.50, 0.14, 0.24), (0, 2.30, 0.54), "trim")
@@ -188,7 +189,7 @@ for x in (-0.70, 0.70):
     t = 'L' if x < 0 else 'R'
     beam('apillar_' + t, x, 0.94, 0.92, 0.58, 1.31, 0.13, 'paint')
     beam('bpillar_' + t, x, -0.06, 0.92, -0.06, 1.32, 0.11, 'paint')
-    beam('cpillar_' + t, x, -0.60, 0.94, -0.78, 1.31, 0.15, 'paint')
+    beam('cpillar_' + t, x, -1.12, 0.98, -0.78, 1.29, 0.15, 'paint')
 
 # Thin panes.  The bottom endpoint is local -Z after the derived angle; the
 # pane length is the real slanted edge length. Rear window drops to deck.
