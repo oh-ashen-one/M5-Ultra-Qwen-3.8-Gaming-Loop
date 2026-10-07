@@ -64,7 +64,9 @@ class RepairClothedExport(CapacityAuthor):
             'Use supported bpy/bmesh/mathutils only. The adapter saves blend and exports FBX. Return the entire '
             'repaired source as plain final Python (one code fence allowed), no tools, prose or markers. Max240lines '
             '/16KB. Current full source follows; save the focused repair promptly rather than rethinking the art.\n'+original,
-            [],{},turns=1,reasoning_effort='xhigh',tool_choice='none')
+            [],{},turns=1,reasoning_effort='xhigh',tool_choice='none',
+            retained_assistant=getattr(self,'retained',None),
+            retained_instruction='Continue the retained work without restarting analysis. Return the COMPLETE repaired Python file as final content now. No tools, XML or prose. The exact four fixes are already diagnosed; preserve the design. Supported xhigh remains enabled with16384output tokens.')
         response=self.store.root/'private/sessions'/session/'response-000.json'
         source=complete_source(read_json(response))
         if 'SC.data' in source or sha(source.encode())==SCRIPT_SHA:
