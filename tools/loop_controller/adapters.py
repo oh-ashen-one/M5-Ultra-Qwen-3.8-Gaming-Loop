@@ -260,6 +260,8 @@ class Engines:
         result = {"ok": code == 0, "exit_code": code, "script": script, "files": []}
         for p in sorted([*generated.rglob("*"), *originals.rglob("*")]):
             if p.is_file():
+                if p == originals / "provenance.json":
+                    continue  # prior manifest is not an output of this export
                 if p.is_symlink() or p.stat().st_size > 50*1024**2:
                     raise Halt("Generated asset violates the bounded local artifact contract")
                 if p.suffix.lower() not in (".fbx", ".blend", ".png", ".jpg", ".jpeg", ".tga", ".json"):
@@ -268,11 +270,16 @@ class Engines:
         if not (originals/"source.blend").exists() or not (generated/"scene.fbx").exists():
             result["ok"] = False
         if result["ok"]:
+            atomic(originals / "provenance.json", {"author": "local-Qwen", "script": script,
+                   "script_sha256": sha(path.read_bytes()), "action_id": action_id,
+                   "export_succeeded": True, "files": result["files"]})
             shutil.copytree(generated, output / "original-assets")
             shutil.copytree(originals, output / "editable-originals")
         result["diagnostic"] = (output / "blender.log").read_text(errors="replace")[-6000:]
-        atomic(originals / "provenance.json", {"author": "local-Qwen", "script": script,
-               "script_sha256": sha(path.read_bytes()), "action_id": action_id, "files": result["files"]})
+        if not result["ok"]:
+            atomic(output / "export-failure.json", {"attempted_script": script,
+                   "script_sha256": sha(path.read_bytes()), "result": result,
+                   "retained_asset_provenance_unchanged": True})
         self.store.finish_action(action_id, result)
         self.store.event("local-art", action_id=action_id, ok=result["ok"], files=result["files"])
         return result
