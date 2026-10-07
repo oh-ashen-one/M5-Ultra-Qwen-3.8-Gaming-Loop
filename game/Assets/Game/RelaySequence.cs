@@ -46,16 +46,32 @@ namespace ChicagoGame
         {
             if (LoopSignals.Restarts != lastRestarts)
             {
+                // Ordinary R re-arms the whole chain: counters, timer, sites,
+                // hud and this file's death report all return to a fresh loop,
+                // the same Restarts edge that releases the DeathAuthority
+                // latch, so a reset never strands a downed courier.
                 lastRestarts = LoopSignals.Restarts;
                 Active = AllComplete = Failed = false;
                 ActivationCount = ExpectedIndex = WrongOrderCount = 0;
                 Remaining = 0;
+                FailReason = null;
+                deathHeld = false;
+                objectiveBeforeDeath = null;
                 flashIndex = -1;
                 flashUntil = 0;
                 SetSitesVisible(false);
                 HideHud();
                 return;
             }
+
+            // Death outranks the chain. While the courier is down the chain
+            // cannot be armed off a finished route, no relay is armed, no
+            // arming order is scored, the countdown never expires into a fresh
+            // failure and the final receipt cannot be banked. Genuine earlier
+            // receipts (activations, wrong-order strikes, a real timeout) are
+            // preserved rather than rewound.
+            if (DeathAuthority.IsDead) { HoldForDeath(); return; }
+            ReleaseDeath();
 
             if (!Active)
             {
