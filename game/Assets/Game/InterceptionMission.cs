@@ -158,7 +158,7 @@ namespace ChicagoGame
             Spawned++;
             var prefab = Resources.Load<GameObject>("Generated/player/scene");
             if (prefab == null)
-            { Failed = true; Objective = "MISSION FAILED\nMissing player prefab\nStopped " + Stopped + " / Escaped " + Escaped + "\nR reset"; return; }
+            { Failed = true; if (string.IsNullOrEmpty(FailReason)) FailReason = "MISSING PLAYER PREFAB"; Objective = "MISSION FAILED\nMissing player prefab\nStopped " + Stopped + " / Escaped " + Escaped + "\nR reset"; return; }
             var go = new GameObject("InterceptRunner" + (i + 1));
             go.transform.localScale = Vector3.one;
             go.transform.rotation = Quaternion.LookRotation(Vector3.right, Vector3.up);
