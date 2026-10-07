@@ -1,0 +1,181 @@
+{
+  "candidate": "7209c867297a5f6cbdaa142c508808a50234940a",
+  "accepted_fallback": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+  "native_gate": {
+    "acceptance_fixture": null,
+    "build_exit": 0,
+    "build_id": "523acab35bd7f3089a8090eb460d5d4f6292a047c4045dfebd105a700e74371e",
+    "build_input_sha256": "86451ac3309357821703f0d8ee692765cd6ba5efc545a43cfcd367e9a0e1c423",
+    "candidate_commit": "7209c867297a5f6cbdaa142c508808a50234940a",
+    "capture_id": "q0191-5bf45f93-character-preview",
+    "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+    "compile_errors": [],
+    "compile_reused": false,
+    "coverage": "foundation",
+    "displacement_axes": "horizontal XZ",
+    "duration": 18.0,
+    "failure": null,
+    "frame_count": 6,
+    "harness_sha256": "be341dd2317aabf945e1ddc059acc9db5399941ff16f623a2dca0c2dae2568cf",
+    "passed": true,
+    "performance_claim": "unqualified; shared renderer and capture overhead",
+    "player_displacement": 3.447,
+    "player_exit": 0,
+    "player_vertical_drop": 0.16,
+    "samples": 173,
+    "scene_inventory": {
+      "declared_counts": {
+        "colliderRecorded": 60,
+        "colliderTotal": 60,
+        "rendererRecorded": 3596,
+        "rendererTotal": 3596
+      },
+      "failure": [],
+      "observed_at_seconds": 0.5,
+      "observed_counts": {
+        "collider": 60,
+        "renderer": 3596
+      },
+      "passed": true,
+      "scope": "Complete point-in-time scene component inventory; gameplay and rendered support criteria are unchanged"
+    },
+    "vehicle_displacement": 0.168
+  },
+  "capture_times": [
+    {
+      "file": "frame-000.png",
+      "renderPath": "explicit-Camera.Render-target",
+      "captureCompletedUtc": "2026-10-07T09:38:06.9507740Z",
+      "gameTime": 1.0,
+      "frame": 60,
+      "width": 960,
+      "height": 540,
+      "cameraTargetTexture": true
+    },
+    {
+      "file": "frame-001.png",
+      "renderPath": "explicit-Camera.Render-target",
+      "captureCompletedUtc": "2026-10-07T09:38:10.1810940Z",
+      "gameTime": 3.5,
+      "frame": 210,
+      "width": 960,
+      "height": 540,
+      "cameraTargetTexture": true
+    },
+    {
+      "file": "frame-002.png",
+      "renderPath": "explicit-Camera.Render-target",
+      "captureCompletedUtc": "2026-10-07T09:38:13.7898980Z",
+      "gameTime": 6.300000190734863,
+      "frame": 378,
+      "width": 960,
+      "height": 540,
+      "cameraTargetTexture": true
+    },
+    {
+      "file": "frame-003.png",
+      "renderPath": "explicit-Camera.Render-target",
+      "captureCompletedUtc": "2026-10-07T09:38:18.5454620Z",
+      "gameTime": 10.0,
+      "frame": 600,
+      "width": 960,
+      "height": 540,
+      "cameraTargetTexture": true
+    },
+    {
+      "file": "frame-004.png",
+      "renderPath": "explicit-Camera.Render-target",
+      "captureCompletedUtc": "2026-10-07T09:38:21.6729660Z",
+      "gameTime": 12.5,
+      "frame": 750,
+      "width": 960,
+      "height": 540,
+      "cameraTargetTexture": true
+    },
+    {
+      "file": "frame-005.png",
+      "renderPath": "explicit-Camera.Render-target",
+      "captureCompletedUtc": "2026-10-07T09:38:27.4183660Z",
+      "gameTime": 17.0,
+      "frame": 1020,
+      "width": 960,
+      "height": 540,
+      "cameraTargetTexture": true
+    }
+  ],
+  "evidence_sha256": {
+    "trace.jsonl": "218f039ec6f28d0bdaa327c408dd905e198e068b2d415d7940822068bdc45329",
+    "scenario.json": "1857d71f3098eff8b7594c0184d503243e50dba256302da088078326c13e2d88",
+    "capture-times.jsonl": "da6dbeb03ded82701ce2bcbf191532845c8b8bca060abf759e40791a7e06eed4"
+  },
+  "frames": [
+    {
+      "name": "frame-000.png",
+      "time": 1,
+      "sha256": "16bd637a72c9041b0b5a5d2a7f40d717492f8b2b7c395f3b08f9310393af7062"
+    },
+    {
+      "name": "frame-001.png",
+      "time": 3.5,
+      "sha256": "22529653bb99c672583e3f3bae71d4429f6c6968866256dba7a7dd1327be4ca9"
+    },
+    {
+      "name": "frame-002.png",
+      "time": 6.3,
+      "sha256": "f06aebf2ce9b5979d867f2027768935de9cde0f10759accaa93208abdd520f9a"
+    },
+    {
+      "name": "frame-003.png",
+      "time": 10,
+      "sha256": "1923b3d3694f437b927b00ad7509dced100ecc28516ff83ee8e3324589a5ba01"
+    },
+    {
+      "name": "frame-004.png",
+      "time": 12.5,
+      "sha256": "10233358db0ecf2c3c5c88fbe98b8172f60a343ec4b98dcd325812d8446cf3e6"
+    },
+    {
+      "name": "frame-005.png",
+      "time": 17,
+      "sha256": "596aa2043d99aa17f858e23b843196b55717d9386ed639e9e6ccbdeaccc54ce6"
+    }
+  ],
+  "actual_pixel_review": {
+    "candidate": "7209c867297a5f6cbdaa142c508808a50234940a",
+    "build_id": "523acab35bd7f3089a8090eb460d5d4f6292a047c4045dfebd105a700e74371e",
+    "inspected_actual_pixels": true,
+    "verdict": "FIX",
+    "reviewer": "cloud execution visual inspection",
+    "final_game_accepted": false,
+    "character_pass_accepted": false,
+    "observations": [
+      "Native frames 000 and 002 show grounded shoes and a continuous dark jacket/trouser silhouette with visible hands and collar.",
+      "Character remains stiff, faceted and cylindrical with large shoulder caps; clothing construction and natural silhouette remain below the neighborhood/alley targets.",
+      "The face is visible toward the trailing camera in frames 000 and 002: character art facing is reversed relative to player travel. Correct visual orientation only; protect camera and controls.",
+      "No animation clips are present. Nine observed articulation pivots have zero local rotation or translation change during actual W movement from3.1333 to3.9333seconds; stills cannot establish locomotion.",
+      "Native capsule remains height1.75m and radius0.32m. All game C# is unchanged; complete mission/death/aim regressions remain required before promotion."
+    ],
+    "next_step": "Local original clothed-form/facing improvement and Blender-authored clips, followed by runtime-only presentation integration and actual motion/aim/boarding/driving evidence.",
+    "trace_sha256": "218f039ec6f28d0bdaa327c408dd905e198e068b2d415d7940822068bdc45329"
+  },
+  "fresh_export": {
+    "script_sha256": "1a162b388596c52e0866cf42c6c7bdf917abe92e509bdb90622fe29093744a26",
+    "blend_sha256": "eae69a958901a7160365c576b0688e18cdc58d4ed1bf6c2aebf1179bad16bfb4",
+    "fbx_sha256": "64b36368c724411dfeca61a8a149261e63b68a960edee6220190ac736bf39b40",
+    "exit_code": 0,
+    "empty_staging_then_hash_verified_promotion": true
+  },
+  "animation_baseline": {
+    "clips_present": 0,
+    "observed_pivots": 9,
+    "sampled_movement_start": 3.133333444595337,
+    "sampled_movement_end": 3.933333396911621,
+    "maximum_local_rotation_change_degrees": 0,
+    "maximum_local_translation_change_m": 0,
+    "controller_height_m": 1.75,
+    "controller_radius_m": 0.32
+  },
+  "gameplay_promoted": false,
+  "character_pass_accepted": false,
+  "final_game_accepted": false
+}
