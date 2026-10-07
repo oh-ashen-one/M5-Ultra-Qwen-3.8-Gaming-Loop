@@ -44,7 +44,8 @@ class RepairCharacterClips(CapacityAuthor):
         ident=self.begin(TASK,'local-character-clip-export-repair')
         files=Files(self.project,self.store);original=files.path(ART).read_text()
         protected={p:sha(p.read_bytes()) for p in self.project.rglob('*.cs')}
-        self.c.update(working_context_tokens=65536,output_tokens=32768,model_timeout_seconds=600)
+        self.c.update(working_context_tokens=98304 if getattr(self,'retained',None) else 65536,
+            output_tokens=32768,model_timeout_seconds=600)
         session=ident+'-character-clip-repair'
         self.model.session('builder',session,
             'You are local Qwen, original Blender character and animation author. Repair this exact saved increment and return only complete Python source.',
