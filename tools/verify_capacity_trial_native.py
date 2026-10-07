@@ -47,16 +47,43 @@ def walking_scope(rows, injection, red):
         complete_death_integration=False, native_natural_damage_death_proven=False)
 
 
+def validate_admission_boundary(old, authored):
+    expected=dict(status='paused',controller_pid=None,owned_process=None,current_round='q0146-05eff4e0',
+        source_checkpoint='dbfc89901b813ced826e976eb79c3370c95471b2',last_playable_checkpoint=ACCEPTED,
+        task_index=7,task_failures=24,failure_streak=1,diagnosis_used=True,
+        overall_deadline_epoch=HARD_CAP_EPOCH,capacity_trial_native_attempted=True,
+        shared_workload_priority='simultaneous-no-default-priority',
+        blocker='Halt: Capacity wait: shared queue did not admit the engine within300seconds')
+    source=old.get('capacity_trial_source_outcome',{})
+    if (any(old.get(k)!=v for k,v in expected.items()) or old.get('capacity_trial_native_outcome')
+            or old.get('capacity_native_admission_recovery_attempted')
+            or source.get('candidate')!=old['source_checkpoint'] or source.get('round')!='q0145-09d3f671'
+            or source.get('changed_files')!=[BOOT] or not source.get('local_authored')
+            or not authored.get('ok') or authored.get('changed_files')!=[BOOT]
+            or authored.get('capacity_policy')!=POLICY
+            or old.get('active_model_settings',{}).get('reasoning_effort')!='xhigh'):
+        raise Halt('Require the exact no-engine admission timeout and preserved local source')
+    return old['source_checkpoint']
+
+
 class CapacityNative(CameraNativeOnly):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.c['native_admission_recheck_seconds']=1
+
     def validate_recovery(self, old):
         source = old.get('capacity_trial_source_outcome', {})
         authored = read_json(self.store.root/'evidence'/(source.get('round','missing')+'-capacity-author.json'))
-        self.source = validate_boundary(old, authored)
+        self.native_admission_recovery=old.get('capacity_trial_native_attempted',False)
+        self.source = (validate_admission_boundary if self.native_admission_recovery else validate_boundary)(old, authored)
         self.resume_capacity=self.priority_resume=self.transport_recovery=self.admission_recovery=False
 
     def recovery_settings(self):
-        return dict(capacity_trial_native_attempted=True, recovery_route='capacity-trial-native-inference-unloaded',
+        return dict(capacity_trial_native_attempted=True,
+            capacity_native_admission_recovery_attempted=self.native_admission_recovery,
+            recovery_route='capacity-trial-native-inference-unloaded',
             recovery_change='Keep the exact95-second healthy route and courier-pickup negative unchanged. '
+            'Use one-second admission checks within the same300-second bound; preserve old timeout. '
             'Report scoped walking/reset proof separately from remaining fire/objective/HUD failures; no promotion.')
 
     def work(self):

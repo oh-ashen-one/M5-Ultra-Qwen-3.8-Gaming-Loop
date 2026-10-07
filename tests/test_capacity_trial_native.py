@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 import unittest
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
-from verify_capacity_trial_native import validate_boundary, walking_scope, ACCEPTED, HARD_CAP_EPOCH, BOOT, POLICY
+from verify_capacity_trial_native import validate_boundary, validate_admission_boundary, walking_scope, ACCEPTED, HARD_CAP_EPOCH, BOOT, POLICY
 from loop_controller.core import Halt
 
 
@@ -36,6 +36,17 @@ class CapacityNativeTests(unittest.TestCase):
                 self.assertFalse(walking_scope(rows,{'mode':'foot'},dict(red,failure=[failure]))['passed'])
         self.assertFalse(walking_scope(rows,{'mode':'vehicle'},red)['passed'])
         self.assertFalse(walking_scope(rows,{'mode':'foot'},dict(red,setup_passed=False))['passed'])
+
+    def test_only_unstarted_native_admission_timeout_can_use_changed_cadence(self):
+        old,authored=self.boundary();source='dbfc89901b813ced826e976eb79c3370c95471b2'
+        old.update(current_round='q0146-05eff4e0',source_checkpoint=source,capacity_trial_native_attempted=True,
+            blocker='Halt: Capacity wait: shared queue did not admit the engine within300seconds')
+        old['capacity_trial_source_outcome'].update(candidate=source,round='q0145-09d3f671')
+        self.assertEqual(validate_admission_boundary(old,authored),source)
+        for changed in ({'capacity_native_admission_recovery_attempted':True},{'owned_process':{'pid':7}},
+                {'capacity_trial_native_outcome':{'positive':{'passed':False}}},
+                {'blocker':'Halt: native compile failed'},{'task_failures':0}):
+            with self.subTest(changed=changed),self.assertRaises(Halt):validate_admission_boundary(dict(old,**changed),authored)
 
 
 if __name__=='__main__':unittest.main()

@@ -9,9 +9,10 @@ CAPACITY_ERRORS = {'Existing shared GPU waiters have priority',
 
 @contextlib.contextmanager
 def admitted(factory, guard, store, request, lease, engine_timeout,
-             sleeper=time.sleep, monotonic=time.monotonic, clock=time.time):
+             sleeper=time.sleep, monotonic=time.monotonic, clock=time.time, recheck_seconds=30):
     # The request already yielded our resident's locks. Keep that handoff in
     # place while others run; never remove their queue/holder records.
+    if not 1 <= recheck_seconds <= 30:raise ValueError('Admission recheck must be between1and30seconds')
     deadline = monotonic() + 300
     stage = store.get('stage'); waiting = False
     with contextlib.ExitStack() as acquired:
@@ -30,9 +31,9 @@ def admitted(factory, guard, store, request, lease, engine_timeout,
                     raise Halt('Capacity wait: shared queue did not admit the engine within300seconds') from error
                 waiting = True
                 store.set(status='capacity-wait', stage='capacity-wait', capacity_resume_stage=stage,
-                    blocker='Capacity wait: resident yielded; preserve existing shared waiters/holders',
-                    capacity_check_utc=now(), capacity_recheck_seconds=30)
-                store.report(); sleeper(min(30, max(0, deadline-monotonic())))
+                    blocker='Capacity wait: shared reservation unavailable; preserve other owners',
+                    capacity_check_utc=now(), capacity_recheck_seconds=recheck_seconds)
+                store.report(); sleeper(min(recheck_seconds, max(0, deadline-monotonic())))
         # Start the bounded engine runtime deadline only after slot admission.
         # The project cap and all resource/STOP guards remain independent.
         current = read_json(request)

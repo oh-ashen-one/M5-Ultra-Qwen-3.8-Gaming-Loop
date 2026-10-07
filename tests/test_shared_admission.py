@@ -73,5 +73,25 @@ class SharedAdmissionTests(unittest.TestCase):
                     self.fail('No engine permitted')
             self.assertEqual(elapsed[0],300); self.assertTrue(request.exists())
 
+    def test_task_specific_fast_recheck_preserves_locks_and_total_bound(self):
+        with tempfile.TemporaryDirectory() as d:
+            store,request,lease=self.setup_store(d);elapsed=[0];calls=[]
+            @contextlib.contextmanager
+            def factory():
+                calls.append(elapsed[0])
+                if elapsed[0]<3:raise BlockingIOError('occupied')
+                yield
+            with admitted(factory,lambda:None,store,request,lease,90,recheck_seconds=1,
+                    sleeper=lambda n:elapsed.__setitem__(0,elapsed[0]+n),monotonic=lambda:elapsed[0]):
+                self.assertEqual(calls,[0,1,2,3]);self.assertEqual(store.get('task_failures'),24)
+            @contextlib.contextmanager
+            def blocked():raise BlockingIOError('occupied');yield
+            elapsed[0]=0
+            with self.assertRaisesRegex(Halt,'within300seconds'):
+                with admitted(blocked,lambda:None,store,request,lease,90,recheck_seconds=1,
+                        sleeper=lambda n:elapsed.__setitem__(0,elapsed[0]+n),monotonic=lambda:elapsed[0]):
+                    self.fail('No admission')
+            self.assertEqual(elapsed[0],300)
+
 
 if __name__ == '__main__': unittest.main()

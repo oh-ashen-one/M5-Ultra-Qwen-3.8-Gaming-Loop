@@ -56,7 +56,8 @@ def engine(machine, label, timeout):
             external = len(observed['decision']['active_renderer_pids'])
             with admitted(lambda: gpu_admission('chicago-native-only-'+label, external,
                     authorized_shared_coexistence=machine.c.get('authorized_shared_coexistence', False),
-                    guard=guard), guard, machine.store, request, lease, timeout):
+                    guard=guard), guard, machine.store, request, lease, timeout,
+                    recheck_seconds=machine.c.get('native_admission_recheck_seconds',30)):
                 machine.store.event('native-without-resident-admitted', label=label,
                     inference_unloaded=True, original_resource_guards=True)
                 yield
