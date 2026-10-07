@@ -11,7 +11,7 @@ public static class LoopCounterExfilObservation
 {
     [Serializable] public class Value { public string name, type, value; }
     [Serializable] public class Actor {
-        public int entityId;
+        public string entityId;
         public int hp;
         public string name;
         public float[] position,velocity,capsuleCenter,rootScale;
@@ -45,7 +45,7 @@ public static class LoopCounterExfilObservation
             var rival=m.GetComponents<MonoBehaviour>().FirstOrDefault(v=>v.GetType().FullName=="ChicagoGame.RivalAgent");
             var probe=m.GetComponent<LoopCounterExfilContacts>();
             if(!probe)probe=m.gameObject.AddComponent<LoopCounterExfilContacts>();
-            return new Actor {entityId=m.gameObject.GetInstanceID(),name=m.name,position=V(m.transform.position),
+            return new Actor {entityId=m.gameObject.GetEntityId().ToString(),name=m.name,position=V(m.transform.position),
                 velocity=rb?V(rb.linearVelocity):null,hasBody=rb!=null,kinematic=rb && rb.isKinematic,
                 capsuleCenter=capsule?V(capsule.center):null,rootScale=V(m.transform.lossyScale),
                 capsuleRadius=capsule?capsule.radius:0,capsuleHeight=capsule?capsule.height:0,
@@ -63,19 +63,20 @@ public class LoopCounterExfilContacts : MonoBehaviour
 {
     [Serializable] public class Contact {
         public string other;
-        public int otherId;
+        public string otherId;
         public bool vehicle;
         public float time,separation;
         public float[] point,normal,impulse;
     }
     [Serializable] class Event {
         public string kind,actor;
-        public int entityId,frame,otherId;
+        public string entityId,otherId;
+        public int frame;
         public bool otherIsVehicle;
         public float time;
         public Contact[] contacts;
     }
-    readonly Dictionary<int,Contact[]> current=new Dictionary<int,Contact[]>();
+    readonly Dictionary<string,Contact[]> current=new Dictionary<string,Contact[]>();
     string output;
     static float[] V(Vector3 v) { return new[]{v.x,v.y,v.z}; }
     void Awake() {
@@ -83,7 +84,7 @@ public class LoopCounterExfilContacts : MonoBehaviour
         if(i>=0 && i+1<args.Length)output=Path.Combine(args[i+1],"counter-exfil-contacts.jsonl");
     }
     void Observe(string kind,Collision collision) {
-        var other=collision.collider;int id=other.GetInstanceID();
+        var other=collision.collider;string id=other.GetEntityId().ToString();
         var records=new List<Contact>();
         foreach(var p in collision.contacts)records.Add(new Contact {other=other.name,otherId=id,
             vehicle=LoopSignals.Vehicle && other.transform.IsChildOf(LoopSignals.Vehicle),
@@ -91,7 +92,7 @@ public class LoopCounterExfilContacts : MonoBehaviour
             point=V(p.point),normal=V(p.normal),impulse=V(collision.impulse)});
         if(kind=="exit")current.Remove(id);else current[id]=records.ToArray();
         if(output!=null)File.AppendAllText(output,JsonUtility.ToJson(new Event {kind=kind,actor=name,
-            entityId=gameObject.GetInstanceID(),frame=Time.frameCount,otherId=id,
+            entityId=gameObject.GetEntityId().ToString(),frame=Time.frameCount,otherId=id,
             otherIsVehicle=LoopSignals.Vehicle && other.transform.IsChildOf(LoopSignals.Vehicle),
             time=Time.time-LoopRuntime.StartedAt,contacts=records.ToArray()})+"\n");
     }
