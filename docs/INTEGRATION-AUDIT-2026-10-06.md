@@ -1,6 +1,6 @@
 # Integration audit and native evidence
 
-Snapshot: 2026-10-06 23:21 UTC. The game remains unfinished. The accepted checkpoint and fixed October 8 cap are unchanged.
+Snapshot: 2026-10-07 00:03 UTC. The game remains unfinished. The accepted checkpoint and fixed October 8 cap are unchanged.
 
 ## Reticle: repaired and verified within scope
 
@@ -27,11 +27,19 @@ These are timestamps recorded immediately after PNG writes by the native harness
 
 The original existing-shader-only scope was too restrictive for the reticle's required depth behavior. Allowing one small original shader gave local Qwen a supported implementation route. Saving source, successful compilation and visible output remain separate gates.
 
+## Death boundary reproduction
+
+All six native negative cases reached their intended live state on `8d23aed0`: courier pickup, courier delivery, dead-drop interaction, final relay interaction, interception receipt and final interception shot. Each case injects health=0 once before the game's update, attempts ordinary movement/fire/interaction, then presses R. All six reproduced movement and firing after death; four also advanced objective state. Failure/reset presentation was absent in five cases. These are declared injected-health tests, not evidence of natural enemy damage causing death in every chapter.
+
+The relay case initially received a false setup rejection: Unity serialized the float32 boundary 59.6 as `59.599998474121094`, while the Python validator compared against the stricter decimal double. The validator now compares the same float32 boundary. The original failed gate and native trace remain intact; a separate hashed reconciliation reuses the four completed captures, and only the two remaining native cases were run. The regression also rejects an earlier frame and a missing required input edge. This correction is acceptance infrastructure, not a game fix.
+
+The local author phase uses the exact current eight-component context, hash-backed editing tools, `xhigh` reasoning and a 32,768-token output allowance. Safe receipts record actual request settings and a payload hash without publishing prompts or private reasoning. Saving source is not acceptance: the identical six negative cases, the ordinary 95-second route and all ten gameplay regressions must follow with inference unloaded. The complete camera/reticle class and shader remain protected.
+
 ## Remaining integration findings
 
 | Finding | Evidence and status |
 | --- | --- |
-| Death/failure authority after the courier chapter | Source-confirmed missing health gates; six native zero-health chapter/action/reset diagnostics are running. They explicitly inject health=0 once and use ordinary input for progression. This is not yet proof of natural enemy damage causing death in every chapter. Local repair follows measured results. |
+| Death/failure authority after the courier chapter | All six native setups are valid and reproduce dead-player control defects; local repair is active. No repaired-source acceptance yet. See the declared intervention and preserved validator correction above. |
 | Tracer and hostile material lifetime | Source-confirmed allocations without corresponding ownership cleanup; native repeated-fire/reset resource stability remains untested. |
 | Missing prefab failure overwritten; spawn count incremented early | Source-confirmed; native fault reproduction and repair remain pending. |
 | Countdown parsed from presentation text; repeated scene lookup | Source-confirmed design issue; typed cached gameplay state is a queued recommendation. |
