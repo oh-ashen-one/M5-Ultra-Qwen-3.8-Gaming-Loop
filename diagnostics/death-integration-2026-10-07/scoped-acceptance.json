@@ -1,0 +1,48 @@
+{
+  "observed_utc": "2026-10-07T04:38:59.409710+00:00",
+  "acceptance": {
+    "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+    "accepted_utc": "2026-10-07T04:37:19.531043+00:00",
+    "scope": "zero-health controls, chapter gating and immediate failure/reset HUD",
+    "evidence": "q0155-e2ac2964-pixel-resolution.json",
+    "native_evidence": "q0153-94519238-player-death-green.json",
+    "prior_playable_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "final_game_accepted": false
+  },
+  "resolution_evidence_sha256": "eedfc2b66884a924fd375d0e1472f06b5e526c3b9f1d694144f493111b9758a3",
+  "pixel_comparison": {
+    "criterion": "R>130 and R>2G and R>2B, RGB8",
+    "first_only": 0,
+    "first_red_pixels": 1831,
+    "matching": 1831,
+    "passed": true,
+    "region_xyxy": [
+      420,
+      30,
+      810,
+      124
+    ],
+    "second_only": 0,
+    "second_red_pixels": 1831
+  },
+  "corrected_local_review": {
+    "verdict": "PASS",
+    "death_frame": "interception-final/frame-001.png",
+    "death_health": 0,
+    "reset_frame": "interception-final/frame-003.png",
+    "reset_health": 100
+  },
+  "review_summary": "Local Qwen confirms complete death/restart copy at75.65seconds and clear living objective/health100 at79.4seconds. The prior reset-frame attribution is corrected.",
+  "source_changed_during_review": false,
+  "cloud_obstruction_claim_retracted": true,
+  "original_review_and_cloud_observation_preserved": true,
+  "unchanged_history": {
+    "task_index": 7,
+    "task_failures": 24,
+    "failure_streak": 1,
+    "diagnosis_used": true,
+    "overall_deadline_epoch": 1791441192.0
+  },
+  "last_playable_checkpoint": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+  "final_game_accepted": false
+}

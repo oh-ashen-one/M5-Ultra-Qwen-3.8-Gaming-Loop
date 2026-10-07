@@ -214,8 +214,9 @@
   "checker_change": "Accept reset/retry/restart with explicit R; preserve identical scenarios, timing, movement, firing, progression and reset checks.",
   "native_intervention": "Each negative reaches its chapter through ordinary inputs, then declares one external health=0 injection; this is not natural-damage death proof.",
   "cloud_contribution": "Controller, external acceptance, infrastructure and pixel inspection only; all game C# changes authored by local Qwen.",
-  "visual_verdict": "Local scoped PASS. Cloud obstruction suspicion retracted after exact equality of1831foreground glyph pixels; clarify local reset-frame citation before promotion.",
-  "scoped_checkpoint_promoted": false,
+  "visual_verdict": "Scoped PASS with corrected death/reset frame attribution; exact foreground comparison retracts the cloud obstruction suspicion.",
+  "scoped_checkpoint_promoted": true,
   "final_game_accepted": false,
-  "unchanged_cap_utc": "2026-10-08T06:33:12Z"
+  "unchanged_cap_utc": "2026-10-08T06:33:12Z",
+  "acceptance_evidence": "scoped-acceptance.json"
 }
