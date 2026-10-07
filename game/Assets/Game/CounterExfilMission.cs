@@ -238,6 +238,7 @@ namespace ChicagoGame
         void Begin()
         {
             active = true; activatedAt = Time.time; activeTime = 0f;
+            ClearCrossing(); settledAt = 0f;    // a fresh launch walks its own exit
         }
 
         void SpawnAll()
