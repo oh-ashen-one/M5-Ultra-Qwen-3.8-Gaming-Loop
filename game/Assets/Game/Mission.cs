@@ -244,6 +244,15 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
 
             if ((stage == 0 || stage == 1) && Time.time - missionStartTime >= DEADLINE) { stage = 3; Set("Mission", "failed"); Set("MissionComplete", false); }
             if (stage == 3) { RefreshHud(); return; }
+
+            // LETHAL GATE (one shared authority). The ordinary R edge above has
+            // already been honoured (it respawns a restored courier) and the
+            // deadline bookkeeping just ran untouched, so timing is preserved;
+            // from here on a courier the DeathAuthority reports as spent may
+            // grab nothing and deliver nothing - no stage change, no parcel
+            // reparent, no completion claim - until an R clears the latch.
+            if (DeathAuthority.IsDead) { RefreshHud(); return; }
+
             // Animate parcel when in world.
             if (stage == 0 && parcel != null)
             {
