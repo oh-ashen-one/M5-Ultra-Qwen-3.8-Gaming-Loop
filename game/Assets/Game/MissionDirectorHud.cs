@@ -102,8 +102,6 @@ namespace ChicagoGame
             {
                 if (_counter != null && _counter.BoardPriority)
                     s = _counter.Objective;
-                else if (_interception != null && _interception.Active)
-                    s = _interception.Objective;
                 else if (_counter != null && _counter.Armed)
                 {
                     string old = _interception != null ? _interception.Objective : null;
@@ -113,6 +111,8 @@ namespace ChicagoGame
                     else if (!string.IsNullOrEmpty(line))
                         s = line;
                 }
+                else if (_interception != null && _interception.Active)
+                    s = _interception.Objective;
                 else if (_relay != null && _relay.Active)
                 {
                     string two = _relay.Objective ?? "OBJECTIVE UNAVAILABLE";

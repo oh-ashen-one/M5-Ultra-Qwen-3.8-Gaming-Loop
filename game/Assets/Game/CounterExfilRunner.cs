@@ -212,7 +212,7 @@ namespace ChicagoGame
             for (int i = coupeContacts.Count - 1; i >= 0; i--)
             {
                 Collider c = coupeContacts[i];
-                if (c == null || !c.isActiveAndEnabled || !IsCoupeCollider(c))
+                if (c == null || !c.enabled || !c.gameObject.activeInHierarchy || !IsCoupeCollider(c))
                     coupeContacts.RemoveAt(i);
             }
 
@@ -222,7 +222,6 @@ namespace ChicagoGame
                 hold = 0f;
             }
         }
-
         bool IsCoupe(Collision c)
         {
             if (c == null) return false;
