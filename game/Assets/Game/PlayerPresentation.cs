@@ -3,7 +3,37 @@ using UnityEngine;
 
 namespace ChicagoGame { public sealed class PlayerPresentation : MonoBehaviour { Transform body, visual; Animation anim; string idleClip, walkClip, jogClip, aimClip, baseClip; float aimWeight, lastShot=-999f; Vector3 lastPos; bool posValid, upperActive, wasDead, wasVehicle; int lastRestarts=int.MinValue;
 
-public static void Install(GameObject body){ if(body==null)return; Transform v=FindVisual(body.transform); if(v==null)return; Animation a=v.GetComponent<Animation>(); if(a==null)a=v.gameObject.AddComponent<Animation>(); a.playAutomatically=false; a.cullingType=AnimationCullingType.AlwaysAnimate; PlayerPresentation p=body.GetComponent<PlayerPresentation>(); if(p==null)p=body.AddComponent<PlayerPresentation>(); p.body=body.transform; p.visual=v; p.anim=a; p.Prepare(); }
+public static void Install(GameObject body){ if(body==null)return; Transform v=FindVisual(body.transform); if(v==null)return; Animation a=v.GetComponent<Animation>(); if(a==null)a=v.gameObject.AddComponent<Animation>(); a.playAutomatically=false; a.cullingType=AnimationCullingType.AlwaysAnimate; PlayerPresentation p=body.GetComponent<PlayerPresentation>(); if(p==null)p=body.AddComponent<PlayerPresentation>(); p.body=body.transform; p.visual=v; p.anim=a; p.Prepare(); FinishSurfaces(p.visual); }
+
+static void FinishSurfaces(Transform root){
+ if(root==null)return;
+ var rs=root.GetComponentsInChildren<Renderer>(true);
+ if(rs==null)return;
+ var clones=new Dictionary<Material,Material>();
+ for(int r=0;r<rs.Length;++r){
+  var rd=rs[r]; if(rd==null)continue;
+  var ms=rd.sharedMaterials; if(ms==null)continue;
+  bool ch=false;
+  for(int i=0;i<ms.Length;++i){
+   var m=ms[i]; if(m==null)continue;
+   string s=Strip(m.name);
+   if(s!="jacketcharcoal"&&s!="jackethighlight"&&s!="jeansdarkblue"&&s!="jeansseam")continue;
+   Material c;
+   if(!clones.TryGetValue(m,out c)){
+    c=new Material(m); c.name=m.name;
+    Color col;
+    if(s=="jacketcharcoal")col=new Color(0.44f,0.44f,0.48f,1f);
+    else if(s=="jackethighlight")col=new Color(0.55f,0.55f,0.59f,1f);
+    else if(s=="jeansdarkblue")col=new Color(0.46f,0.50f,0.60f,1f);
+    else col=new Color(0.56f,0.60f,0.72f,1f);
+    c.color=col;
+    clones[m]=c;
+   }
+   if(ms[i]!=c){ms[i]=c;ch=true;}
+  }
+  if(ch)rd.sharedMaterials=ms;
+ }
+}
 
 static Transform FindVisual(Transform r){ if(r==null)return null; var t=r.Find("PlayerVisual"); if(t!=null)return t; for(int i=0;i<r.childCount;++i){ var c=FindVisual(r.GetChild(i)); if(c!=null)return c; } return null; }
 
