@@ -165,6 +165,16 @@ MissionDirectorHud.Install(body,cam);
             var dir = new Vector3(LoopInput.MoveX, 0f, LoopInput.MoveY);
             if (dir.sqrMagnitude > 1f) dir.Normalize();
 
+            // One death rule for every channel: ask the authority, never re-derive
+            // it here. A courier the authority calls dead loses the horizontal
+            // stride command only - the latch is released solely by the ordinary
+            // Restarts edge, so no stride or pivot can outlive zero health. The
+            // vertical block below is deliberately untouched, so gravity keeps
+            // accumulating and the controller keeps its ground contact while the
+            // body settles; the living path (normalize, speed, turn speed) is
+            // byte-identical to before because IsDead is false there.
+            if (DeathAuthority.IsDead) dir = Vector3.zero;
+
             if (cc.isGrounded && vy < 0f) vy = -2f;
             vy = Mathf.Max(vy - 18f * Time.deltaTime, -25f);
 
