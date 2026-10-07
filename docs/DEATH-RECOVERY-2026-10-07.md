@@ -1,6 +1,6 @@
 # Death integration recovery and measured memory
 
-Snapshot: 2026-10-07 00:24 UTC. Local integration is running; no repaired-source native acceptance yet. The partial source, prior failures, verified reticle and accepted checkpoint remain preserved.
+Snapshot: 2026-10-07 00:28 UTC. A second measured memory stop has paused local integration. The other authorized Unreal workload now has user-assigned priority. Partial source, prior failures, the verified reticle and accepted checkpoint remain preserved; no repaired-source native acceptance exists.
 
 ## What consumed memory
 
@@ -45,3 +45,23 @@ The [focused controller](../tools/resume_player_death_focused.py) uses three fre
 Capacity checks at 00:19:36 and 00:21:59 UTC found 233.2 and 234.4 GiB available, no active renderer, and both shared capture slots free. A single diagnosed load began at 00:22:38 with 236.2 GiB available; the same queue resumed at 00:23:09. All 53 targeted controller/recovery checks passed on both Macs and deployed file hashes matched. No automatic restart policy was added. The original memory fault remains a fault, and another authorized workload may still change admission during this phase.
 
 After complete local integration, unload only the idle owned model and run the unchanged six negative cases, ordinary 95-second route and all ten gameplay regressions. Inspect actual failure/reset pixels before reporting a verified repair. Source saves and this static review do not satisfy that gate.
+
+## Directly measured recurrence and current state
+
+The smaller-context recovery saved [the corrected authority](https://github.com/oh-ashen-one/M5-Ultra-Qwen-3.8-Gaming-Loop/commit/ac0d7fe441a48377eb8d3bb420da2618ed797ed6) in a complete 7,108-token tool response, with 8,277 prompt tokens and 119.2 seconds total. Static review confirms direct signal access, no separate banner and no positive-health grace. The component remains uninstalled; no control/chapter edits or completed-author claim followed.
+
+This time the bounded observer captured the concurrent allocations directly:
+
+| UTC | System available, GiB | Qwen physical footprint, GiB | New Unreal process physical footprint, GiB |
+| --- | ---: | ---: | ---: |
+| 00:24:03.685 | 96.059 | 139.690 | Not present |
+| 00:24:08.715 | 94.970 | 139.690 | 0.581 |
+| 00:24:33.898 | 83.930 | 139.692 | 11.404 |
+| 00:24:48.999 | 64.895 | 139.727 | 29.868 |
+| 00:24:54.045 | 63.687 | 139.704 | 30.675 |
+| 00:25:39.416, shutdown underway | 161.010 | 44.750 | 28.444 |
+| 00:25:44.470 | 234.231 | 0.527 | Not present |
+
+The resident's independently sampled guard recorded **63.811 GiB available**, **0.812 MiB swap growth** and **no thermal warning**. GPU device and renderer utilization were both 100%. The model's footprint stayed effectively flat while Unreal's grew by about 30 GiB; this is stronger attribution than the earlier incomplete snapshot. It still does not provide a perfectly additive accounting of every OS/shared allocation. RSS substantially underreported both compared with physical footprint and must not be added as separate memory.
+
+At **00:28:33 UTC**, Qwen and its observer were stopped, no Unreal editor was present, available memory was about **231.6 GiB**, GPU utilization was 0%, and no thermal warning was recorded. Swap used was **43.625 MiB**. Idle GPU at this instant does not guarantee a sustained inference window: the preceding two native jobs began after admission. The user now assigns the other Unreal work priority; no further model reload or Unity verification was started after that change. A model-unloaded partial-source build/healthy-route/red check is prepared in [the native verification controller](../tools/verify_partial_death_native.py), but it has not run. The source remains partial and unaccepted.
