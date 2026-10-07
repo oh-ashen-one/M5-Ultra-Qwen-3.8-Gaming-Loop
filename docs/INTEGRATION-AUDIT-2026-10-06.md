@@ -1,6 +1,6 @@
 # Integration audit and native evidence
 
-Snapshot: 2026-10-07 00:03 UTC. The game remains unfinished. The accepted checkpoint and fixed October 8 cap are unchanged.
+Snapshot: 2026-10-07 00:10 UTC. The game remains unfinished. The accepted checkpoint and fixed October 8 cap are unchanged.
 
 ## Reticle: repaired and verified within scope
 
@@ -35,14 +35,24 @@ The relay case initially received a false setup rejection: Unity serialized the 
 
 The local author phase uses the exact current eight-component context, hash-backed editing tools, `xhigh` reasoning and a 32,768-token output allowance. Safe receipts record actual request settings and a payload hash without publishing prompts or private reasoning. Saving source is not acceptance: the identical six negative cases, the ordinary 95-second route and all ten gameplay regressions must follow with inference unloaded. The complete camera/reticle class and shader remain protected.
 
+### Partial source saved; resource stop preserved
+
+Local Qwen saved [one original `DeathAuthority.cs` component](https://github.com/oh-ashen-one/M5-Ultra-Qwen-3.8-Gaming-Loop/commit/b0254e416bc6592aac103d4a9885ae2fcb9d5b83). The complete tool response used 33,473 prompt and 22,464 output tokens in 309.27 seconds, at 75.37 decode tokens/s. It did not hit the output cap. The existing eight components were not changed; installation, input gates and chapter integration remain unfinished. No native green run or new repaired screenshot exists.
+
+During that request, available memory reached **61.804 GiB**, below the unchanged 64 GiB floor, with zero swap growth. An independently authorized Unreal render was active in the same observation. This establishes concurrent pressure, not a complete allocation-level cause. The resident began graceful shutdown; the complete response still arrived and its source was checkpointed before the next request received connection refused. The resident and controller are now stopped, with no automatic restart and no alteration of the other workload. The source checkpoint is clean and verified published; all original request and fault evidence remains private and intact.
+
+Static review of the unintegrated component flags a latch-release fallback after 0.25 seconds of positive health without an R edge, which conflicts with the requested reset-only death latch. It also uses reflective access despite supplied concrete signal types. These require local-author review; they are not native-verified failure claims. Do not accept its descriptive comments as proof of integrated behavior.
+
+The next attempt must retain this partial source and original fault, obtain actual shared capacity, and use a fresh bounded integration context with the known signal APIs instead of replaying the whole growing conversation. Smaller component groups can save complete changes before another context expansion; high reasoning, memory/swap limits and all external gates remain required. No runtime setting change or new launch is made as part of this diagnosis.
+
 ## Remaining integration findings
 
 | Finding | Evidence and status |
 | --- | --- |
-| Death/failure authority after the courier chapter | All six native setups are valid and reproduce dead-player control defects; local repair is active. No repaired-source acceptance yet. See the declared intervention and preserved validator correction above. |
+| Death/failure authority after the courier chapter | All six native setups are valid and reproduce dead-player control defects. One unintegrated local component is saved; actual memory pressure stopped the author phase. No repaired-source acceptance. |
 | Tracer and hostile material lifetime | Source-confirmed allocations without corresponding ownership cleanup; native repeated-fire/reset resource stability remains untested. |
 | Missing prefab failure overwritten; spawn count incremented early | Source-confirmed; native fault reproduction and repair remain pending. |
 | Countdown parsed from presentation text; repeated scene lookup | Source-confirmed design issue; typed cached gameplay state is a queued recommendation. |
 | Character completeness | The exported character remains 49 primitive pieces without a demonstrated armature, skinning or animation consumer. It is a visible silhouette improvement, not finished art. |
 
-Two earlier resident memory-floor stops remain genuine measured faults, despite the successful throughput update. The current workflow deliberately separates local authoring from native engine validation, unloading only the idle owned model at phase boundaries. The 64 GiB available-memory floor, 512 MiB swap-growth guard, shared slots, other authorized workloads and fixed deadline are unchanged. No automatic model restart loop is deployed.
+The two earlier resident memory-floor stops and this new stop remain genuine measured faults, despite the successful throughput update. The current workflow deliberately separates its local authoring from its own native engine validation; that separation cannot guarantee headroom when another authorized workload starts. The 64 GiB available-memory floor, 512 MiB swap-growth guard, shared slots, other workloads and fixed deadline are unchanged. No automatic model restart loop is deployed.
