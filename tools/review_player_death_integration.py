@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Review the fully qualified local death repair and plan the next connected task."""
+"""Review native-qualified death behavior and the observed late-HUD pixel defect."""
 import json
 from qualify_qwen_capacity import CapacityAuthor
 from resume_three_day_queue import main
 from resume_camera_native_only import ACCEPTED
 from continue_game_queue import validate_scoped_review
-from loop_controller.core import Halt, atomic, read_json, sha, now
+from loop_controller.core import Halt, atomic, read_json, sha
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 from loop_controller.model import tool
 from loop_controller.player_death_checks import CASES
@@ -61,12 +61,18 @@ class ReviewDeath(CapacityAuthor):
         self.native_sha=sha(path.read_bytes())
         self.resume_capacity=self.priority_resume=self.transport_recovery=self.admission_recovery=False
 
+    cloud_pixel_blockers=(
+        "At interception-final/frame-001.png,75.65seconds, scene geometry obscures portions of "
+        "the red death-message glyphs although the black card remains visible. Require the full "
+        "message and R instruction to remain readable in this actual late-chapter camera view.",
+    )
+
     def recovery_settings(self):
         return dict(player_death_review_attempted=True,recovery_route='native-qualified-death-pixel-review',
             recovery_change='Fresh local xhigh critic receives actual current-source early/late death, '
-            'reset and healthy gameplay pixels plus Chicago target. No game-edit tools. Only a scoped '
-            'PASS may record a known-playable death checkpoint; preserve failure counters and queue '
-            'position. Then local xhigh plans one meaningful next connected increment using current APIs.')
+            'reset and healthy gameplay pixels plus Chicago target. No game-edit tools or checkpoint '
+            'promotion. Preserve the observed late-view glyph obstruction even if the state trace '
+            'reports visible text; record local criticism before the focused local rendering repair.')
 
     def work(self):
         ident=self.begin(TASK,'fresh-local-death-visual-review')
@@ -101,7 +107,8 @@ class ReviewDeath(CapacityAuthor):
             'case/filename or timestamp. List at most five prioritized concrete fixes; distinguish '
             'blocking death/HUD issues from broader unfinished quality. No editing or source-completion '
             'claim is possible here. Call submit_review.\nNATIVE FACTS:'+json.dumps(facts)+
-            '\nACTUAL CAPTURE TIMES:'+json.dumps(times),
+            '\nACTUAL CAPTURE TIMES:'+json.dumps(times)+'\nCLOUD PIXEL OBSERVATION TO VERIFY:'+\
+            json.dumps(self.cloud_pixel_blockers),
             [tool('submit_review','Record the fresh scoped visual verdict.',
                 {'verdict':S,'summary':S,'fixes':{'type':'array','items':S}})],
             {'submit_review':lambda _,f:validate_scoped_review(f,list(times),times)},
@@ -112,54 +119,14 @@ class ReviewDeath(CapacityAuthor):
             raise Halt('Source or external native evidence changed during read-only review')
         artifact=dict(candidate=SOURCE,native_result=self.native_path.name,
             native_result_sha256=self.native_sha,review=result,frames=required['records'],
-            scoped_accepted=bool(result.get('ok') and result.get('verdict')=='PASS'),
+            scoped_accepted=False,cloud_pixel_blockers=list(self.cloud_pixel_blockers),
             final_game_accepted=False,known_limits=['Declared health injection is distinct from natural lethal damage.',
                 'Current gameplay route is about75seconds;95second replay includes validation/reset.',
                 'Art, lighting, audio and full ten-minute experience remain unfinished.'])
         atomic(self.store.root/'evidence'/(ident+'-death-review.json'),artifact)
         self.store.set(player_death_review_outcome=artifact);self.store.report()
-        if not artifact['scoped_accepted']:raise Halt('Death native proof is complete; follow the actual fresh local visual verdict')
-        self.store.set(player_death_scoped_acceptance=dict(candidate=SOURCE,accepted_utc=now(),
-            evidence=ident+'-death-review.json',scope='zero-health controls, chapter gating and failure/reset HUD',
-            prior_playable_checkpoint=ACCEPTED,final_game_accepted=False),last_playable_checkpoint=SOURCE)
-        self.store.event('scoped-death-checkpoint-promoted',candidate=SOURCE,
-            preserved_task_index=7,preserved_task_failures=24,preserved_failure_streak=1)
-        self.store.report()
-        self.next_plan(ident)
-
-    def next_plan(self,ident):
-        fields=['next_actions','exact_physical_scope','source_interfaces','failure_retry_and_ending',
-            'native_acceptance','measured_pacing_limits']
-        context='\n\n'.join(name+'\n'+(self.project/'Assets/Game'/name).read_text() for name in
-            ['InterceptionMission.cs','RouteMission.cs','RelaySequence.cs','MissionDirectorHud.cs','DeathAuthority.cs'])
-        def save(_,data):
-            if set(data)!=set(fields) or any(not isinstance(x,str) or not 40<=len(x)<=2000 for x in data.values()):
-                raise ValueError('Six concrete decision fields,40..2000characters each')
-            return dict(ok=True,local_authored=True,**data)
-        self.c.update(working_context_tokens=65536,output_tokens=16384,model_timeout_seconds=600)
-        self.store.set(stage='local-next-connected-gameplay-plan');self.store.report()
-        result=self.model.session('planner',ident+'-next-connected-plan',
-            'You are local Qwen, the substantive game designer. Save one implementable next connected increment.',
-            'Existing Chicago courier, dead drop, relay and moving interception now pass their healthy route '
-            'and zero-health boundaries. Actual gameplay completion is about75seconds; the95second replay '
-            'includes validation and reset. The target remains540..660seconds of varied playable action. '
-            'Define one next substantial objective after interception using current exact APIs and existing '
-            'original coupe/props, walking, driving and combat. Do not repeat the already implemented '
-            'dead-drop/relay or add idle waits, empty laps or renamed F boxes. Core space is '
-            'X-1..6/Z-2..30, alleyX6..22/Z8..20, east streetX22..60/Z8..28 with barriers. '
-            'Use rendered connected space and measured collision; invisible ground and closed facades '
-            'are not playable interiors. Specify activation, owned state, meaningful player choices, '
-            'ordinary R and zero-health behavior, ending/failure, real positive and adverse input proof. '
-            'No new assets/downloads or code edits in this planning step. Preserve current camera/reticle '
-            'and verified contracts. Keep estimates distinct from measured play time and identify the '
-            'remaining route/variation needed for ten minutes. Return concise user-facing final decisions '
-            'through submit_plan, not hidden reasoning.\nCURRENT EXACT CHAPTER/DEATH APIs:\n'+context,
-            [tool('submit_plan','Save one implementable connected gameplay scope.',{k:S for k in fields})],
-            {'submit_plan':save},turns=3,reasoning_effort='xhigh')
-        atomic(self.store.root/'evidence'/(ident+'-next-connected-plan.json'),result)
-        self.store.set(next_connected_expansion=result);self.store.report()
-        if not result.get('ok'):raise Halt('Death repair accepted; retain the bounded next-plan result for focused continuation')
-        raise Halt('Death repair accepted and next local connected scope saved; seal acceptance and continue implementation')
+        if not result.get('ok'):raise Halt('Death native proof and known pixel defect retained; local review needs bounded follow-up')
+        raise Halt('Death mechanics pass; late HUD glyph obstruction requires focused local rendering repair before promotion')
 
 
 if __name__=='__main__':raise SystemExit(main(ReviewDeath))
