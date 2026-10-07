@@ -1,23 +1,79 @@
 {
-  "action_id": "q0041-71098791-builder-9-tool-0",
+  "action_id": "q0260-fd1d16a9-street-export",
   "author": "local-Qwen",
+  "export_succeeded": true,
   "files": [
     {
-      "bytes": 730,
-      "path": "ArtSources/street/provenance.json",
-      "sha256": "92cc602b910920cedc093c725550db653738f51a3e054c3d7516c9b7dcf82f37"
+      "bytes": 183372,
+      "path": "Assets/Resources/Generated/street/Textures/00-t_asph.png",
+      "sha256": "60abd4e7cfa064fc5f8a60f2ba8ebddb84dd2add30d800fb45a8625ccdbb8e2b"
     },
     {
-      "bytes": 196764,
-      "path": "ArtSources/street/source.blend",
-      "sha256": "81c521e0b0290a9529ee1becb8ace94ae15a76fc0fb2a464bbb97f12b60869f7"
+      "bytes": 114979,
+      "path": "Assets/Resources/Generated/street/Textures/01-t_brick.png",
+      "sha256": "b844a66f0e3cd2e9bea8da21d006877e602c899cc94797ad4c3e116a215d9501"
     },
     {
-      "bytes": 613084,
+      "bytes": 171903,
+      "path": "Assets/Resources/Generated/street/Textures/02-t_conc.png",
+      "sha256": "c289187494a63dbc5395e9a63ad3661ffeadc206858be6b08ea3211618d075bf"
+    },
+    {
+      "bytes": 150627,
+      "path": "Assets/Resources/Generated/street/Textures/03-t_stone.png",
+      "sha256": "c2c51def13d6e8dee67324ee0b619f5b64ff0d0ee28a92bc664ce0cb6d0a2ce8"
+    },
+    {
+      "bytes": 104176,
+      "path": "Assets/Resources/Generated/street/Textures/04-t_wood.png",
+      "sha256": "12d9245bad7d6f384b55dd86e9be3cee96d36f93be3a41ce8d3b2f41e47e3b23"
+    },
+    {
+      "bytes": 1405980,
       "path": "Assets/Resources/Generated/street/scene.fbx",
-      "sha256": "3284deee9ea1721b255ba8e3e42f203c9f384df0d339cbe310331f6f0ec49576"
+      "sha256": "f2f846bffc02981e240e6d0765045890eaf5cddab3d06389e349545eb5ffc1c4"
+    },
+    {
+      "bytes": 183372,
+      "path": "ArtSources/street/Textures/00-t_asph.png",
+      "sha256": "60abd4e7cfa064fc5f8a60f2ba8ebddb84dd2add30d800fb45a8625ccdbb8e2b"
+    },
+    {
+      "bytes": 114979,
+      "path": "ArtSources/street/Textures/01-t_brick.png",
+      "sha256": "b844a66f0e3cd2e9bea8da21d006877e602c899cc94797ad4c3e116a215d9501"
+    },
+    {
+      "bytes": 171903,
+      "path": "ArtSources/street/Textures/02-t_conc.png",
+      "sha256": "c289187494a63dbc5395e9a63ad3661ffeadc206858be6b08ea3211618d075bf"
+    },
+    {
+      "bytes": 150627,
+      "path": "ArtSources/street/Textures/03-t_stone.png",
+      "sha256": "c2c51def13d6e8dee67324ee0b619f5b64ff0d0ee28a92bc664ce0cb6d0a2ce8"
+    },
+    {
+      "bytes": 104176,
+      "path": "ArtSources/street/Textures/04-t_wood.png",
+      "sha256": "12d9245bad7d6f384b55dd86e9be3cee96d36f93be3a41ce8d3b2f41e47e3b23"
+    },
+    {
+      "bytes": 877,
+      "path": "ArtSources/street/original-images.json",
+      "sha256": "1d10817b9ddda7ae62991ae8bf9593e2904ece6c94df432a049d617c33800b4b"
+    },
+    {
+      "bytes": 36330,
+      "path": "ArtSources/street/original-uv-observation.json",
+      "sha256": "f10bb467c60a38e64bd76fe4c78eda72924bdef08f82e4ad4132c6029bd96ba3"
+    },
+    {
+      "bytes": 939003,
+      "path": "ArtSources/street/source.blend",
+      "sha256": "f51f59dba9499f251a2df1104f6a05da530c5ab2ebe6e8e9bdee17e8ca0d4f96"
     }
   ],
   "script": "Art/street.py",
-  "script_sha256": "22cecf37fe42c87e2cf3a1fa22ecc6777640ec1bf01e755c283971db2789bdf4"
+  "script_sha256": "fac0be5ff816f85853d6203e32c94adb7caec863f80216dc45dc285e970cec80"
 }
