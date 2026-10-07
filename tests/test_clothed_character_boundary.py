@@ -5,6 +5,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'tools'))
 from author_clothed_character import ACCEPTED, STOP, validate_boundary, validate_art
 from loop_controller.core import Halt
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
+from resume_clothed_character_budget import validate_boundary as validate_budget
 
 
 class ClothedCharacterBoundaryTests(unittest.TestCase):
@@ -31,6 +32,19 @@ class ClothedCharacterBoundaryTests(unittest.TestCase):
                        'x=1\n'*701, 'x="'+('a'*36000)+'"']:
             with self.assertRaises(ValueError): validate_art(source)
         with self.assertRaises(SyntaxError): validate_art('def incomplete(')
+
+    def test_changed_budget_only_after_exact_incomplete_output(self):
+        state=dict(self.fixture(),current_round='q0185-47b1c305',blocker="KeyError: 'choices'",
+                   clothed_character_author_attempted=True)
+        response=dict(error=dict(code='incomplete_tool_call'))
+        speed=dict(status='finished',samples=[dict(generated_tokens=16209)])
+        validate_budget(state,response,speed)
+        for changed,error,watch in [
+            (dict(state,blocker='memory fault'),response,speed),
+            (dict(state,clothed_character_budget_attempted=True),response,speed),
+            (state,dict(response,choices=[{}]),speed),
+            (state,response,dict(status='finished',samples=[dict(generated_tokens=100)]))]:
+            with self.assertRaises(Halt): validate_budget(changed,error,watch)
 
 
 if __name__ == '__main__': unittest.main()
