@@ -1,0 +1,13 @@
+{
+  "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+  "original_review_sha256": "948924620506489324ce98483f3db29190e12242f3af4a4a60e9041513166ea5",
+  "scoped_readability_pass_retained": true,
+  "game_source_changed": false,
+  "notes": [
+    "The native view is third person. The local suggestion to remove a body from a first-person view mislabels the existing camera; camera/reticle changes are not approved by this review.",
+    "The completion still does not independently identify a downed body or show the held lead. Actual kills, live lead contact and foot crossing are established by the sealed source-matched trace and separate combat frames.",
+    "The failed-death image preserves the specific escape reason plus death/restart copy. It does not display the active timer or pin counts, contrary to one proposed fix in the local review.",
+    "Contact release at116.680seconds belongs to the separate ordinary-driving negative, not the successful shoot/pin/foot-exit replay. Both source-matched evidence bundles remain separate.",
+    "The supplied cards are readable and contained in the reviewed native frames. Broader art, camera composition, animation, lighting, audio and ten-minute pacing remain unfinished; cosmetic suggestions are a backlog, not instructions to edit protected features."
+  ]
+}

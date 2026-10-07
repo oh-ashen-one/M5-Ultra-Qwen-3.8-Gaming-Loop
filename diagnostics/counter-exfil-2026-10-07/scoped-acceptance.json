@@ -1,0 +1,133 @@
+{
+  "accepted": {
+    "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+    "accepted_utc": "2026-10-07T08:35:06.993147+00:00",
+    "scope": "One Counter-Exfil incident: actual shooting/live physical pin/foot exit, contact/death/reset boundaries and scoped HUD pixels",
+    "evidence": "q0184-e64fca5c-counter-visual-review.json",
+    "native_evidence": "q0182-0282975a-counter-negatives.json",
+    "prior_playable_checkpoint": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+    "final_game_accepted": false
+  },
+  "native_proof": "native-qualification.json",
+  "physical_success": "first-physical-success.json",
+  "local_review": {
+    "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+    "early_exit_evidence": "q0183-d047d4cb-early-exit",
+    "early_exit_sha256": "c5518c7f48ae2c338b3e1ac578e37a4f0eea04530833e346a84df64081bd5076",
+    "final_game_accepted": false,
+    "frames": [
+      {
+        "kind": "native",
+        "label": "ACTUAL NATIVE armed/frame-007.png; t=77 seconds",
+        "name": "frame-007.png",
+        "sha256": "027a5dbee6a6ebcd4c30ad15c38075f618e2cf57d96edf73ec404c8242e34a7a"
+      },
+      {
+        "kind": "native",
+        "label": "ACTUAL NATIVE combat-before/frame-003.png; t=105.5 seconds",
+        "name": "frame-003.png",
+        "sha256": "520f197964abf0ec8adfb30afca152c2c2d3a46547e773c532271588d533bcdf"
+      },
+      {
+        "kind": "native",
+        "label": "ACTUAL NATIVE combat-after/frame-005.png; t=107.6 seconds",
+        "name": "frame-005.png",
+        "sha256": "643f680be2f01a547149453d1d806d2443bc76a6f0abd548ec709bd63024a2ca"
+      },
+      {
+        "kind": "native",
+        "label": "ACTUAL NATIVE complete/frame-007.png; t=114.6 seconds",
+        "name": "frame-007.png",
+        "sha256": "a004b88403f76e0cea090a3161cfedfad3f9bd56b92b89fe122e4bf0b801ba1c"
+      },
+      {
+        "kind": "native",
+        "label": "ACTUAL NATIVE escape/frame-004.png; t=110 seconds",
+        "name": "frame-004.png",
+        "sha256": "567096a5235a83125eaf7833f50168eeb26ea8ed67a896bf2fea2ed9ed4e863f"
+      },
+      {
+        "kind": "native",
+        "label": "ACTUAL NATIVE active-death/frame-001.png; t=88.25 seconds",
+        "name": "frame-001.png",
+        "sha256": "296948472749769e9cb3bb4636f950fdb065f1301acdf8fc0d5d75d6686578c1"
+      },
+      {
+        "kind": "native",
+        "label": "ACTUAL NATIVE failed-death/frame-001.png; t=110.25 seconds",
+        "name": "frame-001.png",
+        "sha256": "5a56a20d9edff17e0789f4bb00d753206b01ede92465ddf7368837f478e18565"
+      },
+      {
+        "kind": "native",
+        "label": "ACTUAL NATIVE reset/frame-003.png; t=92.0 seconds",
+        "name": "frame-003.png",
+        "sha256": "92039022e044be271824066161d4fa930ff5b76a117f7cbde9a13c86bed52a67"
+      },
+      {
+        "kind": "target",
+        "label": "CHICAGO TARGET: aspiration, not native output",
+        "name": "chicago_01_neighborhood_on_foot.png",
+        "sha256": "f7cbb0f5c7127f1e9e3621bf5da63195fde3767cd1ec59b11cb63f0e3dd831be"
+      }
+    ],
+    "native_artifact": "q0182-0282975a-counter-negatives.json",
+    "native_sha256": "32ce3d9588dde6cae2cf436b2d06cf16f29cd21ccb2e2033e6dfa5a048abe47c",
+    "review": {
+      "fixes": [
+        "Remove the courier's own body/head from the first-person view (or offset the camera). In armed/frame-007.png (t=77), combat-before/frame-003.png (t=105.5), combat-after/frame-005.png (t=107.6), complete/frame-007.png (t=114.6) and reset/frame-003.png (t=92.0) the pixel under the reticle is the player's own hair/hood, so the still appears to show the crosshair on the player's head even though the trace records first_ray_collider=CounterExfilRunner1 at 107.000\u2013107.400.",
+        "Add phase context to the death card during Active: active-death/frame-001.png (t=88.25) shows only COURIER DOWN / HEALTH DEPLETED / PRESS R TO RESTART and silently drops the COUNTER-EXFIL ACTIVE clock and pin counts that failed-death/frame-001.png (t=110.25) correctly carries.",
+        "Unify the reset verb across the same incident: 'R reset' (t=77, t=114.6), 'R to retry' (t=110), 'PRESS R TO RESTART' (t=88.25, t=110.25).",
+        "Give the escape failure visual corroboration: in escape/frame-004.png (t=110) no runner is on screen at the moment the card asserts 'LEAD RUNNER REACHED THE WEST EXIT'; keep the escaping runner (or an exit flash) in frame, and pull the green west-exit marker fully on-screen (it is half off the right edge in complete/frame-007.png, t=114.6).",
+        "Give the armed hint its own line/spacing: in armed/frame-007.png (t=77) 'EXFIL ARMED coupe 20m|E board,F launch' occupies ~90% of the verdict card width with no space around the pipe and comma, reading as part of the completed-relay verdict."
+      ],
+      "ok": true,
+      "summary": "All scoped Counter-Exfil items hold in the actual native pixels, cross-checked against the traces. armed/frame-007.png (t=77) keeps the old ending (INTERCEPTION COMPLETE / Stopped 3 / Escaped 0 / Relay complete | R reset) and adds a compact, in-card Armed hint line. combat-before/frame-003.png (t=105.5) shows the live blue coupe, white reticle, three figures in the lane and legible counts (DOWN 0/3 HELD 1 RAN 0, L 6/6 PIN | R2 3/3 | R3 3/3, EXIT 13m, MOUSE0 FIRE). combat-after/frame-005.png (t=107.6) shows exactly the two standard enemies gone (both grey/silver figures absent) with the orange-torso lead still standing at the reticle, and the counts now read DOWN 2/3, R2 DOWN | R3 DOWN, L 3/6 PIN \u2014 matching the nine unit-damage camera-aligned events (105.800\u2192107.400, first_ray_collider == target, viewport_contains_center, visual_bounds_ray_hit), distinct lethals Runner3 106.200 / Runner2 106.800, and Runner1 left alive at 3/6 and pinned (12.19s continuous contact at completion 114.433; qualified release 114.933, collision exit 116.680, 63 separated samples, no reentry). complete/frame-007.png (t=114.6) is a coherent foot completion (NO RUNNER REACHED THE WEST EXIT, DOWN 2 / HELD 1, R to reset; HUD still HEALTH 28, matching crossing mode=foot health=28.0), with a downed body at the player's feet and the held runner upright. escape/frame-004.png (t=110) gives a specific, readable escape failure (LEAD RUNNER REACHED THE WEST EXIT, DOWN 0/HELD 0/RAN 1, R to retry). active-death/frame-001.png (t=88.25) shows immediate red COURIER DOWN / HEALTH DEPLETED / PRESS R TO RESTART with HEALTH 0 already in the HUD, and failed-death/frame-001.png (t=110.25) correctly preserves the prior specific failure above the death line. reset/frame-003.png (t=92.0) is living with HEALTH 100 (green) and only fresh COURIER prompt text \u2014 no stale DOWN/FAILED/COMPLETE residue; HEALTH 28 is continuous across t=77/105.5/107.6/114.6 and zero only in the declared external-health-zero death cases. Every supplied line lies inside its own card with no clipping or overflow in any frame (widest line, the t=77 armed hint, still fits). The Chicago image is aspiration only and was not scored.",
+      "verdict": "PASS",
+      "verified_capture_time_citations": {
+        "active-death/frame-001.png": 88.25,
+        "armed/frame-007.png": 77,
+        "combat-after/frame-005.png": 107.6,
+        "combat-before/frame-003.png": 105.5,
+        "complete/frame-007.png": 114.6,
+        "failed-death/frame-001.png": 110.25,
+        "reset/frame-003.png": 92.0
+      }
+    },
+    "scoped_accepted": true,
+    "ten_minute_gameplay_proven": false
+  },
+  "local_review_sha256": "948924620506489324ce98483f3db29190e12242f3af4a4a60e9041513166ea5",
+  "local_request": {
+    "response_sha256": "d8d28b92f0cb2cd013d86798b7c4ecafd327212d0b9fd21ca889affb675f184e",
+    "finish_reason": "tool_calls",
+    "usage": {
+      "completion_tokens": 10463,
+      "generation_duration": 123.84,
+      "generation_tokens_per_second": 84.49,
+      "input_tokens": 8657,
+      "output_tokens": 10463,
+      "prompt_eval_duration": 6.51,
+      "prompt_tokens": 8657,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_tokens_per_second": 1329.92,
+      "time_to_first_token": 6.51,
+      "total_time": 130.35,
+      "total_tokens": 19120
+    },
+    "role": "critic",
+    "reasoning_effort": "xhigh",
+    "image_count": 9,
+    "visual_payload_verified": true
+  },
+  "cloud_pixel_corrections": "cloud-pixel-annotation.json",
+  "final_game_accepted": false,
+  "known_limits": [
+    "One incident; full ordinary route reaches114.433seconds, not the ten-minute target.",
+    "Death edge negatives declare health=0 injection; not proof of natural lethal damage.",
+    "Read the cloud annotation alongside the preserved local verdict; cosmetic suggestions are not approved feature changes.",
+    "Original art, animation, lighting, audio and broader composition remain unfinished."
+  ]
+}

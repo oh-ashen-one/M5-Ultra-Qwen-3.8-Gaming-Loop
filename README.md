@@ -1,8 +1,8 @@
 # M5 Ultra Qwen 3.8 Gaming Loop
 
-**Status, 2026-10-07: death/reset integration accepted; next connected objective under local review.** Candidate `d4d13937c63b9e056d3c40bf72fbf02e63eb3990` passes six zero-health chapter cases, the normal healthy route and all ten gameplay regressions, followed by corrected fresh local visual review. [The evidence](docs/DEATH-INTEGRATION-2026-10-07.md) preserves both a narrow checker correction and a disproven cloud pixel suspicion. No final game or art-quality acceptance is claimed. [The rolling handoff](HANDOFF.md) records current work and remaining limits.
+**Status, 2026-10-07: one Counter-Exfil incident accepted.** Candidate `de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7` passes real shooting, maintained physical car obstruction and foot completion, genuine escape/contact/reset negatives, ten declared death boundaries and ten original gameplay regressions, followed by fresh local pixel review. [The evidence and review corrections](docs/COUNTER-EXFIL-2026-10-07.md) distinguish scoped acceptance from final game quality. [The rolling handoff](HANDOFF.md) records current work and remaining limits.
 
-The existing native route includes walking, driving, courier delivery, a dead drop, relay activation and a moving interception. Actual gameplay completion is around 75 seconds; the 95-second replay includes validation and reset. The target remains a polished ten-minute experience with varied action. Rough original characters, environment, lighting and audio remain unfinished. The fixed work cap is **2026-10-08 06:33:12 UTC**; it is not automatically extended.
+The native route includes walking, driving, courier delivery, a dead drop, relay activation, a moving interception and one Counter-Exfil incident. The new verified route completes at 114.433 seconds; its 124-second replay includes reset checks. The target remains a polished ten-minute experience with varied action. Rough original characters, environment, lighting and audio remain unfinished. The fixed work cap is **2026-10-08 06:33:12 UTC**; it is not automatically extended.
 
 This open-source project studies a local-first game-coding loop on a verified M5 Ultra with 256 GB memory and 80 GPU cores. The selected model is `mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp`, pinned and currently qualified on official oMLX 0.7.0 with xhigh reasoning. [Measured capacity work](docs/CAPACITY-TRIAL-2026-10-07.md) separates actual useful coding from load-only observations. Earlier 27B BF16 and oMLX 0.6.4 preparation records remain historical evidence.
 
@@ -33,6 +33,7 @@ The [source references](reference/README.md) include selected MIT diagnostic, in
 
 | Document | Purpose |
 | --- | --- |
+| [Accepted Counter-Exfil incident](docs/COUNTER-EXFIL-2026-10-07.md) | Actual shoot/pin/foot route, adverse cases, local review and limits |
 | [Latest verified death/reset milestone](docs/DEATH-INTEGRATION-2026-10-07.md) | Native cases, corrected pixel review, provenance and known limits |
 | [Rolling handoff](HANDOFF.md) | Current task branch, verified state and next work |
 | [Plan](docs/PLAN.md) | Acceptance-first phases, start gate, unresolved choices |
