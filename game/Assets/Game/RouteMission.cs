@@ -22,6 +22,14 @@ namespace ChicagoGame
         string objectiveBeforeDeath;
         bool deathHeld;
 
+        // Board palette, single source of truth. HudColor is exactly the cyan
+        // BuildHud installs the route board with, so ReleaseDeath hands the
+        // healthy chapter back in its own original colour rather than a
+        // hand-typed approximation that could drift; DownColor is the only
+        // colour a downed courier is ever shown in.
+        static readonly Color HudColor = new Color(0.45f, 0.95f, 1f);
+        static readonly Color DownColor = new Color(1f, 0.26f, 0.22f);
+
         GameObject player;
         Camera cam;
         TextMesh hud;
