@@ -1,0 +1,126 @@
+{
+  "candidate": "9df6c96af1ccd25d3115a44434a23aec0537d273",
+  "build_id": "4c155ca2f440c63018554013603166a81a733c508e86a417fdc5f246afd4b918",
+  "evidence": "q0174-7bbb3098-activation-escape",
+  "semantic": {
+    "build_id": "4c155ca2f440c63018554013603166a81a733c508e86a417fdc5f246afd4b918",
+    "candidate": "9df6c96af1ccd25d3115a44434a23aec0537d273",
+    "death_negatives": "not tested",
+    "evidence": "q0174-7bbb3098-activation-escape",
+    "facts": {
+      "activation": {
+        "health": 28.0,
+        "mode": "vehicle",
+        "time": 85.23332977294922,
+        "velocity": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "escape_failure": {
+        "actual_crossers": [
+          "CounterExfilRunner1"
+        ],
+        "reason": "LEAD RUNNER REACHED THE WEST EXIT",
+        "time": 107.83333587646484
+      },
+      "first_spawn": {
+        "actors": [
+          "CounterExfilRunner1",
+          "CounterExfilRunner2",
+          "CounterExfilRunner3"
+        ],
+        "hp": [
+          3,
+          3,
+          6
+        ],
+        "time": 86.73332977294922
+      },
+      "handoff": {
+        "health": 28.0,
+        "mode": "foot",
+        "player": [
+          28.18739128112793,
+          0.13499999046325684,
+          13.939845085144043
+        ],
+        "time": 77.03333282470703,
+        "vehicle": [
+          47.60508728027344,
+          -0.009999275207519531,
+          17.460317611694336
+        ]
+      }
+    },
+    "failure": [],
+    "final_game_accepted": false,
+    "full_incident_success": false,
+    "passed": true,
+    "scope": "Ordinary retrieval/explicit activation/physical unresolved escape/reset only",
+    "shoot_pin_foot_exit": "not tested"
+  },
+  "native": {
+    "passed": true,
+    "failure": null,
+    "build_exit": 0,
+    "compile_errors": [],
+    "samples": 1394,
+    "duration": 142.0,
+    "scene_inventory": {
+      "declared_counts": {
+        "colliderRecorded": 60,
+        "colliderTotal": 60,
+        "rendererRecorded": 3610,
+        "rendererTotal": 3610
+      },
+      "failure": [],
+      "observed_at_seconds": 0.5,
+      "observed_counts": {
+        "collider": 60,
+        "renderer": 3610
+      },
+      "passed": true,
+      "scope": "Complete point-in-time scene component inventory; gameplay and rendered support criteria are unchanged"
+    }
+  },
+  "old_healthy": {
+    "passed": false,
+    "failure": [
+      "actual-interception-objective-not-rendered",
+      "interception-live-objective-not-rendered",
+      "objective-not-compact"
+    ],
+    "card_geometry_overflow_resolved": true
+  },
+  "frames": [
+    {
+      "file": "frame-002.png",
+      "seconds": 83.9,
+      "sha256": "eef884793d9d8800483cfbbda4fd7c11e4963ab658ae95739301ebf5f7048a2e",
+      "private_only": true
+    },
+    {
+      "file": "frame-003.png",
+      "seconds": 85.5,
+      "sha256": "e0d98117ceaa41e438c04f4a67149bc239fbfa96167d3f211fcb9b13424bd48f",
+      "private_only": true
+    },
+    {
+      "file": "frame-004.png",
+      "seconds": 110,
+      "sha256": "ef03fba2a23c9a552011fe184146355cf1eccdfe9b967308cfaeeb1397ad1d6f",
+      "private_only": true
+    }
+  ],
+  "sealed": {
+    "gate.json": "3c6740f5432b1fae2d2e5b2cd072930ebaecb5adb8913ce5dd65ad9f90e6519d",
+    "counter-exfil-probe-gate.json": "a1f37fc13ba7bdd0983244c3df37935e4d2cb587a202187f8a7aa0f58039b976",
+    "captures/trace.jsonl": "defef896143f6ef8ca7406a1cc1c9b767d7fdf7e9ed9077ef2a9b392d3abd870",
+    "captures/scenario.json": "4dab5732fa58eceb62cf1d74cce03f8bc683ce9d2d7b5d73e1b30f263d411107"
+  },
+  "accepted_fallback": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+  "full_incident_success": false,
+  "final_game_accepted": false
+}
