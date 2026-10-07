@@ -75,6 +75,7 @@ def validate_edit(path, value, writable, follow):
 
 class FocusedDeath(PlayerDeathSource):
     phases=PHASES
+    phase_turns=10
     def validate_recovery(self, old):
         validate_boundary(old)
         self.red = old['player_death_red_outcome']
@@ -154,7 +155,7 @@ class FocusedDeath(PlayerDeathSource):
                     {'path':{'type':'string'},'old':{'type':'string'},'new':{'type':'string'}}),
                  tool('finish_task','Finish the saved current phase; native verification is separate.',
                     {'summary':{'type':'string'}})],
-                {'read_file':read,'replace_text':replace,'finish_task':finish},turns=10,reasoning_effort='xhigh')
+                {'read_file':read,'replace_text':replace,'finish_task':finish},turns=self.phase_turns,reasoning_effort='xhigh')
             atomic(self.store.root/'evidence'/(ident+'-death-'+label+'.json'),result)
             if not result.get('ok'):
                 raise Halt('Focused death '+label+' incomplete; preserve source and diagnose changed continuation')
