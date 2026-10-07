@@ -314,9 +314,46 @@ namespace ChicagoGame
             return true;
         }
 
-        bool FootAtWestExit()
+        // ---- the real crossing ----
+        // One live on-foot sample of the validated central exit, taken every
+        // frame the chapter is Active, settled or not, so the east leg of the
+        // walk is already on record before the last runner drops. A non-foot
+        // frame - boarding, riding, or an E exit dropped beside the line - wipes
+        // the whole chain, so nothing but walking east to west can produce it.
+        void SampleFoot()
         {
-            if (LoopSignals.Mode != "foot" || _player == null) return false;
+            if (LoopSignals.Mode != "foot" || _player == null) { ClearCrossing(); return; }
+            Vector3 p = _player.transform.position;
+
+            bool contiguous = footValid && Vector3.Distance(p, lastFoot) <= MAX_FOOT_STEP;
+            footValid = true; lastFoot = p;
+            if (!contiguous) footEastOfExit = false;            // a torn chain proves nothing
+
+            // Only the surveyed central corridor's own physical width counts; a
+            // wide unqualified side street can never carry the crossing.
+            if (Mathf.Abs(p.z - EXIT_Z) > EXIT_HALF_Z) { footEastOfExit = false; crossedWest = false; return; }
+            if (p.x >= EXIT_X + CROSS_ARM) { footEastOfExit = true; crossedWest = false; return; }
+            if (p.x > EXIT_X) return;                           // east of the line: no event
+
+            // Genuinely west of the line, reached from an east sample inside one
+            // unbroken foot chain. It is the exit only if every runner is
+            // already permanently down or is still being physically held at THIS
+            // instant; strolling out early and loitering west of the line until
+            // the last runner falls proves nothing, so that chain is dropped and
+            // the walk must be done again from the east.
+            if (Settled()) crossedWest = true;
+            else { footEastOfExit = false; crossedWest = false; }
+            crossedAt = Time.time;
+        }
+
+        void ClearCrossing()
+        {
+            footEastOfExit = false; crossedWest = false; footValid = false; crossedAt = 0f;
+        }
+
+        bool FootCrossedExit()
+        {
+            if (!crossedWest || LoopSignals.Mode != "foot" || _player == null || Down) return false;
             Vector3 p = _player.transform.position;
             return p.x <= EXIT_X && Mathf.Abs(p.z - EXIT_Z) <= EXIT_HALF_Z;
         }
