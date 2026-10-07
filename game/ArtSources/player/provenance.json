@@ -1,5 +1,5 @@
 {
-  "action_id": "q0297-0b0b2508-clothing-export",
+  "action_id": "q0304-2ce44822-Board-spine-export",
   "author": "local-Qwen",
   "export_succeeded": true,
   "files": [
@@ -24,9 +24,9 @@
       "sha256": "70aee8a2f97a3d835dff717c68e9dfd908dd57b989f9ced09a189171b6883f72"
     },
     {
-      "bytes": 631036,
+      "bytes": 630860,
       "path": "Assets/Resources/Generated/player/scene.fbx",
-      "sha256": "2740213a4c8572e785d551569c74832fabb32b8b22f2fb4b440e938eb4a4d535"
+      "sha256": "7ac808bbf03e456ee2ca1d9b9f75b714b0beb06be84ebf472802cffd1583cf7c"
     },
     {
       "bytes": 45272,
@@ -59,11 +59,11 @@
       "sha256": "db929ccbda404a0095fae5ac08b196d7dca6ae5a7387d03d43f78846136a5470"
     },
     {
-      "bytes": 366921,
+      "bytes": 367028,
       "path": "ArtSources/player/source.blend",
-      "sha256": "976a4dd3f3cc80907723b93ae5cf77db870582816b9f48a66dd3aa8b391a8282"
+      "sha256": "dfec389d3d3d33febca71a5878b2d59173b6e71489b2aa3705e0afa4024e3d4f"
     }
   ],
   "script": "Art/player.py",
-  "script_sha256": "b69a8bb2b942341b97489142abbf890105a097eef86b39e5241cb5364f962450"
+  "script_sha256": "003013c9d1c417ec1bd451e916d4c2e69280c53b8a80bde7d6c738f746f4469b"
 }
