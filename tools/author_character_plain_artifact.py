@@ -10,7 +10,7 @@ from loop_controller.visual_context import TARGETS, contract
 PRIOR='q0186-a77bca7e'
 
 
-def complete_source(response):
+def complete_source(response,max_lines=240,max_bytes=16000):
     choices=response.get('choices',[])
     if len(choices)!=1 or choices[0].get('finish_reason')!='stop':
         raise Halt('Only a completed public source artifact may be saved; no partial output')
@@ -24,8 +24,8 @@ def complete_source(response):
         source=source[len('```python\n'):-len('\n```')]
     if '<think>' in source or '</think>' in source or '```' in source:
         raise Halt('Never extract source from reasoning, marker replay or mixed prose')
-    if len(source.splitlines())>240 or len(source.encode())>16000:
-        raise Halt('The first compact artifact must fit240lines/16KB')
+    if len(source.splitlines())>max_lines or len(source.encode())>max_bytes:
+        raise Halt(f'The bounded artifact must fit{max_lines}lines/{max_bytes}bytes')
     return validate_art(source+'\n')
 
 

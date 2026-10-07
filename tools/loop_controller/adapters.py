@@ -256,7 +256,8 @@ class Engines:
             "bpy.context.preferences.filepaths.save_version=0\n"
             "bpy.ops.wm.save_as_mainfile(filepath=str(Path(os.environ['LOOP_BLEND_SOURCE'])/'source.blend'))\n"
             "bpy.ops.export_scene.fbx(filepath=str(out/'scene.fbx'),use_selection=False,add_leaf_bones=False,"
-            "path_mode='COPY',embed_textures=True)\n")
+            "path_mode='COPY',embed_textures=True,bake_anim=True,bake_anim_use_all_actions=False,"
+            "bake_anim_use_nla_strips=False)\n")
         code = self.machine.execute("blender", [self.c["blender"], "--background", "--factory-startup",
             "--python-exit-code", "7", "--python", str(wrapper)], project, output, 240,
             {"LOOP_ASSET_OUTPUT": str(generated), "LOOP_ART_SCRIPT": str(path), "LOOP_BLEND_SOURCE": str(originals)},
