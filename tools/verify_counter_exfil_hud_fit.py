@@ -17,6 +17,10 @@ def validate_boundary(old):
         raise Halt('Require the actual saved local HUD fit and unchanged acceptance/history')
 
 class VerifyCounterHudFit(ProbeCounterExfil):
+    # The saved proposal fits the backing but still has a 41-character hint.
+    # Observe the changed geometry and new mechanics while keeping that gate red;
+    # this diagnostic continuation cannot accept/promote the incident.
+    allow_hud_diagnostic=True
     def validate_recovery(self,old):
         validate_boundary(old);self.source=old['source_checkpoint']
         self.resume_capacity=self.priority_resume=self.transport_recovery=self.admission_recovery=False

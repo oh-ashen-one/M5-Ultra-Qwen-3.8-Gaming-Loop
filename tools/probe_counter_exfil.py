@@ -34,6 +34,7 @@ def validate_boundary(old):
         raise Halt('Require actual complete local incident source and unchanged accepted history')
 
 class ProbeCounterExfil(CameraNativeOnly):
+    allow_hud_diagnostic=False
     def validate_recovery(self,old):
         validate_boundary(old);self.source=old['source_checkpoint']
         self.resume_capacity=self.priority_resume=self.transport_recovery=self.admission_recovery=False
@@ -51,9 +52,15 @@ class ProbeCounterExfil(CameraNativeOnly):
         save()
         bundle=self.store.root/'evidence'/(ident+'-old-healthy')
         raw=self.engines.unity(self.project,bundle,original,self.source)
+        native_passed=raw.get('passed')
         outcome['old_healthy']=checked(bundle,raw,'positive') if raw.get('passed') else raw;save()
         if not outcome['old_healthy'].get('passed'):
-            raise Halt('Counter-Exfil source failed the unchanged healthy route prerequisite')
+            presentation_only={'MissionBoard-text-outside-card','actual-interception-objective-not-rendered',
+                'interception-live-objective-not-rendered','objective-not-compact'}
+            if not (self.allow_hud_diagnostic and native_passed and
+                    set(outcome['old_healthy'].get('failure',[]))<=presentation_only):
+                raise Halt('Counter-Exfil source failed the unchanged healthy route prerequisite')
+            outcome['diagnostic_only_due_to_old_hud_failure']=True;save()
         scenario=activation_probe(original);bundle=self.store.root/'evidence'/(ident+'-activation-escape')
         raw=self.engines.unity(self.project,bundle,scenario,self.source)
         semantic=inspect_activation_escape([json.loads(line) for line in (bundle/'captures/trace.jsonl').read_text().splitlines()]) if raw.get('passed') else dict(passed=False,failure=['native-prerequisite'])
@@ -61,7 +68,7 @@ class ProbeCounterExfil(CameraNativeOnly):
         atomic(bundle/'counter-exfil-probe-gate.json',semantic)
         outcome['activation_escape']=dict(native=raw,evidence=bundle.name,semantic=semantic);save()
         frames=sorted((bundle/'captures').glob('frame-*.png'))
-        if frames:queue_milestone(self.store,'native-milestone',TASK,bundle,{**raw,'passed':raw.get('passed') and semantic.get('passed'),'counter_exfil_scope':semantic},frames,
+        if frames:queue_milestone(self.store,'native-milestone',TASK,bundle,{**raw,'passed':raw.get('passed') and semantic.get('passed') and outcome['old_healthy'].get('passed'),'counter_exfil_scope':semantic},frames,
             {f'frame-{i:03d}.png':t for i,t in enumerate(scenario['captures'])})
         raise Halt('First Counter-Exfil native recordings preserved; inspect actual activation/escape/reset before success route')
 
