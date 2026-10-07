@@ -16,6 +16,12 @@ public static class LoopCharacterObservation
         public int rendererCount, visibleRendererCount;
         public float[] worldPosition, boundsCenter, boundsSize;
         public Joint[] joints;
+        public Clip[] clips;
+    }
+    [Serializable] public class Clip {
+        public string componentPath, name;
+        public bool playing, enabled;
+        public float time, normalizedTime, length, speed, weight;
     }
     [Serializable] public class State {
         public float controllerHeight, controllerRadius;
@@ -41,6 +47,12 @@ public static class LoopCharacterObservation
                 worldPosition=V(t.position),screenPosition=camera ? V(camera.WorldToViewportPoint(t.position)) : null});
         }
         var renderers=root.GetComponentsInChildren<Renderer>(true);
+        var clips=new List<Clip>();
+        foreach(var animation in root.GetComponentsInChildren<Animation>(true))
+            foreach(AnimationState state in animation)
+                clips.Add(new Clip {componentPath=PathOf(animation.transform),name=state.name,
+                    playing=animation.IsPlaying(state.name),enabled=state.enabled,time=state.time,
+                    normalizedTime=state.normalizedTime,length=state.length,speed=state.speed,weight=state.weight});
         Bounds bounds=new Bounds(root.position,Vector3.zero);
         bool any=false;int visible=0;
         foreach(var r in renderers) {
@@ -50,7 +62,7 @@ public static class LoopCharacterObservation
         }
         return new Visual {path=PathOf(root),active=root.gameObject.activeInHierarchy,
             rendererCount=renderers.Length,visibleRendererCount=visible,worldPosition=V(root.position),
-            boundsCenter=V(bounds.center),boundsSize=V(bounds.size),joints=nodes.ToArray()};
+            boundsCenter=V(bounds.center),boundsSize=V(bounds.size),joints=nodes.ToArray(),clips=clips.ToArray()};
     }
     public static State Capture() {
         var result=new State();var visuals=new List<Visual>();
