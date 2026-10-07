@@ -13,7 +13,8 @@ public static class LoopCounterExfilObservation
     [Serializable] public class Actor {
         public int entityId;
         public string name;
-        public float[] position,velocity;
+        public float[] position,velocity,capsuleCenter,rootScale;
+        public float capsuleRadius,capsuleHeight,horizontalPenetration;
         public bool hasBody,kinematic,colliderEnabled;
         public Value[] state;
         public LoopCounterExfilContacts.Contact[] contacts;
@@ -39,10 +40,14 @@ public static class LoopCounterExfilObservation
         if(!mission)return new State {available=false,actors=new Actor[0]};
         var actors=scripts.Where(m=>m && m.GetType().FullName=="ChicagoGame.CounterExfilRunner").Select(m=>{
             var rb=m.GetComponent<Rigidbody>();var col=m.GetComponent<Collider>();
+            var capsule=m.GetComponent<CapsuleCollider>();
             var probe=m.GetComponent<LoopCounterExfilContacts>();
             if(!probe)probe=m.gameObject.AddComponent<LoopCounterExfilContacts>();
             return new Actor {entityId=m.gameObject.GetInstanceID(),name=m.name,position=V(m.transform.position),
                 velocity=rb?V(rb.linearVelocity):null,hasBody=rb!=null,kinematic=rb && rb.isKinematic,
+                capsuleCenter=capsule?V(capsule.center):null,rootScale=V(m.transform.lossyScale),
+                capsuleRadius=capsule?capsule.radius:0,capsuleHeight=capsule?capsule.height:0,
+                horizontalPenetration=LoopObservation.HorizontalPenetration(m.transform),
                 colliderEnabled=col && col.enabled && col.gameObject.activeInHierarchy,
                 state=PublicState(m),contacts=probe.Current()};
         }).ToArray();

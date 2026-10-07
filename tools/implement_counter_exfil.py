@@ -36,8 +36,9 @@ def survey_context(survey):
             groundedAndRenderedUnion=route.get('groundedAndRenderedUnion'),
             support_interpretation='Original single-mesh footprint test can fail at a join; renderer union checks the whole footprint across both existing surfaces.',
             endpoints=[route['points'][0]['position'],route['points'][-1]['position']],
-            problems=[p for p in route['points'] if p['capsuleOverlaps'] or p['coupeOverlaps']],
-            swept_problems=[p for p in route['segments'] if p['capsuleHits'] or p['coupeHits']]))
+            obstacles=sorted({name for p in route['points'] for name in p['capsuleOverlaps']+p['coupeOverlaps']}),
+            swept_obstacles=sorted({name for p in route['segments'] for name in p['capsuleHits']+p['coupeHits']}),
+            overlap_positions=len(route['points']),swept_segments=len(route['segments'])))
     return value
 
 def validate_source(path,content):
@@ -94,9 +95,11 @@ class ImplementCounterExfil(CapacityAuthor):
         context=[]
         for path in sorted(READ):
             source=files.path(path).read_text()
-            # Bootstrap is read-only: supply complete source, including camera, without writable access.
-            for start in range(1,len(source.splitlines())+1,200):
-                value=read('context',dict(path=path,start_line=start,line_count=200))
+            # Supply Bootstrap installation/Walker exactly; the protected Follow
+            # class remains available through read_file if a concrete API is needed.
+            last=source[:source.index('    public class Follow : MonoBehaviour')].count('\n') if path.endswith('/Bootstrap.cs') else len(source.splitlines())
+            for start in range(1,last+1,200):
+                value=read('context',dict(path=path,start_line=start,line_count=min(200,last-start+1)))
                 context.append(path+' line'+str(start)+'\n'+value['content'])
         contract=(self.engines.source_root/'docs/COUNTER-EXFIL-ACCEPTANCE.md').read_text()
         self.c.update(working_context_tokens=98304,output_tokens=32768,model_timeout_seconds=600)
@@ -132,7 +135,9 @@ class ImplementCounterExfil(CapacityAuthor):
              tool('create_file','Save one complete NEW chapter module; never overwrite.',{'path':{'type':'string'},'content':{'type':'string'}}),
              tool('replace_text','Replace one exact current read-backed span.',{'path':{'type':'string'},'old':{'type':'string'},'new':{'type':'string'}}),
              tool('finish_task','Finish saved source; native acceptance remains independent.',{'summary':{'type':'string'}})],
-            {'read_file':read,'create_file':create,'replace_text':replace,'finish_task':finish},turns=16,reasoning_effort='xhigh')
+            {'read_file':read,'create_file':create,'replace_text':replace,'finish_task':finish},turns=16,reasoning_effort='xhigh',
+            retained_assistant=getattr(self,'retained_author',None),
+            retained_instruction=getattr(self,'retained_instruction',None))
         atomic(self.store.root/'evidence'/(ident+'-counter-exfil-author.json'),result)
         self.store.set(counter_exfil_source_outcome=result);self.store.report()
         if not result.get('ok'):raise Halt('Preserve usable local Counter-Exfil saves; complete source submission needs focused continuation')
