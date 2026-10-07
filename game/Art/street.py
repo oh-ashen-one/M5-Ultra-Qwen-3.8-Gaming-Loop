@@ -22,25 +22,17 @@ def mat(nm, col, rough=0.85, metal=0.0):
     b.inputs["Base Color"].default_value = (col[0], col[1], col[2], 1.0)
     b.inputs["Roughness"].default_value = rough
     b.inputs["Metallic"].default_value = metal
-    img = IMGMAP.get(nm)
-    if img and img in bpy.data.images:
+    imgnm = IMGMAP.get(nm)
+    if nm == "darkbrick" and "t_brick_dk" in bpy.data.images:
+        imgnm = "t_brick_dk"
+    if imgnm and imgnm in bpy.data.images:
         t = nt.nodes.new("ShaderNodeTexImage")
-        t.image = bpy.data.images[img]
+        t.image = bpy.data.images[imgnm]
         t.location = (-600, 200)
         uv = nt.nodes.new("ShaderNodeUVMap")
         uv.location = (-820, 200)
         nt.links.new(uv.outputs["UV"], t.inputs["Vector"])
-        tint = TINTMAP.get(nm)
-        out = t.outputs["Color"]
-        if tint:
-            mx = nt.nodes.new("ShaderNodeMixRGB")
-            mx.blend_type = "MULTIPLY"
-            mx.inputs["Fac"].default_value = 1.0
-            mx.inputs["Color2"].default_value = (tint[0], tint[1], tint[2], 1.0)
-            mx.location = (-380, 200)
-            nt.links.new(t.outputs["Color"], mx.inputs["Color1"])
-            out = mx.outputs["Color"]
-        nt.links.new(out, b.inputs["Base Color"])
+        nt.links.new(t.outputs["Color"], b.inputs["Base Color"])
     return m
 
 
@@ -86,44 +78,84 @@ def gen(nm, s, mode):
     im = bpy.data.images.new(nm, N, N, alpha=False)
     im.colorspace_settings.name = "sRGB"
     px = [0.0] * (N * N * 4)
+    pxdk = None
+    if mode == "brick":
+        if "t_brick_dk" in bpy.data.images:
+            bpy.data.images.remove(bpy.data.images["t_brick_dk"])
+        pxdk = [0.0] * (N * N * 4)
     for y in range(N):
         v = y / N; row = y * N
         for x in range(N):
             u = x / N
             if mode == "brick":
                 bw = 0.0625; rh = 1 / 12.0; ri = int(v * 12)
-                bx = (u - (ri % 2) * 0.5 * bw) % bw; by = v - ri * rh
-                mo = bx < 0.013 or bx > bw - 0.013 or by < 0.006 or by > rh - 0.006
+                sh = 0.5 * bw if (ri % 2) else 0.0
+                u2 = u - sh
+                bx = u2 % bw; by = v - ri * rh
+                fi = int(u2 // bw)
+                vthr = 0.0011; hthr = 0.0045
+                mo = bx < vthr or bx > bw - vthr or by < hthr or by > rh - hthr
+                g1 = _fb(u, v, 64, s + 5)
+                ao = 1.0
+                dv = bx if bx < bw - bx else bw - bx
+                if dv < 0.008: ao *= 0.80 + 0.20 * (dv / 0.008)
+                dh = by if by < rh - by else rh - by
+                if dh < 0.018: ao *= 0.86 + 0.14 * (dh / 0.018)
+                i = (row + x) * 4
                 if mo:
-                    rr, gg, bb = 0.60, 0.58, 0.54
+                    mv = _h(fi, ri, s + 21) * 0.04 - 0.02
+                    rr = 0.405 + mv + (g1 - 0.5) * 0.05
+                    gg = 0.372 + mv + (g1 - 0.5) * 0.04
+                    bb = 0.338 + mv + (g1 - 0.5) * 0.035
+                    dr = 0.205 + (g1 - 0.5) * 0.030 + mv * 0.5
+                    dg = 0.190 + (g1 - 0.5) * 0.025 + mv * 0.5
+                    db = 0.178 + (g1 - 0.5) * 0.020 + mv * 0.5
                 else:
-                    ti = _h(int(u * 16), ri, s + 3)
-                    rr = 0.40 + 0.12 * ti; gg = 0.12 + 0.05 * ti; bb = 0.09 + 0.04 * ti
-                    if ti < 0.35:
-                        rr *= 0.72; gg *= 0.74; bb *= 0.78
-                    n1 = _fb(u, v, 48, s + 5)
-                    rr += (n1 - 0.5) * 0.06; gg += (n1 - 0.5) * 0.05; bb += (n1 - 0.5) * 0.04
+                    ti = _h(fi, ri, s + 3); ti2 = _h(fi, ri, s + 13)
+                    rr = 0.330 + 0.100 * ti; gg = 0.150 + 0.055 * ti; bb = 0.125 + 0.045 * ti
+                    dr = 0.115 + 0.045 * ti; dg = 0.085 + 0.030 * ti; db = 0.070 + 0.024 * ti
+                    if ti2 > 0.82:
+                        rr *= 0.80; gg *= 0.80; bb *= 0.82
+                        dr *= 0.80; dg *= 0.80; db *= 0.82
+                    elif ti2 < 0.12:
+                        rr = rr * 0.9 + 0.055; gg = gg * 0.9 + 0.055; bb = bb * 0.9 + 0.050
+                        dr = dr * 0.9 + 0.020; dg = dg * 0.9 + 0.020; db = db * 0.9 + 0.018
+                    rr += (g1 - 0.5) * 0.06; gg += (g1 - 0.5) * 0.05; bb += (g1 - 0.5) * 0.04
+                    dr += (g1 - 0.5) * 0.03; dg += (g1 - 0.5) * 0.025; db += (g1 - 0.5) * 0.02
+                rr *= ao; gg *= ao; bb *= ao
+                dr *= ao; dg *= ao; db *= ao
+                px[i] = max(0.0, min(1.0, rr)); px[i + 1] = max(0.0, min(1.0, gg)); px[i + 2] = max(0.0, min(1.0, bb)); px[i + 3] = 1.0
+                pxdk[i] = max(0.0, min(1.0, dr)); pxdk[i + 1] = max(0.0, min(1.0, dg)); pxdk[i + 2] = max(0.0, min(1.0, db)); pxdk[i + 3] = 1.0
+                continue
             elif mode == "stone":
                 m1 = _fb(u, v, 8, s + 1); st = _fb(u, v * 0.6, 5, s + 7)
-                jr = (v * 6) % 1.0; j = 0.6 if (jr < 0.03 or jr > 0.97) else 1.0
-                rr = (0.30 + 0.30 * m1 + 0.05 * st) * j
-                gg = (0.28 + 0.30 * m1 + 0.05 * st) * j
-                bb = (0.24 + 0.26 * m1 + 0.04 * st) * j
+                m2 = _fb(u, v, 3, s + 33)
+                jr = (v * 6) % 1.0; j = 0.62 if (jr < 0.02 or jr > 0.98) else 1.0
+                mm = (0.94 + 0.12 * m2) * j
+                rr = (0.30 + 0.30 * m1 + 0.05 * st) * mm
+                gg = (0.28 + 0.30 * m1 + 0.05 * st) * mm
+                bb = (0.24 + 0.26 * m1 + 0.04 * st) * mm
             elif mode == "concrete":
                 g = _fb(u, v, 40, s + 2); bl = _fb(u, v, 5, s + 9)
-                b0 = 0.33 + 0.10 * (g - 0.5) + 0.06 * (bl - 0.5)
+                mf = 0.92 + 0.16 * _fb(u, v, 3, s + 31)
+                b0 = (0.33 + 0.10 * (g - 0.5) + 0.06 * (bl - 0.5)) * mf
                 rr = gg = b0; bb = b0 * 0.98
             elif mode == "asphalt":
                 g = _fb(u, v, 90, s + 4); p = _fb(u, v, 6, s + 11)
-                b0 = 0.075 + 0.05 * (g - 0.5) + 0.03 * (p - 0.5)
+                mf = 0.9 + 0.2 * _fb(u, v, 4, s + 41)
+                b0 = (0.075 + 0.05 * (g - 0.5) + 0.03 * (p - 0.5)) * mf
                 rr = gg = b0; bb = b0 * 1.06
             else:
                 g = _fb(u * 9, v * 1.4, 6, s + 6); b0 = 0.16 + 0.12 * g
-                rr = b0; gg = b0 * 0.6; bb = b0 * 0.4
+                rr = b0; gg = b0 * 0.62; bb = b0 * 0.46
             i = (row + x) * 4
             px[i] = max(0.0, min(1.0, rr)); px[i + 1] = max(0.0, min(1.0, gg))
             px[i + 2] = max(0.0, min(1.0, bb)); px[i + 3] = 1.0
     im.pixels.foreach_set(px)
+    if pxdk is not None:
+        dim = bpy.data.images.new("t_brick_dk", N, N, alpha=False)
+        dim.colorspace_settings.name = "sRGB"
+        dim.pixels.foreach_set(pxdk)
     return im
 
 
