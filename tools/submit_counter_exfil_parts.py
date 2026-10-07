@@ -5,7 +5,7 @@ from qualify_qwen_capacity import CapacityAuthor
 from implement_counter_exfil import TASK,HUD,NEW,validate_source
 from finish_counter_exfil_parts import MISSION,RUNNER,DEATH,ACCEPTED
 from resume_three_day_queue import main
-from loop_controller.core import Files,Halt,atomic,sha
+from loop_controller.core import Files,Halt,atomic,sha,read_json
 from loop_controller.delivery_policy import HARD_CAP_EPOCH
 from loop_controller.model import tool
 
@@ -27,6 +27,18 @@ def between(source,start,end):
 
 def writes_shared_signals(source):
     return bool(re.search(r'LoopSignals\.(Health|Restarts|Shots|Hits|Mode|Mission)\s*(?:[+*/-]?=(?!=)|\+\+|--)',source))
+
+def final_source_parameter(response):
+    choice=response.get('choices',[{}])[0];message=choice.get('message',{})
+    content=message.get('content');opening='<parameter name="content">';closing='</parameter>'
+    if (choice.get('finish_reason')!='stop' or message.get('tool_calls')
+            or not isinstance(message.get('reasoning_content'),str) or not isinstance(content,str)
+            or not content.startswith(opening) or not content.endswith(closing)
+            or content.count(opening)!=1 or content.count(closing)!=1 or '<think>' in content or '</think>' in content):
+        raise ValueError('Require one complete final content parameter, separate from private reasoning, at a normal stop')
+    source=content[len(opening):-len(closing)]
+    if not source.strip():raise ValueError('Empty final source parameter')
+    return source
 
 class SubmitCounterExfil(CapacityAuthor):
     part_labels=('crossing','runner','hud')
@@ -107,7 +119,12 @@ class SubmitCounterExfil(CapacityAuthor):
                 return dict(ok=True,local_authored=True,part=label,candidate=candidate,changed_files=[path],
                     source_sha256=sha(files.path(path).read_bytes()),native_verified=False)
             self.c.update(working_context_tokens=self.source_context_tokens,output_tokens=self.source_output_tokens,model_timeout_seconds=600)
-            result=self.model.session('builder',ident+'-'+label+'-source',
+            recovered=getattr(self,'recovered_parts',{}).get(label)
+            if recovered:
+                result=submit(ident+'-'+label+'-recovered-final',{'content':recovered['content']})
+                result.update(submission_route='strict-complete-final-parameter',response_sha256=recovered['response_sha256'])
+            else:
+                result=self.model.session('builder',ident+'-'+label+'-source',
                 'You are local Qwen, sole gameplay author. Submit actual finished C# through finish_source now.',
                 instruction+'\nAll source below is exact current text and hash-backed. No read calls or '
                 'additional planning are needed. A successful finish_source both saves the code and ends '
@@ -117,6 +134,15 @@ class SubmitCounterExfil(CapacityAuthor):
                 {'finish_source':submit},turns=3,reasoning_effort='xhigh',
                 retained_assistant=getattr(self,'retained_parts',{}).get(label),
                 retained_instruction=getattr(self,'retained_instruction',None) if label in getattr(self,'retained_parts',{}) else None)
+                if set(result)=={'summary'}:
+                    responses=sorted((self.store.root/'private/sessions'/(ident+'-'+label+'-source')).glob('response-*.json'))
+                    if responses:
+                        response=responses[-1]
+                        try:content=final_source_parameter(read_json(response))
+                        except ValueError:pass
+                        else:
+                            result=submit(ident+'-'+label+'-recovered-final',{'content':content})
+                            result.update(submission_route='strict-complete-final-parameter',response_sha256=sha(response.read_bytes()))
             atomic(self.store.root/'evidence'/(ident+'-'+label+'-source.json'),result)
             if not result.get('ok'):raise Halt('Preserve saved local source; direct '+label+' submission incomplete: '+str(result.get('bounded_stop','no source tool')))
             parts.append(result);self.store.set(counter_exfil_direct_parts=parts);self.store.report()
