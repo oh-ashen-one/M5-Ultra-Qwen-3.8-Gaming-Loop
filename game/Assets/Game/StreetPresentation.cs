@@ -42,7 +42,6 @@ namespace ChicagoGame
                 new float[]{ 92, 34, 6, 5, 24,135, 0.40f, 0.32f},
             };
             foreach (var s in sp) Tower(root, s);
-            foreach (var s in sp) Tower(root, s);
             // Two bounded visual-only ground slabs from the ORIGINAL facade mesh via
             // the proven Place mapping (rot = basis, so wS.x->X, wS.y->Y, wS.z->Z).
             // 0.24 m thick, top 0.21 m. North X-18..22 / Z33.5..81.5 (bounds Z>=32),
