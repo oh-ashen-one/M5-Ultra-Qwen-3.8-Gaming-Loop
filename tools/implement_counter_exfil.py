@@ -53,6 +53,9 @@ class ImplementCounterExfil(CapacityAuthor):
     author_context_tokens=98304
     author_output_tokens=32768
     focused_instruction=''
+    context_files=READ
+    writable_paths=NEW|{HUD}
+    must_change={HUD}
     def validate_recovery(self,old):
         validate_boundary(old)
         self.survey=old['counter_exfil_preflight']
@@ -66,13 +69,15 @@ class ImplementCounterExfil(CapacityAuthor):
         baseline={str(p.relative_to(self.project)):sha(p.read_bytes()) for p in self.project.rglob('*')
             if p.is_file() and p.suffix in ('.cs','.shader','.py','.fbx','.blend')}
         original_hud=files.path(HUD).read_text()
+        phase_before={p:files.path(p).read_text() if files.path(p).is_file() else None for p in self.writable_paths}
         def read(action,fields):
             if fields['path'] not in READ|NEW:raise ValueError('Read exact supplied APIs or new chapter modules only')
             return edits.read(action,fields)
         def protected():
-            if any(sha(files.path(p).read_bytes())!=h for p,h in baseline.items() if p not in NEW|{HUD}):
+            if any(sha(files.path(p).read_bytes())!=h for p,h in baseline.items() if p not in self.writable_paths):
                 raise Halt('First incident changed a protected accepted source or asset')
         def check(path,content):
+            if path not in self.writable_paths:raise ValueError('This focused phase may edit only: '+', '.join(sorted(self.writable_paths)))
             # Keep the existing legacy read-only accessor, but permit no new reflection.
             if path==HUD:
                 old_accessor=original_hud[original_hud.index('        static string ReadStr('):]
@@ -91,12 +96,12 @@ class ImplementCounterExfil(CapacityAuthor):
             result=edits.replace(action,fields);checkpoint();return result
         def finish(_,fields):
             protected()
-            if not all(files.path(p).is_file() for p in NEW) or files.path(HUD).read_text()==original_hud:
-                raise ValueError('Save both complete new modules and actual installation/HUD integration first')
+            if not all(files.path(p).is_file() for p in NEW) or any(files.path(p).read_text()==phase_before[p] for p in self.must_change):
+                raise ValueError('Save the required actual current-phase edits before finishing')
             return dict(ok=True,local_authored=True,summary=fields['summary'],candidate=self.store.get('source_checkpoint'),
-                changed_files=sorted(NEW|{HUD}),native_verified=False,final_game_accepted=False)
+                changed_files=sorted(p for p in phase_before if files.path(p).read_text()!=phase_before[p]),native_verified=False,final_game_accepted=False)
         context=[]
-        for path in sorted(READ|{p for p in NEW if files.path(p).is_file()}):
+        for path in sorted(self.context_files|({p for p in NEW if files.path(p).is_file()} if self.context_files==READ else set())):
             source=files.path(path).read_text()
             # Supply Bootstrap installation/Walker exactly; the protected Follow
             # class remains available through read_file if a concrete API is needed.
@@ -141,6 +146,9 @@ class ImplementCounterExfil(CapacityAuthor):
             {'read_file':read,'create_file':create,'replace_text':replace,'finish_task':finish},turns=16,reasoning_effort='xhigh',
             retained_assistant=getattr(self,'retained_author',None),
             retained_instruction=getattr(self,'retained_instruction',None))
+        self.finish_author(ident,result)
+
+    def finish_author(self,ident,result):
         atomic(self.store.root/'evidence'/(ident+'-counter-exfil-author.json'),result)
         self.store.set(counter_exfil_source_outcome=result);self.store.report()
         if not result.get('ok'):raise Halt('Preserve usable local Counter-Exfil saves; complete source submission needs focused continuation')
