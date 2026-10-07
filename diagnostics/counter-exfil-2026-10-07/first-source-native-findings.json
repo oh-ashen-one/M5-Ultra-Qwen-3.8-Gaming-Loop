@@ -1,0 +1,130 @@
+{
+  "accepted_fallback": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+  "source_local_authored": true,
+  "first_compile": {
+    "round": "q0170-58c8b23a",
+    "candidate": "ff3564295c6f8cb97cade915e089abf19056743a",
+    "passed": false,
+    "failure": "compile-build",
+    "compile_errors": [
+      "Assets/LoopHarness/LoopCounterExfilObservation.cs(86,45): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'",
+      "Assets/LoopHarness/LoopCounterExfilObservation.cs(94,22): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'",
+      "Assets/LoopHarness/LoopCounterExfilObservation.cs(48,40): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'",
+      "Assets/LoopHarness/LoopCounterExfilObservation.cs(86,45): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'",
+      "Assets/LoopHarness/LoopCounterExfilObservation.cs(94,22): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'",
+      "Assets/LoopHarness/LoopCounterExfilObservation.cs(48,40): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'",
+      "Assets/LoopHarness/LoopCounterExfilObservation.cs(86,45): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'",
+      "Assets/LoopHarness/LoopCounterExfilObservation.cs(94,22): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'",
+      "Assets/LoopHarness/LoopCounterExfilObservation.cs(48,40): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'",
+      "Scripts have compiler errors.",
+      "Scripts have compiler errors."
+    ],
+    "gate_sha256": "6b4dabcef45dbd71419c439ac7320d914d51f103309dbad4f62fd8142ff80d87",
+    "game_source_changed": false
+  },
+  "first_native": {
+    "round": "q0171-3601cd2a",
+    "candidate": "ff3564295c6f8cb97cade915e089abf19056743a",
+    "build_id": "5ce752181323e90385ce56f0e5e68238968d38a47470d0102c623e90f3cd7cf0",
+    "build_exit": 0,
+    "compile_errors": [],
+    "passed": false,
+    "failures": [
+      "MissionBoard-text-outside-card",
+      "actual-interception-objective-not-rendered",
+      "interception-live-objective-not-rendered",
+      "objective-not-compact"
+    ],
+    "samples": 933,
+    "duration": 95.0,
+    "scene_inventory": {
+      "declared_counts": {
+        "colliderRecorded": 60,
+        "colliderTotal": 60,
+        "rendererRecorded": 3610,
+        "rendererTotal": 3610
+      },
+      "failure": [],
+      "observed_at_seconds": 0.5,
+      "observed_counts": {
+        "collider": 60,
+        "renderer": 3610
+      },
+      "passed": true,
+      "scope": "Complete point-in-time scene component inventory; gameplay and rendered support criteria are unchanged"
+    },
+    "old_completion_seconds": [
+      75.43333435058594
+    ],
+    "reset_seconds": [
+      90.03333282470703
+    ],
+    "handoff": {
+      "time": 77.03333282470703,
+      "health": 28.0,
+      "mode": "foot",
+      "player": [
+        28.18739128112793,
+        0.13499999046325684,
+        13.939845085144043
+      ],
+      "vehicle": [
+        47.60508728027344,
+        -0.009999275207519531,
+        17.460317611694336
+      ]
+    },
+    "armed_board": {
+      "name": "MissionBoard",
+      "text": "INTERCEPTION COMPLETE\nAll stopped, no escapes\nStopped 3 / Escaped 0\nRelay complete | R reset\nEXFIL ARMED coupe 20m | E board, F launch",
+      "visible": true,
+      "visibleRenderers": 2,
+      "textRect": [
+        0.46482735872268677,
+        0.7592668533325195,
+        0.9102514982223511,
+        0.92508864402771
+      ],
+      "cardRect": [
+        0.40738826990127563,
+        0.7675405740737915,
+        0.9630593061447144,
+        0.9470069408416748
+      ],
+      "captureTextRect": [
+        0.4736205041408539,
+        0.7592668533325195,
+        0.8076886534690857,
+        0.92508864402771
+      ],
+      "captureCardRect": [
+        0.43054118752479553,
+        0.7675405740737915,
+        0.8472945094108582,
+        0.9470069408416748
+      ],
+      "cardShader": "Chicago/HudOpaque",
+      "cardColor": [
+        0.05999999865889549,
+        0.07000000029802322,
+        0.08500000089406967,
+        1.0
+      ]
+    },
+    "frame": {
+      "file": "frame-007.png",
+      "time": 77,
+      "sha256": "c5d8c6253790fed926f3d10255b6b6335625da04222530b062a4fcb5cc48a4cc",
+      "private_only": true
+    },
+    "sealed": {
+      "gate.json": "7c1dd72bc0f6da5aa09c26536a01c201fb499a1cedc9b697dbb1159513781c67",
+      "moving-encounter-gate.json": "c482e76b7f5b880ab6a99d5d414de9528e7f1b7923492cb252780e4783f69c3e",
+      "captures/trace.jsonl": "e89694c7083342346a67f639049cd28502c157008c467985e350cad0fc782ff0",
+      "captures/scenario.json": "b4d5993dd003612072ee061095eb2f706e1494879e6f75fc1165106002e42d27"
+    }
+  },
+  "counter_exfil_activated": false,
+  "full_incident_success": false,
+  "final_game_accepted": false
+}
