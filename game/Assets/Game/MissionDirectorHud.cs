@@ -13,6 +13,14 @@ namespace ChicagoGame
         TextMesh _board; Renderer[] _hide; Transform _hudStatus;
         RelaySequence _relay; RouteMission _route; CourierMission _courier; InterceptionMission _interception;
 
+        // Board palette, single source of truth. BoardColor is exactly the
+        // colour Setup installs the board with, so a released death hands the
+        // live or completed chapter copy back in its own original colour;
+        // DownColor is the only colour a downed courier is ever shown in, so a
+        // health-depleted failure cannot be mistaken for an objective.
+        static readonly Color BoardColor = new Color(.95f, .95f, .95f);
+        static readonly Color DownColor = new Color(1f, .26f, .22f);
+
         public static void Install(GameObject player, Camera cam)
         {
             if (_inst != null) return;
