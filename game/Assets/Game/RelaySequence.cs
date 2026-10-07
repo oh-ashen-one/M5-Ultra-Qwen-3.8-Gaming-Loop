@@ -14,6 +14,15 @@ namespace ChicagoGame
         public int ActivationCount, ExpectedIndex, WrongOrderCount;
         public float Remaining;
         public string Objective;
+
+        // ---- death integration (RelaySequence) ------------------------------
+        // DeathAuthority owns the single death decision; this chain only
+        // freezes, reports and refuses to arm or bank. FailReason keeps the
+        // genuine timeout the chain itself recorded, so a later death report
+        // shows that more specific reason instead of overwriting history.
+        public string FailReason;
+        string objectiveBeforeDeath;
+        bool deathHeld;
         public Transform[] Relays = new Transform[3];
 
         float armedAt, flashUntil;
