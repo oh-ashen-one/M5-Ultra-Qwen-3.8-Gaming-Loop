@@ -108,6 +108,7 @@ MissionDirectorHud.Install(body,cam);
             AudioFX.Install(rig.transform);
             HudStatus.Install(cam);
             ChicagoGame.PlayerPresentation.Install(body);
+            ChicagoGame.VehiclePresentation.Install(body);
 
             // Golden-hour Chicago key light: low warm sun casting long raking
             // shadows across the brick rowhouses, matching the supplied visual
