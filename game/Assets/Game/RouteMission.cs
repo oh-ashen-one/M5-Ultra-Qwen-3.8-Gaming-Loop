@@ -320,7 +320,15 @@ namespace ChicagoGame
                 objectiveBeforeDeath = Objective;
             }
             Objective = FailureText();
-            if (hud != null) { hud.text = FailureText(); hud.color = DownColor; }
+            // The route board belongs to the chapter, so it only speaks while
+            // the chapter actually runs - the same gate LateUpdate uses, so the
+            // two never disagree. The objective line above reports the death to
+            // the board owner either way.
+            if (hud != null && RouteStage >= 1)
+            {
+                hud.text = FailureText();
+                hud.color = DownColor;
+            }
         }
 
         void ReleaseDeath()
