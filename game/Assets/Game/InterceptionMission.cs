@@ -9,6 +9,23 @@ namespace ChicagoGame
         public int Stopped, Escaped, Spawned;
         public string Objective;
 
+        // ---- death integration (InterceptionMission) ------------------------
+        // DeathAuthority owns the single death decision; this chapter only
+        // freezes, reports and refuses to arm, receive, spawn, score or
+        // complete. FailReason keeps a genuine failure this chapter recorded
+        // first - a runner that really crossed the line, a missing prefab - so
+        // a lethal hit that lands afterwards reports that more specific reason
+        // instead of overwriting history. Nothing here writes health,
+        // Restarts, shots or input.
+        public string FailReason;
+        string objectiveBeforeDeath;
+        bool deathHeld;
+
+        /// <summary>True while the courier is down: the freeze the physics and
+        /// late-presentation paths must both honour, even in a frame where this
+        /// file's Update has not run yet.</summary>
+        bool Down { get { return deathHeld || DeathAuthority.IsDead; } }
+
         static InterceptionMission _inst;
         GameObject player; Camera cam; RelaySequence relay;
         int lastRestarts;
