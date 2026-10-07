@@ -143,9 +143,11 @@ class LocalModel:
 
     def session(self, role, session_id, system, prompt, tools, dispatch, images=(), turns=16,
                 reasoning_effort="xhigh", visual_contract=None, retained_assistant=None,
-                retained_instruction=None):
+                retained_instruction=None, tool_choice="auto"):
         if reasoning_effort not in ("low", "medium", "xhigh"):
             raise ValueError("Pinned Qwen template supports only low, medium and xhigh")
+        if tool_choice not in ('auto', 'none') or (tool_choice == 'none' and (tools or dispatch)):
+            raise ValueError('Plain artifact responses have no exposed tools or dispatch')
         sampling = {**SAMPLING, "reasoning_effort": reasoning_effort,
                     "chat_template_kwargs": dict(SAMPLING["chat_template_kwargs"])}
         private = self.store.root / "private" / "sessions" / session_id
@@ -184,7 +186,9 @@ class LocalModel:
                     return {"bounded_stop": "context", "summary": "Inspect current source and continue in a new bounded task."}
                 request_id = session_id + "-" + str(turn)
                 payload = dict(model=MODEL, messages=messages, tools=tools,
-                               tool_choice="auto", max_tokens=self.config["output_tokens"], **sampling)
+                               tool_choice=tool_choice, max_tokens=self.config["output_tokens"], **sampling)
+                if tool_choice == 'none':
+                    payload.pop('tools')
                 atomic(private / ('request-%03d-settings.json' % turn), dict(
                     request_id=request_id, role=role, model=payload['model'],
                     reasoning_effort=payload['reasoning_effort'], max_tokens=payload['max_tokens'],
