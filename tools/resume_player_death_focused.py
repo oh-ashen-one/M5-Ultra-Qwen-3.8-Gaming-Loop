@@ -76,6 +76,7 @@ def validate_edit(path, value, writable, follow):
 class FocusedDeath(PlayerDeathSource):
     phases=PHASES
     phase_turns=10
+    allow_unchanged_phases=()
     def validate_recovery(self, old):
         validate_boundary(old)
         self.red = old['player_death_red_outcome']
@@ -126,7 +127,8 @@ class FocusedDeath(PlayerDeathSource):
                 self.store.report()
                 return result
             def finish(_, fields):
-                if all(files.path(p).read_text() == value for p,value in original.items()):
+                if (all(files.path(p).read_text() == value for p,value in original.items())
+                        and label not in self.allow_unchanged_phases):
                     raise ValueError('Save the actual current-phase integration before finishing')
                 if any(sha(files.path(p).read_bytes()) != digest for p,digest in phase_protected.items()):
                     raise Halt('Focused local author changed protected other-phase source')
