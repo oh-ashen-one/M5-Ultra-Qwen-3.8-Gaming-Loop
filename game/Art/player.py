@@ -35,14 +35,17 @@ def MAT(n, c, rough=0.8, metal=0.0):
     b.inputs["Metallic"].default_value = metal
     return m
 
-M_SKIN = MAT("Skin_Warm", (0.42, 0.27, 0.19), 0.55)
-M_JKT  = MAT("Jacket_Charcoal", (0.065, 0.065, 0.075), 0.85)
-M_TRIM = MAT("Trim_JacketDark", (0.028, 0.028, 0.034), 0.70)
-M_JEANS= MAT("Jeans_DarkBlue", (0.055, 0.075, 0.135), 0.90)
-M_SHOE = MAT("Shoe_Black", (0.025, 0.025, 0.03), 0.50)
-M_HAIR = MAT("Hair_Black", (0.02, 0.016, 0.013), 0.50)
-M_PIST = MAT("Pistol_Steel", (0.085, 0.085, 0.10), 0.35, 0.80)
-M_EYE  = MAT("Eye_Dark", (0.015, 0.015, 0.02), 0.4)
+M_SKIN  = MAT("Skin_Warm", (0.44, 0.285, 0.205), 0.52)
+M_JKT   = MAT("Jacket_Charcoal", (0.072, 0.072, 0.084), 0.86)
+M_JKT_HL= MAT("Jacket_Highlight", (0.118, 0.118, 0.132), 0.80)
+M_TRIM  = MAT("Trim_JacketDark", (0.026, 0.026, 0.032), 0.68)
+M_JEANS = MAT("Jeans_DarkBlue", (0.092, 0.120, 0.196), 0.92)
+M_JEANS_HL= MAT("Jeans_Seam", (0.142, 0.172, 0.252), 0.90)
+M_SHOE  = MAT("Shoe_Black", (0.028, 0.028, 0.034), 0.48)
+M_HAIR  = MAT("Hair_Black", (0.022, 0.018, 0.015), 0.55)
+M_PIST  = MAT("Pistol_Steel", (0.085, 0.085, 0.10), 0.35, 0.80)
+M_EYE   = MAT("Eye_Dark", (0.014, 0.014, 0.02), 0.40)
+
 
 def shade_bevel(o, w=0.006, ang=0.70):
     for p in o.data.polygons: p.use_smooth = True
@@ -132,67 +135,69 @@ def LS(z, xh, yh, xs, q=2.4, yb=1.0, ys=0.0):
 parts = {}
 def add(o, key): parts.setdefault(key, []).append(o)
 
-# lofted torso / jacket body (soft-square superellipse, flattened back)
-add(LOFT("jkt_torso", [L(1.00,0.148,0.118,2.3,0.92,-0.004), L(1.12,0.158,0.126,2.4,0.86,-0.010),
-     L(1.26,0.168,0.132,2.5,0.82,-0.014), L(1.37,0.166,0.128,2.7,0.80,-0.014),
-     L(1.46,0.150,0.116,3.2,0.82,-0.012)], M_JKT, False, False), "spine")
-add(LOFT("jkt_hem", [L(0.93,0.168,0.132,2.4,0.82,-0.012), L(0.965,0.176,0.140,2.2,0.80,-0.010),
-     L(1.00,0.170,0.134,2.4,0.86,-0.010)], M_TRIM, True, True), "spine")
-add(LOFT("jkt_collar", [L(1.445,0.076,0.080,2.6,1.0,0.006), L(1.52,0.082,0.086,2.6,1.0,0.012),
-     L(1.565,0.060,0.070,3.0,1.06,0.014)], M_TRIM), "spine")
-add(BOX("jkt_placket", (0, 0.128, 1.21), (0.014, 0.022, 0.42), M_TRIM), "spine")
+# clothed courier body (shaped yoke/shoulder, closed neck+collar, connected trousers/shoes)
+# one continuous jacket loft builds volume + trapezius saddle so shoulder is not an open cap
+add(LOFT("jkt_torso", [L(0.95,0.150,0.124,2.4,0.82,-0.010), L(1.04,0.162,0.130,2.4,0.84,-0.012),
+     L(1.18,0.168,0.134,2.6,0.82,-0.014), L(1.30,0.167,0.132,2.8,0.80,-0.014),
+     L(1.40,0.162,0.124,3.0,0.82,-0.012), L(1.46,0.150,0.110,3.2,0.86,-0.010),
+     L(1.50,0.088,0.080,2.4,1.0,0.004)], M_JKT, False, False), "spine")
+# trapezius saddle fills neck->shoulder dip (no narrow-top / floating shoulder)
+add(LOFT("jkt_yoke", [L(1.442,0.152,0.052,2.0,1.0,0.012), L(1.472,0.120,0.054,2.2,1.0,0.010),
+     L(1.500,0.072,0.052,2.6,1.0,0.008)], M_JKT, True, False), "spine")
+add(LOFT("jkt_hem", [L(0.92,0.168,0.134,2.4,0.82,-0.012), L(0.958,0.178,0.142,2.2,0.80,-0.010),
+     L(1.00,0.170,0.136,2.4,0.86,-0.010)], M_TRIM, True, True), "spine")
+# restrained jacket collar: tapered, no fat cylinder
+add(LOFT("jkt_collar", [L(1.452,0.094,0.086,2.6,1.0,0.010), L(1.498,0.080,0.078,2.6,1.0,0.010),
+     L(1.536,0.064,0.064,3.0,1.0,0.006)], M_TRIM, True, False), "spine")
+add(BOX("jkt_placket", (0, 0.124, 1.20), (0.014, 0.020, 0.40), M_TRIM), "spine")
 for s in (1, -1):
-    add(BOX(f"jkt_pocket_{'l' if s>0 else 'r'}", (0.085*s, 0.126, 1.075), (0.055, 0.020, 0.10), M_TRIM), "spine")
-add(LOFT("pants_pelvis", [L(0.84,0.150,0.118,2.4,0.86,-0.006), L(0.95,0.156,0.124,2.5,0.84,-0.010),
-     L(1.00,0.152,0.120,2.6,0.82,-0.012)], M_JEANS), "root")
-add(LOFT("belt_waist", [L(0.982,0.158,0.126,2.5,0.82,-0.010), L(1.016,0.160,0.128,2.5,0.82,-0.010)], M_TRIM), "root")
-add(LOFT("neck", [L(1.44,0.058,0.060,2.2), L(1.52,0.060,0.062,2.2)], M_SKIN), "spine")
+    add(BOX(f"jkt_pocket_{'l' if s>0 else 'r'}", (0.080*s, 0.122, 1.10), (0.052, 0.018, 0.072), M_JKT_HL), "spine")
+add(LOFT("neck", [L(1.42,0.062,0.064,2.2,1.0,0.0), L(1.50,0.066,0.066,2.2,1.0,0.0),
+     L(1.575,0.060,0.062,2.4,1.0,0.0)], M_SKIN, False, True), "spine")
 
-# head / face (smooth, restrained features)
-add(SPH("head", (0, 0, 1.685), 1.0, M_SKIN, (0.088, 0.100, 0.110)), "head")
-add(BOX("nose", (0, 0.092, 1.672), (0.030, 0.030, 0.034), M_SKIN), "head")
+# head / face : rounded skull + jaw mass + ears, close-fitting hair (no rear plate)
+add(SPH("head", (0, 0.005, 1.690), 1.0, M_SKIN, (0.086, 0.100, 0.108)), "head")
+add(SPH("jaw", (0, 0.030, 1.638), 1.0, M_SKIN, (0.070, 0.080, 0.060)), "head")
+add(SPH("chin", (0, 0.082, 1.612), 1.0, M_SKIN, (0.030, 0.030, 0.026)), "head")
+add(SPH("nose", (0, 0.092, 1.672), 1.0, M_SKIN, (0.020, 0.026, 0.034)), "head")
 for s in (1, -1):
-    add(BOX(f"eye_{'l' if s>0 else 'r'}", (0.040*s, 0.086, 1.700), (0.030, 0.012, 0.015), M_EYE), "head")
-    add(BOX(f"brow_{'l' if s>0 else 'r'}", (0.040*s, 0.088, 1.726), (0.034, 0.012, 0.010), M_HAIR), "head")
-add(SPH("hair_cap", (0, -0.008, 1.712), 1.0, M_HAIR, (0.092, 0.104, 0.084)), "head")
-add(BOX("hair_back", (0, -0.078, 1.64), (0.15, 0.05, 0.14), M_HAIR), "head")
+    add(SPH(f"ear_{'l' if s>0 else 'r'}", (0.084*s, -0.002, 1.686), 1.0, M_SKIN, (0.014, 0.026, 0.040)), "head")
+    add(BOX(f"eye_{'l' if s>0 else 'r'}", (0.040*s, 0.088, 1.700), (0.028, 0.010, 0.014), M_EYE), "head")
+    add(BOX(f"brow_{'l' if s>0 else 'r'}", (0.040*s, 0.090, 1.724), (0.032, 0.010, 0.010), M_HAIR), "head")
+    add(SPH(f"temple_hair_{'l' if s>0 else 'r'}", (0.074*s, 0.026, 1.702), 1.0, M_HAIR, (0.018, 0.040, 0.046)), "head")
+add(SPH("hair_cap", (0, -0.012, 1.714), 1.0, M_HAIR, (0.092, 0.106, 0.082)), "head")
+add(SPH("hair_back", (0, -0.042, 1.668), 1.0, M_HAIR, (0.084, 0.074, 0.072)), "head")
 
-# arms: lofted sleeve + squared delt read + beveled cuff/hand
-# Sleeve and forearm lofts now carry real side X offsets before world-preserving PAR.
+# arms : rounded delt overlaps yoke+sleeve (closed shoulder) + tapered sleeve/fore + cuff
 for key, s in (("l", 1), ("r", -1)):
-    add(BOX(f"delt_{key}", (0.188*s, 0, 1.445), (0.096, 0.112, 0.104), M_JKT, 0.016), key+"sh")
-    add(LOFT(f"sleeve_{key}", [
-        LS(1.47,0.082,0.086,0.185*s,2.4,1.0,0.0),
-        LS(1.32,0.080,0.084,0.195*s,2.4,1.0,0.0),
-        LS(1.18,0.076,0.080,0.205*s,2.5,1.0,0.0),
-    ], M_JKT, w=0.004), key+"sh")
-    add(LOFT(f"fore_{key}", [
-        LS(1.18,0.070,0.074,0.205*s,2.4,1.0,0.0),
-        LS(1.06,0.066,0.070,0.212*s,2.4,1.0,0.0),
-        LS(0.95,0.060,0.064,0.222*s,2.6,1.0,0.0),
-    ], M_JKT, w=0.004), key+"el")
-    add(BOX(f"cuff_{key}", (0.215*s, 0, 0.95), (0.052, 0.062, 0.052), M_TRIM), key+"el")
+    add(SPH(f"delt_{key}", (0.188*s, 0.0, 1.478), 1.0, M_JKT, (0.062, 0.076, 0.066)), key+"sh")
+    add(LOFT(f"shseam_{key}", [LS(1.500,0.046,0.050,0.186*s,2.6,1.0,0.022),
+         LS(1.455,0.064,0.048,0.190*s,2.6,1.0,0.010)], M_JKT_HL, False, False, 18, 0.003), key+"sh")
+    add(LOFT(f"sleeve_{key}", [LS(1.49,0.078,0.082,0.185*s,2.4,1.0,0.0),
+         LS(1.34,0.074,0.078,0.192*s,2.4,1.0,0.0), LS(1.18,0.070,0.076,0.202*s,2.5,1.0,0.0)], M_JKT, w=0.004), key+"sh")
+    add(LOFT(f"fold_{key}", [LS(1.20,0.074,0.078,0.202*s,2.4,1.0,0.0),
+         LS(1.13,0.077,0.081,0.205*s,2.4,1.0,0.0), LS(1.07,0.072,0.076,0.208*s,2.4,1.0,0.0)], M_JKT_HL, False, False, 18, 0.003), key+"sh")
+    add(LOFT(f"fore_{key}", [LS(1.18,0.068,0.072,0.202*s,2.4,1.0,0.0),
+         LS(1.06,0.062,0.066,0.212*s,2.4,1.0,0.0), LS(0.95,0.056,0.060,0.220*s,2.6,1.0,0.0)], M_JKT, w=0.004), key+"el")
+    add(BOX(f"cuff_{key}", (0.216*s, 0.006, 0.945), (0.066, 0.078, 0.050), M_TRIM), key+"el")
     add(BOX(f"palm_{key}", (0.222*s, 0.012, 0.90), (0.050, 0.084, 0.074), M_SKIN), key+"el")
     add(BOX(f"fingers_{key}", (0.222*s, 0.052, 0.864), (0.046, 0.050, 0.062), M_SKIN), key+"el")
     add(BOX(f"thumb_{key}", (0.198*s, 0.040, 0.894), (0.022, 0.046, 0.026), M_SKIN), key+"el")
 
-# legs: lofted tapered trousers, beveled knee pad, pant cuff, shaped shoe
-# Thigh and shin lofts now carry real side X offsets before world-preserving PAR.
+# legs : tapered trousers meet a raised shoe collar (no ankle gap), grounded soles
+add(LOFT("pants_pelvis", [L(0.84,0.150,0.118,2.4,0.86,-0.006), L(0.95,0.158,0.126,2.5,0.84,-0.010),
+     L(1.00,0.152,0.120,2.6,0.82,-0.012)], M_JEANS, True, False), "root")
+add(LOFT("belt_waist", [L(0.982,0.160,0.128,2.5,0.82,-0.010), L(1.018,0.162,0.130,2.5,0.82,-0.010)], M_TRIM, True, True), "root")
 for key, s in (("l", 1), ("r", -1)):
-    add(LOFT(f"thigh_{key}", [
-        LS(0.95,0.100,0.104,0.095*s,2.4,0.86,-0.006),
-        LS(0.72,0.092,0.096,0.098*s,2.5,0.84,-0.010),
-        LS(0.50,0.086,0.090,0.100*s,2.6,0.84,-0.012),
-    ], M_JEANS, w=0.004), key+"hip")
-    add(BOX(f"kneepad_{key}", (0.100*s, 0.060, 0.50), (0.086, 0.052, 0.096), M_JEANS), key+"knee")
-    add(LOFT(f"shin_{key}", [
-        LS(0.50,0.082,0.086,0.100*s,2.5,0.86,-0.006),
-        LS(0.30,0.072,0.076,0.102*s,2.6,0.86,-0.008),
-        LS(0.13,0.062,0.066,0.105*s,2.8,0.88,-0.010),
-    ], M_JEANS, w=0.004), key+"knee")
-    add(BOX(f"pantcuff_{key}", (0.105*s, 0.0, 0.152), (0.072, 0.080, 0.050), M_JEANS), key+"knee")
-    add(BOX(f"shoe_{key}", (0.105*s, 0.052, 0.040), (0.086, 0.20, 0.060), M_SHOE, 0.014), key+"knee")
-    add(BOX(f"toe_{key}", (0.105*s, 0.183, 0.046), (0.082, 0.092, 0.062), M_SHOE, 0.022), key+"knee")
+    add(LOFT(f"thigh_{key}", [LS(0.95,0.100,0.104,0.095*s,2.4,0.86,-0.006),
+         LS(0.72,0.092,0.096,0.098*s,2.5,0.84,-0.010), LS(0.50,0.084,0.088,0.100*s,2.6,0.84,-0.012)], M_JEANS, False, True, 22, 0.004), key+"hip")
+    add(SPH(f"kneepad_{key}", (0.100*s, 0.052, 0.50), 1.0, M_JEANS, (0.080, 0.058, 0.092)), key+"knee")
+    add(LOFT(f"shin_{key}", [LS(0.50,0.080,0.084,0.100*s,2.5,0.86,-0.006),
+         LS(0.30,0.070,0.074,0.102*s,2.6,0.86,-0.008), LS(0.11,0.066,0.068,0.105*s,2.8,0.90,-0.006)], M_JEANS, False, True, 22, 0.004), key+"knee")
+    add(BOX(f"pantcuff_{key}", (0.105*s, 0.0, 0.118), (0.078, 0.086, 0.050), M_JEANS_HL), key+"knee")
+    add(BOX(f"ankle_{key}", (0.105*s, 0.010, 0.085), (0.072, 0.082, 0.050), M_SHOE), key+"knee")
+    add(BOX(f"shoe_{key}", (0.105*s, 0.045, 0.048), (0.084, 0.185, 0.048), M_SHOE, 0.012), key+"knee")
+    add(BOX(f"toe_{key}", (0.105*s, 0.170, 0.050), (0.080, 0.060, 0.050), M_SHOE, 0.020), key+"knee")
 
 # right-hand handgun carried by the right elbow (rel)
 ps = BOX("pistol_slide", (-0.2213, 0.0414, 0.8097), (0.030, 0.20, 0.046), M_PIST, 0.004)
