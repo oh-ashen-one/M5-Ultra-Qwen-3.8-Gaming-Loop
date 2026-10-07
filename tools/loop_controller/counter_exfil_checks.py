@@ -15,7 +15,16 @@ def values(entries):
 
 def chapter(row):
     data=row.get('counterExfil') or {}
-    return values(data.get('chapter')) if data.get('available') else {}
+    if not data.get('available'):return {}
+    raw=values(data.get('chapter'))
+    if not {'armed','active','complete','failed'}<=set(raw):return {}
+    return dict(Dormant=not raw['armed'],Armed=raw['armed'] and not raw['active'],Active=raw['active'],
+        Complete=raw['complete'],Failed=raw['failed'],SpawnedCount=len(data.get('actors') or []),
+        KilledCount=raw.get('killedCount'),EscapedCount=raw.get('escapedCount'),ActiveTime=raw.get('activeTime'),
+        FailReason=raw.get('failReason'),
+        # This initial probe never pins. Any accumulated qualification is a real
+        # raw-field anomaly, not a getter invocation by the observer.
+        PinnedNow=sum(values(a.get('state')).get('hold',0)>=.8 for a in data.get('actors',[]) if a.get('alive')))
 
 def horizontal(a,b):return math.hypot(a[0]-b[0],a[2]-b[2])
 
@@ -59,7 +68,7 @@ def inspect_activation_escape(rows,exit_x=3.2):
     else:
         first=failed[0];state=chapter(first)
         candidates=[a for a in first['counterExfil'].get('actors',[]) if a['position'][0]<=exit_x
-            and values(a.get('state')).get('Alive') and not values(a.get('state')).get('Pinned')]
+            and a.get('alive') and values(a.get('state')).get('hold',0)<.8]
         facts['escape_failure']=dict(time=first['time'],reason=state.get('FailReason'),actual_crossers=[a['name'] for a in candidates])
         if (not candidates or state.get('EscapedCount',0)<1 or not state.get('FailReason')
                 or first['health']<=0 or any(chapter(r).get('Complete') for r in active)):

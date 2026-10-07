@@ -7,7 +7,7 @@ from loop_controller.counter_exfil_checks import inspect_activation_escape,value
 class CounterExfilObservationTests(unittest.TestCase):
     def test_controller_claims_cannot_replace_actual_runners(self):
         def row(t):
-            claimed=dict(Armed=True,Active=True,SpawnedCount=3,Failed=True,EscapedCount=1,Complete=True)
+            claimed=dict(armed=True,active=True,failed=True,escapedCount=1,complete=True,killedCount=0,activeTime=20)
             return dict(time=t,restarts=0,health=28,mode='vehicle',player=[28.187391,0,13.939845],
                 vehicle=[47.605087,0,17.460318],vehiclePhysics=dict(velocity=[0,0,0]),rivals=[],
                 interception=dict(complete=True,stopped=3,escaped=0),counterExfil=dict(available=True,actors=[],
