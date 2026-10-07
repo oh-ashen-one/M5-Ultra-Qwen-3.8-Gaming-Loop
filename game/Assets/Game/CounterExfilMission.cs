@@ -323,30 +323,63 @@ namespace ChicagoGame
         // the whole chain, so nothing but walking east to west can produce it.
         void SampleFoot()
         {
-            if (LoopSignals.Mode != "foot" || _player == null) { ClearCrossing(); return; }
+            if (LoopSignals.Mode != "foot" || _player == null || Down) { ClearCrossing(); return; }
             Vector3 p = _player.transform.position;
+            Vector3 prev = lastFoot;
+            bool stepped = footValid && Vector3.Distance(p, prev) <= MAX_FOOT_STEP;
 
-            bool contiguous = footValid && Vector3.Distance(p, lastFoot) <= MAX_FOOT_STEP;
-            footValid = true; lastFoot = p;
-            if (!contiguous) footEastOfExit = false;            // a torn chain proves nothing
+            // Capture first, then make this the only previous foot sample. A torn
+            // chain starts over, but it cannot carry an older east or west claim.
+            footValid = true;
+            lastFoot = p;
 
-            // Only the surveyed central corridor's own physical width counts; a
-            // wide unqualified side street can never carry the crossing.
-            if (Mathf.Abs(p.z - EXIT_Z) > EXIT_HALF_Z) { footEastOfExit = false; crossedWest = false; return; }
-            if (p.x >= EXIT_X + CROSS_ARM) { footEastOfExit = true; crossedWest = false; return; }
-            if (p.x > EXIT_X) return;                           // east of the line: no event
+            if (!stepped)
+            {
+                footEastOfExit = false;
+                crossedWest = false;
+                crossedAt = 0f;
+                return;
+            }
 
-            // Genuinely west of the line, reached from an east sample inside one
-            // unbroken foot chain. It is the exit only if every runner is
-            // already permanently down or is still being physically held at THIS
-            // instant; strolling out early and loitering west of the line until
-            // the last runner falls proves nothing, so that chain is dropped and
-            // the walk must be done again from the east.
-            if (Settled()) crossedWest = true;
-            else { footEastOfExit = false; crossedWest = false; }
-            crossedAt = Time.time;
+            // Only the surveyed central corridor's own physical width counts.
+            if (Mathf.Abs(p.z - EXIT_Z) > EXIT_HALF_Z)
+            {
+                footEastOfExit = false;
+                crossedWest = false;
+                crossedAt = 0f;
+                return;
+            }
+
+            if (p.x >= EXIT_X + CROSS_ARM)
+            {
+                footEastOfExit = true;
+                crossedWest = false;
+                crossedAt = 0f;
+                return;
+            }
+
+            // Still on the east side of the exact plane. Keep an earlier central
+            // east leg, but never keep a west claim while not west.
+            if (p.x >= EXIT_X)
+            {
+                crossedWest = false;
+                crossedAt = 0f;
+                return;
+            }
+
+            if (stepped && footEastOfExit && prev.x > EXIT_X && p.x < EXIT_X && Settled())
+            {
+                crossedWest = true;
+                crossedAt = Time.time;
+                return;
+            }
+
+            // West without one continuous, central, settled east-to-west step is
+            // just loitering (or an E/teleport/early run): re-arm from the east.
+            footEastOfExit = false;
+            crossedWest = false;
+            crossedAt = 0f;
         }
-
         void ClearCrossing()
         {
             footEastOfExit = false; crossedWest = false; footValid = false; crossedAt = 0f;
