@@ -69,7 +69,7 @@ public sealed class VehiclePresentation : MonoBehaviour {
         doorHinge = d; doorRestRot = doorHinge.localRotation; return true;
     }
 
-    Vector3 VehicleScale() { if (hipAnchor != null && fwdAnchor != null) { float d = Vector3.Distance(hipAnchor.position, fwdAnchor.position); if (d > 1e-4f) return Mathf.Max(0.05f, d / 0.6f); } return 1f; }
+    float VehicleScale() { if (hipAnchor != null && fwdAnchor != null) { float d = Vector3.Distance(hipAnchor.position, fwdAnchor.position); if (d > 1e-4f) return Mathf.Max(0.05f, d / 0.6f); } return 1f; }
     Vector3 Curve(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float u) { float u2 = u * u, u3 = u2 * u; return 0.5f * ((2f * b) + (-a + c) * u + (2f * a - 5f * b + 4f * c - d) * u2 + (-a + 3f * b - 3f * c + d) * u3); }
 
     Vector3 BoardPoint(float t, Vector3 seated) {
@@ -87,14 +87,13 @@ public sealed class VehiclePresentation : MonoBehaviour {
         return Curve(path[Mathf.Max(0, i - 1)], path[i], path[Mathf.Min(6, i + 1)], path[Mathf.Min(6, i + 2)], u);
     }
 
-    Vector3 ComputeDoorSign(Vector3 f, Vector3 r) {
+    float ComputeDoorSign(Vector3 f, Vector3 r) {
         if (doorHinge == null || hipAnchor == null) return 1f;
-        Vector3 out = Vector3.Dot(r, doorHinge.position - hipAnchor.position) <= 0f ? -r : r;
+        Vector3 doorOut = Vector3.Dot(r, doorHinge.position - hipAnchor.position) <= 0f ? -r : r;
         Vector3 off = doorHinge.childCount > 0 ? doorHinge.GetChild(0).position - doorHinge.position : doorHinge.forward * 0.1f;
         if (off.sqrMagnitude < 1e-6f) off = doorHinge.right * 0.1f;
-        return Vector3.Dot(Vector3.Cross(Vector3.up, off), out) < 0f ? -1f : 1f;
+        return Vector3.Dot(Vector3.Cross(Vector3.up, off), doorOut) < 0f ? -1f : 1f;
     }
-
     void SetDoor(float deg) {
         if (doorHinge == null) return;
         Vector3 up = doorHinge.parent != null ? doorHinge.parent.InverseTransformDirection(Vector3.up) : Vector3.up;
