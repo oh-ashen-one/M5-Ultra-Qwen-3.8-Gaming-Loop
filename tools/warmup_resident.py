@@ -45,7 +45,15 @@ def session_token(path, resume=False, initial=None):
 
 
 @contextlib.contextmanager
-def gpu_admission(label, external_renderers=0):
+def gpu_admission(label, external_renderers=0, authorized_shared_coexistence=False, guard=None):
+    if authorized_shared_coexistence:
+        from shared_capture_slots import capture_slots
+        start=subprocess.check_output(['ps','-o','lstart=','-p',str(os.getpid())],text=True).strip()
+        with capture_slots(Path.home()/'.cache/gpu-slot',
+            dict(start=start,**{'class':'capture'},label=label,state='running',cmd='qwen-owned-admission'),
+            external_renderers,coexistence=True,guard=guard) as base:
+            yield base
+        return
     base = Path.home() / ".cache/gpu-slot"
     if (base / "PAUSED").exists():
         raise RuntimeError("Shared GPU admission paused")
@@ -76,7 +84,7 @@ def gpu_admission(label, external_renderers=0):
                 slot = index
             if not external_renderers:
                 break
-        if slot is None:
+        if slot is None or len(reserved)<min(2,external_renderers+1):
             raise RuntimeError("Shared GPU capture slots occupied")
         process_start = subprocess.check_output(["ps", "-o", "lstart=", "-p", str(os.getpid())], text=True).strip()
         write_state(holder, {"pid": os.getpid(), "start": process_start,

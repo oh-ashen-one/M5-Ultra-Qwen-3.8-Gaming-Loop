@@ -1,0 +1,1565 @@
+{
+  "observed_utc": "2026-10-06T02:47:01.016933+00:00",
+  "round": "q0047-bdab27ce",
+  "ordinary_native": {
+    "passed": true,
+    "failure": null,
+    "candidate_commit": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+    "build_id": "c55e3e013abbd16fb63625ae80d68f6bec9e49244d0f3f73a77f98644c379347",
+    "duration": 52,
+    "frame_count": 14,
+    "samples": 503,
+    "player_displacement": 26.215,
+    "vehicle_displacement": 20.134,
+    "stationary_grounded": true,
+    "scoped_facts": {
+      "audio_peak_rms": 0.23766623437404633,
+      "failure_retry": {
+        "failure_time": 30.08333396911621,
+        "reset_time": 32.03333282470703,
+        "retry_completion_time": 46.33333206176758
+      },
+      "mission_anchors": {
+        "away_seconds": 5.5333333015441895,
+        "closest_driving_approach": {
+          "collision_enabled": true,
+          "distance_xz_m": 0.6793398840213197,
+          "mission": "active",
+          "pad": [
+            1,
+            0.15000000596046448,
+            26
+          ],
+          "penetration_m": 0.0003800392150878906,
+          "restarts": 0,
+          "time": 14.149999618530273,
+          "vehicle": [
+            0.39391160011291504,
+            0.2586762607097626,
+            25.693145751953125
+          ]
+        },
+        "delivery_input_edges": [
+          {
+            "collision_enabled": true,
+            "distance_xz_m": 1.2084652978630757,
+            "mission": "complete",
+            "pad": [
+              1,
+              0.15000000596046448,
+              26
+            ],
+            "penetration_m": 0.0026426315307617188,
+            "restarts": 1,
+            "time": 46.33333206176758,
+            "vehicle": [
+              0.4866139888763428,
+              0.12424647808074951,
+              24.906005859375
+            ]
+          }
+        ],
+        "delivery_seconds": 46.33333206176758,
+        "failure": [],
+        "final_visual_acceptance": false,
+        "initial_world_positions": {
+          "Beacon": [
+            1,
+            0.7400000095367432,
+            26
+          ],
+          "BeaconRing": [
+            1,
+            0.17000000178813934,
+            26
+          ],
+          "DropPad": [
+            1,
+            0.15000000596046448,
+            26
+          ],
+          "Parcel": [
+            3.5999999046325684,
+            0.45012494921684265,
+            3.200000047683716
+          ]
+        },
+        "maximum_marker_target_xz_gap_m": 0,
+        "passed": true,
+        "pickup_seconds": 39.43333435058594,
+        "returned_seconds": 39.03333282470703,
+        "sample_count": 503,
+        "scope": "fixed-world-objectives-and-input-transitions"
+      },
+      "mission_states": [
+        "active",
+        "complete",
+        "failed"
+      ]
+    },
+    "camera_clearance": {
+      "acceptance_fixture": "camera-clearance",
+      "build_id": "07ace4dff43abb3923d8a857399bf489356832b6f3a24855e1f4974f5f8ed3d8",
+      "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+      "evidence": "evidence/camera-floor-ffe6fdbe-walls",
+      "failure": [],
+      "final_game_accepted": false,
+      "passed": true,
+      "phases": [
+        {
+          "camera_beyond_wall_samples": 0,
+          "camera_inside_samples": 0,
+          "camera_inside_world_samples": 0,
+          "legacy_endpoint_predicate_samples": 0,
+          "minimum_actor_samples_in_frame": 2,
+          "minimum_actor_samples_unobstructed": 2,
+          "near_plane_intersection_samples": 0,
+          "phase": "near",
+          "probe_distance_max": 0.6499999165534973,
+          "probe_distance_min": 0.6499999165534973,
+          "samples": 15
+        },
+        {
+          "camera_beyond_wall_samples": 0,
+          "camera_inside_samples": 0,
+          "camera_inside_world_samples": 0,
+          "legacy_endpoint_predicate_samples": 0,
+          "minimum_actor_samples_in_frame": 9,
+          "minimum_actor_samples_unobstructed": 5,
+          "near_plane_intersection_samples": 0,
+          "phase": "middle",
+          "probe_distance_max": 3,
+          "probe_distance_min": 3,
+          "samples": 14
+        },
+        {
+          "camera_beyond_wall_samples": 0,
+          "camera_inside_samples": 0,
+          "camera_inside_world_samples": 0,
+          "legacy_endpoint_predicate_samples": 14,
+          "minimum_actor_samples_in_frame": 9,
+          "minimum_actor_samples_unobstructed": 5,
+          "near_plane_intersection_samples": 0,
+          "phase": "endpoint",
+          "probe_distance_max": 5.403923511505127,
+          "probe_distance_min": 5.403923511505127,
+          "samples": 14
+        }
+      ],
+      "scope": "disposable-camera-clearance-diagnostic",
+      "visibility_note": "At least one actor bounds sample must remain visible and camera must be outside foreign colliders; useful framing still needs actual images"
+    },
+    "regressions": {
+      "passed": true,
+      "regressions": [
+        {
+          "gate": {
+            "acceptance_fixture": null,
+            "build_exit": 0,
+            "build_id": "73f4e649e97c8775a52c9feb6f1c48a5d6ece2b71b5da0d2d8060f1e62532fac",
+            "candidate_commit": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+            "capture_id": "q0047-bdab27ce-regression-walk",
+            "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+            "compile_errors": [],
+            "coverage": "foundation",
+            "displacement_axes": "horizontal XZ",
+            "duration": 16,
+            "failure": null,
+            "final_game_accepted": false,
+            "frame_count": 4,
+            "harness_sha256": "733457bb7da16054cfead21995ce79135d6f233234ae54b4e9b643912e9920d5",
+            "passed": true,
+            "pavement": {
+              "first_uncovered": [],
+              "passed": true,
+              "radius_m": 0.32,
+              "samples": 149,
+              "scope": "Flat rendered-surface bounds support the route; actual frame review is also required.",
+              "surfaces": [
+                {
+                  "max": [
+                    2.4000000953674316,
+                    0.14000078290700912,
+                    28
+                  ],
+                  "min": [
+                    -0.7999999523162842,
+                    2.2351741790771484e-08,
+                    14
+                  ],
+                  "name": "Street/sidewalk"
+                },
+                {
+                  "max": [
+                    13.649999618530273,
+                    0.05000346805900335,
+                    28
+                  ],
+                  "min": [
+                    2.6499996185302734,
+                    -0.06999915186315775,
+                    14
+                  ],
+                  "name": "Street/road_asphalt"
+                },
+                {
+                  "max": [
+                    6,
+                    0.14000045508146286,
+                    30
+                  ],
+                  "min": [
+                    -1,
+                    -1.214444637298584e-06,
+                    -2
+                  ],
+                  "name": "Pavement"
+                },
+                {
+                  "max": [
+                    2.4000000953674316,
+                    0.14000078290700912,
+                    14
+                  ],
+                  "min": [
+                    -0.7999999523162842,
+                    2.2351741790771484e-08,
+                    0
+                  ],
+                  "name": "Street/sidewalk"
+                },
+                {
+                  "max": [
+                    13.649999618530273,
+                    0.05000346805900335,
+                    14
+                  ],
+                  "min": [
+                    2.6499996185302734,
+                    -0.06999915186315775,
+                    0
+                  ],
+                  "name": "Street/road_asphalt"
+                }
+              ],
+              "uncovered_samples": 0
+            },
+            "performance_claim": "unqualified; shared renderer and capture overhead",
+            "player_displacement": 21.67,
+            "player_exit": 0,
+            "player_vertical_drop": 0.16,
+            "samples": 154,
+            "scope": "walking-regression",
+            "scoped_checks": [],
+            "scoped_facts": {},
+            "stationary_grounded": true,
+            "vehicle_displacement": 0.168
+          },
+          "test": "walk"
+        },
+        {
+          "gate": {
+            "acceptance_fixture": null,
+            "build_exit": 0,
+            "build_id": "167914bf809e523f6299e7934e62e9356afad258d22a58e440c12692318fc0ef",
+            "candidate_commit": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+            "capture_id": "q0047-bdab27ce-regression-world",
+            "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+            "compile_errors": [],
+            "coverage": "foundation",
+            "displacement_axes": "horizontal XZ",
+            "duration": 26,
+            "failure": null,
+            "final_game_accepted": false,
+            "frame_count": 4,
+            "harness_sha256": "c2952c4ddaecabe8cc15123036cfa1a77c1bc40ab554b228592c5ab4b06c2398",
+            "passed": true,
+            "performance_claim": "unqualified; shared renderer and capture overhead",
+            "player_displacement": 27.968,
+            "player_exit": 0,
+            "player_vertical_drop": 0.16,
+            "samples": 247,
+            "scope": "world-collision",
+            "scoped_checks": [
+              "world_collision"
+            ],
+            "scoped_facts": {
+              "collider_count": 25,
+              "forward_stop_motion": 0,
+              "side_stop_motion": 0
+            },
+            "stationary_grounded": true,
+            "vehicle_displacement": 0.168
+          },
+          "test": "world"
+        },
+        {
+          "gate": {
+            "acceptance_fixture": null,
+            "build_exit": 0,
+            "build_id": "503b3b5cb1ac386d9d1cc159cf55c21b8395a268c99ac417ebcfe8793f3d653a",
+            "candidate_commit": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+            "capture_id": "q0047-bdab27ce-regression-motor",
+            "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+            "compile_errors": [],
+            "coverage": "driving",
+            "displacement_axes": "horizontal XZ",
+            "duration": 34,
+            "failure": null,
+            "final_game_accepted": false,
+            "frame_count": 7,
+            "harness_sha256": "2139cfa793f7614294c6efebcd48e1c07a3a99c56652528fd8f24d162db2a605",
+            "passed": true,
+            "performance_claim": "unqualified; shared renderer and capture overhead",
+            "player_displacement": 26.215,
+            "player_exit": 0,
+            "player_vertical_drop": 0.16,
+            "samples": 323,
+            "scope": "vehicle-collision-reset",
+            "scoped_checks": [
+              "motor_reset"
+            ],
+            "scoped_facts": {
+              "entered_before_throttle": true,
+              "grounded_exit_before_reset": true,
+              "reset_positions_and_state": true,
+              "vehicle_stop_motion": 0.0012297836308833821
+            },
+            "stationary_grounded": true,
+            "vehicle_displacement": 20.134
+          },
+          "test": "motor"
+        },
+        {
+          "gate": {
+            "acceptance_fixture": null,
+            "build_exit": 0,
+            "build_id": "c0ab13f89f83e6751e29ad06be35608e84c520af649810d821fbf09e87e4d347",
+            "candidate_commit": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+            "capture_id": "q0047-bdab27ce-regression-courier",
+            "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+            "compile_errors": [],
+            "coverage": "mission-core",
+            "displacement_axes": "horizontal XZ",
+            "duration": 20,
+            "failure": null,
+            "final_game_accepted": false,
+            "frame_count": 10,
+            "harness_sha256": "ec977ac8869c42eec82867486b81869cd2521b3f4829ffa4392cae345c24d87c",
+            "passed": true,
+            "performance_claim": "unqualified; shared renderer and capture overhead",
+            "player_displacement": 5.2,
+            "player_exit": 0,
+            "player_vertical_drop": 0.16,
+            "samples": 191,
+            "scope": "connected-mission",
+            "scoped_checks": [
+              "mission_complete"
+            ],
+            "scoped_facts": {
+              "courier_hud_states": {
+                "before_pickup": true,
+                "carrying_seconds": 7.433333396911621,
+                "completion_seconds": 14.350000381469727,
+                "failure": [],
+                "passed": true,
+                "pixel_readability": "requires actual native capture review",
+                "reset_seconds": 17.133333206176758
+              },
+              "mission_anchors": {
+                "away_seconds": 4.633333206176758,
+                "closest_driving_approach": {
+                  "collision_enabled": true,
+                  "distance_xz_m": 1.0393855301387132,
+                  "mission": "complete",
+                  "pad": [
+                    1,
+                    0.15000000596046448,
+                    26
+                  ],
+                  "penetration_m": 0,
+                  "restarts": 0,
+                  "time": 16.28333282470703,
+                  "vehicle": [
+                    0.47231683135032654,
+                    0.32726365327835083,
+                    25.10452651977539
+                  ]
+                },
+                "delivery_input_edges": [
+                  {
+                    "collision_enabled": true,
+                    "distance_xz_m": 1.1912765106441057,
+                    "mission": "complete",
+                    "pad": [
+                      1,
+                      0.15000000596046448,
+                      26
+                    ],
+                    "penetration_m": 0.0017448663711547852,
+                    "restarts": 0,
+                    "time": 14.350000381469727,
+                    "vehicle": [
+                      0.485858678817749,
+                      0.21173277497291565,
+                      24.925384521484375
+                    ]
+                  }
+                ],
+                "delivery_seconds": 14.350000381469727,
+                "failure": [],
+                "final_visual_acceptance": false,
+                "initial_world_positions": {
+                  "Beacon": [
+                    1,
+                    0.7400000095367432,
+                    26
+                  ],
+                  "BeaconRing": [
+                    1,
+                    0.17000000178813934,
+                    26
+                  ],
+                  "DropPad": [
+                    1,
+                    0.15000000596046448,
+                    26
+                  ],
+                  "Parcel": [
+                    3.5999999046325684,
+                    0.45012494921684265,
+                    3.200000047683716
+                  ]
+                },
+                "maximum_marker_target_xz_gap_m": 0,
+                "passed": true,
+                "pickup_seconds": 7.433333396911621,
+                "returned_seconds": 7.0333333015441895,
+                "sample_count": 191,
+                "scope": "fixed-world-objectives-and-input-transitions"
+              },
+              "mission_states": [
+                "active",
+                "complete"
+              ]
+            },
+            "stationary_grounded": true,
+            "vehicle_displacement": 17.382
+          },
+          "test": "courier"
+        },
+        {
+          "gate": {
+            "acceptance_fixture": null,
+            "build_exit": 0,
+            "build_id": "5fbf3210749b7f726e81c40d5057eb047dc8105f18e92a6272f9590e8a004c45",
+            "candidate_commit": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+            "capture_id": "q0047-bdab27ce-regression-failure-retry",
+            "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+            "compile_errors": [],
+            "coverage": "mission-core",
+            "displacement_axes": "horizontal XZ",
+            "duration": 52,
+            "failure": null,
+            "final_game_accepted": false,
+            "frame_count": 9,
+            "harness_sha256": "2dab3f9565fe7c03ca4c0e39bfafd9db6de677dc623ccab3d1a99cbaff863c1d",
+            "passed": true,
+            "performance_claim": "unqualified; shared renderer and capture overhead",
+            "player_displacement": 5.2,
+            "player_exit": 0,
+            "player_vertical_drop": 0.16,
+            "samples": 503,
+            "scope": "mission-failure-retry",
+            "scoped_checks": [
+              "mission_complete",
+              "failure_retry"
+            ],
+            "scoped_facts": {
+              "failure_retry": {
+                "failure_time": 30.08333396911621,
+                "reset_time": 32.03333282470703,
+                "retry_completion_time": 46.33333206176758
+              },
+              "mission_anchors": {
+                "away_seconds": 36.63333511352539,
+                "closest_driving_approach": {
+                  "collision_enabled": true,
+                  "distance_xz_m": 1.0390332142236514,
+                  "mission": "complete",
+                  "pad": [
+                    1,
+                    0.15000000596046448,
+                    26
+                  ],
+                  "penetration_m": 0,
+                  "restarts": 1,
+                  "time": 48.83333206176758,
+                  "vehicle": [
+                    0.47208529710769653,
+                    0.17688506841659546,
+                    25.105072021484375
+                  ]
+                },
+                "delivery_input_edges": [
+                  {
+                    "collision_enabled": true,
+                    "distance_xz_m": 1.2084652978630757,
+                    "mission": "complete",
+                    "pad": [
+                      1,
+                      0.15000000596046448,
+                      26
+                    ],
+                    "penetration_m": 0.0026426315307617188,
+                    "restarts": 1,
+                    "time": 46.33333206176758,
+                    "vehicle": [
+                      0.4866139888763428,
+                      0.12424647808074951,
+                      24.906005859375
+                    ]
+                  }
+                ],
+                "delivery_seconds": 46.33333206176758,
+                "failure": [],
+                "final_visual_acceptance": false,
+                "initial_world_positions": {
+                  "Beacon": [
+                    1,
+                    0.7400000095367432,
+                    26
+                  ],
+                  "BeaconRing": [
+                    1,
+                    0.17000000178813934,
+                    26
+                  ],
+                  "DropPad": [
+                    1,
+                    0.15000000596046448,
+                    26
+                  ],
+                  "Parcel": [
+                    3.5999999046325684,
+                    0.45012494921684265,
+                    3.200000047683716
+                  ]
+                },
+                "maximum_marker_target_xz_gap_m": 0,
+                "passed": true,
+                "pickup_seconds": 39.43333435058594,
+                "returned_seconds": 39.03333282470703,
+                "sample_count": 503,
+                "scope": "fixed-world-objectives-and-input-transitions"
+              },
+              "mission_states": [
+                "active",
+                "complete",
+                "failed"
+              ]
+            },
+            "stationary_grounded": true,
+            "vehicle_displacement": 17.383
+          },
+          "test": "failure-retry"
+        },
+        {
+          "gate": {
+            "acceptance_fixture": null,
+            "aim_contract": {
+              "build_id": "251809be3efb998effdfc7911ca3995a7a3de6c6f11f418b5cd7f2957372b010",
+              "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+              "evidence": "evidence/q0047-bdab27ce-regression-combat-foot",
+              "facts": {
+                "cover_blocked_shot_count": 0,
+                "damage_events": [
+                  {
+                    "first_ray_collider": "Rival",
+                    "hp_after": 2,
+                    "hp_before": 3,
+                    "target": "Rival",
+                    "time": 7.5,
+                    "viewport_contains_center": true,
+                    "visual_bounds_ray_hit": true
+                  },
+                  {
+                    "first_ray_collider": "Rival",
+                    "hp_after": 1,
+                    "hp_before": 2,
+                    "target": "Rival",
+                    "time": 9.199999809265137,
+                    "viewport_contains_center": true,
+                    "visual_bounds_ray_hit": true
+                  }
+                ],
+                "intentional_miss_count": 0,
+                "off_aim_damage": [],
+                "shot_count": 2
+              },
+              "failure": null,
+              "final_game_accepted": false,
+              "passed": true,
+              "scope": "aligned"
+            },
+            "build_exit": 0,
+            "build_id": "251809be3efb998effdfc7911ca3995a7a3de6c6f11f418b5cd7f2957372b010",
+            "candidate_commit": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+            "capture_id": "q0047-bdab27ce-regression-combat-foot",
+            "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+            "combat_contract": {
+              "build_id": "251809be3efb998effdfc7911ca3995a7a3de6c6f11f418b5cd7f2957372b010",
+              "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+              "evidence": "evidence/q0047-bdab27ce-regression-combat-foot",
+              "facts": {
+                "damage_event_meaning": "Enemy attacks reducing controlled player/vehicle health, not player shots.",
+                "damage_events": [
+                  {
+                    "blocked": false,
+                    "collider": "Player",
+                    "distance": 3.0601487159729004,
+                    "mode": "foot",
+                    "time": 4.0333333015441895
+                  },
+                  {
+                    "blocked": false,
+                    "collider": "Player",
+                    "distance": 5.953707695007324,
+                    "mode": "foot",
+                    "time": 5.633333206176758
+                  },
+                  {
+                    "blocked": false,
+                    "collider": "Player",
+                    "distance": 3.1870005130767822,
+                    "mode": "foot",
+                    "time": 7.333333492279053
+                  },
+                  {
+                    "blocked": false,
+                    "collider": "Player",
+                    "distance": 2.987001419067383,
+                    "mode": "foot",
+                    "time": 8.899999618530273
+                  },
+                  {
+                    "blocked": false,
+                    "collider": "Player",
+                    "distance": 2.987001419067383,
+                    "mode": "foot",
+                    "time": 10.5
+                  },
+                  {
+                    "blocked": false,
+                    "collider": "Player",
+                    "distance": 2.987001419067383,
+                    "mode": "foot",
+                    "time": 12.100000381469727
+                  },
+                  {
+                    "blocked": false,
+                    "collider": "Player",
+                    "distance": 2.987001419067383,
+                    "mode": "foot",
+                    "time": 13.716666221618652
+                  },
+                  {
+                    "blocked": false,
+                    "collider": "Player",
+                    "distance": 2.987001419067383,
+                    "mode": "foot",
+                    "time": 15.416666984558105
+                  }
+                ],
+                "hits": 2,
+                "player_shot_rival_damage_events": [
+                  {
+                    "first_aim_collider": "Rival",
+                    "hits_after": 1,
+                    "hits_before": 0,
+                    "keys": [
+                      "Mouse0"
+                    ],
+                    "rival": "Rival",
+                    "rival_hp_after": 2,
+                    "rival_hp_before": 3,
+                    "time": 7.5333333015441895
+                  },
+                  {
+                    "first_aim_collider": "Rival",
+                    "hits_after": 2,
+                    "hits_before": 1,
+                    "keys": [
+                      "Mouse0"
+                    ],
+                    "rival": "Rival",
+                    "rival_hp_after": 1,
+                    "rival_hp_before": 2,
+                    "time": 9.216666221618652
+                  }
+                ],
+                "pursuit_transitions": [
+                  {
+                    "actor_distance": 2.9772512912750244,
+                    "level": 0,
+                    "mode": "foot",
+                    "restarts": 0,
+                    "time": 0.01666666753590107
+                  },
+                  {
+                    "actor_distance": 3.0601487159729004,
+                    "level": 3,
+                    "mode": "foot",
+                    "restarts": 0,
+                    "time": 4.0333333015441895
+                  },
+                  {
+                    "actor_distance": 5.097860336303711,
+                    "level": 2,
+                    "mode": "foot",
+                    "restarts": 0,
+                    "time": 5.133333206176758
+                  },
+                  {
+                    "actor_distance": 4.984659194946289,
+                    "level": 3,
+                    "mode": "foot",
+                    "restarts": 0,
+                    "time": 6.333333492279053
+                  }
+                ],
+                "shots": 2,
+                "visible_height_range": [
+                  1.5699999332427979,
+                  1.5699999332427979
+                ]
+              },
+              "failure": null,
+              "final_game_accepted": false,
+              "passed": true,
+              "scope": "foot"
+            },
+            "compile_errors": [],
+            "coverage": "mission-core",
+            "displacement_axes": "horizontal XZ",
+            "duration": 16,
+            "failure": null,
+            "frame_count": 5,
+            "harness_sha256": "886cba2af90620c95f8ba1828168ffe2337f83c1c767342e8306ce38eed8576c",
+            "passed": true,
+            "performance_claim": "unqualified; shared renderer and capture overhead",
+            "player_displacement": 5.209,
+            "player_exit": 0,
+            "player_vertical_drop": 0.16,
+            "samples": 154,
+            "vehicle_displacement": 0.168
+          },
+          "test": "combat-foot"
+        },
+        {
+          "gate": {
+            "acceptance_fixture": "combat-wall",
+            "aim_contract": {
+              "build_id": "d98a5c8fbbe2c6ac6bb6341719ce126dac128700592572283a4c3b798b229ff2",
+              "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+              "evidence": "evidence/q0047-bdab27ce-regression-combat-wall",
+              "facts": {
+                "cover_blocked_shot_count": 2,
+                "damage_events": [],
+                "intentional_miss_count": 0,
+                "off_aim_damage": [],
+                "shot_count": 2
+              },
+              "failure": null,
+              "final_game_accepted": false,
+              "passed": true,
+              "scope": "wall"
+            },
+            "build_exit": 0,
+            "build_id": "d98a5c8fbbe2c6ac6bb6341719ce126dac128700592572283a4c3b798b229ff2",
+            "candidate_commit": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+            "capture_id": "q0047-bdab27ce-regression-combat-wall",
+            "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+            "combat_contract": {
+              "build_id": "d98a5c8fbbe2c6ac6bb6341719ce126dac128700592572283a4c3b798b229ff2",
+              "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+              "evidence": "evidence/q0047-bdab27ce-regression-combat-wall",
+              "facts": {
+                "blocked_attack_samples": 84,
+                "blocked_shot_samples": 6,
+                "damage_event_meaning": "Enemy attacks reducing controlled player/vehicle health, not player shots.",
+                "damage_events": [
+                  {
+                    "blocked": false,
+                    "collider": "Player",
+                    "distance": 3.0601487159729004,
+                    "mode": "foot",
+                    "time": 4.0333333015441895
+                  },
+                  {
+                    "blocked": false,
+                    "collider": "Player",
+                    "distance": 5.953707695007324,
+                    "mode": "foot",
+                    "time": 5.633333206176758
+                  }
+                ],
+                "player_shot_rival_damage_events": [],
+                "pursuit_transitions": [
+                  {
+                    "actor_distance": 2.9772512912750244,
+                    "level": 0,
+                    "mode": "foot",
+                    "restarts": 0,
+                    "time": 0.01666666753590107
+                  },
+                  {
+                    "actor_distance": 3.0601487159729004,
+                    "level": 3,
+                    "mode": "foot",
+                    "restarts": 0,
+                    "time": 4.0333333015441895
+                  },
+                  {
+                    "actor_distance": 5.097860336303711,
+                    "level": 2,
+                    "mode": "foot",
+                    "restarts": 0,
+                    "time": 5.133333206176758
+                  },
+                  {
+                    "actor_distance": 4.984659194946289,
+                    "level": 3,
+                    "mode": "foot",
+                    "restarts": 0,
+                    "time": 6.333333492279053
+                  }
+                ],
+                "visible_height_range": [
+                  1.5699999332427979,
+                  1.5699999332427979
+                ]
+              },
+              "failure": null,
+              "final_game_accepted": false,
+              "passed": true,
+              "scope": "wall"
+            },
+            "compile_errors": [],
+            "coverage": "mission-core",
+            "displacement_axes": "horizontal XZ",
+            "duration": 16,
+            "failure": null,
+            "frame_count": 5,
+            "harness_sha256": "f02b8ea47fc2fb853a86fbc0679f61f79eae5dfa3b1b370d75eaded5fa406d28",
+            "passed": true,
+            "performance_claim": "unqualified; shared renderer and capture overhead",
+            "player_displacement": 5.209,
+            "player_exit": 0,
+            "player_vertical_drop": 0.16,
+            "samples": 154,
+            "vehicle_displacement": 0.168
+          },
+          "test": "combat-wall"
+        },
+        {
+          "gate": {
+            "acceptance_fixture": null,
+            "build_exit": 0,
+            "build_id": "16020d540317d569878c29afa6ced94338add115b4d066e267d3c1a36e5745a8",
+            "candidate_commit": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+            "capture_id": "q0047-bdab27ce-regression-combat-driving",
+            "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+            "combat_contract": {
+              "build_id": "16020d540317d569878c29afa6ced94338add115b4d066e267d3c1a36e5745a8",
+              "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+              "evidence": "evidence/q0047-bdab27ce-regression-combat-driving",
+              "facts": {
+                "damage_event_meaning": "Enemy attacks reducing controlled player/vehicle health, not player shots.",
+                "damage_events": [
+                  {
+                    "blocked": false,
+                    "collider": "Player",
+                    "distance": 2.985109567642212,
+                    "mode": "foot",
+                    "time": 4.0333333015441895
+                  },
+                  {
+                    "blocked": false,
+                    "collider": "Player",
+                    "distance": 4.79953145980835,
+                    "mode": "foot",
+                    "time": 5.633333206176758
+                  },
+                  {
+                    "blocked": false,
+                    "collider": "Vehicle",
+                    "distance": 8.755122184753418,
+                    "mode": "vehicle",
+                    "time": 7.333333492279053
+                  },
+                  {
+                    "blocked": false,
+                    "collider": "Vehicle",
+                    "distance": 15.950697898864746,
+                    "mode": "vehicle",
+                    "time": 16.700000762939453
+                  },
+                  {
+                    "blocked": false,
+                    "collider": "Vehicle",
+                    "distance": 14.334214210510254,
+                    "mode": "vehicle",
+                    "time": 18.316667556762695
+                  },
+                  {
+                    "blocked": false,
+                    "collider": "Vehicle",
+                    "distance": 12.717556953430176,
+                    "mode": "vehicle",
+                    "time": 19.933332443237305
+                  },
+                  {
+                    "blocked": false,
+                    "collider": "Vehicle",
+                    "distance": 11.12496566772461,
+                    "mode": "vehicle",
+                    "time": 21.53333282470703
+                  }
+                ],
+                "escape_samples": [
+                  {
+                    "distance": 18.452791213989258,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 8.783333778381348
+                  },
+                  {
+                    "distance": 19.253808975219727,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 8.899999618530273
+                  },
+                  {
+                    "distance": 19.9278507232666,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 9
+                  },
+                  {
+                    "distance": 20.602258682250977,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 9.100000381469727
+                  },
+                  {
+                    "distance": 21.403718948364258,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 9.216666221618652
+                  },
+                  {
+                    "distance": 22.093517303466797,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 9.316666603088379
+                  },
+                  {
+                    "distance": 22.782909393310547,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 9.416666984558105
+                  },
+                  {
+                    "distance": 23.06878089904785,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 9.533333778381348
+                  },
+                  {
+                    "distance": 22.9873104095459,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 9.649999618530273
+                  },
+                  {
+                    "distance": 22.904394149780273,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 9.75
+                  },
+                  {
+                    "distance": 22.80402946472168,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 9.850000381469727
+                  },
+                  {
+                    "distance": 22.686655044555664,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 9.966666221618652
+                  },
+                  {
+                    "distance": 22.586318969726562,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 10.066666603088379
+                  },
+                  {
+                    "distance": 22.48609733581543,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 10.166666984558105
+                  },
+                  {
+                    "distance": 22.36924171447754,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 10.283333778381348
+                  },
+                  {
+                    "distance": 22.2524471282959,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 10.399999618530273
+                  },
+                  {
+                    "distance": 22.15237045288086,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 10.5
+                  },
+                  {
+                    "distance": 22.052322387695312,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 10.600000381469727
+                  },
+                  {
+                    "distance": 21.93562126159668,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 10.716666221618652
+                  },
+                  {
+                    "distance": 21.835594177246094,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 10.816666603088379
+                  },
+                  {
+                    "distance": 21.735506057739258,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 10.916666984558105
+                  },
+                  {
+                    "distance": 21.618701934814453,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 11.033333778381348
+                  },
+                  {
+                    "distance": 21.501834869384766,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 11.149999618530273
+                  },
+                  {
+                    "distance": 21.401611328125,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 11.25
+                  },
+                  {
+                    "distance": 21.301349639892578,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 11.350000381469727
+                  },
+                  {
+                    "distance": 21.184236526489258,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 11.466666221618652
+                  },
+                  {
+                    "distance": 21.0842342376709,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 11.566666603088379
+                  },
+                  {
+                    "distance": 20.984079360961914,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 11.666666984558105
+                  },
+                  {
+                    "distance": 20.86732292175293,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 11.783333778381348
+                  },
+                  {
+                    "distance": 20.750625610351562,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 11.899999618530273
+                  },
+                  {
+                    "distance": 20.650615692138672,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 12
+                  },
+                  {
+                    "distance": 20.550617218017578,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 12.100000381469727
+                  },
+                  {
+                    "distance": 20.4339542388916,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 12.216666221618652
+                  },
+                  {
+                    "distance": 20.33396339416504,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 12.316666603088379
+                  },
+                  {
+                    "distance": 20.23397445678711,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 12.416666984558105
+                  },
+                  {
+                    "distance": 20.1173152923584,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 12.533333778381348
+                  },
+                  {
+                    "distance": 20.000659942626953,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 12.649999618530273
+                  },
+                  {
+                    "distance": 19.900671005249023,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 12.75
+                  },
+                  {
+                    "distance": 19.800682067871094,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 12.850000381469727
+                  },
+                  {
+                    "distance": 19.68402862548828,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 12.966666221618652
+                  },
+                  {
+                    "distance": 19.584043502807617,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 13.066666603088379
+                  },
+                  {
+                    "distance": 19.48405647277832,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 13.166666984558105
+                  },
+                  {
+                    "distance": 19.367403030395508,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 13.283333778381348
+                  },
+                  {
+                    "distance": 19.25075340270996,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 13.399999618530273
+                  },
+                  {
+                    "distance": 19.150766372680664,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 13.5
+                  },
+                  {
+                    "distance": 19.050777435302734,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 13.600000381469727
+                  },
+                  {
+                    "distance": 18.934125900268555,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 13.716666221618652
+                  },
+                  {
+                    "distance": 18.834138870239258,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 13.816666603088379
+                  },
+                  {
+                    "distance": 18.73415184020996,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 13.916666984558105
+                  },
+                  {
+                    "distance": 18.61749839782715,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 14.033333778381348
+                  },
+                  {
+                    "distance": 18.5008487701416,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 14.149999618530273
+                  },
+                  {
+                    "distance": 18.40086555480957,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 14.25
+                  },
+                  {
+                    "distance": 18.300880432128906,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 14.350000381469727
+                  },
+                  {
+                    "distance": 18.184236526489258,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 14.466666221618652
+                  },
+                  {
+                    "distance": 18.084260940551758,
+                    "pursuit": 0,
+                    "restarts": 0,
+                    "time": 14.566666603088379
+                  }
+                ],
+                "far_pursuit_levels": [
+                  0
+                ],
+                "longest_continuous_escape_seconds": 5.783,
+                "maximum_vehicle_distance": 23.06878089904785,
+                "player_shot_rival_damage_events": [],
+                "pursuit_transitions": [
+                  {
+                    "actor_distance": 2.9772512912750244,
+                    "level": 0,
+                    "mode": "foot",
+                    "restarts": 0,
+                    "time": 0.01666666753590107
+                  },
+                  {
+                    "actor_distance": 2.985109567642212,
+                    "level": 3,
+                    "mode": "foot",
+                    "restarts": 0,
+                    "time": 4.0333333015441895
+                  },
+                  {
+                    "actor_distance": 6.745936393737793,
+                    "level": 2,
+                    "mode": "vehicle",
+                    "restarts": 0,
+                    "time": 6.0333333015441895
+                  },
+                  {
+                    "actor_distance": 10.59483528137207,
+                    "level": 1,
+                    "mode": "vehicle",
+                    "restarts": 0,
+                    "time": 7.633333206176758
+                  },
+                  {
+                    "actor_distance": 18.452791213989258,
+                    "level": 0,
+                    "mode": "vehicle",
+                    "restarts": 0,
+                    "time": 8.783333778381348
+                  },
+                  {
+                    "actor_distance": 17.984283447265625,
+                    "level": 1,
+                    "mode": "vehicle",
+                    "restarts": 0,
+                    "time": 14.666666984558105
+                  }
+                ],
+                "required_continuous_escape_seconds": 2,
+                "rival_motion_during_driving": 15.8839060246379,
+                "visible_height_range": [
+                  1.5699999332427979,
+                  1.5699999332427979
+                ]
+              },
+              "failure": null,
+              "final_game_accepted": false,
+              "passed": true,
+              "scope": "driving"
+            },
+            "compile_errors": [],
+            "coverage": "mission-core",
+            "displacement_axes": "horizontal XZ",
+            "duration": 22,
+            "failure": null,
+            "frame_count": 6,
+            "harness_sha256": "8fe5aa360b380b2a07b9010a2dc5cd8eda22ecac55717555e3de9dbb37182014",
+            "passed": true,
+            "performance_claim": "unqualified; shared renderer and capture overhead",
+            "player_displacement": 5.434,
+            "player_exit": 0,
+            "player_vertical_drop": 0.16,
+            "samples": 210,
+            "vehicle_displacement": 20.133
+          },
+          "test": "combat-driving"
+        },
+        {
+          "gate": {
+            "acceptance_fixture": null,
+            "aim_contract": {
+              "build_id": "be141ea5776d5752f9bfd002cf86d5a91e55901fd6ee79f9c820bcd550ebcdf4",
+              "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+              "evidence": "evidence/q0047-bdab27ce-regression-aim-miss",
+              "facts": {
+                "cover_blocked_shot_count": 0,
+                "damage_events": [],
+                "intentional_miss_count": 4,
+                "off_aim_damage": [],
+                "shot_count": 4
+              },
+              "failure": null,
+              "final_game_accepted": false,
+              "passed": true,
+              "scope": "miss"
+            },
+            "build_exit": 0,
+            "build_id": "be141ea5776d5752f9bfd002cf86d5a91e55901fd6ee79f9c820bcd550ebcdf4",
+            "candidate_commit": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+            "capture_id": "q0047-bdab27ce-regression-aim-miss",
+            "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+            "compile_errors": [],
+            "coverage": "mission-core",
+            "displacement_axes": "horizontal XZ",
+            "duration": 16,
+            "failure": null,
+            "frame_count": 6,
+            "harness_sha256": "f1a006d7ae79350d044781ca26b85b159289436615069ccead657801494819d9",
+            "passed": true,
+            "performance_claim": "unqualified; shared renderer and capture overhead",
+            "player_displacement": 4.544,
+            "player_exit": 0,
+            "player_vertical_drop": 0.16,
+            "samples": 154,
+            "vehicle_displacement": 0.168
+          },
+          "test": "aim-miss"
+        },
+        {
+          "gate": {
+            "acceptance_fixture": "combat-near-cover",
+            "aim_contract": {
+              "build_id": "212afac1235035438a5b6aa749be3e0411b71fdc4e4207fb6c8751a7c0cb650e",
+              "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+              "evidence": "evidence/q0047-bdab27ce-regression-aim-near-cover",
+              "facts": {
+                "cover_blocked_shot_count": 2,
+                "damage_events": [],
+                "intentional_miss_count": 0,
+                "off_aim_damage": [],
+                "shot_count": 2
+              },
+              "failure": null,
+              "final_game_accepted": false,
+              "passed": true,
+              "scope": "near-cover"
+            },
+            "build_exit": 0,
+            "build_id": "212afac1235035438a5b6aa749be3e0411b71fdc4e4207fb6c8751a7c0cb650e",
+            "candidate_commit": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+            "capture_id": "q0047-bdab27ce-regression-aim-near-cover",
+            "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+            "compile_errors": [],
+            "coverage": "mission-core",
+            "displacement_axes": "horizontal XZ",
+            "duration": 16,
+            "failure": null,
+            "frame_count": 5,
+            "harness_sha256": "6f1dec6b3b86bc95efa6b7c3646bb98ec6aa2f191ad62dd33497976a15c92bd6",
+            "passed": true,
+            "performance_claim": "unqualified; shared renderer and capture overhead",
+            "player_displacement": 5.209,
+            "player_exit": 0,
+            "player_vertical_drop": 0.16,
+            "samples": 154,
+            "vehicle_displacement": 0.168
+          },
+          "test": "aim-near-cover"
+        }
+      ]
+    }
+  },
+  "visual_review": {
+    "fixes": [
+      "Player actor (after-spawn.png, after-near.png): the courier reads as a floating gray box torso with stubby arms, a tiny brown head, and no distinct legs \u2014 add leg/foot geometry contacting the sidewalk, defined shoulders, and a larger head so the character silhouette reads at chase distance.",
+      "Blue coupe shape (after-drive.png, after-near.png): the body is stacked disconnected slabs (roof, trunk lid, bumper) with dark wheels partly swallowed by the body and flat red taillight quads floating on the rear; rebuild as one hood-to-trunk volume with a tapered nose, wheel arches, and inset taillights.",
+      "Sidewalk composition (after-near.png): near-black boxes crowd the bottom-left and bottom-right corners and a lone pale post/hydrant sits mid-walk; snap props to a consistent sidewalk grid, delete the intruding dark cubes, and keep the camera corridor and framing clean.",
+      "World edge / horizon (before-drive.png, after-drive.png, after-spawn.png): the street dissolves into an infinite flat tan plane at the horizon; add distant skyline massing or an aerial-fog band to hide the playfield boundary.",
+      "Beacon and parcel finish (after-drive.png, after-spawn.png): the beam is a hard-edged additive slab that still grazes the right taillight \u2014 taper it, soften the base ring, and nudge it right so it never overlaps the vehicle outline; give the yellow parcel a contact shadow or low pedestal instead of hovering. "
+    ],
+    "ok": true,
+    "summary": "The beacon fix is confirmed in actual images. At the identical accepted replay t15.5, before-drive.png shows the tall green beam swallowing the blue coupe, while after-drive.png shows the car fully readable (roofline, rear window, both taillights) with the beam reduced to a thin sliver at the car's right edge plus a ground patch \u2014 the exact failure is gone. At the identical disposable wall-fixture t6.5, before-near.png is an unusable blank gray wall-in-face, and after-near.png is a usable street view with the player, coupe, and objective lane clearly framed; diagnostics report 0 camera-inside and 0 near-plane-intersection samples across all phases, matching the images (no clipping pierces the frame). after-spawn.png shows a readable ordinary chase view: player on sidewalk, coupe and yellow parcel visible, HUD legible. All ten mechanics/regression checks pass independently, and displacement/anchor facts are consistent. Remaining issues are art-quality only and outside this camera/beacon scope; the fixture does not accept the game.",
+    "verdict": "PASS"
+  },
+  "live": {
+    "status": "running",
+    "controller_pid": 96229,
+    "stage": "local-microtask",
+    "current_round": "q0048-8e962e4d",
+    "source_checkpoint": "e38b0681046fb39cab7f8ec182495903729b5ae6",
+    "last_playable_checkpoint": "e38b0681046fb39cab7f8ec182495903729b5ae6",
+    "task_index": 7,
+    "task_failures": 6,
+    "failure_streak": 1,
+    "diagnosis_used": true,
+    "blocker": null,
+    "latest_visual_milestone": {
+      "accepted_utc": "2026-10-06T02:45:14.283782+00:00",
+      "camera_clearance": {
+        "acceptance_fixture": "camera-clearance",
+        "build_id": "07ace4dff43abb3923d8a857399bf489356832b6f3a24855e1f4974f5f8ed3d8",
+        "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+        "evidence": "evidence/camera-floor-ffe6fdbe-walls",
+        "failure": [],
+        "final_game_accepted": false,
+        "passed": true,
+        "phases": [
+          {
+            "camera_beyond_wall_samples": 0,
+            "camera_inside_samples": 0,
+            "camera_inside_world_samples": 0,
+            "legacy_endpoint_predicate_samples": 0,
+            "minimum_actor_samples_in_frame": 2,
+            "minimum_actor_samples_unobstructed": 2,
+            "near_plane_intersection_samples": 0,
+            "phase": "near",
+            "probe_distance_max": 0.6499999165534973,
+            "probe_distance_min": 0.6499999165534973,
+            "samples": 15
+          },
+          {
+            "camera_beyond_wall_samples": 0,
+            "camera_inside_samples": 0,
+            "camera_inside_world_samples": 0,
+            "legacy_endpoint_predicate_samples": 0,
+            "minimum_actor_samples_in_frame": 9,
+            "minimum_actor_samples_unobstructed": 5,
+            "near_plane_intersection_samples": 0,
+            "phase": "middle",
+            "probe_distance_max": 3,
+            "probe_distance_min": 3,
+            "samples": 14
+          },
+          {
+            "camera_beyond_wall_samples": 0,
+            "camera_inside_samples": 0,
+            "camera_inside_world_samples": 0,
+            "legacy_endpoint_predicate_samples": 14,
+            "minimum_actor_samples_in_frame": 9,
+            "minimum_actor_samples_unobstructed": 5,
+            "near_plane_intersection_samples": 0,
+            "phase": "endpoint",
+            "probe_distance_max": 5.403923511505127,
+            "probe_distance_min": 5.403923511505127,
+            "samples": 14
+          }
+        ],
+        "scope": "disposable-camera-clearance-diagnostic",
+        "visibility_note": "At least one actor bounds sample must remain visible and camera must be outside foreign colliders; useful framing still needs actual images"
+      },
+      "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+      "capture_manifest_sha256": "3442598cda2cea0ad3b00f5d0f97e40db76a46f0e7188a5e8dee36949f11e3ba",
+      "evidence": "evidence/q0047-bdab27ce",
+      "final_game_accepted": false,
+      "focus": {
+        "decision": "Measured camera collision repair and unobstructed beacon/car view"
+      },
+      "review": {
+        "fixes": [
+          "Player actor (after-spawn.png, after-near.png): the courier reads as a floating gray box torso with stubby arms, a tiny brown head, and no distinct legs \u2014 add leg/foot geometry contacting the sidewalk, defined shoulders, and a larger head so the character silhouette reads at chase distance.",
+          "Blue coupe shape (after-drive.png, after-near.png): the body is stacked disconnected slabs (roof, trunk lid, bumper) with dark wheels partly swallowed by the body and flat red taillight quads floating on the rear; rebuild as one hood-to-trunk volume with a tapered nose, wheel arches, and inset taillights.",
+          "Sidewalk composition (after-near.png): near-black boxes crowd the bottom-left and bottom-right corners and a lone pale post/hydrant sits mid-walk; snap props to a consistent sidewalk grid, delete the intruding dark cubes, and keep the camera corridor and framing clean.",
+          "World edge / horizon (before-drive.png, after-drive.png, after-spawn.png): the street dissolves into an infinite flat tan plane at the horizon; add distant skyline massing or an aerial-fog band to hide the playfield boundary.",
+          "Beacon and parcel finish (after-drive.png, after-spawn.png): the beam is a hard-edged additive slab that still grazes the right taillight \u2014 taper it, soften the base ring, and nudge it right so it never overlaps the vehicle outline; give the yellow parcel a contact shadow or low pedestal instead of hovering. "
+        ],
+        "ok": true,
+        "summary": "The beacon fix is confirmed in actual images. At the identical accepted replay t15.5, before-drive.png shows the tall green beam swallowing the blue coupe, while after-drive.png shows the car fully readable (roofline, rear window, both taillights) with the beam reduced to a thin sliver at the car's right edge plus a ground patch \u2014 the exact failure is gone. At the identical disposable wall-fixture t6.5, before-near.png is an unusable blank gray wall-in-face, and after-near.png is a usable street view with the player, coupe, and objective lane clearly framed; diagnostics report 0 camera-inside and 0 near-plane-intersection samples across all phases, matching the images (no clipping pierces the frame). after-spawn.png shows a readable ordinary chase view: player on sidewalk, coupe and yellow parcel visible, HUD legible. All ten mechanics/regression checks pass independently, and displacement/anchor facts are consistent. Remaining issues are art-quality only and outside this camera/beacon scope; the fixture does not accept the game.",
+        "verdict": "PASS"
+      }
+    }
+  },
+  "camera_target_transitions": {
+    "build_id": "d95ac1545d56484ba026b65e68c376511455d0170b4dcc306f1880dc620e2fcc",
+    "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+    "failure": [],
+    "final_game_accepted": false,
+    "passed": true,
+    "phases": [
+      {
+        "matching_cache_samples": 40,
+        "phase": "initial-foot",
+        "samples": 40
+      },
+      {
+        "matching_cache_samples": 85,
+        "phase": "driving",
+        "samples": 85
+      },
+      {
+        "matching_cache_samples": 14,
+        "phase": "exit-foot",
+        "samples": 14
+      },
+      {
+        "matching_cache_samples": 47,
+        "phase": "reset-foot",
+        "samples": 47
+      }
+    ],
+    "scope": "normal-input-camera-target-transitions"
+  },
+  "unchanged_scenario_sha256": "4c378925516fda3bef07b0bb015c2a73567a420ad928fba2449a42af43721915",
+  "fixed_cap_utc": "2026-10-08T06:33:12+00:00",
+  "final_game_accepted": false,
+  "accepted_checkpoint": "e38b0681046fb39cab7f8ec182495903729b5ae6",
+  "accepted_utc": "2026-10-06T02:45:14.283782+00:00",
+  "review_interpretation": {
+    "beacon_nudge": "Not adopted; target and markers remain aligned at X1/Z26.",
+    "dark_corner_shapes": "Appear to be actor arms; identity must be verified before geometry changes.",
+    "scope": "Camera/beacon improvement only; no final appearance or ten-minute acceptance."
+  }
+}

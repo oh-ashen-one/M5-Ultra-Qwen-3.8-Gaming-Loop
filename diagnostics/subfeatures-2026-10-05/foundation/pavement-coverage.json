@@ -1,0 +1,49 @@
+{
+  "first_uncovered": [],
+  "passed": true,
+  "radius_m": 0.32,
+  "samples": 124,
+  "scope": "Flat rendered-surface bounds support the route; actual frame review is also required.",
+  "surfaces": [
+    {
+      "max": [
+        2.4000000953674316,
+        0.14000078290700912,
+        14.0
+      ],
+      "min": [
+        -0.7999999523162842,
+        2.2351741790771484e-08,
+        0.0
+      ],
+      "name": "Street/sidewalk"
+    },
+    {
+      "max": [
+        6.0,
+        0.14000045508146286,
+        30.0
+      ],
+      "min": [
+        -1.0,
+        -1.214444637298584e-06,
+        -2.0
+      ],
+      "name": "Pavement"
+    },
+    {
+      "max": [
+        2.4000000953674316,
+        0.14000078290700912,
+        28.0
+      ],
+      "min": [
+        -0.7999999523162842,
+        2.2351741790771484e-08,
+        14.0
+      ],
+      "name": "Street/sidewalk"
+    }
+  ],
+  "uncovered_samples": 0
+}

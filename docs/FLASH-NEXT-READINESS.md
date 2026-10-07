@@ -1,6 +1,8 @@
 # Flash-Next readiness
 
-Verified 2026-10-05. **Model service ready; overnight game loop not ready.** Flash-Next remains loaded and idle after a two-request image/tool warm-up. This qualifies a small functional path, not sustained coding, game quality or an unattended overnight run.
+**Update, 2026-10-05:** the owner authorized the full Chicago run. The durable controller is implemented; native Unity green/red checks and thirteen recovery/boundary tests pass. The [controller runbook](CONTROLLER-RUNBOOK.md) and [current qualification evidence](../diagnostics/controller-2026-10-05/README.md) supersede the missing-controller/start-hold statements in the historical readiness audit below. Sustained coding and game quality remain outcomes to measure, not assumptions.
+
+The following is the earlier model-only readiness audit. Its pinned runtime and model settings remain applicable; its original launch blockers describe the state before controller implementation.
 
 ## Model and runtime
 
@@ -21,7 +23,7 @@ Sampling follows the upstream [thinking-mode defaults](https://huggingface.co/Qw
 
 | Control | Actual configuration | Verification and limit |
 | --- | --- | --- |
-| Thinking and effort | Thinking enabled; `reasoning_effort: "xhigh"` | Actual oMLX forwarding and the exact model template passed CPU fixtures. Both live requests returned reasoning. Effort is a template instruction, not a guaranteed compute amount. |
+| Thinking and effort | Thinking enabled; resident/planner/critic default `xhigh`; authorized elementary editing uses per-request `low` | Exact installed merge/template checks confirm the override. A real `low` camera edit saved and passed native testing; see [current token audit and evidence](../diagnostics/framing-budget-2026-10-05/README.md). Effort is a template instruction, not a guaranteed compute amount. |
 | Reasoning history | `preserve_thinking: true` | A synthetic template fixture retained earlier reasoning after a tool result/new user turn; the live round trip replayed returned reasoning privately. Raw reasoning is not published. |
 | Sampling | Temperature 1.0; top-p 0.95; top-k 20; min-p 0; presence penalty 0; repetition penalty 1 | Persistent configuration and the two request payloads agree. No sampling sweep was run. |
 | Context | 262,144 configured native context | Reported by loaded-model status. A near-limit request was not tested; long-context memory and quality remain unqualified. |

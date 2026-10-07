@@ -1,0 +1,48 @@
+{
+  "source_checkpoint": "122f23eb3c024d23ff5d8f78505bc398076500f4",
+  "stopped_utc": "2026-10-05T11:27:05.630578+00:00",
+  "current_round": "r0019-1920814d",
+  "accepted_checkpoint": null,
+  "controller_alive": false,
+  "stop_category": "planner_output_limit",
+  "stop_detail": "Planner exhausted 4096 completion tokens without submitting a tool call; generic halt message referred to invalid planning.",
+  "planner_request": {
+    "usage": {
+      "prompt_tokens": 5959,
+      "completion_tokens": 4096,
+      "total_tokens": 10055,
+      "input_tokens": 5959,
+      "output_tokens": 4096,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_time": 99.7
+    },
+    "finish_reason": "length",
+    "reasoning_effort": "xhigh",
+    "response_accounting": {
+      "fields": {
+        "content": {
+          "characters": 13114,
+          "retokenized_tokens": 4096,
+          "closing_think_markers": 0,
+          "tool_open_markers": 0
+        },
+        "reasoning_content": {
+          "present": false
+        },
+        "reasoning": {
+          "present": false
+        }
+      },
+      "parsed_tool_calls": 0
+    }
+  },
+  "prior_failure_records_unchanged": true,
+  "capture_hashes": {
+    "frame-003.png": "7cd0380cdff7c6c1896daae2128e58c378a58773e665922a8ca1f9735bcd98f6",
+    "frame-002.png": "9546553f48592079c0aed5a506706493b8a10435e47dc3e4c7e02141a0e258e1",
+    "frame-000.png": "5d94152421a511f1f49a7a9c2b11cf967457150c3f124d32cfa2227143846f0f",
+    "frame-001.png": "fdf90d473078fe82cd78048b729496f78b89248548537221e3cb10b8d1e6039f"
+  }
+}

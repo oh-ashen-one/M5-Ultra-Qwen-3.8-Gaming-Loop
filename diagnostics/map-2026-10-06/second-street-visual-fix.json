@@ -1,0 +1,389 @@
+{
+  "observed_utc": "2026-10-06T10:11:53.847014+00:00",
+  "candidate": "6f9244b9045039e0749cd85489e55114b345e448",
+  "restored_checkpoint": "155fcde73738032e8dc21b45a155f915899a3792",
+  "native_gate": {
+    "passed": true,
+    "failure": null,
+    "candidate_commit": "6f9244b9045039e0749cd85489e55114b345e448",
+    "build_id": "f66a9806abcea9e56edfeb6cd7fbfeb15e01dbcace14ae86694b706ad0dceb4f",
+    "regressions": [
+      {
+        "test": "walk",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "world",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "motor",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "courier",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "failure-retry",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "combat-foot",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "combat-wall",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "combat-driving",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "aim-miss",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "aim-near-cover",
+        "passed": true,
+        "failure": null
+      }
+    ],
+    "facts": {
+      "map_extension": {
+        "area_claim": "Only observed connected traversal; no gross map-area acceptance",
+        "failure": [],
+        "old_bounds_xz": [
+          -1,
+          6,
+          -2,
+          30
+        ],
+        "passed": true,
+        "prior_rendered_rectangles_xz": [
+          [
+            -1,
+            6,
+            -2,
+            30
+          ],
+          [
+            6,
+            22,
+            8,
+            20
+          ]
+        ],
+        "traversal": {
+          "foot": {
+            "maximum_distance_beyond_old_boundary_m": 6.533336639404297,
+            "outside_samples": 14,
+            "physical_return_seconds": 20.983333587646484
+          },
+          "vehicle": {
+            "maximum_distance_beyond_old_boundary_m": 9.928443908691406,
+            "outside_samples": 33,
+            "physical_return_seconds": 43.83333206176758
+          }
+        }
+      },
+      "rendered_walking_support": {
+        "first_uncovered": [],
+        "passed": true,
+        "radius_m": 0.32,
+        "samples": 281,
+        "scope": "Flat rendered-surface bounds support the route; actual frame review is also required.",
+        "surfaces": [
+          {
+            "max": [
+              6,
+              0.14000045508146286,
+              30
+            ],
+            "min": [
+              -1,
+              -0.000001214444637298584,
+              -2
+            ],
+            "name": "Pavement"
+          },
+          {
+            "max": [
+              2.4000000953674316,
+              0.14000078290700912,
+              28
+            ],
+            "min": [
+              -0.7999999523162842,
+              2.2351741790771484e-8,
+              14
+            ],
+            "name": "Street/sidewalk"
+          },
+          {
+            "max": [
+              22,
+              0.1400010734796524,
+              20
+            ],
+            "min": [
+              6,
+              -0.0000027418136596679688,
+              8
+            ],
+            "name": "WorldCollision/AlleyPavement"
+          },
+          {
+            "max": [
+              60,
+              0.14000369608402252,
+              28
+            ],
+            "min": [
+              22,
+              -0.000005364418029785156,
+              8
+            ],
+            "name": "WorldCollision/StreetPavement"
+          },
+          {
+            "max": [
+              13.649999618530273,
+              0.05000346805900335,
+              14
+            ],
+            "min": [
+              2.6499996185302734,
+              -0.06999915186315775,
+              0
+            ],
+            "name": "Street/road_asphalt"
+          },
+          {
+            "max": [
+              2.4000000953674316,
+              0.14000078290700912,
+              14
+            ],
+            "min": [
+              -0.7999999523162842,
+              2.2351741790771484e-8,
+              0
+            ],
+            "name": "Street/sidewalk"
+          },
+          {
+            "max": [
+              13.649999618530273,
+              0.05000346805900335,
+              28
+            ],
+            "min": [
+              2.6499996185302734,
+              -0.06999915186315775,
+              14
+            ],
+            "name": "Street/road_asphalt"
+          }
+        ],
+        "uncovered_samples": 0
+      },
+      "prop_clone_parity": {
+        "components": [
+          {
+            "clone_size": [
+              0.2400001883506775,
+              1.0499999523162842,
+              0.23999999463558197
+            ],
+            "kind": "renderer",
+            "name": "WorldCollision/AlleyBollardS",
+            "orientation_matches": true,
+            "size_matches": true,
+            "source_size": [
+              0.2400001883506775,
+              1.0499999523162842,
+              0.23999999463558197
+            ]
+          },
+          {
+            "clone_size": [
+              0.2400001883506775,
+              1.0499999523162842,
+              0.23999999463558197
+            ],
+            "kind": "renderer",
+            "name": "WorldCollision/AlleyBollardN",
+            "orientation_matches": true,
+            "size_matches": true,
+            "source_size": [
+              0.2400001883506775,
+              1.0499999523162842,
+              0.23999999463558197
+            ]
+          },
+          {
+            "clone_size": [
+              0.3200000524520874,
+              0.31197699904441833,
+              0.12000001221895218
+            ],
+            "kind": "renderer",
+            "name": "WorldCollision/AlleyDumpster/dumpster_a_wheel_-0.9",
+            "orientation_matches": true,
+            "size_matches": true,
+            "source_size": [
+              0.3200000524520874,
+              0.31197699904441833,
+              0.12000001221895218
+            ]
+          },
+          {
+            "clone_size": [
+              1.4677366018295288,
+              0.16000033915042877,
+              2.534715414047241
+            ],
+            "kind": "renderer",
+            "name": "WorldCollision/AlleyDumpster/dumpster_a_lid",
+            "orientation_matches": true,
+            "size_matches": true,
+            "source_size": [
+              1.4677366018295288,
+              0.16000033915042877,
+              2.534715414047241
+            ]
+          },
+          {
+            "clone_size": [
+              0.3200000524520874,
+              0.31197699904441833,
+              0.12000001221895218
+            ],
+            "kind": "renderer",
+            "name": "WorldCollision/AlleyDumpster/dumpster_a_wheel_0.9",
+            "orientation_matches": true,
+            "size_matches": true,
+            "source_size": [
+              0.3200000524520874,
+              0.31197699904441833,
+              0.12000001221895218
+            ]
+          },
+          {
+            "clone_size": [
+              0.08000001311302185,
+              0.08000002056360245,
+              2.450000047683716
+            ],
+            "kind": "renderer",
+            "name": "WorldCollision/AlleyDumpster/dumpster_a_rail",
+            "orientation_matches": true,
+            "size_matches": true,
+            "source_size": [
+              0.08000001311302185,
+              0.08000002056360245,
+              2.450000047683716
+            ]
+          },
+          {
+            "clone_size": [
+              1.2500001192092896,
+              1.1500000953674316,
+              2.4000000953674316
+            ],
+            "kind": "renderer",
+            "name": "WorldCollision/AlleyDumpster/dumpster_a_body",
+            "orientation_matches": true,
+            "size_matches": true,
+            "source_size": [
+              1.2500001192092896,
+              1.1500000953674316,
+              2.4000000953674316
+            ]
+          },
+          {
+            "clone_size": [
+              1.25,
+              1.1500000953674316,
+              2.3999996185302734
+            ],
+            "kind": "BoxCollider",
+            "name": "WorldCollision/AlleyDumpster/dumpster_a_body",
+            "orientation_matches": true,
+            "size_matches": true,
+            "source_size": [
+              1.25,
+              1.1500000953674316,
+              2.3999996185302734
+            ]
+          }
+        ],
+        "failure": [],
+        "passed": true,
+        "scope": "Native clone dimensions, world axes, component continuity and grounded placement only; visual quality needs rendered review"
+      }
+    }
+  },
+  "critic": {
+    "fixes": [
+      "Capture frames that actually show the new east segment: one foot frame and one vehicle frame looking east along X22..60 with reused facade and fence meshes visible on both sides (matching the reported 6.53 m foot / 9.93 m vehicle outside samples), plus a following frame after the physical return inside the alley/core. Currently every supplied frame is either the pre-X22 alley or a bare slab pocket, so no outside leg is visibly documented.",
+      "Report traversal distance beyond each prior rectangle separately (min distance beyond X-1..6,Z-2..30 and beyond X6..22,Z8..20, each >= 6 m) instead of a single 'maximum_distance_beyond_old_boundary' scalar; a single east-side number does not prove both old rectangles were exited by 6 m.",
+      "Re-shoot the outside/return legs without the MISSION FAILED overlay (or with the mission timer extended): frame-007 (39.35 s) and frame-010 (50.50 s) both show 'Ran out of time / Press R to retry', which makes the vehicle return evidence ambiguous with respect to the no-reset requirement.",
+      "Fix camera clipping during the return drive: frame-010 has the third-person camera inside the coupe roof/body and the frame is unreadable geometry. Preserve the accepted camera rig but add occlusion push-out so the camera never enters vehicle or building volumes on the new street.",
+      "Show visible closure of the new outer edges: frame-000 and frame-002 look out past walls into open grey void with bare wall tops and no facade/fence treatment, so 'close every new outer edge' is unproven. Add/frame the east cap at X60 and the Z8/Z28 edge closures with the reused boundary mesh and a matching collider, and include a frame looking at that cap."
+    ],
+    "ok": true,
+    "summary": "Numeric topology evidence is partly present but the visual proof required by this scope is not delivered by the supplied frames. Positives: build clean (exit 0, no compile errors); scene inventory intact (2538 renderers / 46 colliders observed = declared); walking-support surfaces include a new \"WorldCollision/StreetPavement\" spanning X22..60, Z8..28 with top Y ≈ 0.14, i.e. the provisional footprint exists and is walkable; prop-clone parity (bollards, dumpster body/wheels/rail/lid) matches source size and orientation; all listed regressions (walk, world, motor, courier, failure-retry, combat foot/wall/driving, aim) pass. Traversal is recorded (foot 14 outside samples, max 6.53 m; vehicle 33 outside samples, max 9.93 m; returns 20.98 s / 43.83 s inside the 150 s budget, no R-reset flag in the trace).\n\nHowever, acceptance also demands visible captures of each outside leg and its return, and none of the four native frames show the new east street. frame-002 (t=17.90 s) and frame-007 (t=39.35 s) show only a bare, sky-open orange slab enclosure with no reused facade/window/fence detail and no street reading as a continuation past X22; frame-010 (t=50.50 s) has the camera buried inside the coupe's roof/body, so the actor and route are unreadable. Both late frames carry a \"MISSION FAILED / Press R to retry\" overlay, so the return-leg captures were taken in a dead-mission state and cannot serve as clean control/route evidence. The reported distance beyond the old boundary is a single scalar per mode, so \"at least 6 m beyond BOTH prior rectangles\" is not established (only one axis of the union is demonstrably exceeded). Rough blockout art itself is acceptable at this foundation milestone; the missing visible east-street support, the camera-in-geometry clipping, and the per-rectangle/return proof gaps are in-scope defects.",
+    "verdict": "FIX",
+    "verified_capture_time_citations": {
+      "frame-002.png": 17.89791,
+      "frame-007.png": 39.34647,
+      "frame-010.png": 50.49647
+    }
+  },
+  "evidence_sha256": {
+    "scoped-gate.json": "98d8a771c0bb2de7026e2197b2308fbda9ef17774dc6a09d8a9fe309905271f1",
+    "critic.json": "6f3e90db713549e5667cd7144eb490c2704b73c3afc3552e7ec313ce06373579",
+    "captures/manifest.json": "9af685165bb7a328c2e512f2ce5916f1dd7f3ec4cf96cc76fb48f412d2a8cb0b"
+  },
+  "review_annotations": [
+    "The original FIX is preserved unchanged. The gate computes the minimum of the distances outside both prior rectangles; a minimum >=6 establishes the criterion for each rectangle. A single reported scalar here is not evidence that only one rectangle was checked.",
+    "The trace explicitly verifies physical returns and absence of R/reset discontinuity. The old courier timeout overlay remains a visual clarity defect; by itself it does not negate those physical records.",
+    "The critic's geometry/readability findings remain open. Complete numerical traversal/support does not establish a visually coherent street or final presentation."
+  ],
+  "continuation": {
+    "owner_pid": 90434,
+    "round": "q0086-1628aaff",
+    "stage": "local-second-street-replay",
+    "local_qwen_active_requests": 1,
+    "waiting_requests": 0,
+    "saved_candidate": "b651a9fbdd8f2944fa773640b1d31a11f3e61752",
+    "published": true,
+    "changed_file": "game/Assets/Game/ConnectedStreet.cs",
+    "saved_change": "Four added lines place an existing original fence mesh along the X22 west nub at Z20..28. Source is local-Qwen-authored; native result is pending.",
+    "no_new_mission_or_facade_saved": true,
+    "accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "task_failures": 23,
+    "failure_streak": 1,
+    "second_street_attempt": 4,
+    "hard_cap_utc": "2026-10-08T06:33:12Z"
+  },
+  "recorder_incident": {
+    "classification": "Infrastructure recorder artifact, not a game pavement repair",
+    "diagnosis_file": "complete-inventory-diagnosis.json",
+    "error_log_commit": "c72efed",
+    "original_evidence_preserved": true
+  },
+  "final_game_accepted": false
+}

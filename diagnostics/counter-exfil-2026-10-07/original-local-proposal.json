@@ -1,0 +1,16 @@
+{
+  "source_checkpoint": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+  "planning_only": true,
+  "implemented": false,
+  "review_status": "First proposal preserved; grounded first-incident revision pending.",
+  "local_final_proposal": {
+    "exact_physical_scope": "Counter-Exfil Lockdown reuses rendered connected ground only: east X22-58/Z8-28, alley X6-22/Z8-20, core X-1-6/Z2-28. Three runner lanes: south Z10, middle Z15, north Z19, running X56 to western line X1/Z8-22. Validate every 4m and each X22/X6/X1 gate with downward ray, runner capsule r.38/h1.9, coupe collider bounds plus .2m clearance. Failed segments become foot-only or excluded; no F boxes, new props, ground, or facades.",
+    "failure_retry_and_ending": "Activate after clean interception and 1.5s receipt. Twelve three-runner waves, one hp6 lead and two hp3 standards, cycling S/M/N. Success requires all runners Stopped/Pinned, zero leaks, and courier-on-foot crossing X1/Z8-22. Any runner crossing X1 first fails and records reason. On zero health, no activation/spawn/pin/score/complete; prior genuine leak persists, red board names death and R; ordinary R resets all.",
+    "local_authored": true,
+    "measured_pacing_limits": "Measured baseline is 75s active/95s replay, not estimates. Planned active estimate: 12 waves with 48-62m runner travel at 1.6-1.8m/s gives 28-45s exposure each, plus 80-140s reposition/exfil, receipts under 2s; target total active 540-660s. No idle over 2s, no empty lap over 30m, max unresolved wave 55s. If under target, use measured north Z24/reverse pass; if over, reduce to nine waves.",
+    "native_acceptance": "Positive proof: E into coupe, WASD along validated lane, Mouse0 down one runner, hold coupe collision .8s to pin lead, E exit, W/S cross western line; Stopped/Pinned increase and Complete true. Adverse proof: leave a lane open, capture runner crossing X1 giving Failed/reason. Second adverse proof: set Health<=0 through existing damage path, verify no banked progress, red failure, then press R and confirm clean reset.",
+    "next_actions": "First survey south/middle/north lane and X22/X6/X1 gate clearances using actual coupe and runner colliders. Implement future CounterExfilMission as a sibling chapter activated only after a clean interception. Add collision pin, gunfire, foot western-line completion. Capture positive and adverse playtests, then tune waves from measured active time, not intent.",
+    "ok": true,
+    "source_interfaces": "Read only InterceptionMission.Active/Complete/Failed/FailReason, LoopSignals.Restarts/Mode/Vehicle/Health, LoopInput.Pressed, DeathAuthority.IsDead/CurrentHealth, RivalAgent.alive/hp, existing coupe colliders, Resources.Load Generated/player/scene, Physics.OverlapBox/Raycast, Rigidbody.SweepTestAll. Future chapter owns wave counters only and never writes camera, reticle, Restarts, Mode, Health, or verified contracts."
+  }
+}

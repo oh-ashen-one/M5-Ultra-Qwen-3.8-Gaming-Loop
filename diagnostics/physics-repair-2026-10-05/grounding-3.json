@@ -1,0 +1,329 @@
+{
+  "gate": {
+    "build_exit": 0,
+    "build_id": "0aab8a13f2fe5354b2f62923609d58d9798d25d969c3a7bfe38631c46db64c2f",
+    "candidate_commit": "43e336c30e90ed5c1ed56f5af3142368dd2586eb",
+    "capture_id": "grounding-3",
+    "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+    "compile_errors": [],
+    "coverage": "foundation",
+    "displacement_axes": "horizontal XZ",
+    "duration": 16.010786056518555,
+    "failure": null,
+    "frame_count": 4,
+    "harness_sha256": "61ed05d4a10620f7c482e94cbb6a9def29740a78526c8b535cfa1b8d343f280b",
+    "passed": true,
+    "performance_claim": "unqualified; shared renderer and capture overhead",
+    "player_displacement": 18.985,
+    "player_exit": 0,
+    "player_vertical_drop": 0.158,
+    "samples": 138,
+    "stationary_grounded": true,
+    "vehicle_displacement": 0
+  },
+  "framing_review": {
+    "next_fix": "Extend continuous street/building geometry along the player's walking path: the post-movement frame is pure void, and the start frame reads only as two unreadable leaning slabs.",
+    "ok": true,
+    "verdict": "FIX"
+  },
+  "world_observations": {
+    "colliders": [
+      {
+        "boundsCenter": [
+          0.0,
+          -0.36000001430511475,
+          0.0
+        ],
+        "boundsSize": [
+          400.0,
+          1.0,
+          400.0
+        ],
+        "forward": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "kind": "BoxCollider",
+        "lossyScale": [
+          400.0,
+          1.0,
+          400.0
+        ],
+        "name": "GroundCollider",
+        "position": [
+          0.0,
+          -0.36000001430511475,
+          0.0
+        ],
+        "up": [
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      {
+        "boundsCenter": [
+          0.0,
+          1.1928000450134277,
+          1.7000000476837158
+        ],
+        "boundsSize": [
+          0.6399999856948853,
+          1.75,
+          0.6399999856948853
+        ],
+        "forward": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "kind": "CharacterController",
+        "lossyScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "name": "Player",
+        "position": [
+          0.0,
+          0.29280000925064087,
+          1.7000000476837158
+        ],
+        "up": [
+          0.0,
+          1.0,
+          0.0
+        ]
+      }
+    ],
+    "largest_street_renderers": [
+      {
+        "boundsCenter": [
+          0.0,
+          4.399999141693115,
+          -4.0
+        ],
+        "boundsSize": [
+          12.0,
+          8.800000190734863,
+          8.0
+        ],
+        "forward": [
+          0.0,
+          0.9999999403953552,
+          -1.1920928955078125e-07
+        ],
+        "kind": "renderer",
+        "lossyScale": [
+          100.0,
+          99.99998474121094,
+          99.99998474121094
+        ],
+        "name": "Street/facade_wall",
+        "position": [
+          0.0,
+          4.399999141693115,
+          -4.000000476837158
+        ],
+        "up": [
+          0.0,
+          -1.1920928955078125e-07,
+          -0.9999999403953552
+        ]
+      },
+      {
+        "boundsCenter": [
+          0.0,
+          8.779998779296875,
+          -4.000000476837158
+        ],
+        "boundsSize": [
+          11.699999809265137,
+          0.22000090777873993,
+          7.6999993324279785
+        ],
+        "forward": [
+          0.0,
+          0.9999999403953552,
+          -1.1920928955078125e-07
+        ],
+        "kind": "renderer",
+        "lossyScale": [
+          100.0,
+          99.99998474121094,
+          99.99998474121094
+        ],
+        "name": "Street/roof_slab",
+        "position": [
+          0.0,
+          8.779998779296875,
+          -4.000000953674316
+        ],
+        "up": [
+          0.0,
+          -1.1920928955078125e-07,
+          -0.9999999403953552
+        ]
+      },
+      {
+        "boundsCenter": [
+          0.0,
+          0.07000019401311874,
+          1.6999999284744263
+        ],
+        "boundsSize": [
+          14.0,
+          0.1400003731250763,
+          3.1999998092651367
+        ],
+        "forward": [
+          0.0,
+          0.9999999403953552,
+          -1.1920928955078125e-07
+        ],
+        "kind": "renderer",
+        "lossyScale": [
+          100.0,
+          99.99998474121094,
+          99.99998474121094
+        ],
+        "name": "Street/sidewalk",
+        "position": [
+          0.0,
+          0.07000017166137695,
+          1.6999999284744263
+        ],
+        "up": [
+          0.0,
+          -1.1920928955078125e-07,
+          -0.9999999403953552
+        ]
+      },
+      {
+        "boundsCenter": [
+          0.0,
+          8.579998970031738,
+          0.13999895751476288
+        ],
+        "boundsSize": [
+          12.199999809265137,
+          0.25999999046325684,
+          0.3400000035762787
+        ],
+        "forward": [
+          0.0,
+          0.9999999403953552,
+          -1.1920928955078125e-07
+        ],
+        "kind": "renderer",
+        "lossyScale": [
+          100.0,
+          99.99998474121094,
+          99.99998474121094
+        ],
+        "name": "Street/cornice_bed",
+        "position": [
+          0.0,
+          8.579998970031738,
+          0.1399993896484375
+        ],
+        "up": [
+          0.0,
+          -1.1920928955078125e-07,
+          -0.9999999403953552
+        ]
+      }
+    ],
+    "player_visual_bounds": {
+      "max": [
+        0.347499992698431,
+        1.8627997934818268,
+        1.8369997888803482
+      ],
+      "min": [
+        -0.347499992698431,
+        0.2927999347448349,
+        1.4324998408555984
+      ]
+    },
+    "stationary_first": {
+      "camera": true,
+      "dt": 0.018088003620505333,
+      "frame": 33,
+      "graphics": "Metal",
+      "grounded": true,
+      "hasController": true,
+      "health": 100.0,
+      "hits": 0,
+      "keys": [],
+      "mission": "not_started",
+      "mode": "foot",
+      "player": [
+        0.0,
+        0.13499993085861206,
+        1.7000000476837158
+      ],
+      "playerForward": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "playerScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "playerUp": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "pursuit": 0,
+      "restarts": 0,
+      "shots": 0,
+      "time": 0.5763565301895142,
+      "vehicle": []
+    },
+    "stationary_grounded": true,
+    "stationary_last": {
+      "camera": true,
+      "dt": 0.016667041927576065,
+      "frame": 167,
+      "graphics": "Metal",
+      "grounded": true,
+      "hasController": true,
+      "health": 100.0,
+      "hits": 0,
+      "keys": [],
+      "mission": "not_started",
+      "mode": "foot",
+      "player": [
+        0.0,
+        0.13499993085861206,
+        1.7000000476837158
+      ],
+      "playerForward": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "playerScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "playerUp": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "pursuit": 0,
+      "restarts": 0,
+      "shots": 0,
+      "time": 2.9218294620513916,
+      "vehicle": []
+    },
+    "stationary_samples": 23
+  }
+}

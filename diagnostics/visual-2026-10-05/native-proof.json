@@ -1,0 +1,202 @@
+{
+  "recorded_utc": "2026-10-06T00:08:47.374753+00:00",
+  "candidate": "04987df4d398e5fdca6c462083b58186f75bb358",
+  "scope": "bounded original street-asset geometry improvement",
+  "native": {
+    "acceptance_fixture": null,
+    "build_exit": 0,
+    "build_id": "8015d71699badb950add8a4c2df5163fbbd0dda59cf6e823c0546f392c5f3310",
+    "candidate_commit": "04987df4d398e5fdca6c462083b58186f75bb358",
+    "capture_id": "v0040-e9347baf",
+    "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+    "compile_errors": [],
+    "coverage": "combat",
+    "displacement_axes": "horizontal XZ",
+    "duration": 52,
+    "failure": null,
+    "final_game_accepted": false,
+    "frame_count": 14,
+    "harness_sha256": "5fef75c22a0804b5ed9da390c602298a8885197e4c3f2d370b3f0e2a9c115505",
+    "passed": true,
+    "performance_claim": "unqualified; shared renderer and capture overhead",
+    "player_displacement": 26.215,
+    "player_exit": 0,
+    "player_vertical_drop": 0.16,
+    "samples": 503,
+    "scope": "rough-whole-route",
+    "scoped_checks": [
+      "mission_complete",
+      "failure_retry",
+      "combat",
+      "pursuit",
+      "hud_audio"
+    ],
+    "scoped_facts": {
+      "audio_peak_rms": 0.20624493062496185,
+      "failure_retry": {
+        "failure_time": 30.08333396911621,
+        "reset_time": 32.03333282470703,
+        "retry_completion_time": 46.33333206176758
+      },
+      "mission_anchors": {
+        "away_seconds": 5.5333333015441895,
+        "closest_driving_approach": {
+          "collision_enabled": true,
+          "distance_xz_m": 0.6793398840213197,
+          "mission": "active",
+          "pad": [
+            1,
+            0.15000000596046448,
+            26
+          ],
+          "penetration_m": 0.0003800392150878906,
+          "restarts": 0,
+          "time": 14.149999618530273,
+          "vehicle": [
+            0.39391160011291504,
+            0.2586762607097626,
+            25.693145751953125
+          ]
+        },
+        "delivery_input_edges": [
+          {
+            "collision_enabled": true,
+            "distance_xz_m": 1.2084652978630757,
+            "mission": "complete",
+            "pad": [
+              1,
+              0.15000000596046448,
+              26
+            ],
+            "penetration_m": 0.0026426315307617188,
+            "restarts": 1,
+            "time": 46.33333206176758,
+            "vehicle": [
+              0.4866139888763428,
+              0.12424647808074951,
+              24.906005859375
+            ]
+          }
+        ],
+        "delivery_seconds": 46.33333206176758,
+        "failure": [],
+        "final_visual_acceptance": false,
+        "passed": true,
+        "pickup_seconds": 39.43333435058594,
+        "returned_seconds": 39.03333282470703,
+        "sample_count": 503,
+        "scope": "fixed-world-objectives-and-input-transitions"
+      },
+      "mission_states": [
+        "active",
+        "complete",
+        "failed"
+      ]
+    },
+    "stationary_grounded": true,
+    "vehicle_displacement": 20.134
+  },
+  "regressions": {
+    "passed": true,
+    "failure": null,
+    "tests": [
+      {
+        "test": "aim-miss",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "aim-near-cover",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "combat-driving",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "combat-foot",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "combat-wall",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "courier",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "failure-retry",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "motor",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "walk",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "world",
+        "passed": true,
+        "failure": null
+      }
+    ]
+  },
+  "fresh_visual_review": {
+    "fixes": [
+      "Stoop still absent in after.png: the acceptance item 'a stoop of three steps with post-and-rail meeting the sidewalk' is not visible at the spawn camera \u2014 place it on the left wall within the first bay so it appears in the next like-for-like frame.",
+      "Cornice line not readable: the roofline is above frame at the spawn camera, so the cornice band never registers; add a belt course at visible height (or lower the cornice repetition) so the horizontal datum line reads in after.png.",
+      "drive.png t15.5: the green beacon shaft passes directly through the blue coupe and the building corner; offset or scale the marker so the glow volume never intersects vehicle or facade geometry.",
+      "drive.png t15.5: the car's nose embeds into the facade corner while parked against the building; verify the new base strip/decorations (and the corner itself) stay clear of the accepted X-1..6, Z-2..30 route envelope so the car never touches the wall.",
+      "after.png left edge still shows a long blank red expanse beyond the two bays; repeat the window-bay rhythm along the full visible wall run so the articulation doesn't stop after the first module."
+    ],
+    "ok": true,
+    "summary": "At the same stationary spawn camera, after.png (t3.2) is a clear geometry improvement over before.png (v0039 frame-000): the left route-facing wall, previously one unbroken red slab crossed only by a pole shadow, now reads as an articulated facade \u2014 two recessed dark-glass window bays with projecting cream lintels and sills, vertical pier divisions, a projecting horizontal stone band at upper left, and a light base strip at the wall line. These are new meshes with self-shading, not a lighting/color change, so the bounded facade-relief gap is addressed. drive.png (t15.5) shows no blocking regression: the trace confirms the vehicle still reaches the pad (closest driving approach 0.68 m, delivery at Z24.9, mission_complete) and all walk/world/motor/courier/combat regression tests pass; the frame's crowding is a composition/marker-clipping flaw, not a route blockage. Acceptance is bounded: this fixes the blank wall, not the overall Chicago fidelity, and two stated acceptance items (stoop, readable cornice) are still not visible in the like-for-like after.png frame.",
+    "verdict": "PASS"
+  },
+  "final_game_accepted": false,
+  "last_playable_checkpoint": "6abdc84913d5d23ffb0b9af45f69209ed47fb6a1",
+  "frames": [
+    {
+      "round": "v0039-b0c9c536",
+      "candidate": "694ab1deafdfb6de1c119a783c9ce01ae13b119c",
+      "build_id": "796a9f3abdd5a8e768341e4b2e47f7660fa35783eee54251fd6acbd19c86e7af",
+      "native_passed": false,
+      "frame": "frame-000.png",
+      "game_seconds": 3.2,
+      "capture_mtime_utc": "2026-10-05T23:44:46.339116+00:00",
+      "sha256": "7132a04943a81c49e700cf3728433bd0f278c350cc688905f5b73ce6e6647f9b",
+      "capture_time_basis": "native PNG filesystem modification time"
+    },
+    {
+      "round": "v0040-e9347baf",
+      "candidate": "04987df4d398e5fdca6c462083b58186f75bb358",
+      "build_id": "8015d71699badb950add8a4c2df5163fbbd0dda59cf6e823c0546f392c5f3310",
+      "native_passed": true,
+      "frame": "frame-000.png",
+      "game_seconds": 3.2,
+      "capture_mtime_utc": "2026-10-05T23:55:17.003163+00:00",
+      "sha256": "f9eeb7e42d40d8f139a88a4147a6ef16e5050ffb3713535ca4e46619907aaffb",
+      "capture_time_basis": "native PNG filesystem modification time"
+    }
+  ],
+  "known_visual_limitations": [
+    "empty surroundings and skyline",
+    "crude character and coupe geometry",
+    "oversized glowing beacon",
+    "weak camera composition",
+    "flat surfaces and missing Chicago street richness"
+  ],
+  "private_comparison_delivery_confirmed": true,
+  "acceptance_state": "Scoped original-asset wall-detail improvement accepted after integrated native route, all ten regressions and fresh local before/after PASS; final Chicago quality and ten-minute mission unaccepted"
+}

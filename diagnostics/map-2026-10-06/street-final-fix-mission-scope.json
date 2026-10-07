@@ -1,0 +1,109 @@
+{
+  "hashes": {
+    "scoped-gate.json": "d19b59bedce92cf1cdb8ddc5536be5e20de8d3d0e32b2f1f2109dad36adf2c0d",
+    "critic.json": "9e95ccc970dd2e9ada3dbe39f25aab642c205c2ad607630f66e7cfeb9ced1c94",
+    "captures/manifest.json": "522e5e1f5e697139196342e6975b5b8d37d693d9debdb3e43ab912c804f2f8ab"
+  },
+  "gate": {
+    "passed": true,
+    "failure": null,
+    "candidate_commit": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+    "scope": "connected-map-extension",
+    "duration": 50.849998474121094,
+    "build_id": "30d7655708e194bd06bb615e3c206e619926138c15995a0d5ff4e5698b519357"
+  },
+  "regressions": [
+    {
+      "test": "walk",
+      "passed": true,
+      "candidate_commit": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+      "failure": null
+    },
+    {
+      "test": "world",
+      "passed": true,
+      "candidate_commit": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+      "failure": null
+    },
+    {
+      "test": "motor",
+      "passed": true,
+      "candidate_commit": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+      "failure": null
+    },
+    {
+      "test": "courier",
+      "passed": true,
+      "candidate_commit": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+      "failure": null
+    },
+    {
+      "test": "failure-retry",
+      "passed": true,
+      "candidate_commit": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+      "failure": null
+    },
+    {
+      "test": "combat-foot",
+      "passed": true,
+      "candidate_commit": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+      "failure": null
+    },
+    {
+      "test": "combat-wall",
+      "passed": true,
+      "candidate_commit": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+      "failure": null
+    },
+    {
+      "test": "combat-driving",
+      "passed": true,
+      "candidate_commit": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+      "failure": null
+    },
+    {
+      "test": "aim-miss",
+      "passed": true,
+      "candidate_commit": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+      "failure": null
+    },
+    {
+      "test": "aim-near-cover",
+      "passed": true,
+      "candidate_commit": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+      "failure": null
+    }
+  ],
+  "utc": "2026-10-06T11:41:12.008159+00:00",
+  "round": "q0092-5a49246f",
+  "source": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+  "accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+  "broader_review": {
+    "fixes": [
+      "Add at least one capture looking through the alley-to-new-street junction (the replaced east boundary at X22) so the open through-connection is visible; in every supplied frame the line of sight ends on a solid wall, so the connectivity is asserted numerically but never shown.",
+      "Build the new east street (X22..60) boundaries from reused original facade/fence meshes with visible support; frames 002/007 show only flat, windowless terracotta planes forming a sealed box, which violates the 'reuse existing facade and fence meshes / no new primitives' instruction and does not read as a street.",
+      "Reframe the frame-010 return camera further back/up: the black car rear slab still occludes the lower-center route; the gap to the doorway ahead must be unobstructed to count as a readable return capture.",
+      "Offset the frame-000 follow camera off the left core facade; it is clipping through the doorway volume (dark interior and a slanted beam crossing the near field).",
+      "Restore HUD objective text at t≈17.9 s: the panel renders as an empty dark box overlapping the health readout while the mission is still active, so the COURIER/OBJECTIVE/timer lines are not readable while the player is outside the old bounds."
+    ],
+    "ok": true,
+    "summary": "The numeric topology evidence is strong: StreetPavement exists at X22..60/Z8..28 with top Y≈0.14, foot reached 6.53 m and vehicle 9.93 m beyond the old rectangles with physical returns (20.98 s / 43.83 s) inside one 50.8 s no-reset run, inventory parity (2770 renderers / 47 colliders) holds, prop clones match size/orientation, and all regressions pass. However, the visual scope fails. None of the four supplied frames shows the new east street as a street or the replaced east-alley junction as an opening: frame-002 and frame-007 show only a sealed pocket of flat, windowless terracotta planes (no reused facade or fence meshes, contradicting the explicit mesh-reuse instruction and reading as new primitive walls), and every camera faces a closed wall, so the through-connection is proven numerically but never visibly. frame-010's return camera is still dominated by the car's black rear slab blocking the lower-center route, frame-000's camera clips into the left building's doorway volume, and the objective HUD panel renders empty at t=17.89791 s while the mission is still live. The MISSION FAILED overlays during the outside legs are acceptable for a topology milestone given the separate passing failure-retry test, but the connection itself lacks the required readable captures.",
+    "verdict": "FIX",
+    "verified_capture_time_citations": {
+      "frame-002.png": 17.89791
+    }
+  },
+  "accepted": false,
+  "next_scope": "Local connected-mission design with additive acceptance; all original visual findings preserved.",
+  "failure_counters": {
+    "task_failures": 24,
+    "failure_streak": 1,
+    "diagnosis_used": true
+  },
+  "hard_cap_utc": "2026-10-08T06:33:12Z",
+  "notes": [
+    "All ten regressions are read from the full scoped gate, including combat and aim gates stored under different filenames.",
+    "Focused return-angle PASS does not establish a polished camera or broad street acceptance.",
+    "No duplicate image delivery: parent already showed the changed WIP return image."
+  ]
+}

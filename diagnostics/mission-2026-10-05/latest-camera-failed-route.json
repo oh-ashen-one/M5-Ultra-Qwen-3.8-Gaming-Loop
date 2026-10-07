@@ -1,0 +1,67 @@
+{
+  "build_exit": 0,
+  "build_id": "57dc6ef4d37a2080809c9c9ffb2a378045aaa4c3ce005108fe56eadfcb3f4ce8",
+  "candidate_commit": "035e5c4acfa2f27e2e93475095a9f82e61a6c92a",
+  "capture_id": "q0009-4de4fbb0",
+  "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+  "compile_errors": [],
+  "coverage": "mission-core",
+  "displacement_axes": "horizontal XZ",
+  "duration": 18.0,
+  "failure": [
+    "connected-objective-ending-missing",
+    "normal-input-pickup-unverified",
+    "normal-input-vehicle-delivery-unverified",
+    "walk-away-and-return-before-pickup-unverified",
+    "hud-carrying-state-unverified",
+    "hud-completion-state-unverified",
+    "hud-and-physical-reset-after-completion-unverified"
+  ],
+  "final_game_accepted": false,
+  "frame_count": 9,
+  "harness_sha256": "76a5a0b1125cc193fbc0ed9a387b17e8c65769be290c6ccb96984b7c2626a2ca",
+  "passed": false,
+  "performance_claim": "unqualified; shared renderer and capture overhead",
+  "player_displacement": 15.04,
+  "player_exit": 0,
+  "player_vertical_drop": 0.16,
+  "samples": 173,
+  "scope": "connected-mission",
+  "scoped_checks": [
+    "mission_complete"
+  ],
+  "scoped_facts": {
+    "courier_hud_states": {
+      "before_pickup": true,
+      "carrying_seconds": null,
+      "completion_seconds": null,
+      "failure": [
+        "hud-carrying-state-unverified",
+        "hud-completion-state-unverified",
+        "hud-and-physical-reset-after-completion-unverified"
+      ],
+      "passed": false,
+      "pixel_readability": "requires actual native capture review",
+      "reset_seconds": null
+    },
+    "mission_anchors": {
+      "away_seconds": 11.899999618530273,
+      "delivery_seconds": null,
+      "failure": [
+        "normal-input-pickup-unverified",
+        "normal-input-vehicle-delivery-unverified",
+        "walk-away-and-return-before-pickup-unverified"
+      ],
+      "final_visual_acceptance": false,
+      "passed": false,
+      "pickup_seconds": null,
+      "returned_seconds": null,
+      "sample_count": 173,
+      "scope": "fixed-world-objectives-and-input-transitions"
+    },
+    "mission_states": [
+      "active"
+    ]
+  },
+  "vehicle_displacement": 0.168
+}

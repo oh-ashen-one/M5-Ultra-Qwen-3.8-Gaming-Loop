@@ -1,0 +1,268 @@
+{
+  "observed_utc": "2026-10-06T09:58:38.930458+00:00",
+  "scope": "Recorder repair and unchanged second-street native requalification; full regression/critic acceptance still pending",
+  "controller_revision": "7bc5a41e4a5afad37114eeb7382a2ec3c4cb26ca",
+  "cpu_tests": {
+    "controller": 235,
+    "m5": 235,
+    "passed": true
+  },
+  "launch": {
+    "utc": "2026-10-06T09:56:20.098120+00:00",
+    "sole_controller_pid": 90434,
+    "entrypoint": "resume_inventory_api.py",
+    "hard_cap_utc": "2026-10-08T06:33:12Z"
+  },
+  "candidate": "6f9244b9045039e0749cd85489e55114b345e448",
+  "restored_checkpoint": "155fcde73738032e8dc21b45a155f915899a3792",
+  "restored_game_tree_identical": true,
+  "preserved_source_commits": [
+    "1ebf314a8cbcb96e5615b065c82339ff2afbc447",
+    "fe8f342f77ac0bfa53beadb866adea84a030668f"
+  ],
+  "accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+  "original_round": "q0081-785afd9c",
+  "new_round": "q0085-cafbd6d3",
+  "cause": "The old recorder silently capped renderers at 2048 and omitted AlleyPavement and prop components. Full recording finds 2538 renderers and 46 colliders. The identical original physical trace has no uncovered samples with complete scene records.",
+  "infrastructure_compile_failure": {
+    "round": "q0083-a8af5ee5",
+    "gate_sha256": "1aa6eb46024ac6e00732a4118295463882efda00c418d9e89d3bc0c17568f278",
+    "observed": "Controller GetInstanceID() call is obsolete as an error in Unity 6000.6.4f1; replaced by GetEntityId(). Harness compile failures now halt before gameplay edits."
+  },
+  "native": {
+    "passed": true,
+    "failure": null,
+    "candidate_commit": "6f9244b9045039e0749cd85489e55114b345e448",
+    "build_exit": 0,
+    "compile_errors": [],
+    "build_id": "f66a9806abcea9e56edfeb6cd7fbfeb15e01dbcace14ae86694b706ad0dceb4f"
+  },
+  "runtime": {
+    "capture_id": "q0085-cafbd6d3",
+    "unity": "6000.6.4f1",
+    "graphics": "Metal",
+    "replay_clock": "fixed-game-time-60Hz",
+    "samples": 492,
+    "errors": 0,
+    "duration": 50.849998474121094,
+    "wallDuration": 63.58690643310547,
+    "completed": true
+  },
+  "inventory": {
+    "passed": true,
+    "failure": [],
+    "observed_counts": {
+      "renderer": 2538,
+      "collider": 46
+    },
+    "declared_counts": {
+      "rendererTotal": 2538,
+      "rendererRecorded": 2538,
+      "colliderTotal": 46,
+      "colliderRecorded": 46
+    },
+    "observed_at_seconds": 0.5,
+    "scope": "Complete point-in-time scene component inventory; gameplay and rendered support criteria are unchanged"
+  },
+  "support": {
+    "radius_m": 0.32,
+    "original_capped_inventory": {
+      "samples": 281,
+      "uncovered": 52
+    },
+    "original_trace_complete_inventory": {
+      "samples": 281,
+      "uncovered": 0,
+      "passed": true
+    },
+    "new_native_trace": {
+      "samples": 281,
+      "uncovered": 0,
+      "passed": true
+    },
+    "physical_trace_identical": true,
+    "support_surfaces": [
+      {
+        "name": "Pavement",
+        "min": [
+          -1,
+          -0.000001214444637298584,
+          -2
+        ],
+        "max": [
+          6,
+          0.14000045508146286,
+          30
+        ]
+      },
+      {
+        "name": "Street/sidewalk",
+        "min": [
+          -0.7999999523162842,
+          2.2351741790771484e-8,
+          14
+        ],
+        "max": [
+          2.4000000953674316,
+          0.14000078290700912,
+          28
+        ]
+      },
+      {
+        "name": "WorldCollision/AlleyPavement",
+        "min": [
+          6,
+          -0.0000027418136596679688,
+          8
+        ],
+        "max": [
+          22,
+          0.1400010734796524,
+          20
+        ]
+      },
+      {
+        "name": "WorldCollision/StreetPavement",
+        "min": [
+          22,
+          -0.000005364418029785156,
+          8
+        ],
+        "max": [
+          60,
+          0.14000369608402252,
+          28
+        ]
+      },
+      {
+        "name": "Street/road_asphalt",
+        "min": [
+          2.6499996185302734,
+          -0.06999915186315775,
+          0
+        ],
+        "max": [
+          13.649999618530273,
+          0.05000346805900335,
+          14
+        ]
+      },
+      {
+        "name": "Street/sidewalk",
+        "min": [
+          -0.7999999523162842,
+          2.2351741790771484e-8,
+          0
+        ],
+        "max": [
+          2.4000000953674316,
+          0.14000078290700912,
+          14
+        ]
+      },
+      {
+        "name": "Street/road_asphalt",
+        "min": [
+          2.6499996185302734,
+          -0.06999915186315775,
+          14
+        ],
+        "max": [
+          13.649999618530273,
+          0.05000346805900335,
+          28
+        ]
+      }
+    ]
+  },
+  "traversal": {
+    "passed": true,
+    "failure": [],
+    "old_bounds_xz": [
+      -1,
+      6,
+      -2,
+      30
+    ],
+    "prior_rendered_rectangles_xz": [
+      [
+        -1,
+        6,
+        -2,
+        30
+      ],
+      [
+        6,
+        22,
+        8,
+        20
+      ]
+    ],
+    "traversal": {
+      "foot": {
+        "outside_samples": 14,
+        "maximum_distance_beyond_old_boundary_m": 6.533336639404297,
+        "physical_return_seconds": 20.983333587646484
+      },
+      "vehicle": {
+        "outside_samples": 33,
+        "maximum_distance_beyond_old_boundary_m": 9.928443908691406,
+        "physical_return_seconds": 43.83333206176758
+      }
+    },
+    "area_claim": "Only observed connected traversal; no gross map-area acceptance"
+  },
+  "prop_component_checks": {
+    "passed": true,
+    "count": 8
+  },
+  "door_geometry": {
+    "passed": true,
+    "failure": [],
+    "wood_front_ahead_of_stone_m": 0.009999655187129974,
+    "wood_center_outward_offset_m": 0.06999969482421875,
+    "panel_bounds_center": [
+      16,
+      1.1899998188018799,
+      19.850000381469727
+    ],
+    "stone_bounds_center": [
+      16,
+      1.429999828338623,
+      19.920000076293945
+    ],
+    "scope": "Native geometry only; actual rendered door readability needs fresh visual review"
+  },
+  "original_evidence_sha256": {
+    "scoped-gate.json": "f0ac5c90f054300a85cbeba14e3759f141bea5d01fc31e3eb7b37c88cfb711ab",
+    "captures/scenario.json": "e3affe7d53ae4f4de5aefeb24f849826ac98430dce21ebe56e6442eda0c92081",
+    "captures/scene-transforms.json": "fb356fd1f934fb5f773088aa897b34cf8e3a387e0e550a616b35979d67231237",
+    "captures/trace.jsonl": "6e4b648e365105e5cd7f4f2a4244082632241013f6f7369ddd32bb0dcfb50678"
+  },
+  "new_evidence_sha256": {
+    "gate.json": "e1ef134707dc9c411bfeec54d3b5ac6c1f56014bfd2ab20ace39bc7356f5a5c8",
+    "captures/runtime-result.json": "59b52c91ae08c1beb502a75890fe9e88edb628aecb97093fe5304b8ae58d0dcc",
+    "captures/scenario.json": "e3affe7d53ae4f4de5aefeb24f849826ac98430dce21ebe56e6442eda0c92081",
+    "captures/scene-transforms.json": "f65dd76fb26894ff235bf2d0f82986f9ecfee264b5bcaa7d0b5304ea988c1446",
+    "captures/trace.jsonl": "88e54ba119e2fa293d1db1a3d17704fef2ca397e5a5e947f2512e370ebf06126"
+  },
+  "snapshot": {
+    "status": "running",
+    "activity": "unity-build",
+    "regressions_completed": [
+      {
+        "name": "q0085-cafbd6d3-regression-walk",
+        "passed": true,
+        "failure": null
+      }
+    ],
+    "task_failures": 22,
+    "failure_streak": 1
+  },
+  "limitations": [
+    "Complete inventory is a point-in-time observation at 0.5 seconds, not a guarantee covering dynamic objects for the whole run.",
+    "All ten regressions and fresh local scoped visual criticism remain required before promotion.",
+    "Door visual FIX, final Chicago art, meaningful second objective and ten-minute pacing remain open.",
+    "No gameplay code was authored by the cloud for this repair; acceptance timing fixture remains separately disclosed."
+  ]
+}

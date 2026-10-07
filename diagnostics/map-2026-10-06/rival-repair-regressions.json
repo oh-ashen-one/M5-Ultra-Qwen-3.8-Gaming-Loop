@@ -1,0 +1,68 @@
+{
+  "observed_utc": "2026-10-06T06:32:18.998116+00:00",
+  "candidate": "d526046537d456bb224a247e88d190157286e2d2",
+  "all_ten_passed": true,
+  "regressions": [
+    {
+      "round": "q0070-1baf81f6-regression-aim-miss",
+      "passed": true,
+      "failure": null,
+      "build_id": "b14327a09d24c99e9cdebaea46d07a5c57b6a090335cc47ef0ab670b6cddcfc8"
+    },
+    {
+      "round": "q0070-1baf81f6-regression-aim-near-cover",
+      "passed": true,
+      "failure": null,
+      "build_id": "3b7eb6785da33b79bf9324465b7a88139eba6727660f366af084756e250ba6bb"
+    },
+    {
+      "round": "q0070-1baf81f6-regression-combat-driving",
+      "passed": true,
+      "failure": null,
+      "build_id": "2b0e358aeaf43e0346a88575ee32c4d2a4ae509f10beb8cd8601bdf0e96ee0b3"
+    },
+    {
+      "round": "q0070-1baf81f6-regression-combat-foot",
+      "passed": true,
+      "failure": null,
+      "build_id": "a5fb3bf4fa00bc38ee53edc991a156f1d6b1e36b98436a1d92242fc1779511d5"
+    },
+    {
+      "round": "q0070-1baf81f6-regression-combat-wall",
+      "passed": true,
+      "failure": null,
+      "build_id": "147aaa4a201dc85b5ee938e1ece8b989e130549e4a85b3f9225e4f6636ae9152"
+    },
+    {
+      "round": "q0070-1baf81f6-regression-courier",
+      "passed": true,
+      "failure": null,
+      "build_id": "0d804793b34585e02b2a7f212d6ad68598b5ad7d02eb15e919992a70488f1157"
+    },
+    {
+      "round": "q0070-1baf81f6-regression-failure-retry",
+      "passed": true,
+      "failure": null,
+      "build_id": "949b5974892d5322379bd96a6041558ac23bd9d33c53934d421d37bd82bb3c03"
+    },
+    {
+      "round": "q0070-1baf81f6-regression-motor",
+      "passed": true,
+      "failure": null,
+      "build_id": "10a7db4fe28b0a1c8973afdf0ffacda4df73982e8d66c0d5d966982bfcf9e7d5"
+    },
+    {
+      "round": "q0070-1baf81f6-regression-walk",
+      "passed": true,
+      "failure": null,
+      "build_id": "7f79cdc39a59d73235faa1e275147a6ba953349248887501d57fd5678755a7e7"
+    },
+    {
+      "round": "q0070-1baf81f6-regression-world",
+      "passed": true,
+      "failure": null,
+      "build_id": "6eea9542d297496f4d4da0491e52e9dfc0c1bcc2f206986e4dc9f56fd48e20e4"
+    }
+  ],
+  "fresh_local_critic": "In progress at this snapshot; no promotion claimed."
+}

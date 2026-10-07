@@ -1,0 +1,256 @@
+[
+  {
+    "scope": "wall",
+    "candidate": "1295417194c0f2cdf9716982df06afebd6336c57",
+    "build_id": "27465c6a46698a6bfc0d7d47fb7c5d20bd05c0d52d3bd5b4bb7bceacadf245e1",
+    "events": [
+      {
+        "time": 7.5,
+        "keys": [
+          "Mouse0"
+        ],
+        "shotsBefore": 0,
+        "shotsAfter": 1,
+        "hitsBefore": 0,
+        "hitsAfter": 0,
+        "firstRayCollider": "CombatValidationWall",
+        "originOverlaps085": [],
+        "cameraPosition": [
+          0.959574818611145,
+          3.2350006103515625,
+          11.05984878540039
+        ],
+        "cameraForward": [
+          0.00004513367093750276,
+          -0.21243305504322052,
+          -0.9771755933761597
+        ],
+        "targets": [
+          {
+            "name": "Rival",
+            "hpBefore": 3,
+            "hpAfter": 3,
+            "position": [
+              1.2139499187469482,
+              0.14000000059604645,
+              2.833639621734619
+            ],
+            "renderCenter": [
+              1.2141225337982178,
+              0.9249998927116394,
+              2.775669813156128
+            ],
+            "renderSize": [
+              0.7033634185791016,
+              1.5699999332427979,
+              0.4184412956237793
+            ],
+            "viewportMin": [
+              0.45573878288269043,
+              0.3774706721305847,
+              8.214607238769531
+            ],
+            "viewportMax": [
+              0.5071234703063965,
+              0.5291441679000854,
+              8.957049369812012
+            ],
+            "colliderRayHit": true,
+            "visualBoundsRayHit": true,
+            "viewportContainsCenter": true,
+            "firstRayTarget": false,
+            "colliderRayDistance": 8.129112243652344
+          }
+        ]
+      },
+      {
+        "time": 9.199999809265137,
+        "keys": [
+          "Mouse0"
+        ],
+        "shotsBefore": 1,
+        "shotsAfter": 2,
+        "hitsBefore": 0,
+        "hitsAfter": 0,
+        "firstRayCollider": "CombatValidationWall",
+        "originOverlaps085": [],
+        "cameraPosition": [
+          0.9600003957748413,
+          3.2350006103515625,
+          11.05999755859375
+        ],
+        "cameraForward": [
+          -6.963988852248804e-8,
+          -0.21242977678775787,
+          -0.977176308631897
+        ],
+        "targets": [
+          {
+            "name": "Rival",
+            "hpBefore": 3,
+            "hpAfter": 3,
+            "position": [
+              1.2097688913345337,
+              0.14000000059604645,
+              2.8834643363952637
+            ],
+            "renderCenter": [
+              1.2099413871765137,
+              0.9249998927116394,
+              2.8254945278167725
+            ],
+            "renderSize": [
+              0.7033634185791016,
+              1.5699999332427979,
+              0.4184412956237793
+            ],
+            "viewportMin": [
+              0.45578664541244507,
+              0.3757748305797577,
+              8.166071891784668
+            ],
+            "viewportMax": [
+              0.5074768662452698,
+              0.5283212661743164,
+              8.908478736877441
+            ],
+            "colliderRayHit": true,
+            "visualBoundsRayHit": true,
+            "viewportContainsCenter": true,
+            "firstRayTarget": false,
+            "colliderRayDistance": 8.074441909790039
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "scope": "near-cover",
+    "candidate": "1295417194c0f2cdf9716982df06afebd6336c57",
+    "build_id": "2eb9e4471829755eb504f88926d405c297b785df506aca0963b1ef7c7a9bf238",
+    "events": [
+      {
+        "time": 7.5,
+        "keys": [
+          "Mouse0"
+        ],
+        "shotsBefore": 0,
+        "shotsAfter": 1,
+        "hitsBefore": 0,
+        "hitsAfter": 0,
+        "firstRayCollider": "CombatNearCover",
+        "originOverlaps085": [
+          "CombatNearCover"
+        ],
+        "cameraPosition": [
+          0.959574818611145,
+          3.2350006103515625,
+          11.05984878540039
+        ],
+        "cameraForward": [
+          0.00004513367093750276,
+          -0.21243305504322052,
+          -0.9771755933761597
+        ],
+        "targets": [
+          {
+            "name": "Rival",
+            "hpBefore": 3,
+            "hpAfter": 3,
+            "position": [
+              1.2139499187469482,
+              0.14000000059604645,
+              2.833639621734619
+            ],
+            "renderCenter": [
+              1.2141225337982178,
+              0.9249998927116394,
+              2.775669813156128
+            ],
+            "renderSize": [
+              0.7033634185791016,
+              1.5699999332427979,
+              0.4184412956237793
+            ],
+            "viewportMin": [
+              0.45573878288269043,
+              0.3774706721305847,
+              8.214607238769531
+            ],
+            "viewportMax": [
+              0.5071234703063965,
+              0.5291441679000854,
+              8.957049369812012
+            ],
+            "colliderRayHit": true,
+            "visualBoundsRayHit": true,
+            "viewportContainsCenter": true,
+            "firstRayTarget": false,
+            "colliderRayDistance": 8.129112243652344
+          }
+        ]
+      },
+      {
+        "time": 9.199999809265137,
+        "keys": [
+          "Mouse0"
+        ],
+        "shotsBefore": 1,
+        "shotsAfter": 2,
+        "hitsBefore": 0,
+        "hitsAfter": 0,
+        "firstRayCollider": "CombatNearCover",
+        "originOverlaps085": [
+          "CombatNearCover"
+        ],
+        "cameraPosition": [
+          0.9600003957748413,
+          3.2350006103515625,
+          11.05999755859375
+        ],
+        "cameraForward": [
+          -6.963988852248804e-8,
+          -0.21242977678775787,
+          -0.977176308631897
+        ],
+        "targets": [
+          {
+            "name": "Rival",
+            "hpBefore": 3,
+            "hpAfter": 3,
+            "position": [
+              1.2097688913345337,
+              0.14000000059604645,
+              2.8834643363952637
+            ],
+            "renderCenter": [
+              1.2099413871765137,
+              0.9249998927116394,
+              2.8254945278167725
+            ],
+            "renderSize": [
+              0.7033634185791016,
+              1.5699999332427979,
+              0.4184412956237793
+            ],
+            "viewportMin": [
+              0.45578664541244507,
+              0.3757748305797577,
+              8.166071891784668
+            ],
+            "viewportMax": [
+              0.5074768662452698,
+              0.5283212661743164,
+              8.908478736877441
+            ],
+            "colliderRayHit": true,
+            "visualBoundsRayHit": true,
+            "viewportContainsCenter": true,
+            "firstRayTarget": false,
+            "colliderRayDistance": 8.074441909790039
+          }
+        ]
+      }
+    ]
+  }
+]

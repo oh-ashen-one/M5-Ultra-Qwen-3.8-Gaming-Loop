@@ -1,0 +1,119 @@
+{
+  "candidate": "5034b67116838b8bc413acd40e9bb8d712bff623",
+  "contracts": [
+    {
+      "scope": "foot",
+      "passed": true,
+      "candidate": "5034b67116838b8bc413acd40e9bb8d712bff623",
+      "build_id": "51efc394d0a8cbef34e239cb33fc25fa04640748fccfa3bc6e2a53f24cd548d5",
+      "facts": {
+        "shots": 2,
+        "hits": 2,
+        "visible_height_range": [
+          1.5699999332427979,
+          1.5699999332427979
+        ]
+      }
+    },
+    {
+      "scope": "wall",
+      "passed": true,
+      "candidate": "5034b67116838b8bc413acd40e9bb8d712bff623",
+      "build_id": "ee4ec61e3770d670f383f3d307d65d3622b7619f2652655ecbf831c5c3095371",
+      "facts": {
+        "visible_height_range": [
+          1.5699999332427979,
+          1.5699999332427979
+        ],
+        "blocked_attack_samples": 84,
+        "blocked_shot_samples": 6
+      }
+    },
+    {
+      "scope": "driving",
+      "passed": true,
+      "candidate": "5034b67116838b8bc413acd40e9bb8d712bff623",
+      "build_id": "a9fc333c1d82f43a819f058e2f6ecf3be836d656ef0742364d4d444a71c1223c",
+      "facts": {
+        "visible_height_range": [
+          1.5699999332427979,
+          1.5699999332427979
+        ],
+        "longest_continuous_escape_seconds": 5.783,
+        "required_continuous_escape_seconds": 2.0,
+        "maximum_vehicle_distance": 23.06878089904785,
+        "far_pursuit_levels": [
+          0
+        ]
+      }
+    }
+  ],
+  "combined": {
+    "passed": true,
+    "candidate_commit": "5034b67116838b8bc413acd40e9bb8d712bff623",
+    "build_id": "8116f622caede2d33144f6652ba36efd147d3fb9039e334f87178330161e26c1"
+  },
+  "regressions": [
+    {
+      "test": "walk",
+      "passed": true,
+      "build_id": "ab1be38b073edb09ca93fe7c34c76308905bfe5bb8117d31678c6033eb2ac0e7"
+    },
+    {
+      "test": "world",
+      "passed": true,
+      "build_id": "f1eb4b60a9456e58faa18e7650487683bf2f1f851f28554c2873f57cd703501e"
+    },
+    {
+      "test": "motor",
+      "passed": true,
+      "build_id": "f413e23c705a55cd3079aa8245e0de10f37fe9806f19d984439aae3c69f7b610"
+    },
+    {
+      "test": "courier",
+      "passed": true,
+      "build_id": "68851c7cdc5116fa3fc450756b2b47c9ea0f92e4b340ee15c1fefde0b0fe7eb8"
+    },
+    {
+      "test": "failure-retry",
+      "passed": true,
+      "build_id": "8e5c46bb2c99b97258b10a486f8b9dbea3d403332f6c673fe02eaac6800abb53"
+    }
+  ],
+  "final_game_accepted": false,
+  "rival_hit_events": [
+    {
+      "time": 7.5333333015441895,
+      "keys": [
+        "Mouse0"
+      ],
+      "hp_before": 3,
+      "hp_after": 2,
+      "hits_before": 0,
+      "hits_after": 1,
+      "aim_first_collider": "Rival",
+      "rival_name": "Rival"
+    },
+    {
+      "time": 9.216666221618652,
+      "keys": [
+        "Mouse0"
+      ],
+      "hp_before": 2,
+      "hp_after": 1,
+      "hits_before": 1,
+      "hits_after": 2,
+      "aim_first_collider": "Rival",
+      "rival_name": "Rival"
+    }
+  ],
+  "latest_review_status": "PASS: fresh actual-image scoped review; prior unsupported verdict and context stop preserved.",
+  "best_accepted_playable": "bbb0a9168aab596f5da3cabb6fdde4a0ccdb4b25",
+  "accepted_utc": "2026-10-05T20:49:45.546163+00:00",
+  "accepted_scope": "mission-combat-pursuit",
+  "next_queue_phases": [
+    "mission-hud-audio",
+    "rough-whole-route",
+    "chicago-polish-whole-route"
+  ]
+}

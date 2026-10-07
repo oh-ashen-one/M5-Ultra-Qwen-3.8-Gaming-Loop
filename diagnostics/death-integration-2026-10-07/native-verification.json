@@ -1,0 +1,222 @@
+{
+  "observed_utc": "2026-10-07T04:27:40.364193+00:00",
+  "source": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+  "native_result_sha256": "43e55f18c778164ee0d68e78fcffab0ed524e199ec1be75fb52e522e15bbcb98",
+  "native_round": "q0153-94519238",
+  "cases": [
+    {
+      "case": "courier-pickup",
+      "passed": true,
+      "setup_passed": true,
+      "failure": [],
+      "zero_health_samples": 30,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "776e23bb95e4f28ec6cb9e72d4cbfa98e0de6cafcdeaaeb11acf285e627640c6",
+      "evidence": "q0152-4bb1d76f-courier-pickup",
+      "reused_native_evidence": true,
+      "acceptance_revision": "explicit-r-reset-retry-restart",
+      "original_gate_sha256": "2bf2961762b5a42787cd08368d38c21053183a9d9de7171efd3a50d9171409bc"
+    },
+    {
+      "case": "courier-delivery",
+      "passed": true,
+      "setup_passed": true,
+      "failure": [],
+      "zero_health_samples": 30,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e",
+      "evidence": "q0153-94519238-courier-delivery",
+      "reused_native_evidence": null,
+      "acceptance_revision": null,
+      "original_gate_sha256": null
+    },
+    {
+      "case": "dead-drop",
+      "passed": true,
+      "setup_passed": true,
+      "failure": [],
+      "zero_health_samples": 32,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e",
+      "evidence": "q0153-94519238-dead-drop",
+      "reused_native_evidence": null,
+      "acceptance_revision": null,
+      "original_gate_sha256": null
+    },
+    {
+      "case": "relay-final",
+      "passed": true,
+      "setup_passed": true,
+      "failure": [],
+      "zero_health_samples": 32,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e",
+      "evidence": "q0153-94519238-relay-final",
+      "reused_native_evidence": null,
+      "acceptance_revision": null,
+      "original_gate_sha256": null
+    },
+    {
+      "case": "interception-receipt",
+      "passed": true,
+      "setup_passed": true,
+      "failure": [],
+      "zero_health_samples": 32,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e",
+      "evidence": "q0153-94519238-interception-receipt",
+      "reused_native_evidence": null,
+      "acceptance_revision": null,
+      "original_gate_sha256": null
+    },
+    {
+      "case": "interception-final",
+      "passed": true,
+      "setup_passed": true,
+      "failure": [],
+      "zero_health_samples": 32,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e",
+      "evidence": "q0153-94519238-interception-final",
+      "reused_native_evidence": null,
+      "acceptance_revision": null,
+      "original_gate_sha256": null
+    }
+  ],
+  "healthy_route": {
+    "passed": true,
+    "replay_seconds": 95,
+    "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e",
+    "gameplay_completions": [
+      75.43333435058594
+    ]
+  },
+  "regressions": [
+    {
+      "test": "walk",
+      "passed": true,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e"
+    },
+    {
+      "test": "world",
+      "passed": true,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e"
+    },
+    {
+      "test": "motor",
+      "passed": true,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e"
+    },
+    {
+      "test": "courier",
+      "passed": true,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e"
+    },
+    {
+      "test": "failure-retry",
+      "passed": true,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e"
+    },
+    {
+      "test": "combat-foot",
+      "passed": true,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e"
+    },
+    {
+      "test": "combat-wall",
+      "passed": true,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e"
+    },
+    {
+      "test": "combat-driving",
+      "passed": true,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e"
+    },
+    {
+      "test": "aim-miss",
+      "passed": true,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e"
+    },
+    {
+      "test": "aim-near-cover",
+      "passed": true,
+      "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+      "build_id": "9aa3bc0713a953ed198ba335eeb99c0e4b5e7578b856571b63e875ac2c416f7e"
+    }
+  ],
+  "frames": [
+    {
+      "case": "q0152-4bb1d76f-courier-pickup",
+      "image": "frame-001.png",
+      "replay_seconds": 7.65,
+      "native_write_utc": "2026-10-07T03:59:30.607808+00:00",
+      "sha256": "0b8d5b29cb9b3fea3c09156c00b40d2f6b36a061dca3295484c63b78dee6d4a7",
+      "publication": "private review only"
+    },
+    {
+      "case": "q0153-94519238-interception-final",
+      "image": "frame-001.png",
+      "replay_seconds": 75.65,
+      "native_write_utc": "2026-10-07T04:17:19.877775+00:00",
+      "sha256": "694c2bd732bf9dd5174afae34eceeed439d4cece5d58f52383b9ff67578091e3",
+      "publication": "private review only"
+    },
+    {
+      "case": "q0153-94519238-interception-final",
+      "image": "frame-003.png",
+      "replay_seconds": 79.4,
+      "native_write_utc": "2026-10-07T04:17:24.625074+00:00",
+      "sha256": "3952655393706749a991cdae5ef0d62ae284b34095b9cad4b9ce28b6770b403d",
+      "publication": "private review only"
+    }
+  ],
+  "local_author_sessions": [
+    {
+      "session": "q0148-4c9406cf-death-remaining-controls",
+      "requests": 12,
+      "generated_tokens": 10020
+    },
+    {
+      "session": "q0149-9d0c5516-death-verify-retained-controls",
+      "requests": 3,
+      "generated_tokens": 2105
+    },
+    {
+      "session": "q0150-5c900be9-death-route-relay-death",
+      "requests": 9,
+      "generated_tokens": 18843
+    },
+    {
+      "session": "q0151-78c25268-death-complete-route-relay",
+      "requests": 15,
+      "generated_tokens": 11328
+    },
+    {
+      "session": "q0151-78c25268-death-interception-hud-death",
+      "requests": 16,
+      "generated_tokens": 22104
+    }
+  ],
+  "local_author_requests": 55,
+  "local_generated_tokens": 64400,
+  "author_completion_claimed": false,
+  "original_author_turn_boundary_preserved": true,
+  "original_hud_checker_failure_preserved": true,
+  "checker_change": "Accept reset/retry/restart with explicit R; preserve identical scenarios, timing, movement, firing, progression and reset checks.",
+  "native_intervention": "Each negative reaches its chapter through ordinary inputs, then declares one external health=0 injection; this is not natural-damage death proof.",
+  "cloud_contribution": "Controller, external acceptance, infrastructure and pixel inspection only; all game C# changes authored by local Qwen.",
+  "visual_verdict": "Scoped PASS with corrected death/reset frame attribution; exact foreground comparison retracts the cloud obstruction suspicion.",
+  "scoped_checkpoint_promoted": true,
+  "final_game_accepted": false,
+  "unchanged_cap_utc": "2026-10-08T06:33:12Z",
+  "acceptance_evidence": "scoped-acceptance.json"
+}

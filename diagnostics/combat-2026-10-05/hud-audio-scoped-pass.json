@@ -1,0 +1,70 @@
+{
+  "scope": "mission-hud-audio",
+  "accepted_checkpoint": "c32cfeb7c512a1ce231eb2c7c29d9738c92ab004",
+  "accepted_utc": "2026-10-05T21:14:48.347609+00:00",
+  "candidate": "7fd7bf26ce7eb68bd91bae171d57af013b674cc9",
+  "build_id": "977148ef28cda0fa81104abd59d9a666ef3c8dd6f38bbf75378b6ac6da3ae6d9",
+  "native_passed": true,
+  "fresh_actual_image_review": "PASS",
+  "regressions": [
+    {
+      "test": "walk",
+      "passed": true,
+      "candidate": "7fd7bf26ce7eb68bd91bae171d57af013b674cc9"
+    },
+    {
+      "test": "world",
+      "passed": true,
+      "candidate": "7fd7bf26ce7eb68bd91bae171d57af013b674cc9"
+    },
+    {
+      "test": "motor",
+      "passed": true,
+      "candidate": "7fd7bf26ce7eb68bd91bae171d57af013b674cc9"
+    },
+    {
+      "test": "courier",
+      "passed": true,
+      "candidate": "7fd7bf26ce7eb68bd91bae171d57af013b674cc9"
+    },
+    {
+      "test": "failure-retry",
+      "passed": true,
+      "candidate": "7fd7bf26ce7eb68bd91bae171d57af013b674cc9"
+    },
+    {
+      "test": "combat-foot",
+      "passed": true,
+      "candidate": "7fd7bf26ce7eb68bd91bae171d57af013b674cc9"
+    },
+    {
+      "test": "combat-wall",
+      "passed": true,
+      "candidate": "7fd7bf26ce7eb68bd91bae171d57af013b674cc9"
+    },
+    {
+      "test": "combat-driving",
+      "passed": true,
+      "candidate": "7fd7bf26ce7eb68bd91bae171d57af013b674cc9"
+    }
+  ],
+  "audio": {
+    "peak_rms": 0.1847793608903885,
+    "signal_present": true,
+    "per_cue_correctness_verified": false,
+    "cue_balance_verified": false
+  },
+  "frame": {
+    "name": "frame-002.png",
+    "replay_seconds": 8,
+    "capture_filesystem_utc": "2026-10-05T21:05:37.080868+00:00",
+    "sha256": "1c729b33f94221cdf6509b8372ff77da3a1392eb72a9e7e4a0f3bbf0002eeda8",
+    "observed": "HEALTH 88, WANTED ***, objective and controls are visible."
+  },
+  "remaining": [
+    "Per-cue audio correctness and balance",
+    "One complete route combining combat, pursuit, failure/retry and ending",
+    "Chicago visual polish and meaningful roughly ten-minute pacing"
+  ],
+  "final_game_accepted": false
+}

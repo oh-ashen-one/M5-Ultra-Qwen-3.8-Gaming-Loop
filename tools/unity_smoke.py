@@ -16,7 +16,10 @@ from pathlib import Path
 import shutil
 import subprocess
 import time
-import psutil
+try:
+    import psutil
+except ImportError:
+    psutil=None  # Pure renderer classification tests need no machine dependency.
 
 
 def save(path, data):
@@ -24,6 +27,9 @@ def save(path, data):
 
 
 def renderer_process(exe, name, argv):
+    # The native player is a renderer too; its engine lease proves task ownership.
+    if exe.endswith('/ChicagoLocalSlice.app/Contents/MacOS/Chicago Local Slice'):
+        return True
     if exe.endswith("/Unity.app/Contents/MacOS/Unity"):
         # Observed Unity import workers explicitly use the Null graphics device.
         # Only exclude that documented worker shape, never a rendering editor.
@@ -38,6 +44,7 @@ def renderer_process(exe, name, argv):
 
 
 def main():
+    if psutil is None:raise RuntimeError('Use the qualified machine runtime with psutil installed')
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--preparation", type=Path, required=True)
     p.add_argument("--workspace", type=Path, required=True)

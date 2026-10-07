@@ -1,0 +1,162 @@
+{
+  "utc": "2026-10-07T02:24:45.906851+00:00",
+  "policy": "simultaneous-capacity-trial-v1",
+  "status": "stopped-during-model-load",
+  "cause": "compressor-growth-above2GiB",
+  "candidate": "ac0d7fe441a48377eb8d3bb420da2618ed797ed6",
+  "model_quality_changed": false,
+  "author_requests": 0,
+  "prefill_observed": false,
+  "decode_observed": false,
+  "native_verified": false,
+  "game_source_changed": false,
+  "other_workload_modified": false,
+  "automatic_restarts": 0,
+  "all_owned_processes_stopped": true,
+  "real_overlap_observed": true,
+  "trial_samples": [
+    {
+      "available_gib": 234.43492126464844,
+      "compression_growth_gib": 0,
+      "failure": [],
+      "phase": "load",
+      "pressure_level": 1,
+      "qwen_footprint_gib": 0,
+      "required_available_gib": 220,
+      "swap_growth_mib": 0,
+      "unreal_footprint_gib": 0,
+      "utc": "2026-10-07T02:21:01.387311+00:00"
+    },
+    {
+      "available_gib": 234.43490600585938,
+      "compression_growth_gib": 0,
+      "failure": [],
+      "phase": "load",
+      "pressure_level": 1,
+      "qwen_footprint_gib": 0.018280521035194397,
+      "required_available_gib": 219.9817194789648,
+      "swap_growth_mib": 0,
+      "unreal_footprint_gib": 0,
+      "utc": "2026-10-07T02:21:01.693569+00:00"
+    },
+    {
+      "available_gib": 233.95921325683594,
+      "compression_growth_gib": 0,
+      "failure": [],
+      "phase": "load",
+      "pressure_level": 1,
+      "qwen_footprint_gib": 0.11702048033475876,
+      "required_available_gib": 219.40748285502195,
+      "swap_growth_mib": 0,
+      "unreal_footprint_gib": 0.47549666464328766,
+      "utc": "2026-10-07T02:21:03.824348+00:00"
+    },
+    {
+      "available_gib": 213.75302124023438,
+      "compression_growth_gib": 0,
+      "failure": [],
+      "phase": "load",
+      "pressure_level": 1,
+      "qwen_footprint_gib": 23.960909761488438,
+      "required_available_gib": 193.19904463738203,
+      "swap_growth_mib": 0,
+      "unreal_footprint_gib": 2.840045601129532,
+      "utc": "2026-10-07T02:21:06.631355+00:00"
+    },
+    {
+      "available_gib": 174.81149291992188,
+      "compression_growth_gib": 0,
+      "failure": [],
+      "phase": "load",
+      "pressure_level": 1,
+      "qwen_footprint_gib": 75.7832034304738,
+      "required_available_gib": 141.29064544290304,
+      "swap_growth_mib": 0,
+      "unreal_footprint_gib": 2.9261511266231537,
+      "utc": "2026-10-07T02:21:08.768695+00:00"
+    },
+    {
+      "available_gib": 176.16416931152344,
+      "compression_growth_gib": 0,
+      "failure": [],
+      "phase": "load",
+      "pressure_level": 1,
+      "qwen_footprint_gib": 55.56919423490763,
+      "required_available_gib": 160.96186834573746,
+      "swap_growth_mib": 0,
+      "unreal_footprint_gib": 3.4689374193549156,
+      "utc": "2026-10-07T02:21:10.905590+00:00"
+    },
+    {
+      "available_gib": 150.11749267578125,
+      "compression_growth_gib": 0,
+      "failure": [],
+      "phase": "load",
+      "pressure_level": 1,
+      "qwen_footprint_gib": 81.47077822685242,
+      "required_available_gib": 133.99792078882456,
+      "swap_growth_mib": 0,
+      "unreal_footprint_gib": 4.531300984323025,
+      "utc": "2026-10-07T02:21:13.036898+00:00"
+    },
+    {
+      "available_gib": 124.37094116210938,
+      "compression_growth_gib": 0,
+      "failure": [],
+      "phase": "load",
+      "pressure_level": 1,
+      "qwen_footprint_gib": 108.34929175674915,
+      "required_available_gib": 105.39986250549555,
+      "swap_growth_mib": 0,
+      "unreal_footprint_gib": 6.250845737755299,
+      "utc": "2026-10-07T02:21:15.247512+00:00"
+    },
+    {
+      "available_gib": 116.70468139648438,
+      "compression_growth_gib": 11.072067260742188,
+      "failure": [
+        "compressor-growth-above2GiB"
+      ],
+      "phase": "load",
+      "pressure_level": 1,
+      "qwen_footprint_gib": 128.24289126694202,
+      "required_available_gib": 83.89401961117983,
+      "swap_growth_mib": 3.1875,
+      "unreal_footprint_gib": 7.863089121878147,
+      "utc": "2026-10-07T02:21:17.463328+00:00"
+    }
+  ],
+  "private_evidence_sha256": {
+    "capacity-budget.jsonl": "8bea012b0ea41de241423ca43df5dda3698b15b8b193ec741c1b93f24225c13a",
+    "launch.json": "58f23a77c0e6b7134a7c2dfb463fbb0d09b28eb90e01c298e2b4e9af49bd4ae2",
+    "model-server.log": "d9d918229c67453b3a214c861038e12a582f9d6ef5cc1d1c74ba0c665739271e",
+    "resident-state.json": "b1ef17c730af6ba9dcb77f6473e1b2317a7a17a47ab0c2e59020d69eaa957b1a"
+  },
+  "interpretation": "The provisional compressor-growth guard fired; normal pressure and modest swap do not establish a hardware capacity failure or prove safe continuation.",
+  "known_scope": "Model load overlap only; no request prefill/decode, coding result, native verification or promotion.",
+  "private_outcome_sha256": "77981672cfb6b75b7403b9d3027fdbf3164b8ebe35eaf304f82a1d108fc90e62",
+  "guard_limits": {
+    "compression_growth_gib": 2,
+    "swap_growth_mib": 512,
+    "qwen_footprint_gib": 192,
+    "omlx_memory_guard": "safe",
+    "unreal_envelope_gib": 40
+  },
+  "controller_commit": "30639bf",
+  "native_check_commit": "7e9960252e9d7e8726627e345aa784266a061706",
+  "model": {
+    "repository": "mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp",
+    "revision": "e171af86f499f1855b0fb71d781105e8dd609610",
+    "runtime": "oMLX0.7.0",
+    "mlx": "0.32.2",
+    "reasoning_effort": "xhigh",
+    "request_sent": false
+  },
+  "fault_thermal_warning": 0,
+  "shared_slots_at_stop": {
+    "qwen_slots": 1,
+    "unreal_slots": 1,
+    "other_owner_metadata_changed": false
+  },
+  "snapshot_annotation": "The legacy stop_snapshot omitted the coexistence flag and misclassified the external renderer. The live admission_snapshot used simultaneous coexistence and passed; the actual stop was only the compressor-growth guard. Original snapshots are preserved."
+}

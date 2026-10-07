@@ -1,0 +1,107 @@
+{
+  "observed_utc": "2026-10-06T05:38:13.446350+00:00",
+  "round": "q0061-22c8f22d-prefix-2",
+  "gate": {
+    "candidate_commit": "1c68cc752e653129196cfec1c2aa153d8445ca87",
+    "build_id": "3568be073cb24fc8a31538be7997327819ac81786a5068c3e2f051db22ca9c5c",
+    "duration": 21.83333396911621,
+    "frame_count": 5,
+    "passed": true,
+    "failure": null,
+    "walking_prefix": {
+      "failure": [],
+      "final_state": {
+        "mode": "vehicle",
+        "player": [
+          1.7709314823150635,
+          0.13499993085861206,
+          8.247565269470215
+        ],
+        "time": 21.83333396911621,
+        "vehicle": [
+          3.3594212532043457,
+          0.3774896264076233,
+          7.96269416809082
+        ],
+        "vehiclePenetration": 0
+      },
+      "passed": true,
+      "scope": "Diagnostic walking roundtrip and boarding only; not connected-map acceptance",
+      "traversal": {
+        "maximum_distance_beyond_old_boundary_m": 6.533334732055664,
+        "outside_samples": 38,
+        "physical_return_seconds": 16.700000762939453
+      }
+    }
+  },
+  "scenario": {
+    "captures": [
+      6.5,
+      11.3,
+      12.3,
+      17.8763,
+      21.4688
+    ],
+    "coverage": "foundation",
+    "duration": 21.8188,
+    "id": "observed-foundation",
+    "steps": [
+      {
+        "end": 6.91,
+        "keys": [
+          "W"
+        ],
+        "start": 4
+      },
+      {
+        "end": 10.82,
+        "keys": [
+          "D"
+        ],
+        "start": 6.91
+      },
+      {
+        "end": 11.76,
+        "keys": [
+          "W"
+        ],
+        "start": 10.82
+      },
+      {
+        "end": 12.7,
+        "keys": [
+          "S"
+        ],
+        "start": 11.76
+      },
+      {
+        "end": 14.5646,
+        "keys": [
+          "W"
+        ],
+        "start": 12.7
+      },
+      {
+        "end": 17.8563,
+        "keys": [
+          "A"
+        ],
+        "start": 14.5646
+      },
+      {
+        "end": 20.6688,
+        "keys": [
+          "S"
+        ],
+        "start": 17.8563
+      },
+      {
+        "end": 21.1688,
+        "keys": [
+          "E"
+        ],
+        "start": 20.8188
+      }
+    ]
+  }
+}

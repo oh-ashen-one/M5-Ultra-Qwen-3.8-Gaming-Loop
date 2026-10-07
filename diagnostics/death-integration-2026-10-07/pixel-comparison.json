@@ -1,0 +1,28 @@
+{
+  "images": [
+    {
+      "file": "q0152-early-death.png",
+      "sha256": "0b8d5b29cb9b3fea3c09156c00b40d2f6b36a061dca3295484c63b78dee6d4a7",
+      "red_pixels": 1831
+    },
+    {
+      "file": "q0153-final-death.png",
+      "sha256": "694c2bd732bf9dd5174afae34eceeed439d4cece5d58f52383b9ff67578091e3",
+      "red_pixels": 1831
+    }
+  ],
+  "region_xyxy": [
+    420,
+    30,
+    810,
+    124
+  ],
+  "criterion": "R >130 and R >2*G and R >2*B, RGB8",
+  "matching_red_pixels": 1831,
+  "early_only": 0,
+  "late_only": 0,
+  "exact_foreground_mask_match": true,
+  "cloud_obstruction_claim": "retracted: foreground glyph mask is identical to the clearly legible early death frame",
+  "local_critic": "Scoped PASS; its reset-frame filename/time citation is inaccurate and needs correction",
+  "source_changed": false
+}

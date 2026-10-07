@@ -1,0 +1,242 @@
+{
+  "candidate": "c21818b5deec5e3d792e19893427586a76c940f0",
+  "accepted_gameplay_fallback": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+  "build_id": "63408f82ca7ac1f30899adc8c93eded2507b06f94f174466f20a1e5cd9c291c6",
+  "build_input_sha256": "924cb8142dce5595ff70c813859f919ca329e3a2f1a8ad2505f95e2712910f4b",
+  "evidence": "q0198-1d013de2-character-preview",
+  "native_gate": {
+    "passed": true,
+    "build_exit": 0,
+    "player_exit": 0,
+    "compile_errors": [],
+    "duration": 18.0,
+    "frame_count": 6,
+    "samples": 173,
+    "player_displacement": 3.447
+  },
+  "fresh_export": {
+    "ok": true,
+    "fresh_staged_export": true,
+    "script_sha256": "576ecd78f6309450eeab9688e751aff993ac9f05affc32a0d12e971639178d9d",
+    "files": [
+      {
+        "bytes": 266492,
+        "path": "Assets/Resources/Generated/player/scene.fbx",
+        "sha256": "4a8d045b6d7e464ac2b2d7f940ccf0a491ad2ab072ffd4d8a1f644de71d6832b"
+      },
+      {
+        "bytes": 135945,
+        "path": "ArtSources/player/source.blend",
+        "sha256": "3c47608513462964becf5634371b442bb7e645c855db4a9c232a58662116229f"
+      }
+    ]
+  },
+  "import_observation": {
+    "assetPath": "Assets/Resources/Generated/player/scene.fbx",
+    "animationType": "Generic",
+    "importAnimation": true,
+    "clips": [
+      {
+        "name": "Scene",
+        "legacy": false,
+        "preview": false,
+        "length": 9.266666412353516,
+        "frameRate": 30.0,
+        "wrapMode": "Default",
+        "curveCount": 40,
+        "rotationPaths": [
+          "pivot_hip_l",
+          "pivot_hip_l/pivot_knee_l",
+          "pivot_hip_r",
+          "pivot_hip_r/pivot_knee_r",
+          "pivot_spine",
+          "pivot_spine/pivot_head",
+          "pivot_spine/pivot_shoulder_l",
+          "pivot_spine/pivot_shoulder_l/pivot_elbow_l",
+          "pivot_spine/pivot_shoulder_r",
+          "pivot_spine/pivot_shoulder_r/pivot_elbow_r"
+        ]
+      },
+      {
+        "name": "__preview__Scene",
+        "legacy": false,
+        "preview": true,
+        "length": 9.300000190734863,
+        "frameRate": 30.0,
+        "wrapMode": "Default",
+        "curveCount": 40,
+        "rotationPaths": [
+          "pivot_hip_l",
+          "pivot_hip_l/pivot_knee_l",
+          "pivot_hip_r",
+          "pivot_hip_r/pivot_knee_r",
+          "pivot_spine",
+          "pivot_spine/pivot_head",
+          "pivot_spine/pivot_shoulder_l",
+          "pivot_spine/pivot_shoulder_l/pivot_elbow_l",
+          "pivot_spine/pivot_shoulder_r",
+          "pivot_spine/pivot_shoulder_r/pivot_elbow_r"
+        ]
+      }
+    ],
+    "defaultTakes": [
+      {
+        "name": "Scene",
+        "takeName": "Scene",
+        "firstFrame": 1.0,
+        "lastFrame": 279.0
+      }
+    ]
+  },
+  "capture_times": [
+    {
+      "file": "frame-000.png",
+      "renderPath": "explicit-Camera.Render-target",
+      "captureCompletedUtc": "2026-10-07T10:30:09.5477360Z",
+      "gameTime": 1.0,
+      "frame": 60,
+      "width": 960,
+      "height": 540,
+      "cameraTargetTexture": true
+    },
+    {
+      "file": "frame-001.png",
+      "renderPath": "explicit-Camera.Render-target",
+      "captureCompletedUtc": "2026-10-07T10:30:12.7742190Z",
+      "gameTime": 3.5,
+      "frame": 210,
+      "width": 960,
+      "height": 540,
+      "cameraTargetTexture": true
+    },
+    {
+      "file": "frame-002.png",
+      "renderPath": "explicit-Camera.Render-target",
+      "captureCompletedUtc": "2026-10-07T10:30:16.3337660Z",
+      "gameTime": 6.300000190734863,
+      "frame": 378,
+      "width": 960,
+      "height": 540,
+      "cameraTargetTexture": true
+    },
+    {
+      "file": "frame-003.png",
+      "renderPath": "explicit-Camera.Render-target",
+      "captureCompletedUtc": "2026-10-07T10:30:21.0404990Z",
+      "gameTime": 10.0,
+      "frame": 600,
+      "width": 960,
+      "height": 540,
+      "cameraTargetTexture": true
+    },
+    {
+      "file": "frame-004.png",
+      "renderPath": "explicit-Camera.Render-target",
+      "captureCompletedUtc": "2026-10-07T10:30:24.2492990Z",
+      "gameTime": 12.5,
+      "frame": 750,
+      "width": 960,
+      "height": 540,
+      "cameraTargetTexture": true
+    },
+    {
+      "file": "frame-005.png",
+      "renderPath": "explicit-Camera.Render-target",
+      "captureCompletedUtc": "2026-10-07T10:30:29.9829980Z",
+      "gameTime": 17.0,
+      "frame": 1020,
+      "width": 960,
+      "height": 540,
+      "cameraTargetTexture": true
+    }
+  ],
+  "frames": [
+    {
+      "name": "frame-000.png",
+      "time": 1,
+      "sha256": "2d457db45a93081361370787b7bf1d1cd04627ebf91c655d2e9aced6037e72c1"
+    },
+    {
+      "name": "frame-001.png",
+      "time": 3.5,
+      "sha256": "38bc2d661cef9bf409d6d7d032a3668086beb4281602e404ce82adffd418ce77"
+    },
+    {
+      "name": "frame-002.png",
+      "time": 6.3,
+      "sha256": "5843286f66bed3e1efc32cd33a1dfa9db5957896b71fc80cbbd10b3a5c7f7578"
+    },
+    {
+      "name": "frame-003.png",
+      "time": 10,
+      "sha256": "1d3ae3e6db7a6b8fd49ecc1f0ea5c2f7385bdb82a3202cc6c4b9b93db62c785b"
+    },
+    {
+      "name": "frame-004.png",
+      "time": 12.5,
+      "sha256": "1f5a2e3b2da3f5042596fcfd323f5696c741c8b3a6b51309bf74d7904d9888c0"
+    },
+    {
+      "name": "frame-005.png",
+      "time": 17,
+      "sha256": "7f619f47d8acdae1e7f053705aaf66830bdbcbeb36e9dae3a2385e1040a58ee1"
+    }
+  ],
+  "evidence_sha256": {
+    "trace.jsonl": "b8b561133f3e0e74f0add1c7de2a26f1f9bd4fef20b956f31df2ce186def744a",
+    "scenario.json": "1857d71f3098eff8b7594c0184d503243e50dba256302da088078326c13e2d88",
+    "capture-times.jsonl": "e7ea3d955caa2e2aca04b2cb2bbaebee995ce847901cac8d9eea877a370e3d29"
+  },
+  "actual_pixel_review": {
+    "candidate": "c21818b5deec5e3d792e19893427586a76c940f0",
+    "build_id": "63408f82ca7ac1f30899adc8c93eded2507b06f94f174466f20a1e5cd9c291c6",
+    "inspected_actual_pixels": true,
+    "verdict": "FIX",
+    "reviewer": "cloud execution actual pixel and measured pose inspection",
+    "final_game_accepted": false,
+    "character_pass_accepted": false,
+    "observations": [
+      "Native frames000 and002 now show the back of the character toward the trailing camera: the visual-facing correction is visible and the new clothing/limb source exported successfully.",
+      "Character still reads as rigid tubular limbs, detached shoulder caps and a block-like dark head/neck, below the neighborhood/alley clothed-human targets. Do not accept this as polished character art.",
+      "Unity imported one Generic Scene take at30fps, frames1..279, with40curves on10joint paths. There is still zero actual local joint motion during native travel; clips need local runtime integration.",
+      "Passive saved-Blender evaluation finds Aim pistol direction almost vertical:100.27degrees from head forward at frame145, with palm centers.444m apart. This is a measured Blender pose defect, not a claim that Aim has played natively.",
+      "Capsule remains1.75m/.32m; all existing game C# is unchanged. Full mission/death/aim/reset regressions and readable runtime motion remain required."
+    ],
+    "next_step": "Local clip importer and runtime foot presentation, then targeted aim/hand and clothing repairs using actual motion captures; boarding/driving and accepted gameplay regression proof remain required.",
+    "frames": [
+      {
+        "name": "frame-000.png",
+        "sha256": "2d457db45a93081361370787b7bf1d1cd04627ebf91c655d2e9aced6037e72c1",
+        "replay_seconds": 1
+      },
+      {
+        "name": "frame-002.png",
+        "sha256": "5843286f66bed3e1efc32cd33a1dfa9db5957896b71fc80cbbd10b3a5c7f7578",
+        "replay_seconds": 6.3
+      }
+    ],
+    "trace_sha256": "b8b561133f3e0e74f0add1c7de2a26f1f9bd4fef20b956f31df2ce186def744a",
+    "blender_pose_observation_sha256": "b3a07871c75307cd5eedf2bcad5edf6acb3707f95a3a8479348a0fecc8d18994"
+  },
+  "actual_native_motion": {
+    "pivots": 10,
+    "window_seconds": [
+      3.133333444595337,
+      3.933333396911621
+    ],
+    "samples": 9,
+    "maximum_joint_rotation_degrees": 0,
+    "maximum_local_translation_m": 0,
+    "playback_integrated": false
+  },
+  "capsule": {
+    "height_m": 1.75,
+    "radius_m": 0.32
+  },
+  "authorship": {
+    "game_art": "local Qwen",
+    "observer_and_acceptance": "cloud controller",
+    "criticism": "cloud actual pixel and passive pose review"
+  },
+  "final_game_accepted": false
+}

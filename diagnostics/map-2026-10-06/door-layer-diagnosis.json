@@ -1,0 +1,27 @@
+{
+  "observed_by_utc": "2026-10-06T08:05:59.328732+00:00",
+  "candidate": "2ab467692d10a715500bf89e0d8982694fa5eb80",
+  "scope": "North alley service door, viewed from decreasing world Z",
+  "source_construction": {
+    "file": "game/Art/street.py",
+    "surround": "Solid stone box, thickness0.22m",
+    "panel": "Solid wood box, thickness0.10m",
+    "source_world_center_x": {
+      "panel": -0.7400001883506775,
+      "surround": -0.8100001811981201
+    }
+  },
+  "actual_clone": {
+    "panel": {
+      "center_z": 19.920000076293945,
+      "depth": 0.10000036656856537
+    },
+    "surround": {
+      "center_z": 19.920000076293945,
+      "depth": 0.22000044584274292
+    }
+  },
+  "finding": "The thick solid surround is approximately0.06m nearer the viewer than the wood panel and covers it. Original source panels are offset0.07m outward relative to their surrounds.",
+  "next_local_correction": "Retain the existing surround center atZ19.92 and move only the door panel center toward the alley by the original0.07m offset, then verify native layer order and visual appearance. Preserve the solid wall, inputs and mission.",
+  "status": "Measured diagnosis; no source repair applied while current candidate is under qualification."
+}

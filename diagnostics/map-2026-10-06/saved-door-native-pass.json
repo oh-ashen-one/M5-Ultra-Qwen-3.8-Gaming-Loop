@@ -1,0 +1,112 @@
+{
+  "observed_utc": "2026-10-06T08:47:06.319254+00:00",
+  "scope": "Saved local-Qwen door-depth correction; second street and ten-minute pacing remain pending",
+  "controller_revision": "d5bbfaf1bd1ddd7bb7545033cd08fadf1e866e74",
+  "saved_source": "bc4f350e57e0b0632aeef5d3498ec30a66ad2bf2",
+  "accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+  "round": "q0078-0edc60bc",
+  "build_id": "87b8dad5ef69c44b976d138b56b75f0198758e31fbf04e4dd558fde2e2ce8dc0",
+  "prior_stop": {
+    "round": "q0077-c5f06ea7",
+    "builder_read_turns": 9,
+    "builder_saved_edits": 1,
+    "changed_file": "game/Assets/Game/WorldColliders.cs",
+    "change": "Wood panel center Z19.92 to Z19.85; stone backing unchanged",
+    "no_saved_street_facade_or_pacing_change": true,
+    "replay": {
+      "finish_reason": "length",
+      "prompt_tokens": 25550,
+      "completion_tokens": 8192,
+      "seconds": 215.83,
+      "tool_calls": 0,
+      "response_sha256": "59445dd2628b42076577e06a21da019f8e705b6f2ac3fb41dd09eb3653d7e714"
+    }
+  },
+  "native": {
+    "passed": true,
+    "stationary_grounded": true,
+    "door_layer_order": {
+      "failure": [],
+      "panel_bounds_center": [
+        16,
+        1.1899998188018799,
+        19.850000381469727
+      ],
+      "passed": true,
+      "scope": "Native geometry only; actual rendered door readability needs fresh visual review",
+      "stone_bounds_center": [
+        16,
+        1.429999828338623,
+        19.920000076293945
+      ],
+      "wood_center_outward_offset_m": 0.06999969482421875,
+      "wood_front_ahead_of_stone_m": 0.009999655187129974
+    },
+    "prop_clone_parity_passed": true,
+    "prop_components": 8,
+    "traversal": {
+      "passed": true,
+      "failure": [],
+      "old_bounds_xz": [
+        -1,
+        6,
+        -2,
+        30
+      ],
+      "prior_rendered_rectangles_xz": [
+        [
+          -1,
+          6,
+          -2,
+          30
+        ]
+      ],
+      "traversal": {
+        "foot": {
+          "outside_samples": 15,
+          "maximum_distance_beyond_old_boundary_m": 6.533334732055664,
+          "physical_return_seconds": 15.966666221618652
+        },
+        "vehicle": {
+          "outside_samples": 48,
+          "maximum_distance_beyond_old_boundary_m": 13.76791000366211,
+          "physical_return_seconds": 33.63333511352539
+        }
+      },
+      "area_claim": "Only observed connected traversal; no gross map-area acceptance"
+    },
+    "support": {
+      "passed": true,
+      "samples": 188,
+      "uncovered_samples": 0
+    },
+    "regressions_completed": [
+      {
+        "test": "q0078-0edc60bc-regression-walk",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "q0078-0edc60bc-regression-world",
+        "passed": true,
+        "failure": null
+      }
+    ],
+    "required_regressions": 10,
+    "fresh_critic": "pending"
+  },
+  "capture": {
+    "frame": "frame-003.png",
+    "scheduled_seconds": 13.69791,
+    "capture_utc": "2026-10-06T08:44:13.921084+00:00",
+    "sha256": "0eb00a270eee0e9f141b8d75ad688982725ab049efea0dea8c8a87b9602013cb",
+    "cloud_visual_observation": "Brown wood panel now visible within pale stone backing. Same sparse salmon walls, bright floor, boxy actor/dumpster, diagonal floor seam and overlapping HUD remain."
+  },
+  "next": "Finish all regressions and fresh local critique; on PASS qualify the small presentation scope, then local Qwen authors a separate second connected street with a replay beyond both previously accepted rectangles.",
+  "cpu_tests_both_hosts": 217,
+  "task_failures": 19,
+  "failure_streak": 2,
+  "original_failure_records_preserved": true,
+  "overall_deadline_utc": "2026-10-08T06:33:12Z",
+  "final_game_accepted": false
+}

@@ -1,0 +1,244 @@
+{
+  "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+  "build_id": "134d28f6952a694ff3ece3abb26ea0138a629548a5af1d011a44eb846ca75b0f",
+  "evidence": "q0181-016a3dd5-success",
+  "gate": {
+    "facts": {
+      "activation_seconds": 92.43333435058594,
+      "actual_damage": [
+        {
+          "after": 2,
+          "before": 3,
+          "name": "CounterExfilRunner3",
+          "time": 105.80000305175781
+        },
+        {
+          "after": 1,
+          "before": 2,
+          "name": "CounterExfilRunner3",
+          "time": 106.0
+        },
+        {
+          "after": 0,
+          "before": 1,
+          "name": "CounterExfilRunner3",
+          "time": 106.19999694824219
+        },
+        {
+          "after": 2,
+          "before": 3,
+          "name": "CounterExfilRunner2",
+          "time": 106.4000015258789
+        },
+        {
+          "after": 1,
+          "before": 2,
+          "name": "CounterExfilRunner2",
+          "time": 106.5999984741211
+        },
+        {
+          "after": 0,
+          "before": 1,
+          "name": "CounterExfilRunner2",
+          "time": 106.80000305175781
+        },
+        {
+          "after": 5,
+          "before": 6,
+          "name": "CounterExfilRunner1",
+          "time": 107.0
+        },
+        {
+          "after": 4,
+          "before": 5,
+          "name": "CounterExfilRunner1",
+          "time": 107.19999694824219
+        },
+        {
+          "after": 3,
+          "before": 4,
+          "name": "CounterExfilRunner1",
+          "time": 107.4000015258789
+        }
+      ],
+      "actual_live_pins_at_completion": [
+        {
+          "continuous_contact_seconds": 12.193367004394531,
+          "entity_id": "10021:3840",
+          "measured_motion_seconds": 0.8000030517578125,
+          "measured_west_speed": 0.00017881325220774763,
+          "name": "CounterExfilRunner1",
+          "position": [
+            10.784309387207031,
+            0.1399996280670166,
+            16.449954986572266
+          ],
+          "maximum_interval_west_speed": 0.00020027466239414053
+        }
+      ],
+      "aim": {
+        "facts": {
+          "cover_blocked_shot_count": 0,
+          "damage_events": [
+            {
+              "first_ray_collider": "CounterExfilRunner3",
+              "hp_after": 2,
+              "hp_before": 3,
+              "target": "CounterExfilRunner3",
+              "time": 105.80000305175781,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "first_ray_collider": "CounterExfilRunner3",
+              "hp_after": 1,
+              "hp_before": 2,
+              "target": "CounterExfilRunner3",
+              "time": 106.0,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "first_ray_collider": "CounterExfilRunner3",
+              "hp_after": 0,
+              "hp_before": 1,
+              "target": "CounterExfilRunner3",
+              "time": 106.19999694824219,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "first_ray_collider": "CounterExfilRunner2",
+              "hp_after": 2,
+              "hp_before": 3,
+              "target": "CounterExfilRunner2",
+              "time": 106.4000015258789,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "first_ray_collider": "CounterExfilRunner2",
+              "hp_after": 1,
+              "hp_before": 2,
+              "target": "CounterExfilRunner2",
+              "time": 106.5999984741211,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "first_ray_collider": "CounterExfilRunner2",
+              "hp_after": 0,
+              "hp_before": 1,
+              "target": "CounterExfilRunner2",
+              "time": 106.80000305175781,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "first_ray_collider": "CounterExfilRunner1",
+              "hp_after": 5,
+              "hp_before": 6,
+              "target": "CounterExfilRunner1",
+              "time": 107.0,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "first_ray_collider": "CounterExfilRunner1",
+              "hp_after": 4,
+              "hp_before": 5,
+              "target": "CounterExfilRunner1",
+              "time": 107.19999694824219,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "first_ray_collider": "CounterExfilRunner1",
+              "hp_after": 3,
+              "hp_before": 4,
+              "target": "CounterExfilRunner1",
+              "time": 107.4000015258789,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            }
+          ],
+          "intentional_miss_count": 0,
+          "off_aim_damage": [],
+          "shot_count": 9
+        },
+        "failure": null,
+        "final_game_accepted": false,
+        "passed": true,
+        "scope": "aligned"
+      },
+      "completion_seconds": 114.43333435058594,
+      "crossing": {
+        "health": 28.0,
+        "mode": "foot",
+        "player": [
+          2.9861035346984863,
+          0.1350000500679016,
+          16.103328704833984
+        ],
+        "time": 114.43333435058594,
+        "vehicle": [
+          9.538487434387207,
+          -0.010000010021030903,
+          17.825151443481445
+        ]
+      },
+      "distinct_lethal_events": {
+        "CounterExfilRunner2": 106.80000305175781,
+        "CounterExfilRunner3": 106.19999694824219
+      }
+    },
+    "failure": [],
+    "final_game_accepted": false,
+    "full_incident_success": true,
+    "passed": true,
+    "scope": "Physical single-incident success only; current-source negatives, regressions and pixels remain separate"
+  },
+  "frames": [
+    {
+      "name": "frame-003.png",
+      "time": 105.5,
+      "sha256": "520f197964abf0ec8adfb30afca152c2c2d3a46547e773c532271588d533bcdf"
+    },
+    {
+      "name": "frame-005.png",
+      "time": 107.6,
+      "sha256": "643f680be2f01a547149453d1d806d2443bc76a6f0abd548ec709bd63024a2ca"
+    },
+    {
+      "name": "frame-007.png",
+      "time": 114.6,
+      "sha256": "a004b88403f76e0cea090a3161cfedfad3f9bd56b92b89fe122e4bf0b801ba1c"
+    }
+  ],
+  "evidence_sha256": {
+    "trace.jsonl": "4449ba93156674ec9d06a999d11a3e5f56b3fde8364873120735200573f6808e",
+    "scenario.json": "9facecb9d67c227fc4ce048f8744c155b7ba61bcb7181ac04e7698c574da9d58",
+    "aim-shots.jsonl": "58c9f18c603fdf885759857acca1bede4c37f466b589074c205848a30ed36fd5",
+    "counter-exfil-contacts.jsonl": "7608e083c1c75339d674f75ec7c502c50ad0be616256c3b2deff1237a4969b4c"
+  },
+  "recorded_utc": "2026-10-07T08:03:00Z",
+  "scope": "One native physical success route; negative/regression/pixel qualification pending",
+  "strict_continuous_obstruction_recheck": {
+    "round": "q0182-0282975a",
+    "passed": true,
+    "maximum_interval_west_speed": 0.00020027466239414053,
+    "original_gate_preserved": true
+  },
+  "old_healthy_gate_passed": true,
+  "ordinary_activation_escape_reset_passed": true,
+  "free_lead_escape_seconds": 107.93333435058594,
+  "full_incident_accepted": false,
+  "accepted_fallback": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+  "known_limits": [
+    "Completion114.433seconds from run start; new activation92.433seconds. Replay duration124seconds includes reset checks.",
+    "This is one incident, not ten minutes or twelve waves.",
+    "New contact/death negatives, old regressions and local actual-pixel review remain required.",
+    "Original local art, lighting, animation and audio remain unfinished."
+  ],
+  "private_screenshots": "Actual source-matched native images saved privately in Library; no public image upload."
+}

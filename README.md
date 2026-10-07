@@ -1,16 +1,20 @@
 # M5 Ultra Qwen 3.8 Gaming Loop
 
-**Status: Qwen3.8 Flash-Next is loaded, warmed and idle on the M5. Image recognition and a tool-call round trip pass. The overnight game controller is not implemented; game development remains held.**
+**Status, 2026-10-07: one Counter-Exfil incident accepted.** Candidate `de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7` passes real shooting, maintained physical car obstruction and foot completion, genuine escape/contact/reset negatives, ten declared death boundaries and ten original gameplay regressions, followed by fresh local pixel review. [The evidence and review corrections](docs/COUNTER-EXFIL-2026-10-07.md) distinguish scoped acceptance from final game quality. [The rolling handoff](HANDOFF.md) records current work and remaining limits.
 
-An open-source plan for a local-first coding loop that aims to produce a polished, roughly ten-minute playable urban action/driving game. The M5 Ultra was verified with 256 GB memory and 80 GPU cores. The selected model is now `mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp`, pinned and loaded through isolated oMLX 0.6.4. See [current readiness](docs/FLASH-NEXT-READINESS.md) for exact settings, evidence and launch blockers. Earlier 27B BF16 records are historical.
+The next authorized pass improves the original clothed character and runtime animation using current native/reference images. The accepted build remains the fallback; source saves and successful imports alone will not count as visual or animation acceptance.
+
+The native route includes walking, driving, courier delivery, a dead drop, relay activation, a moving interception and one Counter-Exfil incident. The new verified route completes at 114.433 seconds; its 124-second replay includes reset checks. The target remains a polished ten-minute experience with varied action. Rough original characters, environment, lighting and audio remain unfinished. The fixed work cap is **2026-10-08 06:33:12 UTC**; it is not automatically extended.
+
+This open-source project studies a local-first game-coding loop on a verified M5 Ultra with 256 GB memory and 80 GPU cores. The selected model is `mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp`, pinned and currently qualified on official oMLX 0.7.0 with xhigh reasoning. [Measured capacity work](docs/CAPACITY-TRIAL-2026-10-07.md) separates actual useful coding from load-only observations. Earlier 27B BF16 and oMLX 0.6.4 preparation records remain historical evidence.
 
 The game should evoke the movement, driving, camera, atmosphere, and mission flow of a GTA5-style experience while using original content. Local Qwen must author every eventual 3D model, material, rig and animation from scratch through Blender. No Meshy, Tripo or premade asset packs. This is a small playable slice, with no promise of AAA parity. Native Unity CLI/C# is selected; a browser build is a fallback.
 
 ## Start boundary
 
-The existing M5 tests are closed. The owner authorized model preparation and a short warm-up, while requiring review of the launch plan before the game/agent loop starts. The initial 8–72-hour window is a planning range, subject to an agreed budget and stop conditions. Time alone is never a completion criterion.
+The existing M5 tests are closed. The owner subsequently authorized implementing the controller, qualifying it, and starting the full Chicago run autonomously. [The consolidated brief](docs/CHICAGO-BRIEF.md) is authoritative. The current owner-authorized cap is October 8 at 06:33:12 UTC, with bounded failure recovery and preserved task history. Time and round counts never imply completion. The parent supplies the existing ten-minute oversight; this project does not create a competing schedule or owner.
 
-This repository contains documentation, bounded preparation/diagnostic tools and a small attributed set of unintegrated source references. There is no runnable game or development loop. The owner authorized model replacement, permanent deletion of 15 old variants, compatible runtime setup, warm-up and readiness review, following earlier Unity and connector qualification. Game-generation and paid production services remain separate from this preparation.
+This repository contains documentation, a durable serial controller, native Unity/Blender adapters, bounded diagnostic tools, descriptions of private Chicago visual targets and a small attributed set of source references. Actual game code/art comes from local Qwen on a separate game branch. Public progress must distinguish controller qualification, generated targets and actual game evidence.
 
 ## What success should mean
 
@@ -23,7 +27,7 @@ This repository contains documentation, bounded preparation/diagnostic tools and
 
 Parent midir manages project direction and approvals; the execution lead performs approved work and reports evidence and blockers. Separate, serial local Qwen planner, coder, tester and visual-critic contexts receive exact context and mediated tools. Protected acceptance checks govern checkpoint promotion. A fresh local critic returns three to five prioritized fixes from actual gameplay evidence; disclosed cloud supervision can spot-review and escalate. See [Architecture](docs/ARCHITECTURE.md).
 
-The owner selected native Unity CLI/C# for the initial game, with local Blender tools as needed. Unity 6000.6.4f1 import, C# compilation and Metal rendering passed with active editor licensing. The production render pipeline, game adapter and live Editor Pipeline/MCP remain unqualified. Godot source references remain useful lessons for the planned Unity implementation.
+The owner selected native Unity CLI/C# with local Blender tools. Unity 6000.6.4f1 native compilation, Metal play, input replay and real captures pass with active editor licensing. The first controller uses the Built-in Render Pipeline and fixed CLI adapters. Live Editor Pipeline/MCP is not required by this route and remains unqualified. Godot references remain useful design lessons.
 
 The [source references](reference/README.md) include selected MIT diagnostic, input, camera and vehicle code with pinned refs, checksums and full notices. They are preparation for later qualification, not an integrated game. The [NPC plan](docs/NPC-ARCHITECTURE.md) specifies distinct persistent NPC memories and relationships on a shared backend, and discloses remote runtime brains separately from local Qwen development.
 
@@ -31,6 +35,9 @@ The [source references](reference/README.md) include selected MIT diagnostic, in
 
 | Document | Purpose |
 | --- | --- |
+| [Accepted Counter-Exfil incident](docs/COUNTER-EXFIL-2026-10-07.md) | Actual shoot/pin/foot route, adverse cases, local review and limits |
+| [Latest verified death/reset milestone](docs/DEATH-INTEGRATION-2026-10-07.md) | Native cases, corrected pixel review, provenance and known limits |
+| [Rolling handoff](HANDOFF.md) | Current task branch, verified state and next work |
 | [Plan](docs/PLAN.md) | Acceptance-first phases, start gate, unresolved choices |
 | [Architecture](docs/ARCHITECTURE.md) | Context, edit boundaries, verification, recovery, provenance |
 | [Prior attempts](docs/PRIOR-ATTEMPTS.md) | Pinned static evidence and limits on success claims |

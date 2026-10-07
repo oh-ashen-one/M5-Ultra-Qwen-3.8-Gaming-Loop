@@ -1,0 +1,204 @@
+{
+  "after": [
+    {
+      "acceptance_fixture": null,
+      "build_id": "2902fd6221ca3c54703bc1e3c3537f6a39f410e5d5a2f7967301deaf5f04e06f",
+      "candidate": "1295417194c0f2cdf9716982df06afebd6336c57",
+      "evidence": "evidence/aim-qualification-5c2a0076-after-aligned",
+      "facts": {
+        "cover_blocked_shot_count": 0,
+        "damage_events": [
+          {
+            "first_ray_collider": "Rival",
+            "hp_after": 2,
+            "hp_before": 3,
+            "target": "Rival",
+            "time": 7.5,
+            "viewport_contains_center": true,
+            "visual_bounds_ray_hit": true
+          },
+          {
+            "first_ray_collider": "Rival",
+            "hp_after": 1,
+            "hp_before": 2,
+            "target": "Rival",
+            "time": 9.199999809265137,
+            "viewport_contains_center": true,
+            "visual_bounds_ray_hit": true
+          }
+        ],
+        "intentional_miss_count": 0,
+        "off_aim_damage": [],
+        "shot_count": 2
+      },
+      "failure": null,
+      "final_game_accepted": false,
+      "passed": true,
+      "scope": "aligned"
+    },
+    {
+      "acceptance_fixture": null,
+      "build_id": "a693f940875eacbe484ad79f4c10740d1afa6d2018f76083424e2d5db9941371",
+      "candidate": "1295417194c0f2cdf9716982df06afebd6336c57",
+      "evidence": "evidence/aim-qualification-5c2a0076-after-miss",
+      "facts": {
+        "cover_blocked_shot_count": 0,
+        "damage_events": [],
+        "intentional_miss_count": 4,
+        "off_aim_damage": [],
+        "shot_count": 4
+      },
+      "failure": null,
+      "final_game_accepted": false,
+      "passed": true,
+      "scope": "miss"
+    },
+    {
+      "acceptance_fixture": "combat-wall",
+      "build_id": "27465c6a46698a6bfc0d7d47fb7c5d20bd05c0d52d3bd5b4bb7bceacadf245e1",
+      "candidate": "1295417194c0f2cdf9716982df06afebd6336c57",
+      "evidence": "evidence/aim-qualification-5c2a0076-after-wall",
+      "facts": {
+        "cover_blocked_shot_count": 2,
+        "damage_events": [],
+        "intentional_miss_count": 0,
+        "off_aim_damage": [],
+        "shot_count": 2
+      },
+      "failure": null,
+      "final_game_accepted": false,
+      "passed": true,
+      "scope": "wall"
+    },
+    {
+      "acceptance_fixture": "combat-near-cover",
+      "build_id": "2eb9e4471829755eb504f88926d405c297b785df506aca0963b1ef7c7a9bf238",
+      "candidate": "1295417194c0f2cdf9716982df06afebd6336c57",
+      "evidence": "evidence/aim-qualification-5c2a0076-after-near-cover",
+      "facts": {
+        "cover_blocked_shot_count": 2,
+        "damage_events": [],
+        "intentional_miss_count": 0,
+        "off_aim_damage": [],
+        "shot_count": 2
+      },
+      "failure": null,
+      "final_game_accepted": false,
+      "passed": true,
+      "scope": "near-cover"
+    }
+  ],
+  "before": [
+    {
+      "acceptance_fixture": null,
+      "build_id": "b2e9035f448fbcd88e3f6b91800fa75991fe41c98a29cab05b9a835de0de0d05",
+      "candidate": "6102a3ce76e714c09998d8801b9e046ca0b0d520",
+      "evidence": "evidence/aim-qualification-5c2a0076-before-aligned",
+      "facts": {
+        "cover_blocked_shot_count": 0,
+        "damage_events": [
+          {
+            "first_ray_collider": "Rival",
+            "hp_after": 2,
+            "hp_before": 3,
+            "target": "Rival",
+            "time": 7.5,
+            "viewport_contains_center": true,
+            "visual_bounds_ray_hit": true
+          },
+          {
+            "first_ray_collider": "Rival",
+            "hp_after": 1,
+            "hp_before": 2,
+            "target": "Rival",
+            "time": 9.199999809265137,
+            "viewport_contains_center": true,
+            "visual_bounds_ray_hit": true
+          }
+        ],
+        "intentional_miss_count": 0,
+        "off_aim_damage": [],
+        "shot_count": 2
+      },
+      "failure": null,
+      "final_game_accepted": false,
+      "passed": true,
+      "scope": "aligned"
+    },
+    {
+      "acceptance_fixture": null,
+      "build_id": "f4c4d22e42ee6c46faad5890fef4bda790daa6d4297537dcb2ec293fa1571f7d",
+      "candidate": "6102a3ce76e714c09998d8801b9e046ca0b0d520",
+      "evidence": "evidence/aim-qualification-5c2a0076-before-miss",
+      "facts": {
+        "cover_blocked_shot_count": 0,
+        "damage_events": [
+          {
+            "first_ray_collider": "Barrier",
+            "hp_after": 2,
+            "hp_before": 3,
+            "target": "Rival",
+            "time": 8.600000381469727,
+            "viewport_contains_center": false,
+            "visual_bounds_ray_hit": false
+          }
+        ],
+        "intentional_miss_count": 4,
+        "off_aim_damage": [
+          {
+            "first_ray_collider": "Barrier",
+            "hp_after": 2,
+            "hp_before": 3,
+            "target": "Rival",
+            "time": 8.600000381469727,
+            "viewport_contains_center": false,
+            "visual_bounds_ray_hit": false
+          }
+        ],
+        "shot_count": 4
+      },
+      "failure": [
+        "rival-damage-outside-visible-camera-aim",
+        "intentional-miss-causes-damage"
+      ],
+      "final_game_accepted": false,
+      "passed": false,
+      "scope": "miss"
+    },
+    {
+      "acceptance_fixture": "combat-wall",
+      "build_id": "d22b4f080a776340b3ce13f84a737e69d0d6f95aeebc2d5dab5d92c9a6bae23d",
+      "candidate": "6102a3ce76e714c09998d8801b9e046ca0b0d520",
+      "evidence": "evidence/aim-qualification-5c2a0076-before-wall",
+      "facts": {
+        "cover_blocked_shot_count": 2,
+        "damage_events": [],
+        "intentional_miss_count": 0,
+        "off_aim_damage": [],
+        "shot_count": 2
+      },
+      "failure": null,
+      "final_game_accepted": false,
+      "passed": true,
+      "scope": "wall"
+    },
+    {
+      "acceptance_fixture": "combat-near-cover",
+      "build_id": "2054493e10d706086c8930c72b88e69a949780505c57960c1644571f91dc0e74",
+      "candidate": "6102a3ce76e714c09998d8801b9e046ca0b0d520",
+      "evidence": "evidence/aim-qualification-5c2a0076-before-near-cover",
+      "facts": {
+        "cover_blocked_shot_count": 2,
+        "damage_events": [],
+        "intentional_miss_count": 0,
+        "off_aim_damage": [],
+        "shot_count": 2
+      },
+      "failure": null,
+      "final_game_accepted": false,
+      "passed": true,
+      "scope": "near-cover"
+    }
+  ],
+  "candidate": "1295417194c0f2cdf9716982df06afebd6336c57"
+}

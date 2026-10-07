@@ -1,0 +1,211 @@
+{
+  "recorded_utc": "2026-10-05T10:55:19.786826+00:00",
+  "scope": "Actual second saved edit and native review; full game task remains FIX",
+  "gate": {
+    "build_exit": 0,
+    "build_id": "d11967fd63fed99a3c9ec07312ec0a38a08cdcc7766da6f7522c05348d583791",
+    "candidate_commit": "1ddec8b682259ae1a0add25139a711f5f8e506ca",
+    "capture_id": "r0008-3aaec082",
+    "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+    "compile_errors": [],
+    "coverage": "foundation",
+    "displacement_axes": "horizontal XZ",
+    "duration": 16.016624450683594,
+    "failure": null,
+    "frame_count": 4,
+    "harness_sha256": "369e05912795c9efec492402831d0403b3c06d2a4f1fc48708ca6a2137966108",
+    "passed": true,
+    "performance_claim": "unqualified; shared renderer and capture overhead",
+    "player_displacement": 19.032,
+    "player_exit": 0,
+    "player_vertical_drop": 0.158,
+    "samples": 137,
+    "stationary_grounded": true,
+    "vehicle_displacement": 0
+  },
+  "critic": {
+    "fixes": [
+      {
+        "evidence": "Actual captures frame-000.png, frame-002.png and frame-003.png contain no UI overlay whatsoever, and the trusted trace's capture_scope states 'HUD/audio not established by camera frames'. The labeled target shows the minimap/HUD layout, but no actual frame shows five HUD slots.",
+        "issue": "Five-slot pursuit HUD and minimap are absent from every actual native capture, failing the acceptance item 'five-slot HUD visible'.",
+        "priority": 1,
+        "severity": "high",
+        "verification": "Re-capture native play frames and confirm a minimap plus five distinct HUD slots render legibly in the immutable screenshots frame-000/002/003 equivalent."
+      },
+      {
+        "evidence": "In frame-000.png the block is a flat gray facade row with plain doors and stairs; frame-002.png and frame-003.png show only bare brown ground, two small posts, and the detached distant facade row. No steel L-track pier, cobalt coupe, or readable alley mouth appears in any supplied capture, unlike the labeled AI target.",
+        "issue": "Outcome-mandated street elements are missing from the captured block: no L-track steel pier, no parked cobalt coupe, no readable alley mouth, and untextured gray-box facades instead of two-flat/greystone treatments.",
+        "priority": 2,
+        "severity": "high",
+        "verification": "Place the L pier, cobalt coupe and alley mouth inside the walkable block and capture walk-through frames in which all three are visible, then compare against the labeled Chicago target."
+      },
+      {
+        "evidence": "frame-002.png shows the character on an empty brown plane with two floating posts and zero buildings; frame-003.png shows the entire facade row as a small distant island across bare ground with a hard horizon band. Only frame-000.png shows any structure, and it is unlit gray geometry.",
+        "issue": "World framing reads as a placeholder void: the block sits detached in a vast empty brown plane, so the captures do not establish the required street/sidewalk environment.",
+        "priority": 3,
+        "severity": "medium",
+        "verification": "Extend street/sidewalk/ground dressing around the block and capture new frames that read as a continuous street rather than a model in an empty plane."
+      },
+      {
+        "evidence": "The trace reports frame_count 4, samples 137 over duration 16.02 s, player_displacement 19.032 (XZ), stationary_grounded true, but performance_claim is 'unqualified; shared renderer and capture overhead' and capture_scope disclaims HUD/audio; no fence appears in frame-000/002/003 and no audio or collision-stop event is recorded.",
+        "issue": "Acceptance items for >=60fps walking, collision stop at a fence, and footstep audio remain unevidenced by the supplied trace.",
+        "priority": 4,
+        "severity": "medium",
+        "verification": "Record an FPS trace for the walk, a state trace showing the player halted by a fence that is visible in a capture, and a footstep audio event log from the same run."
+      }
+    ],
+    "ok": true,
+    "summary": "The native build runs and the controller walk trace is real (build_exit 0, player_exit 0, ~19.03 m horizontal displacement over ~16 s across 137 samples, stationary_grounded true, 0.158 m vertical drop), so movement and grounding are plausible. However, the three actual Unity captures do not support the task bar. Versus the labeled AI target, the native frames show a placeholder graybox scene: no HUD or minimap at all (acceptance explicitly requires a visible five-slot HUD), no steel L-track pier, no parked cobalt coupe, and no readable alley mouth or brick two-flat/greystone dressing \u2014 the block is an unlit facade row floating in a large empty brown plane, and two of three frames show the character in an empty void. Performance (>=60fps), fence collision and footstep audio are also unestablished (capture_scope and performance_claim explicitly disclaim them). Visible failures in supplied captures justify FIX rather than UNVERIFIED. Biggest observable gap: the captured native frames contain no HUD and omit the required L-track pier and cobalt coupe, presenting a graybox void instead of the specified Chicago street.",
+    "verdict": "FIX"
+  },
+  "actions": [
+    {
+      "id": "r0008-3aaec082-micro-plan-0",
+      "kind": "model-request",
+      "status": "complete",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 4470,
+        "completion_tokens": 1182,
+        "total_tokens": 5652,
+        "input_tokens": 4470,
+        "output_tokens": 1182,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 31.43
+      },
+      "reasoning_effort": "xhigh",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 3223,
+            "retokenized_tokens": 1046,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "r0008-3aaec082-micro-edit-1-0",
+      "kind": "model-request",
+      "status": "complete",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 2572,
+        "completion_tokens": 112,
+        "total_tokens": 2684,
+        "input_tokens": 2572,
+        "output_tokens": 112,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 4.08
+      },
+      "reasoning_effort": "low",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 147,
+            "retokenized_tokens": 58,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "r0008-3aaec082-micro-edit-1-0-tool-0",
+      "kind": "source-edit",
+      "status": "complete",
+      "ok": true,
+      "path": "Assets/Game/Bootstrap.cs",
+      "sha256": "12a3d7bdbd1b4bf88f3e0781e1c7e2b65d91d31b02a2c31e1b244da2b0bf0761"
+    },
+    {
+      "id": "r0008-3aaec082-critic-0",
+      "kind": "model-request",
+      "status": "complete",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 4916,
+        "completion_tokens": 2191,
+        "total_tokens": 7107,
+        "input_tokens": 4916,
+        "output_tokens": 2191,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 55.63
+      },
+      "reasoning_effort": "xhigh",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 5700,
+            "retokenized_tokens": 1337,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "r0008-3aaec082-critic-1",
+      "kind": "model-request",
+      "status": "complete",
+      "finish_reason": "tool_calls",
+      "usage": {
+        "prompt_tokens": 7144,
+        "completion_tokens": 1068,
+        "total_tokens": 8212,
+        "input_tokens": 7144,
+        "output_tokens": 1068,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 29.06
+      },
+      "reasoning_effort": "xhigh",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 392,
+            "retokenized_tokens": 87,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    }
+  ]
+}

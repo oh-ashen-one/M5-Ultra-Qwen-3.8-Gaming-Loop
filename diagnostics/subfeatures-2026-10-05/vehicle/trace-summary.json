@@ -1,0 +1,76 @@
+{
+  "candidate_commit": "da0e0e6eb12673a324f87bb68dd350bda13d17db",
+  "passed": true,
+  "vehicle_displacement_m": 10.639,
+  "vehicle_heading": {
+    "forward_alignment": 0.9999999999999946,
+    "front_minus_rear_xz": [
+      4.76837158203125e-07,
+      4.559999465942383
+    ],
+    "net_motion_xz": [
+      0.0,
+      10.639392852783203
+    ],
+    "passed": true,
+    "scope": "Straight throttle replay must move toward the authored front bumper, not the rear."
+  },
+  "return_coverage": {
+    "passed": true,
+    "samples": 102,
+    "uncovered_samples": 0
+  },
+  "mode_transitions": [
+    {
+      "time": 0.028334826231002808,
+      "mode": "foot",
+      "player": [
+        0.0,
+        0.29280000925064087,
+        1.7000000476837158
+      ],
+      "vehicle": [],
+      "keys": []
+    },
+    {
+      "time": 7.158748626708984,
+      "mode": "vehicle",
+      "player": [
+        3.2021613121032715,
+        0.13499993085861206,
+        6.034977436065674
+      ],
+      "vehicle": [
+        3.5999999046325684,
+        0.0,
+        8.0
+      ],
+      "keys": [
+        "E"
+      ]
+    },
+    {
+      "time": 12.071270942687988,
+      "mode": "foot",
+      "player": [
+        2.0999999046325684,
+        0.13499988615512848,
+        18.639392852783203
+      ],
+      "vehicle": [],
+      "keys": [
+        "E"
+      ]
+    }
+  ],
+  "last_sample": {
+    "time": 17.97649574279785,
+    "mode": "foot",
+    "player": [
+      2.0999999046325684,
+      0.13499988615512848,
+      25.028059005737305
+    ],
+    "grounded": true
+  }
+}

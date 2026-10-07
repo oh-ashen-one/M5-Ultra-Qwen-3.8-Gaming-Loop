@@ -1,0 +1,101 @@
+{
+  "observed_utc": "2026-10-06T13:13:10.438473+00:00",
+  "round": "q0101-b3301b17",
+  "gate": {
+    "passed": true,
+    "failure": null,
+    "candidate_commit": "d7b2153b5a560fa5edb842bce0262ea264663f27",
+    "build_id": "0954df6d3be2700f080153e2d7f61deb77310f6516cc4a6956c0e709b8786de7",
+    "duration": 36.016666412353516,
+    "frame_count": 14,
+    "chapter_contract": {
+      "activations": [
+        14.350000381469727
+      ],
+      "arrivals": [
+        30.200000762939453
+      ],
+      "completions": [
+        32.53333282470703
+      ],
+      "exits": [
+        30.633333206176758
+      ],
+      "failure": null,
+      "final_game_accepted": false,
+      "passed": true,
+      "resets": [
+        34.03333282470703
+      ],
+      "scope": "chapter-completion"
+    },
+    "facade_details": {
+      "existing_static_geometry_unchanged": true,
+      "failure": null,
+      "families": [
+        "cornice",
+        "door",
+        "pier",
+        "win"
+      ],
+      "passed": true,
+      "regions": [
+        "East",
+        "North",
+        "South"
+      ],
+      "renderers": 749,
+      "scope": "Decorative facade relief and original static geometry; visual readability still requires actual frame review."
+    }
+  },
+  "frames": [
+    {
+      "file": "frame-008.png",
+      "scheduled_time": 27.3234,
+      "sha256": "42df9b0365a9fda6b2a38f12f2cd302265b234d5bda013aae129dd617b306e72",
+      "file_mtime_utc": "2026-10-06T13:12:09.160538+00:00"
+    },
+    {
+      "file": "frame-009.png",
+      "scheduled_time": 30.268277809980393,
+      "sha256": "f25ea389a1cf3ce084ff54a9abf080987b9276008b99bab6070ac08e42b395f8",
+      "file_mtime_utc": "2026-10-06T13:12:12.565861+00:00"
+    },
+    {
+      "file": "frame-010.png",
+      "scheduled_time": 30.968277809980393,
+      "sha256": "48922aa479f0dd911c89988c3c7012ceacfd4619fda58a3f18c30c9d6b8589a4",
+      "file_mtime_utc": "2026-10-06T13:12:13.500512+00:00"
+    },
+    {
+      "file": "frame-011.png",
+      "scheduled_time": 33.10206129914633,
+      "sha256": "d90f25469ed842c6292a1d2eb7a034f50349ca9444aadf7be173b3b8ae429744",
+      "file_mtime_utc": "2026-10-06T13:12:16.069495+00:00"
+    }
+  ],
+  "hashes": {
+    "chapter-gate.json": "f44045d2938006de7d3c585367f6d2737706aeb3abe31d9b80628e6ee92af707",
+    "captures/scenario.json": "d310895282f0f435ff78fe14f8c43a64534820180688c37f76e3824a9dc788d9",
+    "captures/trace.jsonl": "a1f34c3298dae9916f435a48365fb6181c6078f13b23a7aa23eaa31211cb01c6"
+  },
+  "hash_scope": "Native chapter artifact before later regression annotations",
+  "regressions_at_snapshot": [
+    {
+      "test": "walk",
+      "passed": true,
+      "failure": null
+    }
+  ],
+  "cloud_pixel_review": {
+    "changed": "Original windows, doors, projecting cornices and piers now make the east-street enclosure read as building fronts.",
+    "remaining": [
+      "Oversized central HUD and stale courier receipt clutter",
+      "Neon cache appearance",
+      "Simple vehicle/actor art and camera composition",
+      "Broader street acceptance and connected ten-minute pacing"
+    ]
+  },
+  "fresh_facade_critic": "pending",
+  "final_game_accepted": false
+}

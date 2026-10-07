@@ -1,0 +1,50 @@
+{
+  "controller_revision": "18c31134ddc2d3b29e30dc19134af1e76708eb7e",
+  "cpu_tests": {
+    "controller": 298,
+    "M5": 298,
+    "passed": true
+  },
+  "corrected_plan": {
+    "round": "q0113-42d476f4",
+    "sha256": "812789e06b05ef95e925fbe9f8878a444f1e55c807fc45526e95b5d547fec734",
+    "local_submission": {
+      "implementation_approved": false,
+      "implementation_dependencies": "1. Combat.HandleFire scoped repair: current code damages ANY first-hit RivalAgent and its death branch disables original rivalGo even when another agent was hit\u2014local-author scope fix + original combat regressions required BEFORE any multi-target work. Do NOT add second fire handler (would double damage). 2. Movement proof: source uses dynamic-gravity Rigidbody; new runner path needs swept-collision and grounding test passing before any position-update ships. 3. Reset gate: R resets whole mission\u2014new stage must clear/hide and wait for NEW RelaySequence.AllComplete, not immediately rearm. 4. HUD is separate first deliverable: MissionBoard selects actual state from HudStatus; renderer-card suppression only after own update. 5. Gap: measured 59.633s (includes 27.100s relay); remaining ten-minute budget gap remains open\u2014no artificial padding claimed.",
+      "measured_current_route_seconds": 59.633335114,
+      "measured_relay_seconds": 27.100002289,
+      "next_increment": "HUD first: implement one MissionBoard reading actual courier/cache/relay state from HudStatus; suppress only own renderer cards after updates\u2014never clear other writers' text or deactivate scripts. Then one bounded east-street encounter X22..60/Z8..28: three runners spawn X24 move toward X58 at 1.6 m/s, leak at 21.25s. Duration reported UNMEASURED (no padding, no waves, no ten-minute claim). Anchors validated against actual mesh clearance before placement. Movement uses swept collider + grounded-Rigidbody check (not raw transform+=). Single damage owner: only original Combat.HandleFire fires on Mouse0; no second handler added. One runner death at actual hp\u21920 increments kill exactly once. R triggers full mission reset: clear/hide stage, wait for NEW RelaySequence.AllComplete before rearming. Red-proof suite: wall/miss/held-fire, nohandoff, leak-exclusion, reset completeness, no-double-damage regression on original rivalGo path.",
+      "ok": true,
+      "proposed_increment_measured": false
+    },
+    "review_notes": [
+      "The corrected proposal still loosely says objectives come from HudStatus. Actual source review proves HudStatus is health/wanted only. The HUD role receives the actual MissionHud, RouteHud and RelayHud sources and reads their state/text.",
+      "The new encounter is a proposal, not implemented or qualified. implementation_approved=false denotes unresolved technical acceptance, not a requirement for another user permission.",
+      "The original oversized six-field proposal is preserved as rejected evidence; no private reasoning was used."
+    ]
+  },
+  "measured_progression": {
+    "total_seconds": 59.633335114,
+    "relay_seconds_included_in_total": 27.100002289,
+    "unimplemented_encounter_seconds": null,
+    "waiting_counts_as_content": false
+  },
+  "automatic_next_steps": [
+    "Local HUD module and exact installation",
+    "Native relay positive, wrong-order/timeout/reset and no-handoff cases with consolidated HUD checks",
+    "All ten legacy regressions plus HUD observations",
+    "Fresh local scoped image review"
+  ],
+  "publication": {
+    "broad_accepted": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "qualified_relay_source": "8ef71373663d49349ce8a74827b27e64036614e1",
+    "hud_candidate": "a64f4bbd5f56b0c15bc105664b04ad60c1a4e283"
+  },
+  "scope": {
+    "cap_utc": "2026-10-08T06:33:12Z",
+    "final_game_accepted": false,
+    "new_native_capture_available": false
+  },
+  "evidence_date": "2026-10-06",
+  "research_status": "Local consolidated HUD source saved and installed; native build succeeded and positive relay playthrough started. Acceptance remains pending."
+}

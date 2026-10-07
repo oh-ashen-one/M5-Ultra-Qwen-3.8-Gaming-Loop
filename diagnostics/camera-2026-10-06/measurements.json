@@ -1,0 +1,410 @@
+{
+  "observed_utc": "2026-10-06T02:03:04.203049+00:00",
+  "cases": [
+    {
+      "acceptance_fixture": "camera-clearance",
+      "build_id": "445f84ba32f50f2613f4fcc0bfed3a853131593c0441e31c99d6b4392ef47583",
+      "candidate": "6fe8ed8a721a89822f4ecddf055996855f73fed6",
+      "evidence": "evidence/camera-clearance-b8c84a72",
+      "failure": [
+        "near-camera-crosses-obstacle",
+        "endpoint-camera-crosses-obstacle"
+      ],
+      "final_game_accepted": false,
+      "passed": false,
+      "phases": [
+        {
+          "camera_beyond_wall_samples": 15,
+          "camera_inside_samples": 0,
+          "legacy_endpoint_predicate_samples": 0,
+          "minimum_actor_samples_in_frame": 3,
+          "minimum_actor_samples_unobstructed": 0,
+          "near_plane_intersection_samples": 0,
+          "phase": "near",
+          "probe_distance_max": 0.6499999165534973,
+          "probe_distance_min": 0.6499999165534973,
+          "samples": 15
+        },
+        {
+          "camera_beyond_wall_samples": 0,
+          "camera_inside_samples": 0,
+          "legacy_endpoint_predicate_samples": 0,
+          "minimum_actor_samples_in_frame": 7,
+          "minimum_actor_samples_unobstructed": 5,
+          "near_plane_intersection_samples": 0,
+          "phase": "middle",
+          "probe_distance_max": 3,
+          "probe_distance_min": 3,
+          "samples": 14
+        },
+        {
+          "camera_beyond_wall_samples": 14,
+          "camera_inside_samples": 14,
+          "legacy_endpoint_predicate_samples": 14,
+          "minimum_actor_samples_in_frame": 9,
+          "minimum_actor_samples_unobstructed": 5,
+          "near_plane_intersection_samples": 0,
+          "phase": "endpoint",
+          "probe_distance_max": 5.403923511505127,
+          "probe_distance_min": 5.403923511505127,
+          "samples": 14
+        }
+      ],
+      "scope": "disposable-camera-clearance-diagnostic",
+      "visibility_note": "Viewport and occlusion samples describe actor visibility; full art/framing quality needs actual images",
+      "frames": [
+        {
+          "filename": "frame-001.png",
+          "replay_seconds": 6.5,
+          "captured_utc": "2026-10-06T01:49:00.937560+00:00",
+          "sha256": "e8559eb6276909ceda6a699a3a6db6afca9fc10da3bfbce5ffd1233e8681caf2"
+        },
+        {
+          "filename": "frame-003.png",
+          "replay_seconds": 14.5,
+          "captured_utc": "2026-10-06T01:49:09.955957+00:00",
+          "sha256": "b324fb2952d810cf00ed162803ad5ff16eef4fce97d250b4d64fa5fb25c4126e"
+        }
+      ]
+    },
+    {
+      "acceptance_fixture": "camera-clearance",
+      "build_id": "e28412734994f40f68ea466daccadf301f37b68d575e0e1023b66c91e77d637c",
+      "candidate": "f1169bd43c660511802cca5750b1b9d11e050971",
+      "evidence": "evidence/camera-repair-1f5d5799-0",
+      "failure": [],
+      "final_game_accepted": false,
+      "passed": true,
+      "phases": [
+        {
+          "camera_beyond_wall_samples": 0,
+          "camera_inside_samples": 0,
+          "legacy_endpoint_predicate_samples": 0,
+          "minimum_actor_samples_in_frame": 5,
+          "minimum_actor_samples_unobstructed": 5,
+          "near_plane_intersection_samples": 0,
+          "phase": "near",
+          "probe_distance_max": 0.6499999165534973,
+          "probe_distance_min": 0.6499999165534973,
+          "samples": 15
+        },
+        {
+          "camera_beyond_wall_samples": 0,
+          "camera_inside_samples": 0,
+          "legacy_endpoint_predicate_samples": 0,
+          "minimum_actor_samples_in_frame": 9,
+          "minimum_actor_samples_unobstructed": 5,
+          "near_plane_intersection_samples": 0,
+          "phase": "middle",
+          "probe_distance_max": 3,
+          "probe_distance_min": 3,
+          "samples": 14
+        },
+        {
+          "camera_beyond_wall_samples": 0,
+          "camera_inside_samples": 0,
+          "legacy_endpoint_predicate_samples": 14,
+          "minimum_actor_samples_in_frame": 9,
+          "minimum_actor_samples_unobstructed": 5,
+          "near_plane_intersection_samples": 0,
+          "phase": "endpoint",
+          "probe_distance_max": 5.403923511505127,
+          "probe_distance_min": 5.403923511505127,
+          "samples": 14
+        }
+      ],
+      "scope": "disposable-camera-clearance-diagnostic",
+      "visibility_note": "Viewport and occlusion samples describe actor visibility; full art/framing quality needs actual images",
+      "frames": [
+        {
+          "filename": "frame-001.png",
+          "replay_seconds": 6.5,
+          "captured_utc": "2026-10-06T01:55:24.296993+00:00",
+          "sha256": "78cb650d09aca5dc8ebe66740dbc87872e764c869e5fa162d41cd93bdbbf70f2"
+        },
+        {
+          "filename": "frame-003.png",
+          "replay_seconds": 14.5,
+          "captured_utc": "2026-10-06T01:55:33.710466+00:00",
+          "sha256": "4e565b9bd2f5b85de3a6260ac725f157284e491c0c1ab3a3a3a85f3ae0f68154"
+        }
+      ]
+    },
+    {
+      "acceptance_fixture": "camera-clearance",
+      "build_id": "eda45ee9ace6e70d0178e9770d9f875f09d505d19eeca0bce9803c6a2c5ce426",
+      "candidate": "1f3e41e764f1e6cf6d923b2014a9d6e1c1839e60",
+      "evidence": "evidence/camera-repair-1f5d5799-1",
+      "failure": [],
+      "final_game_accepted": false,
+      "passed": true,
+      "phases": [
+        {
+          "camera_beyond_wall_samples": 0,
+          "camera_inside_samples": 0,
+          "legacy_endpoint_predicate_samples": 0,
+          "minimum_actor_samples_in_frame": 2,
+          "minimum_actor_samples_unobstructed": 2,
+          "near_plane_intersection_samples": 0,
+          "phase": "near",
+          "probe_distance_max": 0.6499999165534973,
+          "probe_distance_min": 0.6499999165534973,
+          "samples": 15
+        },
+        {
+          "camera_beyond_wall_samples": 0,
+          "camera_inside_samples": 0,
+          "legacy_endpoint_predicate_samples": 0,
+          "minimum_actor_samples_in_frame": 9,
+          "minimum_actor_samples_unobstructed": 5,
+          "near_plane_intersection_samples": 0,
+          "phase": "middle",
+          "probe_distance_max": 3,
+          "probe_distance_min": 3,
+          "samples": 14
+        },
+        {
+          "camera_beyond_wall_samples": 0,
+          "camera_inside_samples": 0,
+          "legacy_endpoint_predicate_samples": 14,
+          "minimum_actor_samples_in_frame": 9,
+          "minimum_actor_samples_unobstructed": 5,
+          "near_plane_intersection_samples": 0,
+          "phase": "endpoint",
+          "probe_distance_max": 5.403923511505127,
+          "probe_distance_min": 5.403923511505127,
+          "samples": 14
+        }
+      ],
+      "scope": "disposable-camera-clearance-diagnostic",
+      "visibility_note": "Viewport and occlusion samples describe actor visibility; full art/framing quality needs actual images",
+      "frames": [
+        {
+          "filename": "frame-001.png",
+          "replay_seconds": 6.5,
+          "captured_utc": "2026-10-06T02:01:19.906845+00:00",
+          "sha256": "64e0ebc8d7b9371e57e6db3a95fed6629038ab46dd07d13a1cf0cc23d8fd60e8"
+        },
+        {
+          "filename": "frame-003.png",
+          "replay_seconds": 14.5,
+          "captured_utc": "2026-10-06T02:01:29.328590+00:00",
+          "sha256": "17c8ffc0cf0099341e1bce3907de6830ddc60788f09e6a5cd6eb77115eed88ad"
+        }
+      ]
+    }
+  ],
+  "restored_mission_world_positions": [
+    {
+      "name": "Parcel",
+      "position": [
+        3.5999999046325684,
+        0.45012494921684265,
+        3.200000047683716
+      ],
+      "deliveryTarget": false
+    },
+    {
+      "name": "DropPad",
+      "position": [
+        1,
+        0.15000000596046448,
+        26
+      ],
+      "deliveryTarget": true
+    },
+    {
+      "name": "Beacon",
+      "position": [
+        1,
+        0.7400000095367432,
+        26
+      ],
+      "deliveryTarget": false
+    },
+    {
+      "name": "BeaconRing",
+      "position": [
+        1,
+        0.17000000178813934,
+        26
+      ],
+      "deliveryTarget": false
+    }
+  ],
+  "anchor_samples": 210,
+  "marker_gaps": {
+    "Beacon": 0,
+    "BeaconRing": 0
+  },
+  "current": {
+    "status": "running",
+    "controller_pid": 84663,
+    "stage": "native-camera-ordinary-route",
+    "source_checkpoint": "1f3e41e764f1e6cf6d923b2014a9d6e1c1839e60",
+    "last_playable_checkpoint": "6abdc84913d5d23ffb0b9af45f69209ed47fb6a1",
+    "current_round": "q0045-47f66fb4",
+    "task_failures": 6,
+    "failure_streak": 1,
+    "diagnosis_used": true,
+    "blocker": null
+  },
+  "historical_snapshot": true,
+  "final_observed_utc": "2026-10-06T02:47:01.016933+00:00",
+  "qualified_source": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+  "accepted_checkpoint": "e38b0681046fb39cab7f8ec182495903729b5ae6",
+  "final_camera_clearance": {
+    "acceptance_fixture": "camera-clearance",
+    "build_id": "07ace4dff43abb3923d8a857399bf489356832b6f3a24855e1f4974f5f8ed3d8",
+    "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+    "evidence": "evidence/camera-floor-ffe6fdbe-walls",
+    "failure": [],
+    "final_game_accepted": false,
+    "passed": true,
+    "phases": [
+      {
+        "camera_beyond_wall_samples": 0,
+        "camera_inside_samples": 0,
+        "camera_inside_world_samples": 0,
+        "legacy_endpoint_predicate_samples": 0,
+        "minimum_actor_samples_in_frame": 2,
+        "minimum_actor_samples_unobstructed": 2,
+        "near_plane_intersection_samples": 0,
+        "phase": "near",
+        "probe_distance_max": 0.6499999165534973,
+        "probe_distance_min": 0.6499999165534973,
+        "samples": 15
+      },
+      {
+        "camera_beyond_wall_samples": 0,
+        "camera_inside_samples": 0,
+        "camera_inside_world_samples": 0,
+        "legacy_endpoint_predicate_samples": 0,
+        "minimum_actor_samples_in_frame": 9,
+        "minimum_actor_samples_unobstructed": 5,
+        "near_plane_intersection_samples": 0,
+        "phase": "middle",
+        "probe_distance_max": 3,
+        "probe_distance_min": 3,
+        "samples": 14
+      },
+      {
+        "camera_beyond_wall_samples": 0,
+        "camera_inside_samples": 0,
+        "camera_inside_world_samples": 0,
+        "legacy_endpoint_predicate_samples": 14,
+        "minimum_actor_samples_in_frame": 9,
+        "minimum_actor_samples_unobstructed": 5,
+        "near_plane_intersection_samples": 0,
+        "phase": "endpoint",
+        "probe_distance_max": 5.403923511505127,
+        "probe_distance_min": 5.403923511505127,
+        "samples": 14
+      }
+    ],
+    "scope": "disposable-camera-clearance-diagnostic",
+    "visibility_note": "At least one actor bounds sample must remain visible and camera must be outside foreign colliders; useful framing still needs actual images"
+  },
+  "final_target_transitions": {
+    "build_id": "d95ac1545d56484ba026b65e68c376511455d0170b4dcc306f1880dc620e2fcc",
+    "candidate": "eeb07c040337d43c64bd4e562860b188166c1bc8",
+    "failure": [],
+    "final_game_accepted": false,
+    "passed": true,
+    "phases": [
+      {
+        "matching_cache_samples": 40,
+        "phase": "initial-foot",
+        "samples": 40
+      },
+      {
+        "matching_cache_samples": 85,
+        "phase": "driving",
+        "samples": 85
+      },
+      {
+        "matching_cache_samples": 14,
+        "phase": "exit-foot",
+        "samples": 14
+      },
+      {
+        "matching_cache_samples": 47,
+        "phase": "reset-foot",
+        "samples": 47
+      }
+    ],
+    "scope": "normal-input-camera-target-transitions"
+  },
+  "final_mission_anchors": {
+    "away_seconds": 5.5333333015441895,
+    "closest_driving_approach": {
+      "collision_enabled": true,
+      "distance_xz_m": 0.6793398840213197,
+      "mission": "active",
+      "pad": [
+        1,
+        0.15000000596046448,
+        26
+      ],
+      "penetration_m": 0.0003800392150878906,
+      "restarts": 0,
+      "time": 14.149999618530273,
+      "vehicle": [
+        0.39391160011291504,
+        0.2586762607097626,
+        25.693145751953125
+      ]
+    },
+    "delivery_input_edges": [
+      {
+        "collision_enabled": true,
+        "distance_xz_m": 1.2084652978630757,
+        "mission": "complete",
+        "pad": [
+          1,
+          0.15000000596046448,
+          26
+        ],
+        "penetration_m": 0.0026426315307617188,
+        "restarts": 1,
+        "time": 46.33333206176758,
+        "vehicle": [
+          0.4866139888763428,
+          0.12424647808074951,
+          24.906005859375
+        ]
+      }
+    ],
+    "delivery_seconds": 46.33333206176758,
+    "failure": [],
+    "final_visual_acceptance": false,
+    "initial_world_positions": {
+      "Beacon": [
+        1,
+        0.7400000095367432,
+        26
+      ],
+      "BeaconRing": [
+        1,
+        0.17000000178813934,
+        26
+      ],
+      "DropPad": [
+        1,
+        0.15000000596046448,
+        26
+      ],
+      "Parcel": [
+        3.5999999046325684,
+        0.45012494921684265,
+        3.200000047683716
+      ]
+    },
+    "maximum_marker_target_xz_gap_m": 0,
+    "passed": true,
+    "pickup_seconds": 39.43333435058594,
+    "returned_seconds": 39.03333282470703,
+    "sample_count": 503,
+    "scope": "fixed-world-objectives-and-input-transitions"
+  }
+}

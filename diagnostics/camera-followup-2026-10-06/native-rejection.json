@@ -1,0 +1,268 @@
+{
+  "observed_utc": "2026-10-06T03:22:12.106586+00:00",
+  "round": "q0049-292d36be",
+  "candidate": "109f8349ee6f9e6c580424fee65d7fd3e1dd8aec",
+  "accepted_checkpoint": "d269dc43ac66c39afca4cb98ea53f9e7ed36806f",
+  "restored_commit": "b746be08fdb1e65c727ce6a876130d16a402482f",
+  "restored_game_tree_identical_to_accepted": true,
+  "gate": {
+    "candidate_commit": "109f8349ee6f9e6c580424fee65d7fd3e1dd8aec",
+    "passed": false,
+    "failure": [
+      "combat-input-and-hit",
+      "mission-ending",
+      "failure-or-death-path"
+    ],
+    "compile_errors": [],
+    "build_id": "ac06a41609534f41af3b2123e469d0b8ed8a1ac7d6b66aecf266eb928f05e854",
+    "duration": 46,
+    "scoped_facts": null,
+    "regressions": null
+  },
+  "scenario": {
+    "captures": [
+      3,
+      6.5,
+      8.9,
+      12,
+      18,
+      20.8,
+      24,
+      26.5,
+      33,
+      39.3,
+      44
+    ],
+    "coverage": "whole-route",
+    "duration": 46,
+    "id": "observed-whole-route",
+    "steps": [
+      {
+        "end": 5.2,
+        "keys": [
+          "S"
+        ],
+        "start": 4
+      },
+      {
+        "end": 7.6,
+        "keys": [
+          "W",
+          "D"
+        ],
+        "start": 5.4
+      },
+      {
+        "end": 8.2,
+        "keys": [
+          "W"
+        ],
+        "start": 7.8
+      },
+      {
+        "end": 8.7,
+        "keys": [
+          "F"
+        ],
+        "start": 8.4
+      },
+      {
+        "end": 9.3,
+        "keys": [
+          "Mouse0"
+        ],
+        "start": 9
+      },
+      {
+        "end": 10.3,
+        "keys": [
+          "Mouse0"
+        ],
+        "start": 10
+      },
+      {
+        "end": 12,
+        "keys": [
+          "W"
+        ],
+        "start": 10.6
+      },
+      {
+        "end": 12.6,
+        "keys": [
+          "E"
+        ],
+        "start": 12.3
+      },
+      {
+        "end": 15.5,
+        "keys": [
+          "W"
+        ],
+        "start": 13
+      },
+      {
+        "end": 18.5,
+        "keys": [
+          "W",
+          "A"
+        ],
+        "start": 15.5
+      },
+      {
+        "end": 20,
+        "keys": [
+          "W"
+        ],
+        "start": 18.5
+      },
+      {
+        "end": 20.6,
+        "keys": [
+          "F"
+        ],
+        "start": 20.3
+      },
+      {
+        "end": 24.3,
+        "keys": [
+          "R"
+        ],
+        "start": 24
+      },
+      {
+        "end": 27.6,
+        "keys": [
+          "W",
+          "D"
+        ],
+        "start": 25
+      },
+      {
+        "end": 28.2,
+        "keys": [
+          "W"
+        ],
+        "start": 27.8
+      },
+      {
+        "end": 28.7,
+        "keys": [
+          "F"
+        ],
+        "start": 28.4
+      },
+      {
+        "end": 29.8,
+        "keys": [
+          "Mouse0"
+        ],
+        "start": 29.5
+      },
+      {
+        "end": 31.6,
+        "keys": [
+          "W"
+        ],
+        "start": 30
+      },
+      {
+        "end": 32.2,
+        "keys": [
+          "E"
+        ],
+        "start": 31.9
+      },
+      {
+        "end": 35,
+        "keys": [
+          "W"
+        ],
+        "start": 32.5
+      },
+      {
+        "end": 37.5,
+        "keys": [
+          "W",
+          "A"
+        ],
+        "start": 35
+      },
+      {
+        "end": 38.5,
+        "keys": [
+          "W"
+        ],
+        "start": 37.5
+      },
+      {
+        "end": 39.1,
+        "keys": [
+          "F"
+        ],
+        "start": 38.8
+      }
+    ]
+  },
+  "observed_mission_states": [
+    "active"
+  ],
+  "shot_results": [
+    {
+      "time": 9,
+      "mode": "foot",
+      "first_ray_collider": "pier_base01",
+      "hits_before": 0,
+      "hits_after": 0,
+      "rival_aimed": false,
+      "rival_damage": false
+    },
+    {
+      "time": 10,
+      "mode": "foot",
+      "first_ray_collider": "pier_base01",
+      "hits_before": 0,
+      "hits_after": 0,
+      "rival_aimed": false,
+      "rival_damage": false
+    },
+    {
+      "time": 29.5,
+      "mode": "foot",
+      "first_ray_collider": "pier_colL01",
+      "hits_before": 0,
+      "hits_after": 0,
+      "rival_aimed": false,
+      "rival_damage": false
+    }
+  ],
+  "static_findings": {
+    "changed_files": [
+      "game/Assets/Game/Bootstrap.cs"
+    ],
+    "vehicle_flag_default": false,
+    "enabling_assignment_found": false,
+    "conclusion": "The new vehicle-specific branch is not wired into the game. This is static source evidence; no runtime flag measurement is claimed."
+  },
+  "native_regressions_run": false,
+  "fresh_visual_review_run": false,
+  "camera_improvement_accepted": false,
+  "cloud_pixel_review": {
+    "frames": [
+      "frame-004.png at18s",
+      "frame-009.png at39.3s"
+    ],
+    "findings": [
+      "Driving remains close to the building with the vehicle and objective disk crowding the view.",
+      "Courier limb placement is visibly malformed; no camera-quality improvement is established."
+    ]
+  },
+  "original_failure_counts": {
+    "task_failures": 7,
+    "failure_streak": 1,
+    "diagnosis_used": true
+  },
+  "next_scope": "One local-Qwen correction of existing Art/player.py hierarchy/silhouette, matching export, unchanged route and all ten regressions plus fresh visual review.",
+  "fixed_cap_utc": "2026-10-08T06:33:12Z",
+  "final_game_accepted": false
+}

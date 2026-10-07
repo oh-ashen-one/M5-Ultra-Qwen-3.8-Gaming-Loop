@@ -1,0 +1,26 @@
+{
+  "observed_utc": "2026-10-06T07:52:03.655027+00:00",
+  "candidate": "8439ae8789793a881c51003cad94e39fc7210c01",
+  "all_ten_regressions_passed": true,
+  "review": {
+    "fixes": [
+      "Correct world scale/rotation of WorldCollision/AlleyBollardS and AlleyBollardN clones to match the original bollard prototype so they no longer register as world-size/mis-oriented, keeping colliders proportionate to visuals.",
+      "Correct WorldCollision/AlleyDumpster/dumpster_a_body and dumpster_a_wheel_* clone transforms: level, axis-aligned wheels and body, and confirm the collider matches the fixed body.",
+      "Re-run the world/prop-transform capture on the same connector and confirm zero mismatch samples before resubmission; verify junction flow (frame-006.png shows the coupe pinned at the corner, suggesting mis-scaled props narrowed the route).",
+      "Polish the extension toward the Chicago alley direction: differentiated pavement/sidewalk tones, facade/window variation on the bare red walls (frame-002.png), and a warm light pool at the opening so the junction reads as a connected alley.",
+      "Confirm the courier route through the extension is completable in the existing time window: frame-010.png shows MISSION FAILED at ~35 s while the route was in use; fix the prop detour first and only adjust timing if a measured physical defect blocks the route, keeping verified mission anchors."
+    ],
+    "ok": true,
+    "summary": "The traversal core is verified: the new east-side alley connector (WorldCollision/AlleyPavement, X 6–22, Z 8–20) extends beyond the old X −1..6 boundary, with a foot excursion to 6.53 m beyond (15 outside samples ≈1.6 s, return by 15.97 s) and a vehicle excursion to 13.77 m beyond (48 outside samples ≈5.0 s, return by 33.63 s), all within 150 s and with no R reset during either leg. All 188 support probes land on rendered pavement (0 uncovered) and the walk/world/vehicle-reset/courier/combat regressions pass. Frames corroborate: frame-001.png (t=10.8) shows walking outside among the yellow bollards and dumpster in the new alley, frame-002.png (t=12.9) shows the bare red-box interior, frame-006.png (t=26.8) shows driving outside in the blue coupe nose-pressed toward the corner, and frame-010.png (t=35.0) shows the car back at the junction/street edge with a MISSION FAILED panel after the legs completed. However, the run's own prop-transform check fails within this scope: 16 samples report world-size/orientation mismatches on the newly placed extension props (AlleyBollardS world-size + world-orientation, AlleyBollardN world-size, AlleyDumpster body/wheels) — the reused clones do not match the originals' scale/orientation, violating the \"coherent existing props\" requirement and risking collider-vs-visual mismatch in the new junction. Polish was requested yet frame-002/frame-006 show a flat red-box interior far from the Chicago alley target. Partial pass requiring fixes.",
+    "verdict": "FIX"
+  },
+  "promoted": false,
+  "accepted_checkpoint": "d269dc43ac66c39afca4cb98ea53f9e7ed36806f",
+  "verified_manifest_sha256": "3b2cf1838abb9c5c68210630ad703b074ccf227c427206abd677d9a2946c7608",
+  "verified_observation_files": 17,
+  "supervision_notes": [
+    "The screenshot suggestion that props pinned the car is not established by the passing physical out-and-back trace.",
+    "The existing courier regression passes. The map traversal replay intentionally does not complete that separate objective; its late timeout is not permission to alter mission timing or anchors.",
+    "The measured clone world-size/orientation mismatch is the authorized immediate repair; walls/route detail remain scoped visual work."
+  ]
+}

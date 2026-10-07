@@ -1,0 +1,839 @@
+{
+  "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+  "native_round": "q0182-0282975a",
+  "native_artifact": "q0182-0282975a-counter-negatives.json",
+  "native_sha256": "32ce3d9588dde6cae2cf436b2d06cf16f29cd21ccb2e2033e6dfa5a048abe47c",
+  "accepted_fallback": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+  "continuous_success": {
+    "passed": true,
+    "failure": [],
+    "facts": {
+      "activation_seconds": 92.43333435058594,
+      "aim": {
+        "scope": "aligned",
+        "passed": true,
+        "failure": null,
+        "facts": {
+          "shot_count": 9,
+          "damage_events": [
+            {
+              "time": 105.80000305175781,
+              "target": "CounterExfilRunner3",
+              "first_ray_collider": "CounterExfilRunner3",
+              "hp_before": 3,
+              "hp_after": 2,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "time": 106.0,
+              "target": "CounterExfilRunner3",
+              "first_ray_collider": "CounterExfilRunner3",
+              "hp_before": 2,
+              "hp_after": 1,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "time": 106.19999694824219,
+              "target": "CounterExfilRunner3",
+              "first_ray_collider": "CounterExfilRunner3",
+              "hp_before": 1,
+              "hp_after": 0,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "time": 106.4000015258789,
+              "target": "CounterExfilRunner2",
+              "first_ray_collider": "CounterExfilRunner2",
+              "hp_before": 3,
+              "hp_after": 2,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "time": 106.5999984741211,
+              "target": "CounterExfilRunner2",
+              "first_ray_collider": "CounterExfilRunner2",
+              "hp_before": 2,
+              "hp_after": 1,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "time": 106.80000305175781,
+              "target": "CounterExfilRunner2",
+              "first_ray_collider": "CounterExfilRunner2",
+              "hp_before": 1,
+              "hp_after": 0,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "time": 107.0,
+              "target": "CounterExfilRunner1",
+              "first_ray_collider": "CounterExfilRunner1",
+              "hp_before": 6,
+              "hp_after": 5,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "time": 107.19999694824219,
+              "target": "CounterExfilRunner1",
+              "first_ray_collider": "CounterExfilRunner1",
+              "hp_before": 5,
+              "hp_after": 4,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            },
+            {
+              "time": 107.4000015258789,
+              "target": "CounterExfilRunner1",
+              "first_ray_collider": "CounterExfilRunner1",
+              "hp_before": 4,
+              "hp_after": 3,
+              "viewport_contains_center": true,
+              "visual_bounds_ray_hit": true
+            }
+          ],
+          "off_aim_damage": [],
+          "intentional_miss_count": 0,
+          "cover_blocked_shot_count": 0
+        },
+        "final_game_accepted": false
+      },
+      "actual_damage": [
+        {
+          "time": 105.80000305175781,
+          "name": "CounterExfilRunner3",
+          "before": 3,
+          "after": 2
+        },
+        {
+          "time": 106.0,
+          "name": "CounterExfilRunner3",
+          "before": 2,
+          "after": 1
+        },
+        {
+          "time": 106.19999694824219,
+          "name": "CounterExfilRunner3",
+          "before": 1,
+          "after": 0
+        },
+        {
+          "time": 106.4000015258789,
+          "name": "CounterExfilRunner2",
+          "before": 3,
+          "after": 2
+        },
+        {
+          "time": 106.5999984741211,
+          "name": "CounterExfilRunner2",
+          "before": 2,
+          "after": 1
+        },
+        {
+          "time": 106.80000305175781,
+          "name": "CounterExfilRunner2",
+          "before": 1,
+          "after": 0
+        },
+        {
+          "time": 107.0,
+          "name": "CounterExfilRunner1",
+          "before": 6,
+          "after": 5
+        },
+        {
+          "time": 107.19999694824219,
+          "name": "CounterExfilRunner1",
+          "before": 5,
+          "after": 4
+        },
+        {
+          "time": 107.4000015258789,
+          "name": "CounterExfilRunner1",
+          "before": 4,
+          "after": 3
+        }
+      ],
+      "distinct_lethal_events": {
+        "CounterExfilRunner3": 106.19999694824219,
+        "CounterExfilRunner2": 106.80000305175781
+      },
+      "completion_seconds": 114.43333435058594,
+      "actual_live_pins_at_completion": [
+        {
+          "name": "CounterExfilRunner1",
+          "entity_id": "10021:3840",
+          "continuous_contact_seconds": 12.193367004394531,
+          "measured_west_speed": 0.00017881325220774763,
+          "maximum_interval_west_speed": 0.00020027466239414053,
+          "measured_motion_seconds": 0.8000030517578125,
+          "position": [
+            10.784309387207031,
+            0.1399996280670166,
+            16.449954986572266
+          ]
+        }
+      ],
+      "crossing": {
+        "time": 114.43333435058594,
+        "mode": "foot",
+        "health": 28.0,
+        "player": [
+          2.9861035346984863,
+          0.1350000500679016,
+          16.103328704833984
+        ],
+        "vehicle": [
+          9.538487434387207,
+          -0.010000010021030903,
+          17.825151443481445
+        ]
+      }
+    },
+    "scope": "Physical single-incident success only; current-source negatives, regressions and pixels remain separate",
+    "full_incident_success": true,
+    "final_game_accepted": false,
+    "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+    "build_id": "134d28f6952a694ff3ece3abb26ea0138a629548a5af1d011a44eb846ca75b0f",
+    "evidence": "q0181-016a3dd5-success",
+    "evidence_sha256": {
+      "trace.jsonl": "4449ba93156674ec9d06a999d11a3e5f56b3fde8364873120735200573f6808e",
+      "scenario.json": "9facecb9d67c227fc4ce048f8744c155b7ba61bcb7181ac04e7698c574da9d58",
+      "counter-exfil-contacts.jsonl": "7608e083c1c75339d674f75ec7c502c50ad0be616256c3b2deff1237a4969b4c"
+    }
+  },
+  "contact_release": {
+    "passed": true,
+    "failure": [],
+    "release": {
+      "actor": "CounterExfilRunner1",
+      "qualified_time": 114.93333435058594,
+      "qualified": {
+        "name": "CounterExfilRunner1",
+        "entity_id": "10021:5376",
+        "continuous_contact_seconds": 12.693367004394531,
+        "measured_west_speed": 0.0011491731675217914,
+        "maximum_interval_west_speed": 0.0011635004196231021,
+        "measured_motion_seconds": 0.8000030517578125,
+        "position": [
+          10.78288745880127,
+          0.1399996280670166,
+          16.447452545166016
+        ]
+      },
+      "actual_collision_exit": 116.67996215820312,
+      "first_sample": 116.73332977294922,
+      "separated_samples": 63,
+      "last_separated_sample": 122.93333435058594,
+      "reentry": null
+    },
+    "physical_pin_samples": 119,
+    "reset_samples": 8,
+    "scope": "Actual pin, ordinary reverse departure, immediate credit loss and R cleanup only",
+    "final_game_accepted": false,
+    "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+    "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+    "evidence": "q0182-0282975a-contact-release",
+    "evidence_sha256": {
+      "trace.jsonl": "1adba90b725e1e5e4ad4add906ddccbaf9bd84800627a389deed182151de5d90",
+      "scenario.json": "4630d3d071440cf3d7363b1031293a0870a7616b39787284d98441567ae5ee1b",
+      "counter-exfil-contacts.jsonl": "bc194bb90911e98cfcb2c48dcd5a1069d7abc4b5056282db314eaebed4cbf799"
+    }
+  },
+  "counter_deaths": [
+    {
+      "passed": true,
+      "case": "armed-start",
+      "failure": [],
+      "old_controls_and_reset": {
+        "case": "counter-exfil-armed-start",
+        "passed": true,
+        "setup_passed": true,
+        "failure": [],
+        "injection_time": 85.19999694824219,
+        "prior_chapter_state": {
+          "courierStage": 2,
+          "routeStage": 2,
+          "relayCount": 3,
+          "relayExpected": 3,
+          "stopped": 3,
+          "spawned": 3,
+          "escaped": 0,
+          "carrying": false,
+          "routeComplete": true,
+          "relayActive": true,
+          "relayComplete": true,
+          "relayFailed": false,
+          "interceptionActive": true,
+          "interceptionComplete": true,
+          "interceptionFailed": false
+        },
+        "zero_health_samples": 32,
+        "reset_samples": 8,
+        "intervention": "External declared one-time health=0 injection; progression and controls remain ordinary game code.",
+        "native_natural_damage_death_proven": false,
+        "final_game_accepted": false
+      },
+      "counter": {
+        "passed": true,
+        "failure": [],
+        "zero_health_samples": 35,
+        "reset_samples": 8,
+        "actual_counter_before_death": {
+          "Dormant": false,
+          "Armed": true,
+          "Active": false,
+          "Complete": false,
+          "Failed": false,
+          "SpawnedCount": 0,
+          "KilledCount": 0,
+          "EscapedCount": 0,
+          "ActiveTime": 0.0,
+          "FailReason": "",
+          "PinnedNow": 0
+        }
+      },
+      "intervention": "External declared health=0 injection only; real input prefix and all game state transitions preserved.",
+      "natural_damage_death_proven": false,
+      "final_game_accepted": false,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "evidence": "q0182-0282975a-death-armed-start",
+      "evidence_sha256": {
+        "trace.jsonl": "524c033e609975306632ffb1cdedac8035d8009550714d16cfaeb4bafa2609c3",
+        "scenario.json": "11e7119edfd70fd3cb09e8236e117342c9d13dfa34898ca36257cf13e1cb1d46",
+        "death-injection.json": "b8c14bf1f9740c4512fc6d49d7267c190a25d2033580cc7b00f7818b27bfa3f5"
+      }
+    },
+    {
+      "passed": true,
+      "case": "active-receipt",
+      "failure": [],
+      "old_controls_and_reset": {
+        "case": "counter-exfil-active-receipt",
+        "passed": true,
+        "setup_passed": true,
+        "failure": [],
+        "injection_time": 86.55000305175781,
+        "prior_chapter_state": {
+          "courierStage": 2,
+          "routeStage": 2,
+          "relayCount": 3,
+          "relayExpected": 3,
+          "stopped": 3,
+          "spawned": 3,
+          "escaped": 0,
+          "carrying": false,
+          "routeComplete": true,
+          "relayActive": true,
+          "relayComplete": true,
+          "relayFailed": false,
+          "interceptionActive": true,
+          "interceptionComplete": true,
+          "interceptionFailed": false
+        },
+        "zero_health_samples": 32,
+        "reset_samples": 8,
+        "intervention": "External declared one-time health=0 injection; progression and controls remain ordinary game code.",
+        "native_natural_damage_death_proven": false,
+        "final_game_accepted": false
+      },
+      "counter": {
+        "passed": true,
+        "failure": [],
+        "zero_health_samples": 35,
+        "reset_samples": 8,
+        "actual_counter_before_death": {
+          "Dormant": false,
+          "Armed": false,
+          "Active": true,
+          "Complete": false,
+          "Failed": false,
+          "SpawnedCount": 0,
+          "KilledCount": 0,
+          "EscapedCount": 0,
+          "ActiveTime": 0.0,
+          "FailReason": "",
+          "PinnedNow": 0
+        }
+      },
+      "intervention": "External declared health=0 injection only; real input prefix and all game state transitions preserved.",
+      "natural_damage_death_proven": false,
+      "final_game_accepted": false,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "evidence": "q0182-0282975a-death-active-receipt",
+      "evidence_sha256": {
+        "trace.jsonl": "d41509a38769d7f7cbca2c7a0a2b46401a102c7cab474b7cfc4ff9f2daf9c4f4",
+        "scenario.json": "0e154bcd614a4a9982f931cb0e9a840533e2c1bd98b254d2ce5d81b2c02d5ac3",
+        "death-injection.json": "67517e9afdf2c70595c160907b84193ef59831107823076e69ff74be65404695"
+      }
+    },
+    {
+      "passed": true,
+      "case": "active-runners",
+      "failure": [],
+      "old_controls_and_reset": {
+        "case": "counter-exfil-active-runners",
+        "passed": true,
+        "setup_passed": true,
+        "failure": [],
+        "injection_time": 88.0,
+        "prior_chapter_state": {
+          "courierStage": 2,
+          "routeStage": 2,
+          "relayCount": 3,
+          "relayExpected": 3,
+          "stopped": 3,
+          "spawned": 3,
+          "escaped": 0,
+          "carrying": false,
+          "routeComplete": true,
+          "relayActive": true,
+          "relayComplete": true,
+          "relayFailed": false,
+          "interceptionActive": true,
+          "interceptionComplete": true,
+          "interceptionFailed": false
+        },
+        "zero_health_samples": 32,
+        "reset_samples": 8,
+        "intervention": "External declared one-time health=0 injection; progression and controls remain ordinary game code.",
+        "native_natural_damage_death_proven": false,
+        "final_game_accepted": false
+      },
+      "counter": {
+        "passed": true,
+        "failure": [],
+        "zero_health_samples": 35,
+        "reset_samples": 8,
+        "actual_counter_before_death": {
+          "Dormant": false,
+          "Armed": false,
+          "Active": true,
+          "Complete": false,
+          "Failed": false,
+          "SpawnedCount": 3,
+          "KilledCount": 0,
+          "EscapedCount": 0,
+          "ActiveTime": 1.283333,
+          "FailReason": "",
+          "PinnedNow": 0
+        }
+      },
+      "intervention": "External declared health=0 injection only; real input prefix and all game state transitions preserved.",
+      "natural_damage_death_proven": false,
+      "final_game_accepted": false,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "evidence": "q0182-0282975a-death-active-runners",
+      "evidence_sha256": {
+        "trace.jsonl": "ec86dec5180b3b2ea062a564e2a9b64a69f1c720c78aaf4aaaec59162ec885c0",
+        "scenario.json": "cfb8e22ccc7f805c39f4ab7b7e45712404ea742f51e148a11b1dd256d09690b6",
+        "counter-exfil-contacts.jsonl": "aa88fd952d38a5ecfb1252e27c1b4db4e5cc334015e8b955d90157f55062a7e4",
+        "death-injection.json": "f22d99a314cc897a4e86db2d08b13b2c6d908dfe90360ec30277015e5a940420"
+      }
+    },
+    {
+      "passed": true,
+      "case": "failed-escape",
+      "failure": [],
+      "old_controls_and_reset": {
+        "case": "counter-exfil-failed-escape",
+        "passed": true,
+        "setup_passed": true,
+        "failure": [],
+        "injection_time": 110.0,
+        "prior_chapter_state": {
+          "courierStage": 2,
+          "routeStage": 2,
+          "relayCount": 3,
+          "relayExpected": 3,
+          "stopped": 3,
+          "spawned": 3,
+          "escaped": 0,
+          "carrying": false,
+          "routeComplete": true,
+          "relayActive": true,
+          "relayComplete": true,
+          "relayFailed": false,
+          "interceptionActive": true,
+          "interceptionComplete": true,
+          "interceptionFailed": false
+        },
+        "zero_health_samples": 32,
+        "reset_samples": 8,
+        "intervention": "External declared one-time health=0 injection; progression and controls remain ordinary game code.",
+        "native_natural_damage_death_proven": false,
+        "final_game_accepted": false
+      },
+      "counter": {
+        "passed": true,
+        "failure": [],
+        "zero_health_samples": 35,
+        "reset_samples": 8,
+        "actual_counter_before_death": {
+          "Dormant": false,
+          "Armed": false,
+          "Active": true,
+          "Complete": false,
+          "Failed": true,
+          "SpawnedCount": 3,
+          "KilledCount": 0,
+          "EscapedCount": 1,
+          "ActiveTime": 21.14985,
+          "FailReason": "LEAD RUNNER REACHED THE WEST EXIT",
+          "PinnedNow": 0
+        }
+      },
+      "intervention": "External declared health=0 injection only; real input prefix and all game state transitions preserved.",
+      "natural_damage_death_proven": false,
+      "final_game_accepted": false,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "evidence": "q0182-0282975a-death-failed-escape",
+      "evidence_sha256": {
+        "trace.jsonl": "c53e5b15c946c8248faa9633bd8eebf426fdf26ea00bbd9a8f5a944eceb21b1c",
+        "scenario.json": "18896375103e606c63eb2bdb1db231c462286081032af70e4dea75b8e9f7a9c6",
+        "counter-exfil-contacts.jsonl": "631cb0d684fd728c6db3a3a0efe77e2013c7a549b1e0761c83b806fded44d886",
+        "death-injection.json": "8e1d7519c128de99222c3d23e59f274853b8dc3a4bc6bf3d64573a8cbc50c466"
+      }
+    }
+  ],
+  "old_deaths": [
+    {
+      "case": "courier-pickup",
+      "passed": true,
+      "setup_passed": true,
+      "failure": [],
+      "injection_time": 7.400000095367432,
+      "prior_chapter_state": {
+        "courierStage": 0,
+        "routeStage": 0,
+        "relayCount": 0,
+        "relayExpected": 0,
+        "stopped": 0,
+        "spawned": 0,
+        "escaped": 0,
+        "carrying": false,
+        "routeComplete": false,
+        "relayActive": false,
+        "relayComplete": false,
+        "relayFailed": false,
+        "interceptionActive": false,
+        "interceptionComplete": false,
+        "interceptionFailed": false
+      },
+      "zero_health_samples": 30,
+      "reset_samples": 7,
+      "intervention": "External declared one-time health=0 injection; progression and controls remain ordinary game code.",
+      "native_natural_damage_death_proven": false,
+      "final_game_accepted": false,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "evidence": "q0182-0282975a-old-death-courier-pickup",
+      "evidence_sha256": {
+        "trace.jsonl": "32b47038a6fec2980202b78413aefe4aa536c8e9086b718cbd93c4873e68f980",
+        "scenario.json": "55b7d88820d7e027fc97540504b67e266ff1a27d2e0e232253d552841e279b9d",
+        "death-injection.json": "2b16c7ae417130cc5f7897f60ef0d6ef06926010b8d907d4029077e2221cc177"
+      }
+    },
+    {
+      "case": "courier-delivery",
+      "passed": true,
+      "setup_passed": true,
+      "failure": [],
+      "injection_time": 14.300000190734863,
+      "prior_chapter_state": {
+        "courierStage": 1,
+        "routeStage": 0,
+        "relayCount": 0,
+        "relayExpected": 0,
+        "stopped": 0,
+        "spawned": 0,
+        "escaped": 0,
+        "carrying": true,
+        "routeComplete": false,
+        "relayActive": false,
+        "relayComplete": false,
+        "relayFailed": false,
+        "interceptionActive": false,
+        "interceptionComplete": false,
+        "interceptionFailed": false
+      },
+      "zero_health_samples": 30,
+      "reset_samples": 8,
+      "intervention": "External declared one-time health=0 injection; progression and controls remain ordinary game code.",
+      "native_natural_damage_death_proven": false,
+      "final_game_accepted": false,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "evidence": "q0182-0282975a-old-death-courier-delivery",
+      "evidence_sha256": {
+        "trace.jsonl": "311b8e1c94ad7b69386efda37e35036435eb23cf5073f919752bddeabf56dd27",
+        "scenario.json": "4750d49ac14039a938c2f464dafd132377b58d4dc1dde6685b484d9b22828bff",
+        "death-injection.json": "ee39a043655f7dd47b97000c0dbcda65795de813216811ec46b40a8f6819713a"
+      }
+    },
+    {
+      "case": "dead-drop",
+      "passed": true,
+      "setup_passed": true,
+      "failure": [],
+      "injection_time": 32.516666412353516,
+      "prior_chapter_state": {
+        "courierStage": 2,
+        "routeStage": 1,
+        "relayCount": 0,
+        "relayExpected": 0,
+        "stopped": 0,
+        "spawned": 0,
+        "escaped": 0,
+        "carrying": false,
+        "routeComplete": false,
+        "relayActive": false,
+        "relayComplete": false,
+        "relayFailed": false,
+        "interceptionActive": false,
+        "interceptionComplete": false,
+        "interceptionFailed": false
+      },
+      "zero_health_samples": 32,
+      "reset_samples": 8,
+      "intervention": "External declared one-time health=0 injection; progression and controls remain ordinary game code.",
+      "native_natural_damage_death_proven": false,
+      "final_game_accepted": false,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "evidence": "q0182-0282975a-old-death-dead-drop",
+      "evidence_sha256": {
+        "trace.jsonl": "792b9c90523f77d6703483941b8e6c71c52feeca42684c6d91d45f97efcb0e03",
+        "scenario.json": "38266556f00357e2035b9607745cbe8f87baa55127b3dfd21fc7cce04171a3bb",
+        "death-injection.json": "e0d3fa12f7d30776ecbd039894c1700fea3700c0de0ce294be567e8cacaae817"
+      }
+    },
+    {
+      "case": "relay-final",
+      "passed": true,
+      "setup_passed": true,
+      "failure": [],
+      "injection_time": 59.599998474121094,
+      "prior_chapter_state": {
+        "courierStage": 2,
+        "routeStage": 2,
+        "relayCount": 2,
+        "relayExpected": 2,
+        "stopped": 0,
+        "spawned": 0,
+        "escaped": 0,
+        "carrying": false,
+        "routeComplete": true,
+        "relayActive": true,
+        "relayComplete": false,
+        "relayFailed": false,
+        "interceptionActive": false,
+        "interceptionComplete": false,
+        "interceptionFailed": false
+      },
+      "zero_health_samples": 32,
+      "reset_samples": 8,
+      "intervention": "External declared one-time health=0 injection; progression and controls remain ordinary game code.",
+      "native_natural_damage_death_proven": false,
+      "final_game_accepted": false,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "evidence": "q0182-0282975a-old-death-relay-final",
+      "evidence_sha256": {
+        "trace.jsonl": "dd979e6104c59848a9d7ed9df657f7f6b1d8187c91611c5087f30ca9c549a825",
+        "scenario.json": "0f077d74d1bb31967bef33737edb3b5789b7ce6b2222c48e2c9e248c7d392444",
+        "death-injection.json": "e6a683cbc4108d19960d9483aa051c1fecc1d062cd8031ba28da2e05c2f6bb3d"
+      }
+    },
+    {
+      "case": "interception-receipt",
+      "passed": true,
+      "setup_passed": true,
+      "failure": [],
+      "injection_time": 60.150001525878906,
+      "prior_chapter_state": {
+        "courierStage": 2,
+        "routeStage": 2,
+        "relayCount": 3,
+        "relayExpected": 3,
+        "stopped": 0,
+        "spawned": 0,
+        "escaped": 0,
+        "carrying": false,
+        "routeComplete": true,
+        "relayActive": true,
+        "relayComplete": true,
+        "relayFailed": false,
+        "interceptionActive": true,
+        "interceptionComplete": false,
+        "interceptionFailed": false
+      },
+      "zero_health_samples": 32,
+      "reset_samples": 8,
+      "intervention": "External declared one-time health=0 injection; progression and controls remain ordinary game code.",
+      "native_natural_damage_death_proven": false,
+      "final_game_accepted": false,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "evidence": "q0182-0282975a-old-death-interception-receipt",
+      "evidence_sha256": {
+        "trace.jsonl": "929c92f523e2d2b9e30f28ca91948390655cc598dad78d62da38851921d48b1c",
+        "scenario.json": "8e804e32cac477f3f3a0dd680b412f01557918a1089ccecf2307fba6461714ac",
+        "death-injection.json": "04bc6d9be84168e636a0465d35a1ffd85a5ff6c109292369c7af1d68f5914511"
+      }
+    },
+    {
+      "case": "interception-final",
+      "passed": true,
+      "setup_passed": true,
+      "failure": [],
+      "injection_time": 75.4000015258789,
+      "prior_chapter_state": {
+        "courierStage": 2,
+        "routeStage": 2,
+        "relayCount": 3,
+        "relayExpected": 3,
+        "stopped": 2,
+        "spawned": 3,
+        "escaped": 0,
+        "carrying": false,
+        "routeComplete": true,
+        "relayActive": true,
+        "relayComplete": true,
+        "relayFailed": false,
+        "interceptionActive": true,
+        "interceptionComplete": false,
+        "interceptionFailed": false
+      },
+      "zero_health_samples": 32,
+      "reset_samples": 8,
+      "intervention": "External declared one-time health=0 injection; progression and controls remain ordinary game code.",
+      "native_natural_damage_death_proven": false,
+      "final_game_accepted": false,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "evidence": "q0182-0282975a-old-death-interception-final",
+      "evidence_sha256": {
+        "trace.jsonl": "2587df28f9474e35a33ae40549cfc97d961e594a21e97a96616eeb1f6558dfaf",
+        "scenario.json": "6a96a1ad002e45aac423b60d07c915d105451bea7b1e09953d83910e12b6f23a",
+        "death-injection.json": "6a094bcfcc9be41e3c07c46de37e45445bb5994b3ef2c471a70db50959dae410"
+      }
+    }
+  ],
+  "regressions": [
+    {
+      "test": "walk",
+      "passed": true,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "failure": null
+    },
+    {
+      "test": "world",
+      "passed": true,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "failure": null
+    },
+    {
+      "test": "motor",
+      "passed": true,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "failure": null
+    },
+    {
+      "test": "courier",
+      "passed": true,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "failure": null
+    },
+    {
+      "test": "failure-retry",
+      "passed": true,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "failure": null
+    },
+    {
+      "test": "combat-foot",
+      "passed": true,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "failure": null
+    },
+    {
+      "test": "combat-wall",
+      "passed": true,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "failure": null
+    },
+    {
+      "test": "combat-driving",
+      "passed": true,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "failure": null
+    },
+    {
+      "test": "aim-miss",
+      "passed": true,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "failure": null
+    },
+    {
+      "test": "aim-near-cover",
+      "passed": true,
+      "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+      "build_id": "27f4a3d6402db39fc0f92b090d92fb6528e752b5978476e8a748b15e86c5d088",
+      "failure": null
+    }
+  ],
+  "all_native_checks_passed": true,
+  "visual_review": "pending",
+  "full_incident_accepted": false,
+  "final_game_accepted": false,
+  "scope": "Completed physical success, genuine escape/reset, contact release, unresolved foot exit/repeated F, four new and six old declared death boundaries, and ten unchanged gameplay regressions. Local actual-pixel review remains separate.",
+  "early_exit_extra": {
+    "build_id": "4fcd10faaf90a9f2e52069f7c6aae41cee8e06fc4eaff811f1205fd0821529bc",
+    "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+    "early_crossing": {
+      "health": 28.0,
+      "player": [
+        2.9861035346984863,
+        0.1350000500679016,
+        16.103328704833984
+      ],
+      "time": 104.83333587646484,
+      "unresolved": [
+        "CounterExfilRunner2",
+        "CounterExfilRunner3"
+      ]
+    },
+    "evidence": "q0183-d047d4cb-early-exit",
+    "failure": [],
+    "final_game_accepted": false,
+    "passed": true,
+    "scope": "Ordinary unresolved foot exit, repeated F, no banked completion and R cleanup",
+    "gate_sha256": "c5518c7f48ae2c338b3e1ac578e37a4f0eea04530833e346a84df64081bd5076",
+    "evidence_sha256": {
+      "trace.jsonl": "ad2294b7a133a31b24b8f59f575382d8628f22cea2b2b261ffd71d2d4c690932",
+      "scenario.json": "343d35d63852e1e052d3fb3ebd7111870e7e2bcbdc67a9f0ea6b129498b5ea3c",
+      "counter-exfil-contacts.jsonl": "26ddf77a79535c142b2675e18b087cea3c38b6e7076dc8f107475ca6315c56d2"
+    },
+    "coverage_limit": "Proves no premature completion while still unresolved; this case does not resolve all runners later while remaining beyond the exit."
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "observed_utc": "2026-10-06T13:26:02.026586+00:00",
+  "outcome": {
+    "accepted": true,
+    "candidate": "d7b2153b5a560fa5edb842bce0262ea264663f27",
+    "evidence": "evidence/q0101-b3301b17",
+    "final_game_accepted": false,
+    "native_pass": true,
+    "review": {
+      "fixes": [
+        "OPEN (kept, prior HUD clutter): the HEALTH/WANTED box and the DELIVERY COMPLETE box still stack and touch at top-center-left, and the oversized translucent objective banner dominates the center of the screen in every chapter frame; needs a compact, de-conflicted HUD pass.",
+        "OPEN (kept, prior marker finding): the east cache and placed parcel remain flat neon cyan/green emissive primitives (frames 009–011); per instructions these are not to be replaced this round, but they still read as markers rather than world objects.",
+        "OPEN (visual-proof limitation): no frame captures the exact F-place edge (completion 32.53s) or the R reset (34.03s); frame-011 at 33.10s is post-placement and the reset is only trace-proven — capture one frame at the F input and one post-reset frame.",
+        "OPEN (kept, broader street/camera): the reference-scale art gap vs the Chicago target persists (flat-shaded massing, brown placeholder window/door inserts, tight completion camera with the vehicle clipping the frame edge); final_visual_acceptance/final_game_accepted remain false and broader visual FIX findings stay open."
+      ],
+      "ok": true,
+      "summary": "Scoped chapter judged against actual native frames and trace, not the reference target. The new east cache is real and correctly staged: frame-003 (t=15.2s) shows \"Drive to the cache (50m)\" at the legacy start (vehicle trace ≈ (0.49,-0.01,25.02), matching the 50m gap to the new cache at (50,0.14,18)); frame-009 (t=30.27s) shows the actual cyan east-cache box 5m after a visible driving approach (arrival 30.20s, zero penetration, no facade obstruction of the drive path); frame-010 (t=30.97s) shows the visible black blocky player actor on foot beside the cache with \"Walk to the cache (3m) / Press F to place it\"; frame-011 (t=33.10s) shows \"★ EAST DEAD-DROP COMPLETE ★\" after trace-proven F completion (32.53s) and R reset (34.03s, also corroborated by the failure-retry regression). Chapter contract passed (activation/arrival/exit/completion/reset all present) and the legacy DropPad at (1,0.15,26) was not conflated with the new cache. Within the current facade-dressing scope (749 renderers, East/North/South, cornice/door/pier/win families, existing static geometry unchanged): frames 3–5 show the enclosure reading as three-story building fronts with inset window bays, cream sills/piers and projecting cornices at coherent orientation and scale relative to the car and 1.57m actor; the protruding cream canopy in frame-003 is wall-attached; no floating geometry or route intrusion is visible (arrival penetration 0.0). Objective banner text is readable and non-overlapping. This is a scoped PASS for the polish chapter, not whole-street/final-art acceptance; prior HUD, marker and camera findings remain open.",
+      "verdict": "PASS",
+      "verified_capture_time_citations": {
+        "frame-003.png": 15.2,
+        "frame-009.png": 30.268277809980393,
+        "frame-010.png": 30.968277809980393,
+        "frame-011.png": 33.10206129914633
+      }
+    }
+  },
+  "hashes": {
+    "chapter-gate.json": "1a004c538684bd9814ec617d2a1337c8dded440973ffef7a3694be686ee8a8fc",
+    "scoped-gate.json": "1a004c538684bd9814ec617d2a1337c8dded440973ffef7a3694be686ee8a8fc",
+    "critic.json": "eb6cdb164d3e1467a15e2327201ee2e0bb33dcc843bf1525c4cf4f414d9ed036",
+    "facade-outcome.json": "beabe4feaac3ed52c7eeb76a3a0291d202769440c09079c7d1a174ddfeca20ea",
+    "captures/manifest.json": "70aa27db07b97c6d4861d5afb01f5ec6ca4724afb021fa756d096f038aa19058"
+  },
+  "regressions_passed": 10,
+  "scope": "Original facade relief only",
+  "clarifications": [
+    "The cache uses original dumpster meshes, not Unity primitive meshes; its neon appearance remains a visual defect.",
+    "Post-reset frame-012 exists in the full native capture set; it was excluded from this narrower facade critic selection."
+  ],
+  "next_scope": "Local compact HUD and restrained cache material cleanup; additive passive geometry checks, unchanged native inputs, full regressions and fresh review; then concrete varied-mission design.",
+  "final_game_accepted": false
+}

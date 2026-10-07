@@ -1,0 +1,13 @@
+{
+  "exact_hash_edit": true,
+  "fresh_critic": {
+    "ok": true,
+    "summary": "Qualification-only fixture review (not the Chicago game). Acceptance contract: real forward input + player displacement ≥1.5m + changing frames. The trusted native trace satisfies the input condition (W forward supplied across 141 samples / 16s) but fails both outcome conditions: displacement 0.0m and four byte-identical frames. A single frame cannot by itself prove motion or its absence, but the trusted frame-identity and displacement data supply the missing temporal evidence, so this is a genuine, verified failure of the walking path rather than an unverifiable case — the forward input is not being translated into locomotion. Verdict: FIX. Tool check completed: read Notes/toolcheck.md (hash 01b7bfec5fb83332ea4b84f308e2be0c77d73d4c866dff4d499a2a7d5f9b4122) and replaced the exact text \"awaiting\" with \"verified\"; returned full-file hash 1c34f88707b55e6104c4eb20e71ffa3d33e414b71ef689a15fad0640d0ac58cb. No other files inspected.",
+    "verdict": "FIX",
+    "visual_observation": "Single static frame: a glossy blue sphere with a bright specular highlight sits near the center-left, with a red cube (seen as a flat rectangle, no visible depth faces) to its right. Both rest on a light gray-blue rectangular platform/panel that occupies the mid-lower frame. The surrounding ground is a flat brown-gray plane, with a horizontal horizon and a gradient sky fading from pale white to blue. No player avatar, HUD, or movement artifacts (motion blur, camera shift, changed object positions) are visible; the two objects and platform are the only scene content, consistent with the \"native stationary fixture frame\" label."
+  },
+  "model": "Qwen3.8-Flash-Next-oQ6e-mtp",
+  "passed": true,
+  "scope": "disposable fixture; not game output",
+  "scoped_original_blender_export": true
+}

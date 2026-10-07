@@ -1,0 +1,47 @@
+{
+  "observed_utc": "2026-10-06T11:50:03.980040+00:00",
+  "round": "q0093-a7aec9b3",
+  "local_plan": {
+    "decision": "ADD a dedicated RouteMission chapter-2 component; do NOT edit CourierMission/VehicleInteraction. It observes (never reinterprets) legacy MissionComplete true-edge and adds ONE real objective: drive the coupe east through the open X22 alley junction to a fixed east-street cache, exit, and place it. Red cases all must yield no RouteComplete: (1) no input -> chapter inactive, cache never reached; (2) remote F -> proximity gate fails; (3) wrong actor/mode -> F inside car (must be on-foot) or on-foot before arrival does nothing; (4) stale carry/reset -> after R, cache hidden, RouteStage=0, F at old anchor ignored; (5) early ending -> F before legacy complete, cache object does not yet exist so cannot shortcut. This short milestone is explicitly NOT ten-minute acceptance.",
+    "first_objective": "Chapter 2 \"East Dead-Drop\": only AFTER legacy MissionComplete true-edge, spawn a reused-mesh cache marker at fixed anchor (50,0.6,18) on east-street pavement (top Y0.14) inside X22..60/Z8..28. Player drives W through the open X22 junction to within ~6m (vehicle \"near\"), presses E to exit (real vehicle->foot transition), walks within 1.5m on-foot, presses F to place -> RouteStage=2, RouteComplete=true, cache lights green, separate HUD reads \"ROUTE COMPLETE\". No timer on chapter 2.",
+    "first_source_scope": "Create Assets/Game/RouteMission.cs (self-hosted stationary GameObject root, mirroring CourierMission.Install style). Add two static members to LoopSignals.cs: public static int RouteStage; public static bool RouteComplete;. Add ONE line in Bootstrap.Create after Combat.Install: RouteMission.Install(body, cam). Mission.cs and VehicleInteraction.cs are NOT touched (respects the polish-editor protection).",
+    "legacy_compatibility": "CourierMission's parcel (3.6,0.45,3.2), pad/beacon (1,0.14,26), 30s DEADLINE, stage 0/1/2/3 logic, fail/retry, combat, camera, collisions all untouched. RouteMission never writes Mission/MissionComplete/Restarts; it only READS MissionComplete as the chapter-1 handoff edge. R reset still routes through VehicleInteraction.DoReset -> Restarts++ -> CourierMission.Respawn (stage 0) -> RouteMission sees Restarts change and hides cache, RouteStage=0, RouteComplete=false, so the route restarts cleanly from chapter 1.",
+    "normal_input_proof": "Positive (<=180s, no fixtures): WASD+hold to grab parcel, E into coupe, drive, F at pad -> legacy MissionComplete=true (unchanged). RouteMission flips RouteStage 0->1, cache appears, HUD reads \"new drop\". Drive W east through X22 junction, arrive <=6m at (50,*,18) (HUD distance shrinks), E to exit (Mode foot), walk <=1.5m, F -> RouteStage=2, RouteComplete=true, cache turns green, HUD \"ROUTE COMPLETE\". R -> both chapters reset, cache gone. No replay/fixture metadata inspected.",
+    "ok": true,
+    "pacing_path": "Toward 540..660s varied connected play, each chapter gated by real arrival+input (no idle waits, no timer locks): C1 courier grab/deliver w/ rival combat (~30s); C2 east-street cache drop (drive+on-foot place); C3 alley return-pickup under pursuit; C4 evade: drive until derived PursuitLevel reaches 0 (already distance-derived); C5 final handoff in newer street once its visual gate is accepted, ending on a RouteEnding signal from real Health/pursuit (clean-getaway vs war-worn). RouteStage advances on genuine world events only; total ~6 chapters x ~90-110s real traversal/combat. Visual FIX items (junction-through capture, reused-mesh boundaries, restored HUD text, back-off return cam) are absorbed here as objective-driven framing, not as a separate camera scope.",
+    "state_and_observation": "Externally observable: reused facade/fence-mesh clone (cyan, like existing beacon tint) = DropCache at (50,0.6,18) + flat ring at (50,0.14,18) on a fixed world root (no parent drag). New LoopSignals RouteStage (0 inactive / 1 active / 2 complete) + RouteComplete bool, written ONLY by RouteMission. Separate camera-child HUD card (not CourierMission's) shows chapter-2 objective, live distance to cache, and controls; HUD text stays non-empty while live (addresses prior empty-panel finding). Because the cache is far east, the playthrough capture naturally looks THROUGH the X22 open junction, showing the through-connection."
+  },
+  "plan_sha256": "a66148068032209bec56b8a541918643cd5126da76793bbd1b0ad3db96a53a70",
+  "response_sha256": "0c69914d61f5f615b15ea06735f492a3e77fb819a38a393414ef0c8615939652",
+  "usage": {
+    "completion_tokens": 4403,
+    "input_tokens": 17281,
+    "output_tokens": 4403,
+    "prompt_tokens": 17281,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_time": 117.15,
+    "total_tokens": 21684
+  },
+  "source": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+  "accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+  "state": "paused after bounded design; no controller, owned engine, active or waiting model request",
+  "implemented": false,
+  "final_game_accepted": false,
+  "cloud_interface_review": {
+    "missing_api": "The external LoopSignals class actually exposes string Mission, not MissionComplete. CourierMission silently ignores writes to the missing MissionComplete member. The local plan's proposed true-edge cannot work as written.",
+    "required_handoff": "Use the real legacy Mission value == complete after its actual F/proximity delivery; separately observe chapter state on the game-owned RouteMission component.",
+    "protected_harness": "Do not let the game author edit LoopSignals or other external acceptance files. Proposed RouteStage/RouteComplete belong on the game component and can be read passively by an external observer.",
+    "completion_label": "Any short chapter completion is an East Dead-Drop component result, not final ten-minute route acceptance.",
+    "pacing_estimate": "Six chapters times90..110seconds is a proposal, not measured duration or proof that the small map supplies enough varied gameplay.",
+    "replay_note": "Driving east requires actual orientation and turns. The plan's prose 'drive W east' is not a verified replay."
+  },
+  "next_work": "Seal additive activation/anchor/reset and actual arrival-exit-proximity/F acceptance; then have local Qwen author RouteMission.cs and one installation line. Preserve all ten legacy tests and deferred visual FIX findings.",
+  "failure_history": {
+    "task_failures": 24,
+    "failure_streak": 1,
+    "diagnosis_used": true
+  },
+  "hard_cap_utc": "2026-10-08T06:33:12Z"
+}

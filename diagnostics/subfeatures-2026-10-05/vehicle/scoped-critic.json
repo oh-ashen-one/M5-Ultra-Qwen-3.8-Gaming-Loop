@@ -1,0 +1,9 @@
+{
+  "camera_readable": true,
+  "car_visible": true,
+  "continuous_paving": true,
+  "exit_player_visible": true,
+  "ok": true,
+  "summary": "Scope supported. Same blue coupe is tracked across frame-001/002 (parked/entered), frame-003 and frame-004. Drive displacement is confirmed by trace (vehicle 10.6 m, forward-aligned) and by the car's changing position relative to the buildings. Critically, the on-foot avatar (same dark body + twin vertical posts model seen in frame-000) is fully visible in the open street — not hidden by pillar/fence/car — in both the exit frame-003 (standing beside the parked coupe) and the return frame-004 (walking toward the coupe ahead), satisfying the follow-up requirement. Street/sidewalk paving reads as one continuous surface in every frame. Coherence is intact; the avatar's stylized/abstract silhouette and the blown-out roof highlight are art/camera-quality notes outside this milestone, not coherence failures. HUD/audio/FPS not assessed and not claimed.",
+  "verdict": "PASS"
+}

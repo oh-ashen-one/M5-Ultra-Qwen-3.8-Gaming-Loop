@@ -1,0 +1,47 @@
+{
+  "build_exit": 0,
+  "build_id": "e9585ee872345bd64abd741eaf11de560e10baa8e097e69286c420821829c657",
+  "candidate_commit": "d3a7f748fb3cfcf917f93db22f801b485e2cf176",
+  "capture_id": "q0003-c43c49a8",
+  "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+  "compile_errors": [],
+  "coverage": "mission-core",
+  "displacement_axes": "horizontal XZ",
+  "duration": 16.0,
+  "failure": [
+    "connected-objective-ending-missing",
+    "normal-input-vehicle-delivery-unverified"
+  ],
+  "final_game_accepted": false,
+  "frame_count": 8,
+  "harness_sha256": "71d9cdd6344a6c6b0dc044be637ebfe586fe1fd6377da7ac37b963d4fdbcc2c1",
+  "passed": false,
+  "performance_claim": "unqualified; shared renderer and capture overhead",
+  "player_displacement": 5.732,
+  "player_exit": 0,
+  "player_vertical_drop": 0.16,
+  "samples": 154,
+  "scope": "connected-mission",
+  "scoped_checks": [
+    "mission_complete"
+  ],
+  "scoped_facts": {
+    "mission_anchors": {
+      "away_seconds": 4.5333333015441895,
+      "delivery_seconds": null,
+      "failure": [
+        "normal-input-vehicle-delivery-unverified"
+      ],
+      "final_visual_acceptance": false,
+      "passed": false,
+      "pickup_seconds": 8.666666984558105,
+      "returned_seconds": 8.149999618530273,
+      "sample_count": 154,
+      "scope": "fixed-world-objectives-and-input-transitions"
+    },
+    "mission_states": [
+      "active"
+    ]
+  },
+  "vehicle_displacement": 20.133
+}

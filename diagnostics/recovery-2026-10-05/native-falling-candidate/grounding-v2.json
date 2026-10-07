@@ -1,0 +1,58 @@
+{
+  "checks": {
+    "actual_falling_candidate": {
+      "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+      "coverage": "foundation",
+      "displacement_axes": "horizontal XZ",
+      "duration": 16.008073806762695,
+      "failure": [
+        "foundation-fall-below-start"
+      ],
+      "frame_count": 4,
+      "passed": false,
+      "performance_claim": "unqualified; shared renderer and capture overhead",
+      "player_displacement": 38.549,
+      "player_exit": 0,
+      "player_vertical_drop": 360.011,
+      "samples": 132,
+      "vehicle_displacement": 0
+    },
+    "original_native_green": {
+      "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+      "coverage": "foundation",
+      "displacement_axes": "horizontal XZ",
+      "duration": 16.01675796508789,
+      "failure": null,
+      "frame_count": 4,
+      "passed": true,
+      "performance_claim": "unqualified; shared renderer and capture overhead",
+      "player_displacement": 16.094,
+      "player_exit": 0,
+      "player_vertical_drop": 0,
+      "samples": 140,
+      "vehicle_displacement": 0
+    },
+    "original_native_stationary_red": {
+      "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+      "coverage": "foundation",
+      "displacement_axes": "horizontal XZ",
+      "duration": 16.00180435180664,
+      "failure": [
+        "input-driven-player-movement",
+        "unchanging-captures"
+      ],
+      "frame_count": 4,
+      "passed": false,
+      "performance_claim": "unqualified; shared renderer and capture overhead",
+      "player_displacement": 0.0,
+      "player_exit": 0,
+      "player_vertical_drop": 0,
+      "samples": 141,
+      "vehicle_displacement": 0
+    }
+  },
+  "contract_version": 2,
+  "original_capture_trace_sha256": "bf40250fd4a0e7e283935c0cc28920d6fee2fbcf37b1294be861d46b3cdd52ec",
+  "original_gate_preserved": true,
+  "original_gate_sha256": "e1d95d346b15e883610bf5bd03c0a1e2cb0181efff3ca9a179ce0b7928718c5a"
+}

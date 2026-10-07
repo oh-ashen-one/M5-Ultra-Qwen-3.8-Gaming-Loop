@@ -1,0 +1,313 @@
+{
+  "utc": "2026-10-06T14:59:19.318598+00:00",
+  "state": {
+    "status": "paused",
+    "controller_pid": null,
+    "current_round": "q0107-68764670",
+    "stage": "fresh-ground-critique",
+    "activity": "local-critic",
+    "owned_process": null,
+    "blocker": "Halt: Ground critic supplied no complete verdict",
+    "source_checkpoint": "248c1cd14db9b70da9ce354f21b5a8afeab35cee",
+    "last_playable_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "task_failures": 24,
+    "failure_streak": 1,
+    "diagnosis_used": true,
+    "overall_deadline_epoch": 1791441192
+  },
+  "build_id": "385ae476978095e15ef4396e89855f3bcf299fc622cf476b8468d13f6232b055",
+  "native_pass": true,
+  "chapter": {
+    "activations": [
+      14.350000381469727
+    ],
+    "arrivals": [
+      30.200000762939453
+    ],
+    "completions": [
+      32.53333282470703
+    ],
+    "exits": [
+      30.633333206176758
+    ],
+    "failure": null,
+    "final_game_accepted": false,
+    "passed": true,
+    "resets": [
+      50.03333282470703
+    ],
+    "scope": "chapter-completion"
+  },
+  "ground": {
+    "added_components": 17,
+    "curb_step_m": 0.06,
+    "failure": null,
+    "old_static_geometry_unchanged": true,
+    "passed": true,
+    "road_top_y": 0.14,
+    "scope": "Matching raised sidewalk/curb renderers and colliders; original road geometry retained.",
+    "sidewalk_top_y": 0.2
+  },
+  "curbs": {
+    "bad_times": [],
+    "failure": null,
+    "first_observations": {
+      "north": {
+        "position": [
+          53.580528259277344,
+          0.19500255584716797,
+          26.58631706237793
+        ],
+        "time": 38.43333435058594
+      },
+      "road": {
+        "position": [
+          52.7805290222168,
+          0.13500046730041504,
+          21.94631576538086
+        ],
+        "time": 36.43333435058594
+      },
+      "south": {
+        "position": [
+          53.580528259277344,
+          0.19500255584716797,
+          9.306315422058105
+        ],
+        "time": 45.13333511352539
+      }
+    },
+    "passed": true,
+    "samples": {
+      "north": 14,
+      "road": 93,
+      "south": 11
+    },
+    "scope": "Real on-foot crossings of both6cm curbs after the unchanged chapter; not mission pacing duration."
+  },
+  "presentation": {
+    "active_samples": 345,
+    "failure": null,
+    "passed": true,
+    "reset_samples": 30,
+    "scope": "Live-window and native-capture UI geometry, physical cache bounds; actual pixel review remains required."
+  },
+  "regressions": [
+    {
+      "test": "walk",
+      "passed": true,
+      "failure": null,
+      "build_id": "3386ac0db4f711812e5527526b38a9539ca0e037a852daa95fe59df848d9f868"
+    },
+    {
+      "test": "world",
+      "passed": true,
+      "failure": null,
+      "build_id": "abf596ec2b7c0bbc1a251bbe9bb3adfcf13b4a526f8e57908271ab11895c0af9"
+    },
+    {
+      "test": "motor",
+      "passed": true,
+      "failure": null,
+      "build_id": "253240d0403f01b96dd2315f6711057eae202ca2c7f4446ae7adbbd5451b2ae8"
+    },
+    {
+      "test": "courier",
+      "passed": true,
+      "failure": null,
+      "build_id": "cd760ced47cc4a257ca6d2793f4125c17f771390d37b3ec8d08ac1ed086c88c1"
+    },
+    {
+      "test": "failure-retry",
+      "passed": true,
+      "failure": null,
+      "build_id": "763a6fb008df8bf041d335cae198db3ed26fb3331888c8f9316c70c62ba02667"
+    },
+    {
+      "test": "combat-foot",
+      "passed": true,
+      "failure": null,
+      "build_id": "e9d9b626d91a52343b6bc4784dd2e23e2acb5e0a96f6eb22ed0ec49b3f7239f1"
+    },
+    {
+      "test": "combat-wall",
+      "passed": true,
+      "failure": null,
+      "build_id": "c24ed8cccb0ab95fd93de97c0e47d6053a880bfebad8ad6206431d013bda4ebb"
+    },
+    {
+      "test": "combat-driving",
+      "passed": true,
+      "failure": null,
+      "build_id": "59aa2a6e972ef73a63f83b8f92de18a212d143a49fa80ab4071d6f4d9364a7a1"
+    },
+    {
+      "test": "aim-miss",
+      "passed": true,
+      "failure": null,
+      "build_id": "badb6beaa3e7ed86894e221f82a66522f8af04a95329a73d1c4e6eac9b1f9101"
+    },
+    {
+      "test": "aim-near-cover",
+      "passed": true,
+      "failure": null,
+      "build_id": "b70b709db09ab2469998a637de406c48366112a9cc14659e06a708263048cc9b"
+    }
+  ],
+  "critic": {
+    "bounded_stop": "context",
+    "summary": "Inspect current source and continue in a new bounded task."
+  },
+  "scenario_capture_fields": {
+    "captures": [
+      3.2,
+      7.9,
+      14,
+      15.2,
+      19.6,
+      22.9734,
+      24.0234,
+      25.0234,
+      27.3234,
+      30.268277809980393,
+      30.968277809980393,
+      32.55,
+      33.10206129914633,
+      35.2,
+      38.8,
+      41.5,
+      45.5,
+      47,
+      50.6,
+      52
+    ]
+  },
+  "captures": [
+    {
+      "name": "frame-000.png",
+      "mtime_utc": "2026-10-06T14:43:54.393035+00:00",
+      "sha256": "a4d0afe1d7f75d79202f4951bdd315296fff554fd2fb996007ff6340fc954a74"
+    },
+    {
+      "name": "frame-001.png",
+      "mtime_utc": "2026-10-06T14:44:00.130891+00:00",
+      "sha256": "d6b83e53ce1013e9012b1d2d1557186ed649634b87a00125da7f9f74bf7e2401"
+    },
+    {
+      "name": "frame-002.png",
+      "mtime_utc": "2026-10-06T14:44:07.514796+00:00",
+      "sha256": "3ade068be7cf2e24ca99e09b242ca85d10726cb62adfb93f268e774baee10a05"
+    },
+    {
+      "name": "frame-003.png",
+      "mtime_utc": "2026-10-06T14:44:09.056113+00:00",
+      "sha256": "1d7ab25ad9b0700714cab8d317983d30ab7f72008deef1fd3ab63b896651bb30"
+    },
+    {
+      "name": "frame-004.png",
+      "mtime_utc": "2026-10-06T14:44:14.672687+00:00",
+      "sha256": "e75be4ab75ca0802ab0b70c4a7f69427ee703a4b7c388a1c4e537bf0961aedc2"
+    },
+    {
+      "name": "frame-005.png",
+      "mtime_utc": "2026-10-06T14:44:18.992526+00:00",
+      "sha256": "d70b18d0b4fe22252fb86f84e4fff59380f1ce48d5ef310752363475775f0832"
+    },
+    {
+      "name": "frame-006.png",
+      "mtime_utc": "2026-10-06T14:44:20.331475+00:00",
+      "sha256": "efab928bbfbd4a4067e18bf5ed77288bca1199f5eacd9a1feaf03e9f940eb5cf"
+    },
+    {
+      "name": "frame-007.png",
+      "mtime_utc": "2026-10-06T14:44:21.659170+00:00",
+      "sha256": "9206ebf8224ad27c52b6e3e8c232b7a195ba3e788b068af56a261a3791b40c1a"
+    },
+    {
+      "name": "frame-008.png",
+      "mtime_utc": "2026-10-06T14:44:24.557012+00:00",
+      "sha256": "e2f9b15ff54e46d61b6698afe1fb3448203c1b9f36e833d0c3a48bcd9960ed5e"
+    },
+    {
+      "name": "frame-009.png",
+      "mtime_utc": "2026-10-06T14:44:28.277702+00:00",
+      "sha256": "b1992995a50f66623f69b145a0458552aeac086128d2d4278dac2fbef6c844af"
+    },
+    {
+      "name": "frame-010.png",
+      "mtime_utc": "2026-10-06T14:44:29.201960+00:00",
+      "sha256": "f8224ded261caf2c66acecedeae8d595a4e3cbee1a48147228891aeee24e0ae7"
+    },
+    {
+      "name": "frame-011.png",
+      "mtime_utc": "2026-10-06T14:44:31.110898+00:00",
+      "sha256": "f991f3180bb82baa10adbf91882843008f152fe1c39fb7b5e29793fe4d63bd85"
+    },
+    {
+      "name": "frame-012.png",
+      "mtime_utc": "2026-10-06T14:44:31.800258+00:00",
+      "sha256": "b7ba7b65261625970646eafa3568a3766c936fff844cddd68a5ce3d977ada5d4"
+    },
+    {
+      "name": "frame-013.png",
+      "mtime_utc": "2026-10-06T14:44:34.509529+00:00",
+      "sha256": "27ffc4116363349dafb5e9b83b8185eee7a4bd52157c35765d04835b2cd9a43c"
+    },
+    {
+      "name": "frame-014.png",
+      "mtime_utc": "2026-10-06T14:44:38.919301+00:00",
+      "sha256": "0df6efaf95a09fd689e88830dda5cf9232f6436776f4d906c9de3e9856357894"
+    },
+    {
+      "name": "frame-015.png",
+      "mtime_utc": "2026-10-06T14:44:42.425493+00:00",
+      "sha256": "7fe434631ae55e38cc0c0d29869d39bfab8a6017d2d1ebb9e97fb2963cd1c73d"
+    },
+    {
+      "name": "frame-016.png",
+      "mtime_utc": "2026-10-06T14:44:47.417914+00:00",
+      "sha256": "ec72ae79fd5a0b84b6cc02178cf1538888fd80333332f5c5bc6cef57c4a35336"
+    },
+    {
+      "name": "frame-017.png",
+      "mtime_utc": "2026-10-06T14:44:49.309443+00:00",
+      "sha256": "1f9b5bd7e68527430be25b8474603803d8fc60dd5e4e8bff7049cdf77ca03b16"
+    },
+    {
+      "name": "frame-018.png",
+      "mtime_utc": "2026-10-06T14:44:53.833032+00:00",
+      "sha256": "08734e4822d4e126894ef8f59ad83b589b4ada91bef51c4301e946641ffecc1b"
+    },
+    {
+      "name": "frame-019.png",
+      "mtime_utc": "2026-10-06T14:44:55.671659+00:00",
+      "sha256": "2eec8c00c094479b19b5f052c88025051382bd55bdee768018f2ee3ec028ae69"
+    }
+  ],
+  "evidence_hashes": {
+    "chapter-gate.json": "8b6f0b64b09ece8e9e69cc13c2d76299df705e7355cad1a0e62d27e03c5d2515",
+    "ground-gate.json": "479104e21aeda7ac59288f42fb26a9d2a5208a33425ce54ba13a10e5b3261caf",
+    "captures/manifest.json": "f57c8d588c6abd8edcbe4c82e1f160eb4931f779fa092e64f60e8c3132ac6647",
+    "critic.json": "dc3c72c52c75df65ae5f50d169d3263e1ae0a53fe9d3c6a92b41210edf8eab09",
+    "ground-outcome.json": "85189de49116b595845ab282a382b0fbd5913b5a242d7a4d857fdfb8a2cde9d1"
+  },
+  "review_diagnosis": {
+    "first_request_completed": true,
+    "completion_tokens": 5865,
+    "prompt_tokens": 15149,
+    "elapsed_seconds": 152.52,
+    "original_verdict": "PASS",
+    "tool_rejection": "Cite an actual supplied frame filename or unambiguous capture time in summary",
+    "correction_conservative_prompt_bound": 61003,
+    "output_budget": 8192,
+    "working_context": 65536,
+    "original_response_sha256": "8a6e725edf561ff300e7d3ca84cb02d7cd6c5a72f2afa7ddeca8a7a2e20d2a7a",
+    "recovery": "Validate exact complete local tool submission and all four seconds-suffixed frame citations; preserve original evidence and rejection. No altered verdict, native rerun or extra critic request.",
+    "deployment_status": "prepared; 286 local CPU tests pass"
+  },
+  "cloud_pixel_review": {
+    "scope": "new road/sidewalk captures",
+    "observed": "Darker road, visible dashed centerline and lighter supported sidewalk bands. Character has crude raised/pronged arms; repeated facades, camera framing and final art remain unfinished.",
+    "final_game_accepted": false
+  }
+}

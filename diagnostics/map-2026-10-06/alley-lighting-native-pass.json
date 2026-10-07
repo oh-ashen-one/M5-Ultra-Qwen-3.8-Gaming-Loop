@@ -1,0 +1,224 @@
+{
+  "observed_utc": "2026-10-06T07:35:27.702249+00:00",
+  "candidate": "8439ae8789793a881c51003cad94e39fc7210c01",
+  "build_id": "d0708caf6497b5b83c1a0f55f1225dcf9f50af6b27d3751a82b8290a9ffe58c8",
+  "extension": {
+    "passed": true,
+    "failure": [],
+    "old_bounds_xz": [
+      -1,
+      6,
+      -2,
+      30
+    ],
+    "traversal": {
+      "foot": {
+        "outside_samples": 15,
+        "maximum_distance_beyond_old_boundary_m": 6.533334732055664,
+        "physical_return_seconds": 15.966666221618652
+      },
+      "vehicle": {
+        "outside_samples": 48,
+        "maximum_distance_beyond_old_boundary_m": 13.76791000366211,
+        "physical_return_seconds": 33.63333511352539
+      }
+    },
+    "area_claim": "Only observed connected traversal; no gross map-area acceptance"
+  },
+  "support": {
+    "passed": true,
+    "samples": 188,
+    "uncovered_samples": 0
+  },
+  "captures": [
+    {
+      "label": "junction",
+      "name": "frame-001.png",
+      "replay_seconds": 10.817,
+      "capture_utc": "2026-10-06T07:34:27.909180+00:00",
+      "sha256": "6c5d5f6a7d0afd4d92c7d1c11183f12fa1bd1de3dd7d1cf1f876402bed63a3fa",
+      "bytes": 222023
+    },
+    {
+      "label": "walking-alley",
+      "name": "frame-003.png",
+      "replay_seconds": 13.69791,
+      "capture_utc": "2026-10-06T07:34:31.127151+00:00",
+      "sha256": "58959a2bb7f5ec61df05a2ae0f3b973e01b35c04153f62bfcde021f04b04234f",
+      "bytes": 257835
+    },
+    {
+      "label": "driving-alley",
+      "name": "frame-007.png",
+      "replay_seconds": 27.84647,
+      "capture_utc": "2026-10-06T07:34:46.922236+00:00",
+      "sha256": "69e28a383a8e030d7017a2a894484cbb874a1fd198418f730bd744c21f65562c",
+      "bytes": 245422
+    }
+  ],
+  "regressions": "Active at snapshot; all ten and fresh critique required",
+  "promoted": false,
+  "accepted_checkpoint": "d269dc43ac66c39afca4cb98ea53f9e7ed36806f",
+  "visual_result": "Alley floor and character are visibly brighter; walls remain plain.",
+  "prop_defect": {
+    "observed": "Newly cloned bollards and dumpster have lossyScale1 instead of the original imported world scale100, and incorrect world orientation.",
+    "actual_bounds": [
+      {
+        "name": "WorldCollision/AlleyDumpster/dumpster_a_rail",
+        "kind": "renderer",
+        "boundsCenter": [
+          16,
+          0.14123868942260742,
+          9.503729820251465
+        ],
+        "boundsSize": [
+          0.02449999935925007,
+          0.0007999999797903001,
+          0.0007999999797903001
+        ],
+        "lossyScale": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "WorldCollision/AlleyDumpster/dumpster_a_lid",
+        "kind": "renderer",
+        "boundsCenter": [
+          16,
+          0.14733868837356567,
+          9.505929946899414
+        ],
+        "boundsSize": [
+          0.0253471527248621,
+          0.014677366241812706,
+          0.0015999999595806003
+        ],
+        "lossyScale": [
+          1.0000001192092896,
+          1.0000001192092896,
+          1
+        ]
+      },
+      {
+        "name": "WorldCollision/AlleyDumpster/dumpster_a_wheel_0.9",
+        "kind": "renderer",
+        "boundsCenter": [
+          15.991000175476074,
+          0.14283868670463562,
+          9.494830131530762
+        ],
+        "boundsSize": [
+          0.0012000001734122634,
+          0.0031999999191612005,
+          0.0031197690404951572
+        ],
+        "lossyScale": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "WorldCollision/AlleyBollardN",
+        "kind": "renderer",
+        "boundsCenter": [
+          8,
+          0.1412000060081482,
+          19.649999618530273
+        ],
+        "boundsSize": [
+          0.0023999998811632395,
+          0.0023999998811632395,
+          0.010499998927116394
+        ],
+        "lossyScale": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "WorldCollision/AlleyBollardS",
+        "kind": "renderer",
+        "boundsCenter": [
+          8,
+          0.1412000060081482,
+          8.800000190734863
+        ],
+        "boundsSize": [
+          0.0023999998811632395,
+          0.0023999998811632395,
+          0.010499998927116394
+        ],
+        "lossyScale": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "WorldCollision/AlleyDumpster/dumpster_a_wheel_-0.9",
+        "kind": "renderer",
+        "boundsCenter": [
+          16.009000778198242,
+          0.14283868670463562,
+          9.494830131530762
+        ],
+        "boundsSize": [
+          0.0012000001734122634,
+          0.0031999999191612005,
+          0.0031197690404951572
+        ],
+        "lossyScale": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "WorldCollision/AlleyDumpster/dumpster_a_body",
+        "kind": "renderer",
+        "boundsCenter": [
+          16,
+          0.14783868193626404,
+          9.499429702758789
+        ],
+        "boundsSize": [
+          0.024000000208616257,
+          0.01249999925494194,
+          0.011499999091029167
+        ],
+        "lossyScale": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "WorldCollision/AlleyDumpster/dumpster_a_body",
+        "kind": "BoxCollider",
+        "boundsCenter": [
+          16,
+          0.14783868193626404,
+          9.499429702758789
+        ],
+        "boundsSize": [
+          0.02399921417236328,
+          0.012499988079071045,
+          0.011499404907226562
+        ],
+        "lossyScale": [
+          1,
+          1,
+          1
+        ]
+      }
+    ],
+    "next_local_repair": "Preserve each source world rotation and lossyScale after parenting, then recompute ground-placement bounds; keep targets and gameplay unchanged.",
+    "repaired": false
+  },
+  "door_detail": "No code saved; output-limit failure preserved",
+  "hard_cap_utc": "2026-10-08T06:33:12+00:00"
+}

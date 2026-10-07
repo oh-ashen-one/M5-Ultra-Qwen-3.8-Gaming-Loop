@@ -1,0 +1,776 @@
+{
+  "verified_utc": "2026-10-05T12:25:45.122051+00:00",
+  "status": "paused-scope-complete",
+  "controller_pid": null,
+  "source_checkpoint": "754dd5956cb5a24c18507aef638c29c4781baa53",
+  "accepted_checkpoint": null,
+  "accepted_subfeatures": {
+    "foundation-short-walk": {
+      "accepted_utc": "2026-10-05T11:56:27.770564+00:00",
+      "candidate": "142f7e0ee87840a50a5074dad7fa206c39e2e82e",
+      "evidence": "evidence/corridor-axis",
+      "final_game_accepted": false,
+      "remaining": "Chicago target quality, final HUD/audio/performance, combat and complete ten-minute mission remain separate.",
+      "review": {
+        "camera_readable": true,
+        "car_visible": true,
+        "continuous_paving": true,
+        "ok": true,
+        "summary": "Limited scope is supported. frame-000.png and frame-001.png show a coherent third-person chase view of the black character from behind (readable framing, no clipping into geometry), and frame-001.png plus frame-003.png clearly render the blue coupe (side view left in frame-001, rear view with red taillights ahead in frame-003). Grey paved Street/sidewalk + Pavement slabs run continuously under the route from start (frame-000) through frame-003, where the player ends on grey paving beside the car — not on brown unrendered background, which stays beyond the left fence line and far horizon. Surface bounds (124/124 samples covered, 0 uncovered) corroborate the ~18.97 m horizontal displacement with only 0.16 m vertical drop (grounded). Buildings/props (floating fence, bollards, blocky facades) remain rough as permitted and are not held against this milestone; HUD/audio/FPS/mission acceptance are unmet and not claimed.",
+        "verdict": "PASS"
+      },
+      "scope": "foundation-short-walk"
+    },
+    "vehicle-entry-drive-exit": {
+      "accepted_utc": "2026-10-05T12:10:30.466441+00:00",
+      "candidate": "8a57dd4f6501e3d3c205c01b008f6f6205133acd",
+      "evidence": "evidence/vehicle-heading-corrected",
+      "final_game_accepted": false,
+      "remaining": "Chicago target quality, final HUD/audio/performance, combat and complete ten-minute mission remain separate.",
+      "review": {
+        "camera_readable": true,
+        "car_visible": true,
+        "continuous_paving": true,
+        "ok": true,
+        "summary": "Limited scope supported. frame-001.png, frame-002.png, frame-003.png and frame-004.png all show the same blue coupe, and the native trace records 10.31 m of forward motion at ~1.0 forward alignment (entry plus >3 m drive) with 97/97 pavement-covered return-walk samples (exit and return to walking). Pavement is continuous street/sidewalk in every supplied frame. Weaknesses noted but outside this milestone: frame-000.png omits the car, frame-001.png and frame-003.png occlude it behind the spiked fence, frame-004.png is partly blocked by a pillar, and no on-foot player mesh is visible. HUD/audio/FPS, Chicago-target art and full collision/audio remain unmet and are not credited.",
+        "verdict": "PASS"
+      },
+      "scope": "vehicle-entry-drive-exit"
+    },
+    "vehicle-safe-exit-view": {
+      "accepted_utc": "2026-10-05T12:23:38.140169+00:00",
+      "candidate": "da0e0e6eb12673a324f87bb68dd350bda13d17db",
+      "evidence": "evidence/vehicle-grounded-exit",
+      "final_game_accepted": false,
+      "remaining": "Chicago target quality, final HUD/audio/performance, combat and complete ten-minute mission remain separate.",
+      "review": {
+        "camera_readable": true,
+        "car_visible": true,
+        "continuous_paving": true,
+        "exit_player_visible": true,
+        "ok": true,
+        "summary": "Scope supported. Same blue coupe is tracked across frame-001/002 (parked/entered), frame-003 and frame-004. Drive displacement is confirmed by trace (vehicle 10.6 m, forward-aligned) and by the car's changing position relative to the buildings. Critically, the on-foot avatar (same dark body + twin vertical posts model seen in frame-000) is fully visible in the open street — not hidden by pillar/fence/car — in both the exit frame-003 (standing beside the parked coupe) and the return frame-004 (walking toward the coupe ahead), satisfying the follow-up requirement. Street/sidewalk paving reads as one continuous surface in every frame. Coherence is intact; the avatar's stylized/abstract silhouette and the blown-out roof highlight are art/camera-quality notes outside this milestone, not coherence failures. HUD/audio/FPS not assessed and not claimed.",
+        "verdict": "PASS"
+      },
+      "scope": "vehicle-safe-exit-view"
+    }
+  },
+  "superseded_subfeatures": [
+    {
+      "accepted_utc": "2026-10-05T12:03:03.809975+00:00",
+      "candidate": "d7b75884c916c28f52b437745a7c7ea443c16225",
+      "evidence": "evidence/vehicle-entry-drive-exit",
+      "final_game_accepted": false,
+      "heading_evidence": {
+        "forward_alignment": -1,
+        "front_minus_rear_xz": [
+          0,
+          -4.559999465942383
+        ],
+        "net_motion_xz": [
+          0,
+          16.341081619262695
+        ],
+        "passed": false,
+        "scope": "Straight throttle replay must move toward the authored front bumper, not the rear."
+      },
+      "reason": "Visual nose opposes W motion; longer return walk leaves pavement",
+      "remaining": "Chicago target quality, final HUD/audio/performance, combat and complete ten-minute mission remain separate.",
+      "review": {
+        "camera_readable": true,
+        "car_visible": true,
+        "continuous_paving": true,
+        "ok": true,
+        "summary": "Within the stated limited scope the demonstration is supported. frame-000.png shows the player on foot (dark two-post figure) on continuous gray paving; frame-001.png and frame-002.png show the same blue coupe (blue body, black lower trim) at the curb and from above on the same gray street; frame-003.png keeps the identical blue coupe between pillars; frame-004.png shows the rear of that same blue coupe (red taillights) moved off, with the on-foot figure in the foreground — consistent with entry, forward drive, exit and return to walking. Native trace agrees (vehicle_displacement 16.34m > 3m, player_displacement 29.46m, capture_id \"vehicle-entry-drive-exit\", passed). No conflicting vehicle appears, so car/player coherence holds. Broader deliverables (HUD, audio, FPS, Chicago-target art quality, ten-minute game, mission acceptance) remain unmet and are not claimed.",
+        "verdict": "PASS"
+      },
+      "scope": "vehicle-entry-drive-exit",
+      "status": "requires-correction"
+    }
+  ],
+  "last_verified_progress_utc": "2026-10-05T12:23:38.140184+00:00",
+  "attempt_started_utc": "2026-10-05T11:47:41.082041+00:00",
+  "attempt_deadline_epoch": 1791204460.907787,
+  "bounds": {
+    "diagnosed_axis_correction_edits": 1,
+    "diagnosed_exit_clearance_edits": 1,
+    "diagnosed_exit_facing_edits": 1,
+    "diagnosed_exit_placement_edits": 1,
+    "diagnosed_heading_edits": 1,
+    "diagnosed_input_api_edits": 1,
+    "direct_edits": 3,
+    "fresh_attempt_minutes": 60,
+    "identical_retries": 0,
+    "without_verified_subfeature_minutes": 20
+  },
+  "previous_failure_records_unchanged": true,
+  "model_requests": [
+    {
+      "id": "corridor-direct-0",
+      "updated_utc": "2026-10-05T11:49:11.133851+00:00",
+      "usage": {
+        "prompt_tokens": 2152,
+        "completion_tokens": 3760,
+        "total_tokens": 5912,
+        "input_tokens": 2152,
+        "output_tokens": 3760,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 89.99
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "low",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 12803,
+            "retokenized_tokens": 3478,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "corridor-axis-direct-0",
+      "updated_utc": "2026-10-05T11:55:21.481819+00:00",
+      "usage": {
+        "prompt_tokens": 2315,
+        "completion_tokens": 1050,
+        "total_tokens": 3365,
+        "input_tokens": 2315,
+        "output_tokens": 1050,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 27.29
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "low",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 2784,
+            "retokenized_tokens": 986,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "foundation-short-walk-review-0",
+      "updated_utc": "2026-10-05T11:56:27.751692+00:00",
+      "usage": {
+        "prompt_tokens": 2885,
+        "completion_tokens": 1169,
+        "total_tokens": 4054,
+        "input_tokens": 2885,
+        "output_tokens": 1169,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 30.95
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "xhigh",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 3631,
+            "retokenized_tokens": 855,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "vehicle-module-direct-0",
+      "updated_utc": "2026-10-05T11:57:37.752871+00:00",
+      "usage": {
+        "prompt_tokens": 2399,
+        "completion_tokens": 2906,
+        "total_tokens": 5305,
+        "input_tokens": 2399,
+        "output_tokens": 2906,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 69.89
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "low",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 8438,
+            "retokenized_tokens": 1992,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "vehicle-input-api-direct-0",
+      "updated_utc": "2026-10-05T12:00:47.945893+00:00",
+      "usage": {
+        "prompt_tokens": 2246,
+        "completion_tokens": 71,
+        "total_tokens": 2317,
+        "input_tokens": 2246,
+        "output_tokens": 71,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 4.05
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "low",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 114,
+            "retokenized_tokens": 31,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "vehicle-install-direct-0",
+      "updated_utc": "2026-10-05T12:01:33.257290+00:00",
+      "usage": {
+        "prompt_tokens": 3147,
+        "completion_tokens": 269,
+        "total_tokens": 3416,
+        "input_tokens": 3147,
+        "output_tokens": 269,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 8.91
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "low",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 913,
+            "retokenized_tokens": 206,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "vehicle-entry-drive-exit-review-0",
+      "updated_utc": "2026-10-05T12:02:52.122470+00:00",
+      "usage": {
+        "prompt_tokens": 3560,
+        "completion_tokens": 1736,
+        "total_tokens": 5296,
+        "input_tokens": 3560,
+        "output_tokens": 1736,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 43.96
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "xhigh",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 5862,
+            "retokenized_tokens": 1443,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "vehicle-entry-drive-exit-review-1",
+      "updated_utc": "2026-10-05T12:03:03.783614+00:00",
+      "usage": {
+        "prompt_tokens": 5330,
+        "completion_tokens": 368,
+        "total_tokens": 5698,
+        "input_tokens": 5330,
+        "output_tokens": 368,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 11.57
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "xhigh",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 255,
+            "retokenized_tokens": 75,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "vehicle-heading-direct-0",
+      "updated_utc": "2026-10-05T12:08:28.642496+00:00",
+      "usage": {
+        "prompt_tokens": 2344,
+        "completion_tokens": 1324,
+        "total_tokens": 3668,
+        "input_tokens": 2344,
+        "output_tokens": 1324,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 33.15
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "low",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 5086,
+            "retokenized_tokens": 1259,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "vehicle-heading-corrected-review-0",
+      "updated_utc": "2026-10-05T12:10:18.908710+00:00",
+      "usage": {
+        "prompt_tokens": 4062,
+        "completion_tokens": 3074,
+        "total_tokens": 7136,
+        "input_tokens": 4062,
+        "output_tokens": 3074,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 75.87
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "xhigh",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "characters": 1276,
+            "retokenized_tokens": 309,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning_content": {
+            "characters": 10599,
+            "retokenized_tokens": 2491,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "vehicle-heading-corrected-review-1",
+      "updated_utc": "2026-10-05T12:10:30.443988+00:00",
+      "usage": {
+        "prompt_tokens": 7170,
+        "completion_tokens": 323,
+        "total_tokens": 7493,
+        "input_tokens": 7170,
+        "output_tokens": 323,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 11.44
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "xhigh",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 245,
+            "retokenized_tokens": 57,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "vehicle-safe-exit-direct-0",
+      "updated_utc": "2026-10-05T12:12:52.846034+00:00",
+      "usage": {
+        "prompt_tokens": 2372,
+        "completion_tokens": 277,
+        "total_tokens": 2649,
+        "input_tokens": 2372,
+        "output_tokens": 277,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 8.85
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "low",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 811,
+            "retokenized_tokens": 202,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "vehicle-safe-exit-view-review-0",
+      "updated_utc": "2026-10-05T12:15:15.098859+00:00",
+      "usage": {
+        "prompt_tokens": 4137,
+        "completion_tokens": 4242,
+        "total_tokens": 8379,
+        "input_tokens": 4137,
+        "output_tokens": 4242,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 104.23
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "xhigh",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 16353,
+            "retokenized_tokens": 3921,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "vehicle-safe-exit-view-review-1",
+      "updated_utc": "2026-10-05T12:15:28.820301+00:00",
+      "usage": {
+        "prompt_tokens": 8413,
+        "completion_tokens": 378,
+        "total_tokens": 8791,
+        "input_tokens": 8413,
+        "output_tokens": 378,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 13.63
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "xhigh",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 243,
+            "retokenized_tokens": 65,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "vehicle-exit-facing-direct-0",
+      "updated_utc": "2026-10-05T12:18:02.998855+00:00",
+      "usage": {
+        "prompt_tokens": 2330,
+        "completion_tokens": 246,
+        "total_tokens": 2576,
+        "input_tokens": 2330,
+        "output_tokens": 246,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 8.12
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "low",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 1011,
+            "retokenized_tokens": 201,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "vehicle-exit-height-direct-0",
+      "updated_utc": "2026-10-05T12:21:44.668689+00:00",
+      "usage": {
+        "prompt_tokens": 2350,
+        "completion_tokens": 296,
+        "total_tokens": 2646,
+        "input_tokens": 2350,
+        "output_tokens": 296,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 9.74
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "low",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "present": false
+          },
+          "reasoning_content": {
+            "characters": 834,
+            "retokenized_tokens": 238,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    },
+    {
+      "id": "vehicle-grounded-exit-review-0",
+      "updated_utc": "2026-10-05T12:23:38.114643+00:00",
+      "usage": {
+        "prompt_tokens": 4134,
+        "completion_tokens": 3042,
+        "total_tokens": 7176,
+        "input_tokens": 4134,
+        "output_tokens": 3042,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_time": 75.54
+      },
+      "finish_reason": "tool_calls",
+      "reasoning_effort": "xhigh",
+      "response_accounting": {
+        "fields": {
+          "content": {
+            "characters": 254,
+            "retokenized_tokens": 64,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning_content": {
+            "characters": 10732,
+            "retokenized_tokens": 2681,
+            "closing_think_markers": 0,
+            "tool_open_markers": 0
+          },
+          "reasoning": {
+            "present": false
+          }
+        },
+        "parsed_tool_calls": 1
+      }
+    }
+  ],
+  "runtime": {
+    "health": "healthy",
+    "loaded_count": 1,
+    "active_requests": 0,
+    "waiting_requests": 0,
+    "available_GiB": 138.69,
+    "swap_used_MiB": 3.75,
+    "preserved_blender_alive": true
+  },
+  "final_walk_regression": {
+    "evidence": "evidence/final-walk-regression",
+    "gate": {
+      "build_exit": 0,
+      "build_id": "e9cc8f4ea01fa1128205bc20683531fc163506e796e2356a497e5d8d4c42d692",
+      "candidate_commit": "754dd5956cb5a24c18507aef638c29c4781baa53",
+      "capture_id": "final-walk-regression",
+      "capture_scope": "native runtime camera frames plus input/state trace; HUD/audio not established by camera frames",
+      "compile_errors": [],
+      "coverage": "foundation",
+      "displacement_axes": "horizontal XZ",
+      "duration": 16.019838333129883,
+      "failure": null,
+      "frame_count": 4,
+      "harness_sha256": "725ec614d79f206b0c52da3e5bd8c941595430c7de21826852f72d077af8f1bf",
+      "passed": true,
+      "performance_claim": "unqualified; shared renderer and capture overhead",
+      "player_displacement": 18.96,
+      "player_exit": 0,
+      "player_vertical_drop": 0.158,
+      "samples": 130,
+      "stationary_grounded": true,
+      "vehicle_displacement": 0
+    },
+    "pavement": {
+      "first_uncovered": [],
+      "passed": true,
+      "radius_m": 0.32,
+      "samples": 125,
+      "scope": "Flat rendered-surface bounds support the route; actual frame review is also required.",
+      "surfaces": [
+        {
+          "max": [
+            2.4000000953674316,
+            0.14000078290700912,
+            14
+          ],
+          "min": [
+            -0.7999999523162842,
+            2.2351741790771484e-8,
+            0
+          ],
+          "name": "Street/sidewalk"
+        },
+        {
+          "max": [
+            6,
+            0.14000045508146286,
+            30
+          ],
+          "min": [
+            -1,
+            -0.000001214444637298584,
+            -2
+          ],
+          "name": "Pavement"
+        },
+        {
+          "max": [
+            2.4000000953674316,
+            0.14000078290700912,
+            28
+          ],
+          "min": [
+            -0.7999999523162842,
+            2.2351741790771484e-8,
+            14
+          ],
+          "name": "Street/sidewalk"
+        }
+      ],
+      "uncovered_samples": 0
+    }
+  }
+}

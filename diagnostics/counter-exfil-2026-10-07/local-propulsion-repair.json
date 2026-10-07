@@ -1,0 +1,50 @@
+{
+  "scope": "Locally authored source correction only; native qualification pending",
+  "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+  "accepted_fallback": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+  "original_failed_source": "9df6c96af1ccd25d3115a44434a23aec0537d273",
+  "failure_evidence": "physical-route-failure.json",
+  "local_author": {
+    "model": "mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp",
+    "reasoning_effort": "xhigh",
+    "source_recovery": {
+      "round": "q0178-5de66f1f",
+      "response_sha256": "f8f8ce179cffbcd5e401b34edae9dca048425bee6e8779027b3edbae29a3a347",
+      "finish_reason": "stop",
+      "parsed_tool_calls": 0,
+      "complete_final_fields": 3,
+      "saved_checkpoint": "aa992c7f775b4a68b33fadc57688719fffe5937b",
+      "method": "Strict complete final-content extraction through original bounded hash-checked source save; private reasoning excluded"
+    },
+    "focused_review": {
+      "round": "q0180-f40f6151",
+      "response_sha256": "1f5cac65ae174f9b76470bd4d5b4b73c3509d6744d59a70318355a48187d3f24",
+      "finish_reason": "tool_calls",
+      "actual_tool": "finish_source",
+      "total_seconds": 43.51,
+      "output_tokens": 3640
+    }
+  },
+  "changes": [
+    "Finite mass-scaled runner force replaces active horizontal velocity forcing; live bodies remain dynamic with real contacts.",
+    "Low-friction material only on new runner capsules; installed PhysicsMaterial API.",
+    "Terminal/death stop immediately zeros horizontal velocity while preserving vertical motion, dynamic living bodies and colliders.",
+    "Armed hint retains distance and E/F in fewer than40characters."
+  ],
+  "cloud_intervention": [
+    "Measured physics and ordinary-input aiming diagnosis.",
+    "Strict final-response recovery and two integration review requests.",
+    "Independent acceptance, controller, provenance and publication; no substantive cloud C# authoring."
+  ],
+  "native": {
+    "status": "pending",
+    "controller_checks_on_M5": 36,
+    "full_incident_accepted": false,
+    "final_game_accepted": false
+  },
+  "unchanged": [
+    "Original car/world/old actors, camera/aim, health and ending.",
+    "Accepted fallback and all original failed evidence.",
+    "Task index7, failure counters24/1, fixed October8 06:33:12 UTC cap."
+  ]
+}

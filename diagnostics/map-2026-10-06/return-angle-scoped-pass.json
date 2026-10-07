@@ -1,0 +1,199 @@
+{
+  "observed_utc": "2026-10-06T11:32:11.128048+00:00",
+  "source": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+  "published": true,
+  "controller_revision": "39e3356b72031546c91bec40f9dc50acebb9fcfb",
+  "cpu_tests_each_host": 247,
+  "preserved_editor_failure": {
+    "round": "q0091-e1a25c20",
+    "response_sha256": "7109f01647c7b8ad07f25adcddb369b0dfb23fc95b32c7c74293dca8c1d0d1f5",
+    "finish_reason": "length",
+    "output_tokens": 4096,
+    "seconds": 101.02,
+    "tool_calls": 0,
+    "source_saved": false
+  },
+  "local_edit": {
+    "author": "local Qwen",
+    "response_sha256": "8c24caa9ae0e8ec37edc9c4d8bf107db2bba06d3d8afa1c1d464069ec8b14795",
+    "usage": {
+      "completion_tokens": 1315,
+      "input_tokens": 535,
+      "output_tokens": 1315,
+      "prompt_tokens": 535,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_time": 30.61,
+      "total_tokens": 1850
+    },
+    "file": "game/Assets/Game/Bootstrap.cs",
+    "added_lines": 1,
+    "actual_change": "Set cramped=true when an actual world-overlap correction lowers the candidate below origin.y+camY. The camera height clamp itself was unchanged.",
+    "commit_title_caveat": "The controller's commit title describes the intended height correction; the actual code changes only the cramped flag and resulting look direction."
+  },
+  "native": {
+    "ordinary": {
+      "passed": true,
+      "failure": null,
+      "candidate_commit": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+      "build_id": "30d7655708e194bd06bb615e3c206e619926138c15995a0d5ff4e5698b519357"
+    },
+    "wall_contract": {
+      "acceptance_fixture": "camera-clearance",
+      "build_id": "b1d8e287fad0b8b8f7602fb859b2f0ccecd0a715ca84d31f60927fcd11e456d4",
+      "candidate": "9522003c685cf9e74afdcc45bae94368baa04e7e",
+      "evidence": "evidence/q0092-5a49246f-camera-clearance",
+      "failure": [],
+      "final_game_accepted": false,
+      "passed": true,
+      "phases": [
+        {
+          "camera_beyond_wall_samples": 0,
+          "camera_inside_samples": 0,
+          "camera_inside_world_samples": 0,
+          "legacy_endpoint_predicate_samples": 0,
+          "minimum_actor_samples_in_frame": 2,
+          "minimum_actor_samples_unobstructed": 2,
+          "near_plane_intersection_samples": 0,
+          "phase": "near",
+          "probe_distance_max": 0.6499999165534973,
+          "probe_distance_min": 0.6499999165534973,
+          "samples": 15
+        },
+        {
+          "camera_beyond_wall_samples": 0,
+          "camera_inside_samples": 0,
+          "camera_inside_world_samples": 0,
+          "legacy_endpoint_predicate_samples": 0,
+          "minimum_actor_samples_in_frame": 9,
+          "minimum_actor_samples_unobstructed": 5,
+          "near_plane_intersection_samples": 0,
+          "phase": "middle",
+          "probe_distance_max": 3,
+          "probe_distance_min": 3,
+          "samples": 14
+        },
+        {
+          "camera_beyond_wall_samples": 0,
+          "camera_inside_samples": 0,
+          "camera_inside_world_samples": 0,
+          "legacy_endpoint_predicate_samples": 14,
+          "minimum_actor_samples_in_frame": 9,
+          "minimum_actor_samples_unobstructed": 5,
+          "near_plane_intersection_samples": 0,
+          "phase": "endpoint",
+          "probe_distance_max": 5.403923511505127,
+          "probe_distance_min": 5.403923511505127,
+          "samples": 14
+        }
+      ],
+      "scope": "disposable-camera-clearance-diagnostic",
+      "visibility_note": "At least one actor bounds sample must remain visible and camera must be outside foreign colliders; useful framing still needs actual images"
+    },
+    "target_transitions": {
+      "failure": [],
+      "final_game_accepted": false,
+      "passed": true,
+      "phases": [
+        {
+          "matching_cache_samples": 40,
+          "phase": "initial-foot",
+          "samples": 40
+        },
+        {
+          "matching_cache_samples": 85,
+          "phase": "driving",
+          "samples": 85
+        },
+        {
+          "matching_cache_samples": 14,
+          "phase": "exit-foot",
+          "samples": 14
+        },
+        {
+          "matching_cache_samples": 47,
+          "phase": "reset-foot",
+          "samples": 47
+        }
+      ],
+      "scope": "normal-input-camera-target-transitions"
+    },
+    "camera_inside_world_samples": 0
+  },
+  "return_image": {
+    "round": "q0092-5a49246f",
+    "capture": "frame-010.png",
+    "scheduled_seconds": 50.49647,
+    "capture_utc": "2026-10-06T11:28:56.068910+00:00",
+    "sha256": "d8078fbffc01f01c69cbe9873feed171738fc97c1fdeaf965736860b41609d68",
+    "changed_pixels": true,
+    "private_library_delivery_confirmed": true
+  },
+  "return_pose": {
+    "position": [
+      1.8904540538787842,
+      1.7686353921890259,
+      15.574650764465332
+    ],
+    "direction": [
+      0.967229962348938,
+      -0.22248226404190063,
+      0.12234322726726532
+    ],
+    "position_unchanged": true,
+    "prior_direction": [
+      0.9858343601226807,
+      -0.11216692626476288,
+      0.12469659000635147
+    ]
+  },
+  "focused_local_review": {
+    "fixes": [],
+    "ok": true,
+    "summary": "At the identical 50.49647 s return point, after.png clearly corrects the return camera. before.png shows an unstructured near-body obstruction (black foreground slab at the bottom plus a black blob left of the blue parcel) blocking the near route. after.png raises/pulls the camera back so the bottom resolves into a coherent vehicle rear (dark back block with a thin blue bumper strip) rather than an occluder, the blob is gone, and the corridor between the red walls to the green box is fully readable with the parcel centered. No new geometry clipping is introduced (the chassis at the bottom edge is the intended third-person car body, not stray geometry). HUD/timeout styling unchanged and excluded; no mission-completion claim made.",
+    "verdict": "PASS"
+  },
+  "review_annotations": [
+    "The original scoped PASS is preserved. Its statement that the camera raises/pulls back is contradicted by identical measured positions; the actual change is viewing direction.",
+    "Foreground vehicle geometry and rough art still dominate the image. This limited framing verdict is not full vehicle visibility, whole-street, final-art or mission acceptance."
+  ],
+  "state": {
+    "status": "running",
+    "owner_pid": 11704,
+    "current_round": "q0092-5a49246f",
+    "actual_activity": "unity-build",
+    "accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "task_failures": 23,
+    "failure_streak": 1,
+    "hard_cap_utc": "2026-10-08T06:33:12Z",
+    "regressions_completed": [
+      {
+        "test": "motor",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "walk",
+        "passed": true,
+        "failure": null
+      },
+      {
+        "test": "world",
+        "passed": true,
+        "failure": null
+      }
+    ],
+    "remaining": "Complete the same-candidate regression suite and broader street critique; meaningful objectives and mission pacing follow the bounded street work."
+  },
+  "evidence_sha256": {
+    "gate.json": "94cf8a9472809109b8cdafa6815fdddfcd95a83f4eac234906e61e3fc3fc2528",
+    "return-camera-review.json": "7b80f2ea82bd1c47888ae52576b8d4eeee9c69bba79ba0bd8021fd3858089ac5",
+    "captures/manifest.json": "522e5e1f5e697139196342e6975b5b8d37d693d9debdb3e43ab912c804f2f8ab",
+    "captures/trace.jsonl": "33be412d4d7dd3f9ac7924082a7e55cc1d844946ce2e9c9dc7b58b90ae77cc4b",
+    "captures/frame-010.png": "d8078fbffc01f01c69cbe9873feed171738fc97c1fdeaf965736860b41609d68"
+  },
+  "camera_wall_contract_sha256": "d3d9aed7d918d499d44f7ee1f9cc795f932860fc4826fa7ce217d82ca1f9ffb4",
+  "target_contract_sha256": "acf26c44ae9cd0c93661fe3d3c405ec9424d0ff67779e4f4e1bb540b5d36bc8f",
+  "final_game_accepted": false
+}

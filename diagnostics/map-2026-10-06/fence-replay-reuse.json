@@ -1,0 +1,248 @@
+{
+  "observed_utc": "2026-10-06T10:28:36.783361+00:00",
+  "controller_revision": "e420423563e69ac7ae8b932d21f7d5f68141e354",
+  "cpu_tests": {
+    "controller": 238,
+    "m5": 238,
+    "passed": true
+  },
+  "launch": {
+    "utc": "2026-10-06T10:26:24.627085+00:00",
+    "sole_owner_pid": 99395,
+    "entrypoint": "resume_street_readability.py"
+  },
+  "preserved_replay_failure": {
+    "round": "q0086-1628aaff",
+    "response_sha256": "6f6be45ba2c73bdb451dfff89e31b322bddebb6dfecd096a13039c285883d9f8",
+    "finish_reason": "length",
+    "output_tokens": 8192,
+    "prompt_tokens": 13397,
+    "seconds": 205.83,
+    "tool_calls": 0
+  },
+  "round": "q0087-e949809e",
+  "candidate": "b651a9fbdd8f2944fa773640b1d31a11f3e61752",
+  "gate": {
+    "passed": true,
+    "failure": null,
+    "candidate_commit": "b651a9fbdd8f2944fa773640b1d31a11f3e61752",
+    "build_id": "9162e7e8d1696d3b702e342b6428870843be23e6c20c3d4659f94b028e04dcc0",
+    "scene_inventory": {
+      "declared_counts": {
+        "colliderRecorded": 47,
+        "colliderTotal": 47,
+        "rendererRecorded": 2770,
+        "rendererTotal": 2770
+      },
+      "failure": [],
+      "observed_at_seconds": 0.5,
+      "observed_counts": {
+        "collider": 47,
+        "renderer": 2770
+      },
+      "passed": true,
+      "scope": "Complete point-in-time scene component inventory; gameplay and rendered support criteria are unchanged"
+    },
+    "build_exit": 0,
+    "compile_errors": []
+  },
+  "diagnostic": {
+    "build_id": "9162e7e8d1696d3b702e342b6428870843be23e6c20c3d4659f94b028e04dcc0",
+    "candidate": "b651a9fbdd8f2944fa773640b1d31a11f3e61752",
+    "full_acceptance": false,
+    "reason": "Focused fence diagnostic before known camera FIX; full suite and critique follow the camera edit",
+    "support": {
+      "first_uncovered": [],
+      "passed": true,
+      "radius_m": 0.32,
+      "samples": 281,
+      "scope": "Flat rendered-surface bounds support the route; actual frame review is also required.",
+      "surfaces": [
+        {
+          "max": [
+            13.649999618530273,
+            0.05000346805900335,
+            14
+          ],
+          "min": [
+            2.6499996185302734,
+            -0.06999915186315775,
+            0
+          ],
+          "name": "Street/road_asphalt"
+        },
+        {
+          "max": [
+            6,
+            0.14000045508146286,
+            30
+          ],
+          "min": [
+            -1,
+            -0.000001214444637298584,
+            -2
+          ],
+          "name": "Pavement"
+        },
+        {
+          "max": [
+            13.649999618530273,
+            0.05000346805900335,
+            28
+          ],
+          "min": [
+            2.6499996185302734,
+            -0.06999915186315775,
+            14
+          ],
+          "name": "Street/road_asphalt"
+        },
+        {
+          "max": [
+            2.4000000953674316,
+            0.14000078290700912,
+            14
+          ],
+          "min": [
+            -0.7999999523162842,
+            2.2351741790771484e-8,
+            0
+          ],
+          "name": "Street/sidewalk"
+        },
+        {
+          "max": [
+            22,
+            0.1400010734796524,
+            20
+          ],
+          "min": [
+            6,
+            -0.0000027418136596679688,
+            8
+          ],
+          "name": "WorldCollision/AlleyPavement"
+        },
+        {
+          "max": [
+            60,
+            0.14000369608402252,
+            28
+          ],
+          "min": [
+            22,
+            -0.000005364418029785156,
+            8
+          ],
+          "name": "WorldCollision/StreetPavement"
+        },
+        {
+          "max": [
+            2.4000000953674316,
+            0.14000078290700912,
+            28
+          ],
+          "min": [
+            -0.7999999523162842,
+            2.2351741790771484e-8,
+            14
+          ],
+          "name": "Street/sidewalk"
+        }
+      ],
+      "uncovered_samples": 0
+    },
+    "traversal": {
+      "area_claim": "Only observed connected traversal; no gross map-area acceptance",
+      "failure": [],
+      "old_bounds_xz": [
+        -1,
+        6,
+        -2,
+        30
+      ],
+      "passed": true,
+      "prior_rendered_rectangles_xz": [
+        [
+          -1,
+          6,
+          -2,
+          30
+        ],
+        [
+          6,
+          22,
+          8,
+          20
+        ]
+      ],
+      "traversal": {
+        "foot": {
+          "maximum_distance_beyond_old_boundary_m": 6.533336639404297,
+          "outside_samples": 14,
+          "physical_return_seconds": 20.983333587646484
+        },
+        "vehicle": {
+          "maximum_distance_beyond_old_boundary_m": 9.928443908691406,
+          "outside_samples": 33,
+          "physical_return_seconds": 43.83333206176758
+        }
+      }
+    }
+  },
+  "props": {
+    "passed": true,
+    "components": 8
+  },
+  "door": {
+    "failure": [],
+    "panel_bounds_center": [
+      16,
+      1.1899998188018799,
+      19.850000381469727
+    ],
+    "passed": true,
+    "scope": "Native geometry only; actual rendered door readability needs fresh visual review",
+    "stone_bounds_center": [
+      16,
+      1.429999828338623,
+      19.920000076293945
+    ],
+    "wood_center_outward_offset_m": 0.06999969482421875,
+    "wood_front_ahead_of_stone_m": 0.009999655187129974
+  },
+  "evidence_sha256": {
+    "scoped-gate.json": "c510e168d0924956529133fa5a9498b5a91f0997dcadc1ce2d2c521a8a2c93bb",
+    "fence-diagnostic.json": "000a59757bed0e128d37dcf7cf895bab8309b1ece5d0a0aaaa04bb1a652a81b5",
+    "captures/scenario.json": "e3affe7d53ae4f4de5aefeb24f849826ac98430dce21ebe56e6442eda0c92081",
+    "captures/scene-transforms.json": "92599effc8bf5af374e7a943ea527f4bf0d92360916865c30f7779caff181e8f",
+    "captures/trace.jsonl": "009dd65dc64950ca80e71282562185c17c3f7b13c6801189a4d0cb3a2ac7e194"
+  },
+  "replay_reuse": {
+    "source_round": "q0085-cafbd6d3",
+    "physical_inputs_and_capture_times_unchanged": true,
+    "prior_visual_verdict": "FIX",
+    "fresh_current_source_native_required": true
+  },
+  "current": {
+    "round": "q0088-9a0ccd72",
+    "stage": "local-street-return-camera-repair",
+    "saved_source": "b651a9fbdd8f2944fa773640b1d31a11f3e61752",
+    "model_requests": {
+      "active_requests": 1,
+      "waiting_requests": 0,
+      "status": "ok"
+    },
+    "accepted_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "task_failures": 23,
+    "failure_streak": 1,
+    "cap_utc": "2026-10-08T06:33:12Z"
+  },
+  "pending": [
+    "One bounded local-Qwen final camera-clearance span edit",
+    "Existing near/middle/endpoint camera wall checks",
+    "Fresh full street qualification with all ten regressions and local visual criticism",
+    "Meaningful second objective and mission pacing after street readability"
+  ],
+  "final_game_accepted": false
+}

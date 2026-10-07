@@ -1,6 +1,8 @@
 # Asset pipeline
 
-Production workflow remains held for the explicit game start. A separately authorized disposable connector scene tests original mesh/material authoring and export; it is not production art or evidence of final rig/animation quality.
+The authorized Chicago queue is active. Reuse the existing original street, player, coupe and props through the rough connected route; revise these Blender sources during polish without adding asset volume. The earlier disposable connector test established tool readiness, not final rig/animation quality.
+
+The courier parcel, drop pad and beacon introduced in `c6cd013`/`fba3c60` use temporary Unity primitives for functional debugging. They are not accepted visual assets. Before visual acceptance, local Qwen must replace visible world placeholders with meshes authored through the existing Blender pipeline and preserve their editable source/export provenance. Camera HUD/UI geometry is a separate presentation component.
 
 ## Direction and provenance
 

@@ -18,3 +18,5 @@ server-access-token.txt
 model-server.log
 resident-supervisor.log
 diagnostics/**/recreated-*
+reference/visual-targets/chicago/*.png
+reference/visual-targets/chicago/manifest.json
