@@ -469,6 +469,7 @@ namespace ChicagoGame
             objective = null; failReason = null;
             deathHeld = false; objectiveBeforeDeath = null;
             seatAnchorTime = 0f;
+            ClearCrossing(); settledAt = 0f;      // R leaves no crossing evidence behind
             for (int i = 0; i < 3; i++)
             {
                 if (_actors[i]) Destroy(_actors[i]);
