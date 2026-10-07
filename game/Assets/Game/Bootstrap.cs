@@ -115,27 +115,52 @@ MissionDirectorHud.Install(body,cam);
             // target (autumn dusk, sky glow behind the skyline).
             var sun = new GameObject("Directional Light").AddComponent<Light>();
             sun.type = LightType.Directional;
-            sun.intensity = 1.35f;
-            sun.color = new Color(1.0f, 0.82f, 0.60f);
+            sun.intensity = 1.32f;
+            sun.color = new Color(1.0f, 0.83f, 0.62f);
             sun.shadows = LightShadows.Soft;
-            sun.shadowStrength = 0.75f;
-            // Low elevation (~18 deg) for long shadows; azimuth down the block.
-            sun.transform.rotation = Quaternion.Euler(18f, -34f, 0f);
+            sun.shadowStrength = 0.72f;
+            // Low elevation (~16 deg) for long shadows; azimuth down the block.
+            sun.transform.rotation = Quaternion.Euler(16f, -34f, 0f);
 
             // Warm hazy dusk fog fades the far skyline into the sky glow so the
             // tiled blocks dissolve like the reference photo instead of hard-
-            // ending at the tile boundary.
+            // ending at the tile boundary. Kept light so near contrast survives.
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.Exponential;
-            RenderSettings.fogColor = new Color(0.86f, 0.72f, 0.56f);
-            RenderSettings.fogDensity = 0.010f;
+            RenderSettings.fogColor = new Color(0.82f, 0.70f, 0.56f);
+            RenderSettings.fogDensity = 0.0075f;
 
-            // Warm hazy flat ambient so shadowed brick keeps colour and the scene
-            // never reads as flat grey. Unity 6 Built-in exposes only ambientLight
-            // (Flat) reliably; a warm dusk tone matches the sky glow behind the
-            // skyline and lifts the shadow interiors under the rowhouses.
+            // Cooler readable sky ambient so shadowed brick keeps colour and
+            // reads as dusk rather than flat grey, while staying under the warm
+            // key light. Unity 6 Built-in exposes ambientLight (Flat) reliably.
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.46f, 0.42f, 0.40f);
+            RenderSettings.ambientLight = new Color(0.40f, 0.43f, 0.50f);
+
+            // Warm the existing skybox only through guarded, present properties
+            // (no Shader.Find, so a stripped sky shader is never required).
+            var sky = RenderSettings.skybox;
+            if (sky != null)
+            {
+                if (sky.HasProperty("_Tint")) sky.SetColor("_Tint", new Color(1f, 0.92f, 0.82f, 1f));
+                if (sky.HasProperty("_Exposure")) sky.SetFloat("_Exposure", 1.05f);
+                if (sky.HasProperty("_SunSize")) sky.SetFloat("_SunSize", 0.02f);
+            }
+
+            // Blend the two isolated alley point pools into the dusk ambient
+            // instead of letting them carve bright circles: dim them only.
+            foreach (var nm in new string[] { "AlleyFill0", "AlleyFill1" })
+            {
+                var go = GameObject.Find(nm);
+                if (go == null) continue;
+                var al = go.GetComponent<Light>();
+                if (al == null) continue;
+                al.intensity = 0.35f;
+                al.range = 16f;
+                al.color = new Color(1f, 0.86f, 0.72f, 1f);
+                al.shadows = LightShadows.None;
+            }
+
+            StreetPresentation.Install();
         }
 
         static void Set(string name, object value)
