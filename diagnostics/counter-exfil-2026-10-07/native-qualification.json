@@ -806,6 +806,34 @@
   "visual_review": "pending",
   "full_incident_accepted": false,
   "final_game_accepted": false,
-  "scope": "Completed original healthy/physical success, contact, four new and six old death cases, and ten gameplay regressions; additional early-exit negative and local pixels remain separate.",
-  "early_exit_extra": "pending"
+  "scope": "Completed physical success, genuine escape/reset, contact release, unresolved foot exit/repeated F, four new and six old declared death boundaries, and ten unchanged gameplay regressions. Local actual-pixel review remains separate.",
+  "early_exit_extra": {
+    "build_id": "4fcd10faaf90a9f2e52069f7c6aae41cee8e06fc4eaff811f1205fd0821529bc",
+    "candidate": "de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7",
+    "early_crossing": {
+      "health": 28.0,
+      "player": [
+        2.9861035346984863,
+        0.1350000500679016,
+        16.103328704833984
+      ],
+      "time": 104.83333587646484,
+      "unresolved": [
+        "CounterExfilRunner2",
+        "CounterExfilRunner3"
+      ]
+    },
+    "evidence": "q0183-d047d4cb-early-exit",
+    "failure": [],
+    "final_game_accepted": false,
+    "passed": true,
+    "scope": "Ordinary unresolved foot exit, repeated F, no banked completion and R cleanup",
+    "gate_sha256": "c5518c7f48ae2c338b3e1ac578e37a4f0eea04530833e346a84df64081bd5076",
+    "evidence_sha256": {
+      "trace.jsonl": "ad2294b7a133a31b24b8f59f575382d8628f22cea2b2b261ffd71d2d4c690932",
+      "scenario.json": "343d35d63852e1e052d3fb3ebd7111870e7e2bcbdc67a9f0ea6b129498b5ea3c",
+      "counter-exfil-contacts.jsonl": "26ddf77a79535c142b2675e18b087cea3c38b6e7076dc8f107475ca6315c56d2"
+    },
+    "coverage_limit": "Proves no premature completion while still unresolved; this case does not resolve all runners later while remaining beyond the exit."
+  }
 }
