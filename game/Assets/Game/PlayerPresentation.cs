@@ -19,7 +19,7 @@ static string Strip(string s){ return string.IsNullOrEmpty(s)?"":s.Replace("_","
 
 void ConfigureLower(string n){ if(string.IsNullOrEmpty(n))return; var s=anim[n]; if(s==null)return; s.layer=0; s.weight=1f; s.enabled=false; }
 
-void ConfigureUpper(){ if(string.IsNullOrEmpty(aimClip))return; var s=anim[aimClip]; if(s==null)return; s.layer=1; s.weight=0f; s.enabled=false; s.speed=1f; s.ClearMixingTransforms(); Transform spine=FindDescendant(visual,"pivot_spine"); if(spine==null&&body!=null)spine=FindDescendant(body,"pivot_spine"); if(spine!=null)s.AddMixingTransform(spine,true); }
+void ConfigureUpper(){ if(string.IsNullOrEmpty(aimClip))return; var s=anim[aimClip]; if(s==null)return; s.layer=1; s.weight=0f; s.enabled=false; s.speed=1f;  Transform spine=FindDescendant(visual,"pivot_spine"); if(spine==null&&body!=null)spine=FindDescendant(body,"pivot_spine"); if(spine!=null)s.AddMixingTransform(spine,true); }
 
 void ReleaseUpper(){ aimWeight=0f; upperActive=false; if(anim==null||string.IsNullOrEmpty(aimClip))return; var s=anim[aimClip]; if(s!=null){ s.weight=0f; s.enabled=false; } }
 
@@ -39,5 +39,5 @@ void Update(){ if(anim==null)return; bool dead=DeathAuthority.IsDead; string mod
  if(!string.IsNullOrEmpty(wantBase)){ var wantState=anim[wantBase]; if(wantState!=null&&(wantBase!=baseClip||!anim.IsPlaying(wantBase)||(dt>0f&&(!wantState.enabled||wantState.weight<=0.001f)))){ FadeBase(wantBase); baseClip=wantBase; } }
  float cycle=moving?Mathf.Clamp(speed/3.2f,0.55f,1.45f):1f; if(baseClip==jogClip)cycle*=0.78f; if(cycle<0.45f)cycle=0.45f;
  if(!string.IsNullOrEmpty(baseClip)){ var bs=anim[baseClip]; if(bs!=null){ bs.layer=0; if(Mathf.Abs(bs.speed-cycle)>0.001f)bs.speed=cycle; } }
- if(string.IsNullOrEmpty(aimClip))return; aimWeight=Mathf.MoveTowards(aimWeight,aiming?1f:0f,dt*4.5f); var us=anim[aimClip]; if(us==null)return; us.layer=1; if(aiming||aimWeight>0f){ if(!upperActive||!us.enabled){ us.time=0f; us.speed=moving?cycle:1f; anim.Play(aimClip,0f,PlayMode.StopSameLayer); upperActive=true; } us.weight=aimWeight; float uSpeed=moving?cycle:1f; if(Mathf.Abs(us.speed-uSpeed)>0.001f)us.speed=uSpeed; } else { us.weight=0f; if(us.enabled)us.enabled=false; upperActive=false; } }
+ if(string.IsNullOrEmpty(aimClip))return; aimWeight=Mathf.MoveTowards(aimWeight,aiming?1f:0f,dt*4.5f); var us=anim[aimClip]; if(us==null)return; us.layer=1; if(aiming||aimWeight>0f){ if(!upperActive||!us.enabled){ us.time=0f; us.speed=moving?cycle:1f; anim.Play(aimClip,PlayMode.StopSameLayer); upperActive=true; } us.weight=aimWeight; float uSpeed=moving?cycle:1f; if(Mathf.Abs(us.speed-uSpeed)>0.001f)us.speed=uSpeed; } else { us.weight=0f; if(us.enabled)us.enabled=false; upperActive=false; } }
 }}
