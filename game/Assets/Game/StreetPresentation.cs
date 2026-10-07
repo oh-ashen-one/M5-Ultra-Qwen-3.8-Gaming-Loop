@@ -203,7 +203,9 @@ root.transform.GetChild(root.transform.childCount - 1).name = "CityBoundaryNorth
             o.transform.position = ctr - rot * Vector3.Scale(b.center, s);
             o.AddComponent<MeshFilter>().sharedMesh = m;
             var mr = o.AddComponent<MeshRenderer>();
-            var mat = new Material(facadeMat);
+            var src = (m == glassMesh && glassMat != null) ? glassMat :
+                      (m == trimMesh && trimMat != null) ? trimMat : facadeMat;
+            var mat = new Material(src);
             mat.color = col;
             mat.EnableKeyword("_EMISSION");
             mat.SetColor("_EmissionColor", Color.black);
