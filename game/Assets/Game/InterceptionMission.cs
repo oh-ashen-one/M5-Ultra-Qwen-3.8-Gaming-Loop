@@ -106,7 +106,10 @@ namespace ChicagoGame
 
         void FixedUpdate()
         {
-            if (!Active || !receiptDone || Complete || Failed) return;
+            // Physics honours the freeze: a downed courier drives no runner,
+            // so nothing can crawl across the line inside a fixed step that no
+            // Update ever adjudicated. The Restarts edge ends the hold.
+            if (!Active || !receiptDone || Complete || Failed || Down) return;
             for (int i = 0; i < 3; i++)
             {
                 if (resolved[i] || bodies[i] == null) continue;
@@ -128,13 +131,23 @@ namespace ChicagoGame
 
         void LateUpdate()
         {
-            if (!Active || !receiptDone || Complete || Failed) return;
+            // Late adjudication answers to the same authority: a runner that
+            // reaches the line while the courier is already down banks no
+            // escape, no failure and no visibility change. The genuine
+            // Stopped / Escaped counters from before the lethal frame are
+            // untouched, and the ordinary R reset is what clears the hold.
+            if (!Active || !receiptDone || Complete || Failed || Down) return;
             for (int i = 0; i < 3; i++)
             {
                 if (resolved[i] || agents[i] == null || !agents[i].alive) continue;
                 if (bodies[i] != null && bodies[i].position.x >= ESCAPE_X)
                 {
                     resolved[i] = true; Escaped++; Failed = true;
+                    // The chapter's own genuine failure, recorded at the exact
+                    // frame this runner really crossed, so a lethal hit that
+                    // lands afterwards reports this more specific reason
+                    // instead of erasing it.
+                    if (string.IsNullOrEmpty(FailReason)) FailReason = "RUNNER ESCAPED";
                     DisableVis(i); FreezeAll(); UpdateObj(); return;
                 }
             }
