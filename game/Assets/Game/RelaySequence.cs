@@ -87,7 +87,19 @@ namespace ChicagoGame
 
             if (AllComplete || Failed) return;
             Remaining = UnityEngine.Mathf.Max(0, 45 - (Time.time - armedAt));
-            if (Remaining <= 0) { Failed = true; return; }
+            if (Remaining <= 0)
+            {
+                // The chain's own genuine failure, recorded at the exact frame
+                // its window really expires, so a death that lands afterwards
+                // reports this more specific reason instead of erasing it. The
+                // first recorded reason wins and is never overwritten; a chain
+                // whose countdown is still running never reaches this line, and
+                // one that arms all three relays never reaches it at all.
+                if (string.IsNullOrEmpty(FailReason))
+                    FailReason = "RELAY WINDOW EXPIRED";
+                Failed = true;
+                return;
+            }
 
             if (LoopInput.Pressed(KeyCode.F) && LoopSignals.Mode == "foot")
             {
