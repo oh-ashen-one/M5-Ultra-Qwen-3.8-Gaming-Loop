@@ -13,7 +13,7 @@ public static class LoopCharacterObservation
     [Serializable] public class Visual {
         public string path;
         public bool active;
-        public int rendererCount, visibleRendererCount;
+        public int rendererCount, enabledRendererCount, visibleRendererCount;
         public float[] worldPosition, boundsCenter, boundsSize;
         public Joint[] joints;
         public Clip[] clips;
@@ -54,14 +54,17 @@ public static class LoopCharacterObservation
                     playing=animation.IsPlaying(state.name),enabled=state.enabled,time=state.time,
                     normalizedTime=state.normalizedTime,length=state.length,speed=state.speed,weight=state.weight});
         Bounds bounds=new Bounds(root.position,Vector3.zero);
-        bool any=false;int visible=0;
+        bool any=false;int enabled=0,visible=0;
         foreach(var r in renderers) {
             if(!r.enabled || !r.gameObject.activeInHierarchy) continue;
-            visible++;
+            enabled++;
+            // Renderer.isVisible is a culling observation, not proof that an
+            // opaque car or other foreground mesh leaves the actor readable.
+            if(r.isVisible) visible++;
             if(!any) {bounds=r.bounds;any=true;} else bounds.Encapsulate(r.bounds);
         }
         return new Visual {path=PathOf(root),active=root.gameObject.activeInHierarchy,
-            rendererCount=renderers.Length,visibleRendererCount=visible,worldPosition=V(root.position),
+            rendererCount=renderers.Length,enabledRendererCount=enabled,visibleRendererCount=visible,worldPosition=V(root.position),
             boundsCenter=V(bounds.center),boundsSize=V(bounds.size),joints=nodes.ToArray(),clips=clips.ToArray()};
     }
     public static State Capture() {
