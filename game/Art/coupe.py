@@ -69,6 +69,51 @@ def obj(nm, me, m, parent=root):
     ob.data.materials.clear()
     ob.data.materials.append(M[m])
     ob.parent = parent
+    if me is not None and me.polygons:
+        low = nm.lower()
+        allow = (m == 'paint' or m == 'paint2' or m == 'trim' or m == 'lamp' or m == 'tail')
+        bad = ('floor', 'roof', 'seat', 'pill', 'glass', 'steering', 'door', 'hinge', 'anchor', 'wheel_', 'rim', 'spoke', 'hub', 'dash', 'firewall', 'rear_bulk')
+        if allow and all(tok not in low for tok in bad):
+            bm = None
+            try:
+                bm = bmesh.new()
+                bm.from_mesh(me)
+                if bm.verts:
+                    xs = [v.co.x for v in bm.verts]
+                    ys = [v.co.y for v in bm.verts]
+                    zs = [v.co.z for v in bm.verts]
+                    sx = max(xs) - min(xs)
+                    sy = max(ys) - min(ys)
+                    sz = max(zs) - min(zs)
+                    min_dim = min(sx, sy, sz)
+                    if min_dim > 0.028:
+                        bw = min(0.016, max(0.006, min_dim * 0.16))
+                        lim = max(bw * 2.8, min_dim * 0.42)
+                        edges = [e for e in bm.edges if e.link_faces and e.calc_length() > lim]
+                        if edges:
+                            ok = False
+                            try:
+                                bmesh.ops.bevel(bm, geom=edges, offset=bw, offset_type='OFFSET', segments=1, profile=0.5, affect='EDGES', clamp_overlap=True)
+                                ok = True
+                            except Exception:
+                                try:
+                                    bmesh.ops.bevel(bm, geom=edges, offset=bw, offset_type='OFFSET', segments=1, profile=0.5, affect='EDGES')
+                                    ok = True
+                                except Exception:
+                                    try:
+                                        bmesh.ops.bevel(bm, geom=edges, offset=bw, segments=1, profile=0.5, affect='EDGES')
+                                        ok = True
+                                    except Exception:
+                                        ok = False
+                            if ok:
+                                bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+                                bm.normal_update()
+                                bm.to_mesh(me)
+            except Exception:
+                pass
+            finally:
+                if bm is not None:
+                    bm.free()
     return ob
 
 
@@ -317,8 +362,86 @@ def wheel(nm, loc, r=0.40, w=0.28):
         v.co.z = v.co.x
         v.co.x = -zc
     bm.to_mesh(me); bm.free()
-    ob = obj(nm, me, "tire"); ob.location = loc
-    box(nm + "_hub", (w + 0.04, 0.02, r * 1.30), loc, "rim", parent=root)
+    ob = obj(nm, me, 'tire'); ob.location = loc
+
+    rim_r = r * 0.70
+    rim_t = min(w * 0.16, r * 0.09)
+    rim_t = max(rim_t, 0.018)
+    if rim_r + rim_t > r * 0.94:
+        rim_r = max(0.16, r * 0.94 - rim_t)
+    hub_r = max(0.070, rim_r * 0.28)
+    spoke_w = min(w * 0.20, 0.085)
+    spoke_t = max(0.050, r * 0.16)
+    spoke_len = max(0.060, (rim_r - hub_r) * 1.25)
+    spoke_c = max(hub_r + 0.005, 0.5 * (hub_r + rim_r - rim_t))
+
+    mr = bpy.data.meshes.new(nm + '_rim')
+    bmr = bmesh.new()
+    nu, nv = 32, 8
+    ring = []
+    for i in range(nu):
+        u = 2.0 * math.pi * i / nu
+        cu = math.cos(u)
+        su = math.sin(u)
+        row = []
+        for j in range(nv):
+            v = 2.0 * math.pi * j / nv
+            rr = rim_r + rim_t * math.cos(v)
+            row.append(bmr.verts.new((rim_t * math.sin(v), rr * cu, rr * su)))
+        ring.append(row)
+    for i in range(nu):
+        for j in range(nv):
+            a = ring[i][j]
+            b = ring[(i + 1) % nu][j]
+            c = ring[(i + 1) % nu][(j + 1) % nv]
+            d = ring[i][(j + 1) % nv]
+            bmr.faces.new((a, b, c, d))
+    bmesh.ops.recalc_face_normals(bmr, faces=bmr.faces)
+    bmr.normal_update()
+    bmr.to_mesh(mr); bmr.free()
+    for p in mr.polygons:
+        p.use_smooth = True
+    rim = obj(nm + '_rim', mr, 'rim', parent=ob)
+    rim.location = (0, 0, 0)
+
+    ms = bpy.data.meshes.new(nm + '_spokes')
+    bms = bmesh.new()
+    cube_faces = ((0, 1, 3, 2), (4, 6, 7, 5), (0, 4, 5, 1), (2, 3, 7, 6), (0, 2, 6, 4), (1, 5, 7, 3))
+    for k in range(4):
+        ang = math.radians(45.0 + 90.0 * k)
+        cu = math.cos(ang)
+        su = math.sin(ang)
+        verts = []
+        for ix in (-1.0, 1.0):
+            for iy in (-1.0, 1.0):
+                for iz in (-1.0, 1.0):
+                    x = 0.5 * ix * spoke_w
+                    rad = 0.5 * iy * spoke_len
+                    tang = 0.5 * iz * spoke_t
+                    y = (spoke_c + rad) * cu - tang * su
+                    z = (spoke_c + rad) * su + tang * cu
+                    verts.append(bms.verts.new((x, y, z)))
+        for f in cube_faces:
+            bms.faces.new([verts[q] for q in f])
+    bmesh.ops.recalc_face_normals(bms, faces=bms.faces)
+    bms.normal_update()
+    bms.to_mesh(ms); bms.free()
+    sp = obj(nm + '_spokes', ms, 'rim', parent=ob)
+    sp.location = (0, 0, 0)
+
+    mh = bpy.data.meshes.new(nm + '_hub')
+    bmn = bmesh.new()
+    hub_depth = min(w * 0.30, 0.12)
+    bmesh.ops.create_cone(bmn, cap_ends=True, segments=16, radius1=hub_r, radius2=hub_r, depth=hub_depth)
+    for v in bmn.verts:
+        zc = v.co.z
+        v.co.z = v.co.x
+        v.co.x = -zc
+    bmesh.ops.recalc_face_normals(bmn, faces=bmn.faces)
+    bmn.normal_update()
+    bmn.to_mesh(mh); bmn.free()
+    h = obj(nm + '_hub', mh, 'rim', parent=ob)
+    h.location = (0, 0, 0)
     return ob
 
 
