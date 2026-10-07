@@ -63,7 +63,7 @@ class CharacterRuntime(CapacityAuthor):
         before_boot=files.path(BOOT).read_text()
         for name in (IMPORTER,RUNTIME):
             if files.path(name).exists():raise Halt('Never overwrite an existing presentation component')
-        self.c.update(working_context_tokens=65536,output_tokens=16384,model_timeout_seconds=600)
+        self.c.update(working_context_tokens=98304,output_tokens=getattr(self,'response_tokens',16384),model_timeout_seconds=600)
         phases=[('importer',IMPORTER,
             'Create one compact original C# asset-import component, at most120lines. Entire file starts '
             '#if UNITY_EDITOR and ends #endif, so no UnityEditor code enters the native player. It lives at '
@@ -117,7 +117,9 @@ class CharacterRuntime(CapacityAuthor):
             self.model.session('builder',session,'You are local Qwen, sole author of original game presentation source. Save one small complete C# increment.',
                 instruction+'\nUse supported xhigh, but finish this bounded component promptly. No tools, JSON, FILE markers or prose; one optional csharp code fence. '
                 'This source is not accepted until real Unity compilation and motion checks pass.',
-                [],{},turns=1,reasoning_effort='xhigh',tool_choice='none')
+                [],{},turns=1,reasoning_effort='xhigh',tool_choice='none',
+                retained_assistant=getattr(self,'retained_by_phase',{}).get(label),
+                retained_instruction='Continue the exact retained local component without restarting analysis. Return the COMPLETE bounded C# source as final content NOW. No new features, tools, prose or JSON. Preserve the already specified API and player-only scope; save the usable component promptly with unchanged xhigh.')
             response=self.store.root/'private/sessions'/session/'response-000.json'
             source=validate_component(complete_csharp(read_json(response)),importer=label=='importer')
             if any(sha(p.read_bytes())!=h for p,h in baseline.items()):raise Halt('Existing source changed during local presentation authoring')
