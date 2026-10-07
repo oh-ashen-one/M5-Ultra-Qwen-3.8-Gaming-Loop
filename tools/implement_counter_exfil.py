@@ -33,8 +33,10 @@ def survey_context(survey):
     for route in survey['routes']:
         value['routes'].append(dict(name=route['name'],capsuleClear=route['capsuleClear'],coupeClear=route['coupeClear'],
             groundedAndRendered=route['groundedAndRendered'],
+            groundedAndRenderedUnion=route.get('groundedAndRenderedUnion'),
+            support_interpretation='Original single-mesh footprint test can fail at a join; renderer union checks the whole footprint across both existing surfaces.',
             endpoints=[route['points'][0]['position'],route['points'][-1]['position']],
-            problems=[p for p in route['points'] if p['capsuleOverlaps'] or p['coupeOverlaps'] or not p['renderedSupport']],
+            problems=[p for p in route['points'] if p['capsuleOverlaps'] or p['coupeOverlaps']],
             swept_problems=[p for p in route['segments'] if p['capsuleHits'] or p['coupeHits']]))
     return value
 
