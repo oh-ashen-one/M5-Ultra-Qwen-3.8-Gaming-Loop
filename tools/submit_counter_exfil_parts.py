@@ -25,6 +25,9 @@ def validate_boundary(old):
 def between(source,start,end):
     a=source.index(start);b=source.index(end,a);return source[a:b]
 
+def writes_shared_signals(source):
+    return bool(re.search(r'LoopSignals\.(Health|Restarts|Shots|Hits|Mode|Mission)\s*(?:[+*/-]?=(?!=)|\+\+|--)',source))
+
 class SubmitCounterExfil(CapacityAuthor):
     def validate_recovery(self,old):
         validate_boundary(old)
@@ -89,7 +92,7 @@ class SubmitCounterExfil(CapacityAuthor):
                         raise ValueError('Preserve exact Setup, Courier/ParseCd and legacy signal accessor')
                     validate_source(path,updated.replace('using System.Reflection;','').replace(accessor,''))
                 else:validate_source(path,updated)
-                if re.search(r'LoopSignals\.(Health|Restarts|Shots|Hits|Mode|Mission)\s*(?:[+*/-]?=|\+\+|--)',updated):
+                if writes_shared_signals(updated):
                     raise ValueError('The chapter cannot write shared health, combat, mode or old mission signals')
                 if updated==original:raise ValueError('Save the actual requested change')
                 result=files.edit(action,path,digest,old=selected,new=content)
