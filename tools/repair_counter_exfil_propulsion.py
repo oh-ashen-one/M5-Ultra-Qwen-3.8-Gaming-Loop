@@ -59,7 +59,7 @@ class RepairCounterPropulsion(CapacityAuthor):
             self.store.set(source_checkpoint=candidate);self.store.report()
             return dict(ok=True,local_authored=True,candidate=candidate,changed_files=[RUNNER,MISSION],native_verified=False)
         self.c.update(working_context_tokens=self.source_context_tokens,output_tokens=self.source_output_tokens,model_timeout_seconds=600)
-        result=self.model.session('builder',ident+'-propulsion-source',
+        result=save(ident+'-recovered-final',self.recovered_fields) if hasattr(self,'recovered_fields') else self.model.session('builder',ident+'-propulsion-source',
             'You are local Qwen, sole gameplay author. Save a focused correction from the measured native failure.',
             'MEASURED: the real1200kg coupe was driven west and parked across the lane at(9.553,-.01,17.827), '
             'yaw1.393degrees. With the driver still seated, lead contact genuinely qualified around102s. '
