@@ -199,6 +199,13 @@ namespace ChicagoGame
 
         void HandleFire()
         {
+            // LETHAL GATE (one shared authority). ActRival above writes real
+            // Health before this runs, so a lethal rival hit in this very frame
+            // already answers dead: a spent courier fires no shot, lands no Hit
+            // and banks nothing until an ordinary R restores him. Living aim
+            // rays, first-collider rules and rival HP stay exactly as they were.
+            if (DeathAuthority.IsDead) return;
+
             if (!LoopInput.Pressed(KeyCode.Mouse0)) return;
             Set("Shots", ReadInt("Shots") + 1);
 
