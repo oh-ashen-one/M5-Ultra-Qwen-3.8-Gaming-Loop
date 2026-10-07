@@ -96,6 +96,22 @@ class RepairCharacterClips(CapacityAuthor):
 
 
 class PreviewRepairedCharacterClips(PreviewClothedCharacter):
+    def observe_export(self,ident,candidate,exported):
+        from pathlib import Path
+        observer=Path(__file__).resolve().parents[1]/'controller/blender/observe_character.py'
+        blend=self.project/'ArtSources/player/source.blend'
+        output=self.store.root/'evidence'/(ident+'-character-rig')
+        output.mkdir();report=output/'rig-observation.json'
+        code=self.machine.execute('blender',[self.c['blender'],'--background','--disable-autoexec',str(blend),
+            '--python-exit-code','7','--python',str(observer)],self.project,output,120,
+            {'LOOP_RIG_OBSERVATION':str(report)},protected=[blend,observer],writable_roots=[output])
+        receipt=dict(candidate=candidate,source_script_sha256=exported['script_sha256'],
+            blend_sha256=sha(blend.read_bytes()),observer_sha256=sha(observer.read_bytes()),
+            exit_code=code,report_sha256=sha(report.read_bytes()) if report.exists() else None,
+            passively_evaluated_frames=True,authored_animation=False)
+        atomic(output/'receipt.json',receipt)
+        if code or not report.exists():raise Halt('Passive rig observation failed; preserve fresh asset and diagnostic')
+
     def validate_recovery(self,old):
         expected=dict(status='paused',controller_pid=None,owned_process=None,last_playable_checkpoint=ACCEPTED,
             task_index=7,task_failures=24,failure_streak=1,diagnosis_used=True,
