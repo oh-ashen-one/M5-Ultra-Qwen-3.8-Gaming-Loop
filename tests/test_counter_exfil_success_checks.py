@@ -20,6 +20,9 @@ class PhysicalPinEvidenceTests(unittest.TestCase):
     def test_separation_restarts_continuous_contact_even_when_touching_again(self):
         rows=self.rows();events=[self.event(0,'enter'),self.event(.5,'exit'),self.event(.6,'enter')]
         self.assertEqual(physical_pins(rows,events,rows[-1]),[])
+    def test_average_stop_cannot_hide_moving_interval(self):
+        rows=[dict(time=t,restarts=0,counterExfil=dict(actors=[self.actor(x)])) for t,x in [(0,10),(.2,10),(.4,9.9),(1,9.9)]]
+        self.assertEqual(physical_pins(rows,[self.event(0,'enter')],rows[-1]),[])
     def test_dead_or_nonphysical_contact_cannot_supply_a_pin(self):
         rows=self.rows();events=[self.event(0,'enter')]
         for field,value in [('alive',False),('kinematic',True),('colliderEnabled',False)]:

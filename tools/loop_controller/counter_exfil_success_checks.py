@@ -28,9 +28,17 @@ def physical_pins(rows,events,row):
         start=older[-1];before=next((a for a in start.get('counterExfil',{}).get('actors',[]) if a['entityId']==ident),None)
         if before is None:continue
         duration=when-start['time'];speed=(before['position'][0]-actor['position'][0])/duration
-        if duration>.95 or speed>.3 or not any(c.get('vehicle') for c in actor.get('contacts',[])):continue
+        window=[r for r in rows if start['time']<=r['time']<=when and r.get('restarts')==row.get('restarts')]
+        samples=[(r['time'],next((a for a in r.get('counterExfil',{}).get('actors',[]) if a['entityId']==ident),None)) for r in window]
+        if any(a is None for _,a in samples):continue
+        rates=[(a['position'][0]-b['position'][0])/(t1-t0) for (t0,a),(t1,b) in zip(samples,samples[1:]) if t1>t0]
+        # An average can conceal a moving interval followed by a stop. Every
+        # observed interval must be obstructed throughout the qualification span.
+        if (duration>.95 or speed>.3 or not rates or max(rates)>.3001
+                or not any(c.get('vehicle') for c in actor.get('contacts',[]))):continue
         pins.append(dict(name=actor['name'],entity_id=ident,continuous_contact_seconds=when-since[ident],
-            measured_west_speed=speed,measured_motion_seconds=duration,position=actor['position']))
+            measured_west_speed=speed,maximum_interval_west_speed=max(rates),
+            measured_motion_seconds=duration,position=actor['position']))
     return pins
 
 def inspect_success(rows,contact_events,shot_events):
