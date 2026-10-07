@@ -69,13 +69,20 @@ class Machine:
         if (Path.home() / ".cache/gpu-slot/PAUSED").exists():
             raise Halt("Shared engine admission is paused")
         memory, swap = psutil.virtual_memory(), psutil.swap_memory()
-        if memory.available < 64 * 1024**3 or swap.used - self.baseline_swap > 512 * 1024**2:
+        trial=getattr(self,'capacity_budget',None)
+        if trial is not None:
+            observation=trial.observe()
+            self.store.set(capacity_trial_observation=observation)
+            if not observation['passed']:
+                raise Halt('Qwen capacity trial: '+','.join(observation['failure']))
+        elif memory.available < 64 * 1024**3 or swap.used - self.baseline_swap > 512 * 1024**2:
             raise Halt("Memory/swap bound exceeded")
         if self.c.get('authorized_shared_coexistence') and time.monotonic()>=getattr(self,'next_hardware_check',0):
             from engine_admission import hardware_pressure,resource_reasons
             metrics=hardware_pressure();self.next_hardware_check=time.monotonic()+2
             self.store.set(hardware_pressure=metrics)
-            reasons=resource_reasons(memory.available/1024**3,max(0,swap.used-self.baseline_swap)/1024**2,metrics['thermal_warning'])
+            reasons=(trial.observe(thermal_warning=metrics['thermal_warning'])['failure'] if trial is not None
+                else resource_reasons(memory.available/1024**3,max(0,swap.used-self.baseline_swap)/1024**2,metrics['thermal_warning']))
             if reasons:raise Halt('Resource guard: '+','.join(reasons))
         console = subprocess.check_output(["stat", "-f", "%Su", "/dev/console"], text=True).strip()
         if console in ("", "root", "loginwindow"):

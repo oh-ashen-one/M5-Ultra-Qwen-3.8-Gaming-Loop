@@ -74,6 +74,7 @@ def validate_edit(path, value, writable, follow):
 
 
 class FocusedDeath(PlayerDeathSource):
+    phases=PHASES
     def validate_recovery(self, old):
         validate_boundary(old)
         self.red = old['player_death_red_outcome']
@@ -96,7 +97,7 @@ class FocusedDeath(PlayerDeathSource):
         follow = files.path(BOOT).read_text().split(FOLLOW)[1]
         all_writable = {AUTHORITY} | {'Assets/Game/'+n for n in NAMES}
         results = []
-        for label, names, instruction in PHASES:
+        for label, names, instruction in self.phases:
             writable = {'Assets/Game/'+n for n in names}
             readable = writable | {AUTHORITY}
             original = {p: files.path(p).read_text() for p in writable}
@@ -163,10 +164,13 @@ class FocusedDeath(PlayerDeathSource):
             raise Halt('Focused integration changed protected source')
         changed = [p for p,h in baseline.items() if sha(files.path(p).read_bytes()) != h]
         result = dict(ok=True,local_authored=True,changed_files=changed,phases=results)
+        self.finish_author(ident,result)
+
+    def finish_author(self,ident,result):
         atomic(self.store.root/'evidence'/(ident+'-death-author.json'),result)
         self.store.set(stage='player-death-source-saved-awaiting-native',player_death_source_outcome=dict(
             candidate=self.store.get('source_checkpoint'),round=ident,local_authored=True,
-            native_verified=False,changed_files=changed,final_game_accepted=False))
+            native_verified=False,changed_files=result['changed_files'],final_game_accepted=False))
         self.store.report()
         raise Halt('Local death integration saved; unload the idle model for native green and healthy-route regressions')
 
