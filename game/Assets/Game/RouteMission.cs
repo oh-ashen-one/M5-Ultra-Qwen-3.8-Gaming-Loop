@@ -181,6 +181,20 @@ namespace ChicagoGame
 
             if (!chapter) return;
 
+            if (deathHeld)
+            {
+                // LateUpdate may not repaint the ordinary stage copy over a
+                // death the Update pass already froze: whichever stage the
+                // courier fell on - driving, walking, or the finished
+                // dead-drop - the board keeps the failure line and the downed
+                // colour until the Restarts edge hands the chapter back. The
+                // layout, card and tint work above still runs, so nothing about
+                // healthy presentation or a later reset changes.
+                hud.text = FailureText();
+                hud.color = DownColor;
+                return;
+            }
+
             if (RouteStage == 2)
             {
                 hud.text = "\u2605 EAST DEAD-DROP COMPLETE \u2605\nChapter complete";
