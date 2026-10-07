@@ -21,6 +21,7 @@ public class LoopPlayerDeathFixture : MonoBehaviour
         public string[] keys;
         public float[] player, vehicle;
         public State before;
+        public LoopCounterExfilObservation.State counterBefore;
     }
     static readonly BindingFlags Fields = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
     bool injected;
@@ -66,7 +67,7 @@ public class LoopPlayerDeathFixture : MonoBehaviour
             time=LoopInput.Elapsed, frame=Time.frameCount, healthBefore=LoopSignals.Health,
             mode=LoopSignals.Mode, mission=LoopSignals.Mission, restarts=LoopSignals.Restarts,
             shots=LoopSignals.Shots, keys=LoopInput.ActiveKeys, player=Position(LoopSignals.Player),
-            vehicle=Position(LoopSignals.Vehicle), before=Capture() };
+            vehicle=Position(LoopSignals.Vehicle), before=Capture(), counterBefore=LoopCounterExfilObservation.Capture() };
         LoopSignals.Health = 0;
         evidence.healthAfter = LoopSignals.Health;
         injected = true;

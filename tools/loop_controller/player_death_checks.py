@@ -13,8 +13,8 @@ CASES = {
 }
 
 
-def death_probe(original, case):
-    at, key, _ = CASES[case]
+def death_probe(original, case, contract=None):
+    at, key, _ = CASES[case] if contract is None else contract
     # Reach the stage via the identical ordinary-input prefix. Only the declared
     # health injection differs at the action edge; never set a chapter outcome.
     prefix = [dict(start=s['start'], end=min(s['end'], at + .15), keys=list(s['keys']))
@@ -39,8 +39,8 @@ def visible_death_notice(board):
     return bool(board.get('visible') and death and reset)
 
 
-def inspect_player_death(rows, injection, case):
-    at, key, expected = CASES[case]
+def inspect_player_death(rows, injection, case, contract=None):
+    at, key, expected = CASES[case] if contract is None else contract
     # Scenario.death_at and LoopInput.Elapsed are Unity float32, serialized into
     # JSON doubles. Compare the same representable boundary, not a stricter
     # Python decimal (e.g.59.6 becomes59.599998474121094 in the player).
