@@ -2,6 +2,8 @@
 
 **Status, 2026-10-07: one Counter-Exfil incident accepted.** Candidate `de0b3360fa7d7a1722aa981ee4dbf3a1c223ccd7` passes real shooting, maintained physical car obstruction and foot completion, genuine escape/contact/reset negatives, ten declared death boundaries and ten original gameplay regressions, followed by fresh local pixel review. [The evidence and review corrections](docs/COUNTER-EXFIL-2026-10-07.md) distinguish scoped acceptance from final game quality. [The rolling handoff](HANDOFF.md) records current work and remaining limits.
 
+The next authorized pass improves the original clothed character and runtime animation using current native/reference images. The accepted build remains the fallback; source saves and successful imports alone will not count as visual or animation acceptance.
+
 The native route includes walking, driving, courier delivery, a dead drop, relay activation, a moving interception and one Counter-Exfil incident. The new verified route completes at 114.433 seconds; its 124-second replay includes reset checks. The target remains a polished ten-minute experience with varied action. Rough original characters, environment, lighting and audio remain unfinished. The fixed work cap is **2026-10-08 06:33:12 UTC**; it is not automatically extended.
 
 This open-source project studies a local-first game-coding loop on a verified M5 Ultra with 256 GB memory and 80 GPU cores. The selected model is `mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp`, pinned and currently qualified on official oMLX 0.7.0 with xhigh reasoning. [Measured capacity work](docs/CAPACITY-TRIAL-2026-10-07.md) separates actual useful coding from load-only observations. Earlier 27B BF16 and oMLX 0.6.4 preparation records remain historical evidence.
