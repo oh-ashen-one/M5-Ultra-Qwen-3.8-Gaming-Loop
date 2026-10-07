@@ -204,13 +204,27 @@ namespace ChicagoGame
             int r = ReadInt("Restarts");
             if (r != lastRestarts)
             {
+                // Ordinary R is the only thing that re-opens this chapter: it
+                // clears the stage, the cache, the board text and this file's
+                // death report, on the very same Restarts edge that releases
+                // the DeathAuthority latch. A dead courier can always be reset.
                 lastRestarts = r;
                 RouteStage = 0; RouteComplete = false;
                 Objective = ""; reachedInVehicle = false;
+                FailReason = null;
+                deathHeld = false;
+                objectiveBeforeDeath = null;
                 if (Cache != null) Cache.gameObject.SetActive(false);
                 if (hud != null) hud.text = "";
                 return;
             }
+
+            // Death outranks every route input, including a same-frame F at the
+            // cache: while the courier is down the dead-drop cannot activate,
+            // cannot be re-entered and cannot be banked. Anything genuinely
+            // banked before that lethal frame stays exactly as it was.
+            if (DeathAuthority.IsDead) { HoldForDeath(); return; }
+            ReleaseDeath();
 
             if (RouteStage == 0)
             {
