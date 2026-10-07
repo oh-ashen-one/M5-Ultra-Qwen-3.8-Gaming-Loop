@@ -112,6 +112,20 @@ namespace ChicagoGame
         /// <summary>True only once this chapter owns the board; Armed keeps the
         /// old interception ending on screen and merely appends to it.</summary>
         public bool BoardPriority { get { return active; } }
+        /// <summary>One compact line the director may append to the OLD ending
+        /// while this chapter is only Armed, so the small board is never asked
+        /// to carry two full objectives at once.</summary>
+        public string HudLine
+        {
+            get
+            {
+                if (!armed || active) return null;
+                int d = CoupeDistance;
+                return d < 0
+                    ? "EXFIL ARMED | coupe unavailable"
+                    : "EXFIL ARMED coupe " + d + "m | E board, F launch";
+            }
+        }
         public string Objective { get { return objective; } }
         public string FailReason { get { return failReason; } }
         public CounterExfilRunner Lead { get { return _runners[0]; } }
