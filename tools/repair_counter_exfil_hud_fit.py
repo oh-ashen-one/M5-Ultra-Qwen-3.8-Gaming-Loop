@@ -45,12 +45,12 @@ class RepairCounterHudFit(CapacityAuthor):
             if not line.lstrip().startswith('public string HudLine'):raise ValueError('Replace only HudLine')
             for value in (hud,line):
                 if writes_shared_signals(value):raise ValueError('Do not write shared signals')
+            if not hud.endswith('\n'):hud+='\n'
+            if not line.endswith('\n'):line+='\n'
             tail=original[HUD][original[HUD].index('        string DeathBoard('):]
             if tail not in hud:raise ValueError('Preserve exact death handling and every remaining legacy helper')
             accessor=original[HUD][original[HUD].index('        static string ReadStr('):]
             validate_source(HUD,hud.replace('using System.Reflection;','').replace(accessor,''));validate_source(MISSION,line)
-            if not hud.endswith('\n'):hud+='\n'
-            if not line.endswith('\n'):line+='\n'
             files.edit(action+'-hud',HUD,sha(original[HUD].encode()),old=original[HUD],new=hud)
             files.edit(action+'-hint',MISSION,sha(original[MISSION].encode()),old=hint,new=line)
             if any(sha(files.path(p).read_bytes())!=h for p,h in protected.items()):raise Halt('Protected gameplay or assets changed')
@@ -59,7 +59,7 @@ class RepairCounterHudFit(CapacityAuthor):
             return dict(ok=True,local_authored=True,candidate=candidate,changed_files=[HUD,MISSION],native_verified=False)
         self.c.update(working_context_tokens=65536,output_tokens=16384,model_timeout_seconds=600)
         frame=self.store.root/'evidence'/(PRIOR+'-old-healthy')/'captures/frame-007.png'
-        result=self.model.session('builder',ident+'-hud-fit-source',
+        result=save(ident+'-recovered-final',self.recovered_fields) if hasattr(self,'recovered_fields') else self.model.session('builder',ident+'-hud-fit-source',
             'You are local Qwen, sole gameplay/presentation author. Save the precise measured Armed HUD fit correction now.',
             'Actual Unity build succeeds and the old route completes at75.433seconds,28HP. The attached77s image '
             'and projection show your fifth Armed hint below the card: text bottom.75927, card bottom.76754 '
