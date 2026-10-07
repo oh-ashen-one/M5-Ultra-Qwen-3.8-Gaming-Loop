@@ -118,10 +118,6 @@ def MAT(n, c, rough=0.8, metal=0.0):
                 except Exception:
                     for i, val in enumerate(px):
                         img.pixels[i] = val
-            try:
-                img.pack()
-            except Exception:
-                pass
         ti = nt.nodes.new('ShaderNodeTexImage')
         ti.image = img
         ti.location = (-520, 180)
