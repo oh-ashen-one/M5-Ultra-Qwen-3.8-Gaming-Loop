@@ -7,17 +7,23 @@ namespace ChicagoGame
     //
     // Dormant until the OLD interception closes cleanly (three stopped, no
     // escape). Then Armed: the courier is handed off on foot about 20 m from
-    // his own unmoved coupe with 28 health, the old rival still live. Nothing
-    // here heals, escorts, teleports or adds pressure during that retrieval -
-    // he walks back with the ordinary Walker and boards with the ordinary E.
+    // his own coupe, left exactly where the old mission drove it, with 28
+    // health and whatever is left of the old encounter standing where the
+    // player left it. The measured healthy handoff had the ORIGINAL rival
+    // already down, so nothing here assumes that rival is live, revives it or
+    // adds pressure during the retrieval - he walks back with the ordinary
+    // Walker and boards with the ordinary E.
     //
     // Explicit F while seated AND stationary starts Active and exactly three
     // runners: a 6 HP lead and two 3 HP stragglers, all built from the original
     // player prefab, all genuinely solid and hittable by the existing Combat
     // aim ray. They flee west along the one corridor the native survey
-    // qualified for a westbound capsule and for the real coupe box
-    // ("central-westbound": 47.605/17.460 -> 3.0/16.006, zero static overlaps,
-    // zero swept hits). The z10/z15/z19 candidates are NOT qualified - dumpsters,
+    // qualified for a westbound capsule AND for the real coupe box
+    // ("central-westbound", zero static overlaps, zero swept hits). That survey
+    // route is PIECEWISE, and the lane follows its surveyed waypoints in order:
+    // 47.605/17.4603 -> 22/16.5738 -> 6/16.0057 -> 3/16.0057. A straight
+    // endpoint-to-endpoint interpolation is NOT that path, so it is not used.
+    // The z10/z15/z19 candidates are NOT qualified - dumpsters,
     // piers, the alley north wall and a barrier sit on them - and the old
     // eastbound interception evidence proves nothing about westbound travel, so
     // no distinct lateral lanes are invented: all three share the single
