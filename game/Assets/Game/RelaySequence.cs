@@ -117,9 +117,51 @@ namespace ChicagoGame
             }
         }
 
+        // ---- death hold -----------------------------------------------------
+        // Freeze the chain without rewriting it. Active, AllComplete, Failed,
+        // ActivationCount, ExpectedIndex, WrongOrderCount and the countdown
+        // value all stay exactly as the courier left them - a downed runner
+        // banks no relay and unwinds none - and only the visible objective
+        // reports the failure. Only the ordinary Restarts edge in Update ever
+        // clears the hold, so R can always recover a dead courier.
+        void HoldForDeath()
+        {
+            if (!deathHeld)
+            {
+                deathHeld = true;
+                objectiveBeforeDeath = Objective;
+            }
+            Objective = DeathBoardText();
+        }
+
+        void ReleaseDeath()
+        {
+            if (!deathHeld) return;
+            deathHeld = false;
+            Objective = objectiveBeforeDeath;
+            objectiveBeforeDeath = null;
+        }
+
+        /// <summary>Board copy for a downed courier while the chain is held. A
+        /// more specific failure the chain genuinely recorded first - the relay
+        /// window expiring - is kept ahead of the death line, never replaced by
+        /// it; with no such record only the depleted health and the R reset are
+        /// named, because nothing else happened. Real line breaks, no escaped
+        /// literals.</summary>
+        string DeathBoardText()
+        {
+            if (!string.IsNullOrEmpty(FailReason))
+                return FailReason + "\nCOURIER DOWN - HEALTH DEPLETED\nPRESS R TO RESTART";
+            return "COURIER DOWN\nHEALTH DEPLETED\nPRESS R TO RESTART";
+        }
+
         void LateUpdate()
         {
-            PaintSites(Time.time < flashUntil ? flashIndex : -1);
+            // Presentation keeps honouring the freeze: an unearned highlight
+            // never keeps cycling over a downed courier (the WrongOrderCount
+            // strike that caused it stays banked), while UpdateHud simply
+            // renders the frozen state and the death copy held in Objective.
+            PaintSites(!deathHeld && Time.time < flashUntil ? flashIndex : -1);
             UpdateHud();
         }
     }
