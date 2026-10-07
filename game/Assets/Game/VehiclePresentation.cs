@@ -4,17 +4,18 @@ using UnityEngine;
 namespace ChicagoGame {
 public sealed class VehiclePresentation : MonoBehaviour {
     const float BOARD = 0.8f;
-    const float DOOR = 0.55f;
+    const float OPEN_DEG = 62f;
     const string RES = "Generated/player/scene";
 
     static string Strip(string s) { return string.IsNullOrEmpty(s) ? "" : s.Replace("_", "").Replace("-", "").Replace(" ", "").ToLowerInvariant(); }
     static Transform Find(Transform r, string w) { if (r == null) return null; if (Strip(r.name) == Strip(w)) return r; for (int i = 0; i < r.childCount; ++i) { var c = Find(r.GetChild(i), w); if (c != null) return c; } return null; }
 
-    Transform body, visRef, hipL, hipR, hipAnchor, fwdAnchor, proxy, vehicle;
+    Transform body, visRef, hipL, hipR, hipAnchor, fwdAnchor, proxy, vehicle, doorHinge, missingDoorRoot;
     Animation anim; Renderer[] guns; string boardClip, driveClip;
-    Quaternion visualBasis = Quaternion.identity; Vector3 visualScale = Vector3.one;
-    bool hasBasis, active, hasSpawn, frozen, clipsKnown;
-    int lastRestarts = int.MinValue; float board = 1f; Vector3 startLocal; Quaternion startRot = Quaternion.identity;
+    bool hasBasis, active, hasSpawn, frozen, clipsKnown, touchedDoor;
+    Quaternion visualBasis = Quaternion.identity, startRot = Quaternion.identity, initialYaw = Quaternion.identity, doorRestRot = Quaternion.identity;
+    Vector3 visualScale = Vector3.one, startLocal = Vector3.zero;
+    int lastRestarts = int.MinValue; float board = 1f; float doorSign = 1f; Vector3[] path = new Vector3[7];
 
     public static void Install(GameObject body) {
         if (body == null) return;
@@ -24,7 +25,8 @@ public sealed class VehiclePresentation : MonoBehaviour {
 
     void EnsureProxy() {
         if (!hasBasis && visRef != null && body != null) { visualBasis = Quaternion.Inverse(body.rotation) * visRef.rotation; visualScale = visRef.localScale; hasBasis = true; }
-        var root = LoopSignals.Vehicle; if (proxy != null) { if (root != null && proxy.parent != root) proxy.SetParent(root, false); return; }
+        var root = LoopSignals.Vehicle;
+        if (proxy != null) { if (root != null && proxy.parent != root) proxy.SetParent(root, false); if (anim != null) anim.cullingType = AnimationCullingType.AlwaysAnimate; return; }
         if (visRef == null || root == null) return;
         var clone = Instantiate(visRef.gameObject, root, false); clone.name = "DriverVisual"; proxy = clone.transform;
         anim = clone.GetComponent<Animation>(); if (anim == null) anim = clone.AddComponent<Animation>();
@@ -51,14 +53,62 @@ public sealed class VehiclePresentation : MonoBehaviour {
         foreach (AnimationState st in anim) { if (st == null) continue; string n = st.clip != null ? Strip(st.clip.name) : ""; bool driver = (boardClip != null && st.name == boardClip) || (driveClip != null && st.name == driveClip) || n == "board" || n == "drive";
             st.speed = 1f; st.enabled = false; st.weight = driver ? 1f : 0f; if (n == "board") st.wrapMode = WrapMode.Once; else if (n == "drive") st.wrapMode = WrapMode.Loop;
         }
-        ConfigureState(boardClip, WrapMode.Once); ConfigureState(driveClip, WrapMode.Loop); anim.Stop();
+        ConfigureState(boardClip, WrapMode.Once); ConfigureState(driveClip, WrapMode.Loop); anim.applyRootMotion = false; anim.animatePhysics = false; anim.Stop();
     }
+
     void ConfigureState(string clip, WrapMode wm) { if (anim == null || string.IsNullOrEmpty(clip)) return; var st = anim[clip]; if (st == null) return; st.layer = 0; st.weight = 1f; st.speed = 1f; st.wrapMode = wm; st.enabled = false; }
-    void SetGuns(bool on) { if (guns == null) return; for (int i = 0; i < guns.Length; ++i) guns[i].enabled = on; }
+    void SetGuns(bool on) { if (guns == null) return; for (int i = 0; i < guns.Length; ++i) if (guns[i] != null) guns[i].enabled = on; }
     static bool IsVehicle(string m) { return !string.IsNullOrEmpty(m) && m.IndexOf("Veh", System.StringComparison.OrdinalIgnoreCase) >= 0; }
     Vector3 HipsLocal() { return hipL && hipR && proxy ? (proxy.InverseTransformPoint(hipL.position) + proxy.InverseTransformPoint(hipR.position)) * 0.5f : Vector3.zero; }
     static Vector3 Flat(Vector3 v) { v.y = 0f; return v.sqrMagnitude > 1e-6f ? v.normalized : Vector3.forward; }
     void EnsureAnchors() { if (vehicle == null) return; if (hipAnchor == null) hipAnchor = Find(vehicle, "driver_hip_anchor"); if (fwdAnchor == null) fwdAnchor = Find(vehicle, "driver_forward_anchor"); }
+
+    bool EnsureDoor(Transform root) {
+        if (root == null) return false; if (doorHinge != null) return true; if (missingDoorRoot == root) return false;
+        var d = Find(root, "driver_door_hinge"); if (d == null) { missingDoorRoot = root; return false; }
+        doorHinge = d; doorRestRot = doorHinge.localRotation; return true;
+    }
+
+    Vector3 VehicleScale() { if (hipAnchor != null && fwdAnchor != null) { float d = Vector3.Distance(hipAnchor.position, fwdAnchor.position); if (d > 1e-4f) return Mathf.Max(0.05f, d / 0.6f); } return 1f; }
+    Vector3 Curve(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float u) { float u2 = u * u, u3 = u2 * u; return 0.5f * ((2f * b) + (-a + c) * u + (2f * a - 5f * b + 4f * c - d) * u2 + (-a + 3f * b - 3f * c + d) * u3); }
+
+    Vector3 BoardPoint(float t, Vector3 seated) {
+        Vector3 start = vehicle.TransformPoint(startLocal); if (t <= 0f) return start; if (t >= 1f) return seated;
+        Vector3 hip = hipAnchor.position, f = Flat(fwdAnchor.position - hip), r = Flat(Vector3.Cross(Vector3.up, f)), l = -r, s = Vector3.zero; float sc = VehicleScale();
+        float mf = Vector3.Dot(start - hip, f) / sc, ml = Vector3.Dot(start - hip, l) / sc;
+        path[0] = start;
+        path[1] = hip + f * (Mathf.Clamp(mf - 0.25f, -3.25f, -2.25f) * sc) + l * (Mathf.Clamp(ml, 1.22f, 1.62f) * sc);
+        path[2] = hip + f * (-1.02f * sc) + l * (1.15f * sc);
+        path[3] = hip + f * (-0.03f * sc) + l * (1.07f * sc);
+        path[4] = hip + f * (-0.15f * sc) + l * (0.93f * sc);
+        path[5] = Vector3.Lerp(hip + f * (-0.11f * sc) + l * (0.17f * sc), seated, 0.35f);
+        path[6] = seated;
+        int i = (int)(t * 6f); if (i < 0) i = 0; if (i > 5) i = 5; float u = t * 6f - i;
+        return Curve(path[Mathf.Max(0, i - 1)], path[i], path[Mathf.Min(6, i + 1)], path[Mathf.Min(6, i + 2)], u);
+    }
+
+    Vector3 ComputeDoorSign(Vector3 f, Vector3 r) {
+        if (doorHinge == null || hipAnchor == null) return 1f;
+        Vector3 out = Vector3.Dot(r, doorHinge.position - hipAnchor.position) <= 0f ? -r : r;
+        Vector3 off = doorHinge.childCount > 0 ? doorHinge.GetChild(0).position - doorHinge.position : doorHinge.forward * 0.1f;
+        if (off.sqrMagnitude < 1e-6f) off = doorHinge.right * 0.1f;
+        return Vector3.Dot(Vector3.Cross(Vector3.up, off), out) < 0f ? -1f : 1f;
+    }
+
+    void SetDoor(float deg) {
+        if (doorHinge == null) return;
+        Vector3 up = doorHinge.parent != null ? doorHinge.parent.InverseTransformDirection(Vector3.up) : Vector3.up;
+        if (up.sqrMagnitude < 1e-6f) up = Vector3.up; up.Normalize();
+        doorHinge.localRotation = Quaternion.AngleAxis(deg, up) * doorRestRot;
+    }
+
+    void ResetDoor() { if (doorHinge != null && touchedDoor) doorHinge.localRotation = doorRestRot; }
+    void UpdateDoor(float t) {
+        if (!active || !touchedDoor || doorHinge == null) return;
+        float open = Mathf.SmoothStep(0f, 1f, t / 0.28f);
+        if (t > 0.68f) open *= 1f - Mathf.SmoothStep(0f, 1f, (t - 0.68f) / 0.32f);
+        SetDoor(doorSign * OPEN_DEG * Mathf.Clamp01(open));
+    }
 
     void PlayDriver(string clip, bool begin) {
         if (anim == null || string.IsNullOrEmpty(clip)) return; var st = anim[clip]; if (st == null) return;
@@ -66,27 +116,31 @@ public sealed class VehiclePresentation : MonoBehaviour {
         if (!string.IsNullOrEmpty(boardClip) && boardClip != clip) { var b = anim[boardClip]; if (b != null) b.enabled = false; }
         if (!string.IsNullOrEmpty(driveClip) && driveClip != clip) { var d = anim[driveClip]; if (d != null) d.enabled = false; }
         st.enabled = true; st.weight = 1f; st.speed = 1f; anim.Play(clip, PlayMode.StopSameLayer);
-        if (begin) st.time = 0f; else if (board < 1f && st.clip != null && st.clip.length > 0.001f) { float d = clip == boardClip && st.clip.length > 0.1f ? st.clip.length : BOARD; st.time = Mathf.Min(board * d, st.clip.length - 0.001f); } else if (!begin) st.time = 0f;
+        if (begin) st.time = 0f; else if (board < 1f && st.clip != null && st.clip.length > 0.001f) { float d = clip == boardClip && st.clip.length > 0.1f ? st.clip.length : BOARD; st.time = Mathf.Min(board * d, st.clip.length - 0.001f); } else st.time = 0f;
         st.enabled = true; st.weight = 1f; anim.Sample();
     }
 
     void CaptureSpawn() {
-        if (proxy == null || anim == null || visRef == null || body == null || vehicle == null) return;
+        if (proxy == null || anim == null || visRef == null || body == null || vehicle == null || doorHinge == null) return;
         if (!hasBasis) { visualBasis = Quaternion.Inverse(body.rotation) * visRef.rotation; visualScale = visRef.localScale; hasBasis = true; }
         if (proxy.parent != vehicle) proxy.SetParent(vehicle, false); proxy.gameObject.SetActive(true); proxy.localScale = visualScale;
-        startRot = visRef.rotation; proxy.rotation = startRot; proxy.position = visRef.position; startLocal = vehicle.InverseTransformPoint(visRef.position);
-        SetGuns(false); anim.enabled = true; anim.playAutomatically = false; anim.Stop(); board = 0f; frozen = false;
-        clipsKnown = ResolveDriverClips() || clipsKnown; ConfigureDriver(); hasSpawn = true; active = true; PlayDriver(boardClip, true);
+        Vector3 f = Flat(fwdAnchor.position - hipAnchor.position), r = Flat(Vector3.Cross(Vector3.up, f));
+        startRot = visRef.rotation; initialYaw = Quaternion.LookRotation(f, Vector3.up); proxy.rotation = startRot; proxy.position = visRef.position; startLocal = vehicle.InverseTransformPoint(visRef.position);
+        doorSign = ComputeDoorSign(f, r); touchedDoor = true; SetDoor(0f); SetGuns(false);
+        anim.enabled = true; anim.playAutomatically = false; anim.Stop(); board = 0f; frozen = false; clipsKnown = ResolveDriverClips() || clipsKnown; ConfigureDriver(); hasSpawn = true; active = true; PlayDriver(boardClip, true);
     }
 
     void Freeze() { if (!active || proxy == null || anim == null || frozen) return; anim.Sample(); anim.enabled = false; frozen = true; }
+
     void Restore() {
         if (!frozen || proxy == null || anim == null) return; frozen = false; if (active && !proxy.gameObject.activeSelf) proxy.gameObject.SetActive(true);
         anim.enabled = true; anim.playAutomatically = false; if (active && hasSpawn) { string clip = board < 1f ? boardClip : driveClip; if (!string.IsNullOrEmpty(clip)) PlayDriver(clip, false); }
     }
+
     void Deactivate() {
         if (proxy != null) proxy.gameObject.SetActive(false); if (anim != null) { anim.Stop(); anim.enabled = true; }
-        active = false; hasSpawn = false; frozen = false; board = 1f; vehicle = null; hipAnchor = null; fwdAnchor = null;
+        if (touchedDoor) ResetDoor();
+        active = false; hasSpawn = false; frozen = false; board = 1f; vehicle = null; hipAnchor = null; fwdAnchor = null; doorHinge = null; touchedDoor = false;
     }
 
     void LateUpdate() {
@@ -97,18 +151,19 @@ public sealed class VehiclePresentation : MonoBehaviour {
         if (frozen) Restore();
         if (veh) {
             if (root == null) { if (active) Deactivate(); return; }
-            if (vehicle != null && vehicle != root) Deactivate(); vehicle = root;
-            if (proxy.parent != vehicle) proxy.SetParent(vehicle, false); EnsureAnchors();
-            if (!active) { if (clipsKnown && hipAnchor != null && fwdAnchor != null && hipL != null && hipR != null) CaptureSpawn(); }
-            else if (hipAnchor == null || fwdAnchor == null) { hipAnchor = fwdAnchor = null; EnsureAnchors(); if (hipAnchor == null || fwdAnchor == null) { Deactivate(); return; } }
+            if (vehicle != null && vehicle != root) { Deactivate(); return; }
+            vehicle = root; if (proxy.parent != vehicle) proxy.SetParent(vehicle, false); EnsureAnchors();
+            if (!active) { if (doorHinge == null) EnsureDoor(root); if (clipsKnown && hipAnchor != null && fwdAnchor != null && hipL != null && hipR != null && doorHinge != null) CaptureSpawn(); }
         } else if (active) Deactivate();
         if (!active || !hasSpawn) return;
-        if (vehicle == null || hipAnchor == null || fwdAnchor == null || hipL == null || hipR == null) { Deactivate(); return; }
-        Vector3 carF = Flat(fwdAnchor.position - hipAnchor.position); Vector3 carR = Flat(Vector3.Cross(Vector3.up, carF));
-        if (board < 1f) { var bs = anim[boardClip]; float d = bs != null && bs.clip != null && bs.clip.length > 0.1f ? bs.clip.length : BOARD; board += Time.deltaTime / d; if (board >= 1f) { board = 1f; PlayDriver(driveClip, false); } }
-        float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(board)); Quaternion target = Quaternion.LookRotation(carF, Vector3.up) * visualBasis;
-        Quaternion rot = board < 1f ? Quaternion.Slerp(startRot, target, t) : target; proxy.rotation = rot; anim.Sample();
-        Vector3 localH = HipsLocal(); proxy.rotation = rot; Vector3 seated = hipAnchor.position - proxy.TransformVector(localH);
-        if (board < 1f) { Vector3 enterStart = vehicle.TransformPoint(startLocal); proxy.position = Vector3.Lerp(enterStart, seated - carR * (DOOR * (1f - t)), t); } else proxy.position = seated;
+        if (vehicle == null || hipAnchor == null || fwdAnchor == null || hipL == null || hipR == null || doorHinge == null) { Deactivate(); return; }
+        Vector3 f = Flat(fwdAnchor.position - hipAnchor.position), r = Flat(Vector3.Cross(Vector3.up, f));
+        if (board < 1f) { float prev = board; board += Time.deltaTime / BOARD; bool ended = prev < 1f && board >= 1f; if (board >= 1f) board = 1f; if (ended) PlayDriver(driveClip, false); }
+        float t = board, smooth = Mathf.SmoothStep(0f, 1f, t);
+        Quaternion currentYaw = Quaternion.LookRotation(f, Vector3.up), startWorld = currentYaw * Quaternion.Inverse(initialYaw) * startRot, target = currentYaw * visualBasis;
+        Quaternion rot = board < 1f ? Quaternion.Slerp(startWorld, target, smooth) : target;
+        proxy.rotation = rot; anim.Sample(); Vector3 seated = hipAnchor.position - proxy.TransformVector(HipsLocal());
+        proxy.position = board < 1f ? BoardPoint(t, seated) : seated; UpdateDoor(t);
     }
-} }
+}
+}
