@@ -125,12 +125,28 @@ def pane(nm, dx, dz, loc, ang, m):
 # Coherent lower shell: keep cabin open, use corrected top-surface prisms for
 # hood/deck (XY plan, thin Z skin) plus closed front/rear volumes and outer
 # fenders that tie side/cowl/bulk to lamps/bumpers without crossing wheels.
-prism('body_side_L', [(-0.55, 0.92), (0.98, 0.92), (1.06, 0.42), (-1.12, 0.42)],
+# Left side rebuilt as fixed strips that border a front-hinged door leaf.
+# The old single body_side_L panel is gone; the door volume is supplied by the
+# driver_door leaf in the door_trim span, so the closed outer envelope stays
+# sealed (rear strip + front strip + sill strip + closed leaf) while the opening
+# never cuts across the seat/body and the A/B pillars frame it.
+prism('body_side_L_rear', [(-0.06, 0.92), (-1.12, 0.92), (-1.12, 0.42), (-0.06, 0.42)],
       0, -0.80, -0.72, 'paint')
+prism('body_side_L_front', [(1.06, 0.92), (0.98, 0.92), (0.94, 0.42), (1.06, 0.42)],
+      0, -0.80, -0.72, 'paint')
+# thin continuous sill strip under the door line so the belt/rocker reads whole
+prism('body_side_L_sill', [(0.94, 0.46), (-0.06, 0.46), (-0.06, 0.42), (0.94, 0.42)],
+      0, -0.80, -0.72, 'trim')
+
 prism('body_side_R', [(-0.55, 0.92), (0.98, 0.92), (1.06, 0.42), (-1.12, 0.42)],
       0, 0.72, 0.80, 'paint')
+# Cabin floor lowered into a real footwell: top 0.06 sits below the seated feet
+# (foot soles land ~0.06..0.16) and above the road plane, while the cushion
+# (top 0.34 in the interior span) carries the pelvis. Stays inside the wheel
+# inner faces (|X| 0.78 < 0.74 wheel) so wheel/physics bounds are untouched.
 prism('floor', [(-0.78, -1.10), (0.78, -1.10), (0.78, 1.02), (-0.78, 1.02)],
-      2, 0.40, 0.46, 'trim')
+      2, 0.00, 0.06, 'trim')
+
 prism('firewall', [(-0.74, 0.42), (0.74, 0.42), (0.74, 0.92), (-0.74, 0.92)],
       1, 0.92, 0.98, 'paint')
 prism('rear_bulk', [(-0.70, 0.42), (0.70, 0.42), (0.70, 0.92), (-0.70, 0.92)],
@@ -166,7 +182,32 @@ box("bumper_f", (1.50, 0.14, 0.24), (0, 2.30, 0.54), "trim")
 box("bumper_r", (1.50, 0.14, 0.26), (0, -2.30, 0.58), "trim")
 box("grille", (0.96, 0.06, 0.14), (0, 2.38, 0.68), "chrome")
 box("spoiler", (1.36, 0.26, 0.06), (0, -2.00, 0.98), "paint2")
-box("door_line_L", (0.04, 1.00, 0.40), (-0.81, 0.00, 0.66), "trim")
+# Real front-hinged driver's door: a stable EMPTY hinge at the actual A-pillar
+# base (front edge) plus one thin paint leaf mesh whose local +Y edge sits on
+# that hinge so runtime rotation swings a bounded original leaf outward.
+# No collider, no physics, no script, no detached trim, no duplicate side solid.
+hx, hy, hz = -0.76, 0.94, 0.42
+hinge = bpy.data.objects.new('driver_door_hinge', None)
+scene.collection.objects.link(hinge)
+hinge.empty_display_type = 'PLAIN_AXES'
+hinge.empty_display_size = 0.10
+hinge.parent = root
+hinge.location = (hx, hy, hz)
+me = bpy.data.meshes.new('driver_door')
+bm = bmesh.new()
+bmesh.ops.create_cube(bm, size=1.0)
+for v in bm.verts:
+    v.co.x *= 0.08         # thin leaf across the old X skin
+    v.co.y *= 1.00; v.co.y -= 0.50   # local edge 0 = hinge, -1 = rear (world Y -0.06)
+    v.co.z *= 0.50; v.co.z += 0.25   # world Z 0.42..0.92 window line
+bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+bm.to_mesh(me); bm.free()
+door = obj('driver_door', me, 'paint')
+door.parent = hinge
+door.location = (0.0, 0.0, 0.0)
+# restrained window-frame lip on the closed leaf (visual only, part of leaf)
+box('door_doorline', (0.04, 1.00, 0.04), (-0.06, -0.50, 0.49), 'trim', parent=hinge)
+
 box("door_line_R", (0.04, 1.00, 0.40), (0.81, 0.00, 0.66), "trim")
 
 for sx in (-0.56, 0.56):
@@ -176,9 +217,11 @@ for sx in (-0.56, 0.56):
     box("mirror_" + t, (0.20, 0.12, 0.11), (sx * 1.06, 0.70, 1.00), "trim")
 
 # --------------------------------------------------- hollow greenhouse shell
-# roof/rails set the top envelope; the cabin volume stays open.
+# roof/rails set the top envelope; the cabin volume stays open. Roof underside
+# raised a restrained 1 cm (1.30) so the leaning head clears the hardtop; the
+# hardtop stays connected (rails + pillars track the new top).
 prism('roof', [(-0.64, 0.58), (0.64, 0.58), (0.64, -0.78), (-0.64, -0.78)],
-      2, 1.29, 1.34, 'paint')
+      2, 1.30, 1.35, 'paint')
 prism('rail_L', [(-0.82, 1.27), (0.62, 1.27), (0.62, 1.34), (-0.82, 1.34)],
       0, -0.76, -0.66, 'paint')
 prism('rail_R', [(-0.82, 1.27), (0.62, 1.27), (0.62, 1.34), (-0.82, 1.34)],
@@ -187,19 +230,19 @@ prism('rail_R', [(-0.82, 1.27), (0.62, 1.27), (0.62, 1.34), (-0.82, 1.34)],
 # toward top, so these endpoints become real greenhouse corners.
 for x in (-0.70, 0.70):
     t = 'L' if x < 0 else 'R'
-    beam('apillar_' + t, x, 0.94, 0.92, 0.58, 1.31, 0.13, 'paint')
-    beam('bpillar_' + t, x, -0.06, 0.92, -0.06, 1.32, 0.11, 'paint')
-    beam('cpillar_' + t, x, -1.12, 0.98, -0.78, 1.29, 0.15, 'paint')
+    beam('apillar_' + t, x, 0.94, 0.92, 0.58, 1.34, 0.13, 'paint')
+    beam('bpillar_' + t, x, -0.06, 0.92, -0.06, 1.35, 0.11, 'paint')
+    beam('cpillar_' + t, x, -1.12, 0.98, -0.78, 1.32, 0.15, 'paint')
 
 # Thin panes.  The bottom endpoint is local -Z after the derived angle; the
 # pane length is the real slanted edge length. Rear window drops to deck.
 wb_y = 0.94; wb_z = 0.92
-wt_y = 0.58; wt_z = 1.29
+wt_y = 0.58; wt_z = 1.30
 pane('windshield', 1.36, math.hypot(wt_y - wb_y, wt_z - wb_z),
      (0, 0.5 * (wb_y + wt_y), 0.5 * (wb_z + wt_z)),
      math.atan2(-(wt_y - wb_y), wt_z - wb_z), 'glass')
 rb_y = -1.12; rb_z = 0.98
-rt_y = -0.78; rt_z = 1.29
+rt_y = -0.78; rt_z = 1.30
 pane('rear_window', 1.32, math.hypot(rt_y - rb_y, rt_z - rb_z),
      (0, 0.5 * (rb_y + rt_y), 0.5 * (rb_z + rt_z)),
      math.atan2(-(rt_y - rb_y), rt_z - rb_z), 'glass')
@@ -210,28 +253,18 @@ box("dash_top", (1.46, 0.40, 0.10), (0, 0.66, 1.10), "trim")
 
 
 def seat(nm, x):
-    me = bpy.data.meshes.new(nm)
-    bm = bmesh.new()
-    # cushion
-    cu = [(sx, sy, sz) for sx in (-0.28, 0.28) for sy in (-0.27, 0.30) for sz in (0.0, 0.12)]
-    # back (tapered top)
-    pts = [
-        (x - 0.28, -0.30, 0.10), (x + 0.28, -0.30, 0.10), (x + 0.28, -0.30, 0.62), (x - 0.28, -0.30, 0.62),
-        (x - 0.24, -0.42, 0.18), (x + 0.24, -0.42, 0.18), (x + 0.24, -0.42, 0.70), (x - 0.24, -0.42, 0.70),
-    ]
-    vs = [bm.verts.new((p[0] - (x if p in pts[4:8] else 0) + (x if False else 0), 0, 0)) for p in []]
-    # simpler: build via two boxes later; here just the cushion via cube
-    bm.free()
+    # cushion lowered so its top (0.34) meets the seated pelvis bottom (~0.35);
+    # back reclined to brace the forward-leaning torso; headrest under roof.
     me2 = bpy.data.meshes.new(nm + "_cush")
     bm2 = bmesh.new()
     bmesh.ops.create_cube(bm2, size=1.0)
     for v in bm2.verts:
         v.co.x *= 0.58; v.co.y *= 0.62; v.co.z *= 0.14
     bm2.to_mesh(me2); bm2.free()
-    o = obj(nm, me2, "fabric"); o.location = (x, -0.02, 0.50)
-    bk = box(nm + "_back", (0.58, 0.12, 0.62), (x, -0.34, 0.80), "fabric")
-    bk.rotation_euler.x = math.radians(-12)
-    hd = box(nm + "_head", (0.40, 0.12, 0.18), (x, -0.44, 1.16), "fabric")
+    o = obj(nm, me2, "fabric"); o.location = (x, -0.02, 0.27)
+    bk = box(nm + "_back", (0.58, 0.12, 0.55), (x, -0.34, 0.62), "fabric")
+    bk.rotation_euler.x = math.radians(-14)
+    hd = box(nm + "_head", (0.40, 0.12, 0.16), (x, -0.46, 0.92), "fabric")
     return o
 
 
