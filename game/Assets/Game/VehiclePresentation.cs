@@ -53,7 +53,7 @@ public sealed class VehiclePresentation : MonoBehaviour {
         foreach (AnimationState st in anim) { if (st == null) continue; string n = st.clip != null ? Strip(st.clip.name) : ""; bool driver = (boardClip != null && st.name == boardClip) || (driveClip != null && st.name == driveClip) || n == "board" || n == "drive";
             st.speed = 1f; st.enabled = false; st.weight = driver ? 1f : 0f; if (n == "board") st.wrapMode = WrapMode.Once; else if (n == "drive") st.wrapMode = WrapMode.Loop;
         }
-        ConfigureState(boardClip, WrapMode.Once); ConfigureState(driveClip, WrapMode.Loop); anim.applyRootMotion = false; anim.animatePhysics = false; anim.Stop();
+        ConfigureState(boardClip, WrapMode.Once); ConfigureState(driveClip, WrapMode.Loop); anim.animatePhysics = false; anim.Stop();
     }
 
     void ConfigureState(string clip, WrapMode wm) { if (anim == null || string.IsNullOrEmpty(clip)) return; var st = anim[clip]; if (st == null) return; st.layer = 0; st.weight = 1f; st.speed = 1f; st.wrapMode = wm; st.enabled = false; }
