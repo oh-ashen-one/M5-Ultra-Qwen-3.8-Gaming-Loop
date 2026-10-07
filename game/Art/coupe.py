@@ -106,13 +106,14 @@ def prism(nm, poly, axis, a0, a1, m):
 
 
 def beam(nm, x, yb, zb, yt, zt, w, m):
-    """Thin connected pillar along a line in the Y-Z plane, width w in X."""
+    # Thin connected pillar along a line in the Y-Z plane, width w in X.
     dy = yt - yb; dz = zt - zb
     L = math.hypot(dy, dz)
     ob = box(nm, (w, 0.10, L), (x, 0.5 * (yb + yt), 0.5 * (zb + zt)), m)
-    ob.rotation_euler.x = math.atan2(dy, dz)
+    # The long local +Z axis must point from bottom to top. A Blender X
+    # rotation sends +Z to (-sin, cos), so use -dy here.
+    ob.rotation_euler.x = math.atan2(-dy, dz)
     return ob
-
 
 def pane(nm, dx, dz, loc, ang, m):
     ob = box(nm, (dx, 0.07, dz), loc, m)
@@ -121,26 +122,42 @@ def pane(nm, dx, dz, loc, ang, m):
 
 
 # ---------------------------------------------------------------- lower body
-# single taper along Y via two prism panels (front clip + rear clip) so the
-# nose/tail read sculpted, not stacked.  Cabin region is left OPEN (no shelf).
-prism("body_side_L", [(-0.55, 0.92), (0.98, 0.92), (1.06, 0.42), (-1.12, 0.42)],
-      0, -0.80, -0.72, "paint")
-prism("body_side_R", [(-0.55, 0.92), (0.98, 0.92), (1.06, 0.42), (-1.12, 0.42)],
-      0, 0.72, 0.80, "paint")
-prism("floor", [(-0.78, -1.10), (0.78, -1.10), (0.78, 1.02), (-0.78, 1.02)],
-      2, 0.40, 0.46, "trim")
-prism("firewall", [(-0.74, 0.42), (0.74, 0.42), (0.74, 0.92), (-0.74, 0.92)],
-      1, 0.92, 0.98, "paint")
-prism("rear_bulk", [(-0.70, 0.42), (0.70, 0.42), (0.70, 0.92), (-0.70, 0.92)],
-      1, -1.06, -1.00, "paint")
-prism("nose", [(-0.70, 0.46), (0.70, 0.46), (0.70, 0.84), (-0.70, 0.84)],
-      1, 1.98, 2.20, "paint2")
-prism("tail", [(-0.68, 0.46), (0.68, 0.46), (0.68, 0.84), (-0.68, 0.84)],
-      1, -2.20, -2.04, "paint2")
-prism("hood", [(-0.74, 0.90), (0.74, 0.90), (0.70, 0.96), (-0.70, 0.96)],
-      2, 0.92, 0.98, "paint")
-prism("deck", [(-0.72, -1.06), (0.72, -1.06), (0.68, -0.96), (-0.68, -0.96)],
-      2, 0.90, 0.96, "paint")
+# Coherent lower shell: keep cabin open, use corrected top-surface prisms for
+# hood/deck (XY plan, thin Z skin) plus closed front/rear volumes and outer
+# fenders that tie side/cowl/bulk to lamps/bumpers without crossing wheels.
+prism('body_side_L', [(-0.55, 0.92), (0.98, 0.92), (1.06, 0.42), (-1.12, 0.42)],
+      0, -0.80, -0.72, 'paint')
+prism('body_side_R', [(-0.55, 0.92), (0.98, 0.92), (1.06, 0.42), (-1.12, 0.42)],
+      0, 0.72, 0.80, 'paint')
+prism('floor', [(-0.78, -1.10), (0.78, -1.10), (0.78, 1.02), (-0.78, 1.02)],
+      2, 0.40, 0.46, 'trim')
+prism('firewall', [(-0.74, 0.42), (0.74, 0.42), (0.74, 0.92), (-0.74, 0.92)],
+      1, 0.92, 0.98, 'paint')
+prism('rear_bulk', [(-0.70, 0.42), (0.70, 0.42), (0.70, 0.92), (-0.70, 0.92)],
+      1, -1.06, -1.00, 'paint')
+# hood: true hood deck as a thin horizontal XY/Z slab from cowl to nose.
+prism('hood', [(-0.74, 0.96), (0.74, 0.96), (0.66, 1.96), (-0.66, 1.96)],
+      2, 0.92, 0.98, 'paint')
+# deck: true rear deck from rear bulkhead over trunk to tail.
+prism('deck', [(-0.72, -1.06), (0.72, -1.06), (0.64, -2.02), (-0.64, -2.02)],
+      2, 0.92, 0.98, 'paint')
+# front and rear centre shells close hood/deck to the front/rear ends; width
+# stays inside wheel inner faces so wheels remain separate.
+prism('front_lower', [(-0.68, 0.44), (0.68, 0.44), (0.62, 0.96), (-0.62, 0.96)],
+      1, 1.84, 2.24, 'paint')
+prism('rear_lower', [(-0.66, 0.44), (0.66, 0.44), (0.60, 0.94), (-0.60, 0.94)],
+      1, -2.20, -1.06, 'paint')
+# front/rear end caps fill the last few centimetres to bumper/lamp mounts.
+box('nose', (1.42, 0.16, 0.50), (0, 2.17, 0.70), 'paint2')
+box('tail', (1.38, 0.16, 0.48), (0, -2.16, 0.70), 'paint2')
+# outer fender quarters ride above the wheel crown and tie body sides to the
+# end caps. They do not intersect actual wheel solids (wheel crown z=0.80).
+for sx in (-0.90, 0.90):
+    t = 'L' if sx < 0 else 'R'
+    box('front_fender_' + t, (0.20, 0.88, 0.20), (sx, 1.16, 0.92), 'paint')
+    box('rear_fender_' + t, (0.20, 0.88, 0.20), (sx, -1.16, 0.92), 'paint')
+    box('front_shoulder_' + t, (0.22, 0.36, 0.16), (sx * 0.95, 0.78, 0.90), 'paint')
+    box('rear_shoulder_' + t, (0.22, 0.40, 0.16), (sx * 0.95, -0.90, 0.90), 'paint')
 
 box("rocker_L", (0.12, 2.20, 0.14), (-0.78, 0.00, 0.44), "trim")
 box("rocker_R", (0.12, 2.20, 0.14), (0.78, 0.00, 0.44), "trim")
@@ -158,21 +175,33 @@ for sx in (-0.56, 0.56):
     box("mirror_" + t, (0.20, 0.12, 0.11), (sx * 1.06, 0.70, 1.00), "trim")
 
 # --------------------------------------------------- hollow greenhouse shell
-prism("roof", [(-0.64, 0.60), (0.64, 0.60), (0.64, -0.78), (-0.64, -0.78)],
-      2, 1.29, 1.34, "paint")
-prism("rail_L", [(-0.78, 1.27), (0.60, 1.27), (0.60, 1.34), (-0.78, 1.34)],
-      0, -0.76, -0.66, "paint")
-prism("rail_R", [(-0.78, 1.27), (0.60, 1.27), (0.60, 1.34), (-0.78, 1.34)],
-      0, 0.66, 0.76, "paint")
-# connected pillars (LHD car; -X = left)
+# roof/rails set the top envelope; the cabin volume stays open.
+prism('roof', [(-0.64, 0.58), (0.64, 0.58), (0.64, -0.78), (-0.64, -0.78)],
+      2, 1.29, 1.34, 'paint')
+prism('rail_L', [(-0.82, 1.27), (0.62, 1.27), (0.62, 1.34), (-0.82, 1.34)],
+      0, -0.76, -0.66, 'paint')
+prism('rail_R', [(-0.82, 1.27), (0.62, 1.27), (0.62, 1.34), (-0.82, 1.34)],
+      0, 0.66, 0.76, 'paint')
+# Connected pillars.  The corrected beam helper rotates local +Z from bottom
+# toward top, so these endpoints become real greenhouse corners.
 for x in (-0.70, 0.70):
-    beam("apillar_" + ("L" if x < 0 else "R"), x, 0.90, 0.92, 0.60, 1.32, 0.13, "paint")
-    beam("bpillar_" + ("L" if x < 0 else "R"), x, -0.06, 0.92, -0.06, 1.32, 0.12, "paint")
-    beam("cpillar_" + ("L" if x < 0 else "R"), x, -0.55, 0.92, -0.78, 1.32, 0.16, "paint")
+    t = 'L' if x < 0 else 'R'
+    beam('apillar_' + t, x, 0.94, 0.92, 0.58, 1.31, 0.13, 'paint')
+    beam('bpillar_' + t, x, -0.06, 0.92, -0.06, 1.32, 0.11, 'paint')
+    beam('cpillar_' + t, x, -0.60, 0.94, -0.78, 1.31, 0.15, 'paint')
 
-# thin glass panes (one tinted coupe_glass; side openings rolled down = clear)
-pane("windshield", 1.40, 0.60, (0, 0.80, 1.14), math.radians(-26), "glass")
-pane("rear_window", 1.36, 0.50, (0, -0.72, 1.16), math.radians(30), "glass")
+# Thin panes.  The bottom endpoint is local -Z after the derived angle; the
+# pane length is the real slanted edge length. Rear window drops to deck.
+wb_y = 0.94; wb_z = 0.92
+wt_y = 0.58; wt_z = 1.29
+pane('windshield', 1.36, math.hypot(wt_y - wb_y, wt_z - wb_z),
+     (0, 0.5 * (wb_y + wt_y), 0.5 * (wb_z + wt_z)),
+     math.atan2(-(wt_y - wb_y), wt_z - wb_z), 'glass')
+rb_y = -1.12; rb_z = 0.98
+rt_y = -0.78; rt_z = 1.29
+pane('rear_window', 1.32, math.hypot(rt_y - rb_y, rt_z - rb_z),
+     (0, 0.5 * (rb_y + rt_y), 0.5 * (rb_z + rt_z)),
+     math.atan2(-(rt_y - rb_y), rt_z - rb_z), 'glass')
 
 # ------------------------------------------------------------------ interior
 box("dash", (1.46, 0.30, 0.30), (0, 0.74, 0.96), "trim")
@@ -208,20 +237,41 @@ def seat(nm, x):
 seat("seat_L", -0.42)
 seat("seat_R", 0.42)
 
-# steering wheel (vertical plane, faces the left-hand driver)
-sw = box("steering_wheel", (0.40, 0.06, 0.40), (-0.42, 0.50, 0.86), "trim")
-me = sw.data
-bm = bmesh.new(); bm.from_mesh(me)
-c = Vector((0, 0, 0)); c = sum((v.co for v in bm.verts), c) / len(bm.verts)
-# hollow the rim: drop verts inside inner square of the X-Z face
-for v in list(bm.verts):
-    if abs(v.co.x) < 0.14 and abs(v.co.z) < 0.14:
-        v.co.x *= 0.0; v.co.z *= 0.0
+# steering wheel: genuine hollow torus rim plus restrained hub/spokes.
+bm = bmesh.new()
+nu, nv = 28, 8
+major, minor = 0.170, 0.030
+ring = []
+for i in range(nu):
+    u = 2.0 * math.pi * i / nu
+    row = []
+    for j in range(nv):
+        v = 2.0 * math.pi * j / nv
+        rr = major + minor * math.cos(v)
+        row.append(bm.verts.new((rr * math.cos(u), minor * math.sin(v), rr * math.sin(u))))
+    ring.append(row)
+for i in range(nu):
+    for j in range(nv):
+        a = ring[i][j]
+        b = ring[(i + 1) % nu][j]
+        c = ring[(i + 1) % nu][(j + 1) % nv]
+        d = ring[i][(j + 1) % nv]
+        bm.faces.new((a, b, c, d))
 bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+bm.normal_update()
+me = bpy.data.meshes.new('steering_wheel')
 bm.to_mesh(me); bm.free()
+sw = obj('steering_wheel', me, 'trim')
+sw.location = (-0.42, 0.50, 0.86)
 sw.rotation_euler.x = math.radians(18)
-box("steering_col", (0.10, 0.30, 0.10), (-0.42, 0.66, 0.92), "trim")
-
+box('steering_hub', (0.070, 0.048, 0.070), (0, 0, 0), 'trim', parent=sw)
+for deg in (90, 210, 330):
+    a = math.radians(deg)
+    rad = 0.095
+    sp = box('steering_spoke_' + str(deg), (0.125, 0.030, 0.038),
+             (rad * math.cos(a), 0, rad * math.sin(a)), 'trim', parent=sw)
+    sp.rotation_euler.y = -a
+box('steering_col', (0.10, 0.30, 0.10), (-0.42, 0.66, 0.92), 'trim')
 
 # --------------------------------------------------------------------- wheels
 def wheel(nm, loc, r=0.40, w=0.28):
@@ -255,7 +305,8 @@ def anchor(nm, loc, dtype='SINGLE_ARROW'):
 
 
 anchor("driver_hip_anchor", (-0.42, -0.05, 0.46), 'PLAIN_AXES')
-anchor("driver_forward_anchor", (-0.42, 0.55, 0.78), 'SINGLE_ARROW')
+anchor('driver_forward_anchor', (-0.42, 0.55, 0.46), 'SINGLE_ARROW')
+
 anchor("steering_wheel_anchor", (-0.42, 0.50, 0.86), 'SPHERE')
 
 print("coupe objects:", len(scene.objects), "mats:", len(M))
