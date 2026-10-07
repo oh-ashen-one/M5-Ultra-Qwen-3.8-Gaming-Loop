@@ -14,6 +14,8 @@ namespace ChicagoGame
         static Quaternion basis;
         static Mesh facadeMesh, roofMesh, chimneyMesh;
         static Material facadeMat;
+        static Mesh glassMesh, trimMesh;
+        static Material glassMat, trimMat;
 
         public static void Install()
         {
@@ -117,6 +119,18 @@ root.transform.GetChild(root.transform.childCount - 1).name = "CityBoundaryNorth
                 }
                 else if (roofMesh == null && n == "roof_slab") roofMesh = mf.sharedMesh;
                 else if (chimneyMesh == null && n == "chimney") chimneyMesh = mf.sharedMesh;
+                else if (glassMesh == null && (n == "ef_win0_0_glass" || n == "win0_0_glass"))
+                {
+                    glassMesh = mf.sharedMesh;
+                    var rg = mf.GetComponent<MeshRenderer>();
+                    if (rg != null && rg.sharedMaterial != null) glassMat = rg.sharedMaterial;
+                }
+                else if (trimMesh == null && (n == "ef_win0_0_sill" || n.StartsWith("sill") || n.StartsWith("cornice")))
+                {
+                    trimMesh = mf.sharedMesh;
+                    var rt = mf.GetComponent<MeshRenderer>();
+                    if (rt != null && rt.sharedMaterial != null) trimMat = rt.sharedMaterial;
+                }
             }
         }
 
