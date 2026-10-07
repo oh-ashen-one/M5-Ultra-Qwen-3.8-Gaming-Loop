@@ -35,11 +35,16 @@ class PreviewClothedCharacter(CameraNativeOnly):
             raise Halt('Saved local authoring source changed')
         exported = self.engines.blender(self.project, ART, ident+'-character-export')
         atomic(self.store.root/'evidence'/(ident+'-character-export.json'), exported)
-        candidate = self.checkpoint_source('Local Qwen: export original clothed articulated character')
+        candidate = self.checkpoint_source('Local Qwen: export original clothed articulated character'
+            if exported.get('ok') else 'Preserve failed original character export without success claim')
         self.store.set(source_checkpoint=candidate)
         self.store.report()
         if not exported.get('ok'):
             raise Halt('Local clothed character export failed; preserve source and actual Blender diagnostic')
+        if (not exported.get('fresh_staged_export')
+                or exported.get('script_sha256') != self.source_result['script_sha256']
+                or any(sha((self.project/f['path']).read_bytes()) != f['sha256'] for f in exported['files'])):
+            raise Halt('Successful native preview requires fresh source-matched export bytes')
         scenario = dict(id='clothed-character-early-native-preview', coverage='foundation', duration=18,
             steps=[dict(start=3,end=4,keys=['W']),dict(start=6,end=6.4,keys=['D']),
                    dict(start=9,end=9.5,keys=['S']),dict(start=12,end=12.1,keys=['R'])],

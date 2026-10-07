@@ -19,8 +19,9 @@ class ExportProvenanceTests(unittest.TestCase):
         class Machine:
             def execute(self,label,args,cwd,output,timeout,env,**kwargs):
                 (output/'blender.log').write_text('failed' if exit_code else 'exported')
+                # Model a failure after the .blend save but before FBX export.
+                (Path(env['LOOP_BLEND_SOURCE'])/'source.blend').write_bytes(b'new blend')
                 if not exit_code:
-                    (Path(env['LOOP_BLEND_SOURCE'])/'source.blend').write_bytes(b'new blend')
                     (Path(env['LOOP_ASSET_OUTPUT'])/'scene.fbx').write_bytes(b'new fbx')
                 return exit_code
         store=Store(root/'run');engine=Engines(dict(blender='unused'),store,Machine(),root)
@@ -31,6 +32,7 @@ class ExportProvenanceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             result,original,evidence=self.run_export(Path(d),7)
             self.assertFalse(result['ok'])
+            self.assertFalse(result['fresh_staged_export'])
             self.assertEqual((original/'provenance.json').read_text(),'{"original":true}\n')
             self.assertEqual((original/'source.blend').read_bytes(),b'old blend')
             self.assertTrue((evidence/'export-failure.json').exists())
@@ -39,6 +41,7 @@ class ExportProvenanceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             result,original,evidence=self.run_export(Path(d),0)
             self.assertTrue(result['ok'])
+            self.assertTrue(result['fresh_staged_export'])
             manifest=json.loads((original/'provenance.json').read_text())
             self.assertTrue(manifest['export_succeeded'])
             self.assertEqual(len(manifest['files']),2)

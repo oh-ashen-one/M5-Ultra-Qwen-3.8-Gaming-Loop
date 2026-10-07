@@ -241,9 +241,13 @@ class Engines:
         output = self.store.root / "artifacts" / action_id
         output.mkdir(parents=True)
         shutil.copyfile(path, output / "original-authoring-source.py")
-        generated = Path(project) / "Assets/Resources/Generated" / path.stem
+        target_generated = Path(project) / "Assets/Resources/Generated" / path.stem
+        target_originals = Path(project) / "ArtSources" / path.stem
+        # Every export starts empty. A failed or partial invocation must never
+        # mix new .blend data with a stale FBX or relabel retained game assets.
+        generated = output / "staged-generated"
         generated.mkdir(parents=True, exist_ok=True)
-        originals = Path(project) / "ArtSources" / path.stem
+        originals = output / "staged-originals"
         originals.mkdir(parents=True, exist_ok=True)
         wrapper = output / "author.py"
         wrapper.write_text("import os,runpy,bpy\nfrom pathlib import Path\n"
@@ -266,7 +270,9 @@ class Engines:
                     raise Halt("Generated asset violates the bounded local artifact contract")
                 if p.suffix.lower() not in (".fbx", ".blend", ".png", ".jpg", ".jpeg", ".tga", ".json"):
                     raise Halt("Blender output must contain art data only, never executable Unity code")
-                result["files"].append({"path": str(p.relative_to(project)), "sha256": sha(p.read_bytes()), "bytes": p.stat().st_size})
+                destination = (target_generated / p.relative_to(generated) if p.is_relative_to(generated)
+                               else target_originals / p.relative_to(originals))
+                result["files"].append({"path": str(destination.relative_to(project)), "sha256": sha(p.read_bytes()), "bytes": p.stat().st_size})
         if not (originals/"source.blend").exists() or not (generated/"scene.fbx").exists():
             result["ok"] = False
         if result["ok"]:
@@ -275,6 +281,12 @@ class Engines:
                    "export_succeeded": True, "files": result["files"]})
             shutil.copytree(generated, output / "original-assets")
             shutil.copytree(originals, output / "editable-originals")
+            shutil.copytree(generated, target_generated, dirs_exist_ok=True)
+            shutil.copytree(originals, target_originals, dirs_exist_ok=True)
+            if any(sha((Path(project) / f['path']).read_bytes()) != f['sha256'] for f in result['files']):
+                raise Halt('Promoted asset bytes differ from the fresh successful export')
+        result['fresh_staged_export'] = result['ok']
+        result['script_sha256'] = sha(path.read_bytes())
         result["diagnostic"] = (output / "blender.log").read_text(errors="replace")[-6000:]
         if not result["ok"]:
             atomic(output / "export-failure.json", {"attempted_script": script,
