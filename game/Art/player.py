@@ -226,7 +226,7 @@ def keyrot(n, f, r):
     sx = -1.0 if n in UP_Z else 1.0
     ob.rotation_euler = (FX*sx*float(r[0]), float(r[1]), float(r[2]))
     for i in range(3):
-        ob.keyframe_insert("rotation_euler", index=i, frame=int(f), replace=True)
+        ob.keyframe_insert("rotation_euler", index=i, frame=int(f))
 
 def pin(a, b=None):
     if b is None: b = a
@@ -312,10 +312,8 @@ for a, b in [(62,70),(102,110),(136,144),(176,184),(210,218)]:
 # Single action per pivot, no NLA tracks, and stable timeline endpoints.
 for n in ALLP:
     ob = keys[n]
-    if ob.animation_data is None or ob.action is None:
+    if ob.animation_data is None or ob.animation_data.action is None:
         raise RuntimeError("missing action: " + n)
-    for fc in ob.action.fcurves:
-        fc.extrapolation = 'CONSTANT'
 
 SC.scene.frame_set(1)
 print("courier v2 repaired:", len(bpy.data.objects), "objects; clips",
