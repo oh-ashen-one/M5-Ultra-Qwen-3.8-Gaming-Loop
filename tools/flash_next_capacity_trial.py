@@ -19,7 +19,7 @@ import psutil
 from unity_smoke import renderer_process
 from warmup_resident import gpu_admission, session_token, write_state
 from engine_admission import snapshot, complete_process_scan, hardware_pressure, resource_reasons
-from qwen_capacity import Budget, POLICY
+from qwen_capacity import Budget, POLICY, COMPRESSION_RULE
 
 
 def main():
@@ -115,7 +115,7 @@ def main():
                      "mtp_enabled": False, "qwen4_ple_ssd_offload": False},
         'limits': {'memory_policy':POLICY,'omlx_memory_guard':'safe',
                    'maximum_qwen_footprint_GiB':192,'maximum_swap_growth_MiB':512,
-                   'maximum_compressor_growth_GiB':2,'workload_priority':'simultaneous-no-default-priority'},
+                   'compression_rule':COMPRESSION_RULE,'workload_priority':'simultaneous-no-default-priority'},
         "preserved_external_renderer_pids": existing,
         "authorized_shared_coexistence":args.authorized_shared_coexistence,
     }
@@ -235,7 +235,13 @@ def main():
                     stopped.wait(2)
                 else:
                     raise RuntimeError("Model load interrupted or timed out")
-                capacity_phase='decode'
+                capacity_phase='settle'
+                state['status']='loaded-settling'
+                settle_until=time.monotonic()+COMPRESSION_RULE['settling_seconds']
+                while time.monotonic()<settle_until:
+                    if stopped.is_set():raise RuntimeError('Model settling interrupted')
+                    guard();write_state(root/'resident-state.json',state);stopped.wait(2)
+                capacity_phase='steady'
                 state["status"] = "loaded-idle"
                 while not stopped.is_set():
                     if args.coordination_dir:

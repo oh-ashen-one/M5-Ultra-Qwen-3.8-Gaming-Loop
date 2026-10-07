@@ -9,7 +9,7 @@ import time
 
 GIB = 1024**3
 MIB = 1024**2
-POLICY = 'simultaneous-capacity-trial-v1'
+POLICY = 'simultaneous-capacity-trial-v2'
 # Explicit trial allowances, not claimed physical crash thresholds:
 # observed model footprint139.7GiB ->140; measured Unreal peak30.7 ->40.
 # OS16 follows the official safe tier's maximum reserve; request8 and
@@ -21,11 +21,13 @@ UNREAL_ENVELOPE_GIB = 40
 OS_RESERVE_GIB = 16
 REQUEST_TRANSIENT_GIB = 8
 EXIT_ALLOWANCE_GIB = 8
+COMPRESSION_RULE = dict(window_seconds=30, persistence_seconds=10,
+    growth_or_churn_gib=2, swapout_mib=64, low_budget_margin_gib=8, settling_seconds=30)
 
 
-def assess(sample, baseline, phase='decode'):
-    if phase not in ('load','decode'):
-        raise ValueError('Explicit load or decode phase required')
+def assess(sample, baseline, phase='steady'):
+    if phase not in ('load','settle','steady'):
+        raise ValueError('Explicit load, settle or steady phase required')
     unreal = sample['unreal_bytes']/GIB
     growth = max(0, UNREAL_ENVELOPE_GIB-unreal)
     reserve = OS_RESERVE_GIB+REQUEST_TRANSIENT_GIB+EXIT_ALLOWANCE_GIB+growth
@@ -38,7 +40,6 @@ def assess(sample, baseline, phase='decode'):
     if unreal > UNREAL_ENVELOPE_GIB:failures.append('unreal-exceeds-measured-trial-envelope')
     if sample['qwen_bytes']/GIB > 192:failures.append('qwen-footprint-above192GiB')
     if swap_growth > 512:failures.append('swap-growth-above512MiB')
-    if compression_growth > 2:failures.append('compressor-growth-above2GiB')
     if sample['pressure_level'] != 1:failures.append('OS-memory-pressure')
     if sample.get('thermal_warning') is not None and sample['thermal_warning'] > 0:
         failures.append('OS-thermal-warning')
@@ -51,6 +52,47 @@ def assess(sample, baseline, phase='decode'):
         required_available_gib=required,swap_growth_mib=swap_growth,
         compression_growth_gib=compression_growth,pressure_level=sample['pressure_level'],
         failure=failures,passed=not failures,model_quality_changed=False)
+
+
+class CompressionWatch:
+    """Distinguish retained compressed pages from sustained reclamation stress.
+
+    The thresholds are explicit trial heuristics, not Apple limits. Immediate
+    headroom, pressure, swap and thermal checks remain independent in assess().
+    Keep the rolling window across phase transitions; only the descriptive
+    phase baseline changes, so settling cannot hide ongoing churn.
+    """
+    def __init__(self):
+        self.history=[];self.phase=None;self.phase_baseline=0;self.stressed_since=None
+
+    def observe(self, sample, budget, at):
+        rule=COMPRESSION_RULE
+        if self.phase != budget['phase']:
+            self.phase=budget['phase'];self.phase_baseline=sample['compressed_bytes']
+        if self.history and at-self.history[-1][0]>10:
+            self.history=[];self.stressed_since=None
+        self.history.append((at,dict(sample)))
+        while len(self.history)>1 and self.history[1][0] <= at-rule['window_seconds']:
+            self.history.pop(0)
+        then,first=self.history[0];elapsed=at-then
+        def delta(key,unit):return max(0,sample.get(key,0)-first.get(key,0))/unit
+        growth=delta('compressed_bytes',GIB)
+        compressed=delta('compression_bytes',GIB);decompressed=delta('decompression_bytes',GIB)
+        swapout=delta('swapout_bytes',MIB)
+        margin=budget['available_gib']-budget['required_available_gib']
+        reclaiming=growth>rule['growth_or_churn_gib'] or min(compressed,decompressed)>rule['growth_or_churn_gib']
+        corroborated=swapout>rule['swapout_mib'] or margin<rule['low_budget_margin_gib']
+        stressed=elapsed>=rule['window_seconds'] and reclaiming and corroborated
+        if stressed:
+            if self.stressed_since is None:self.stressed_since=at
+        else:self.stressed_since=None
+        duration=0 if self.stressed_since is None else at-self.stressed_since
+        return dict(phase=self.phase,phase_growth_gib=max(0,sample['compressed_bytes']-self.phase_baseline)/GIB,
+            window_seconds=round(elapsed,3),window_growth_gib=growth,
+            window_compressed_gib=compressed,window_decompressed_gib=decompressed,
+            window_swapout_mib=swapout,budget_margin_gib=margin,
+            corroborated_reclamation_stress=stressed,persistence_seconds=round(duration,3),
+            failure=stressed and duration>=rule['persistence_seconds'])
 
 
 class Usage(ctypes.Structure):
@@ -66,6 +108,7 @@ class Budget:
         self.lib.proc_pid_rusage.argtypes=[ctypes.c_int,ctypes.c_int,ctypes.c_void_p]
         self.pid=None;self.pid_start=None;self.journal=Path(journal) if journal else None
         self.baseline=self.sample()
+        self.compression=CompressionWatch()
         self.latest=None;self.last_at=0
 
     def set_owned_pid(self,pid):
@@ -82,6 +125,8 @@ class Budget:
         vm=subprocess.check_output(['/usr/bin/vm_stat'],text=True,timeout=5)
         page=int(re.search(r'page size of (\d+) bytes',vm).group(1))
         compressed=int(re.search(r'Pages occupied by compressor:\s+(\d+)',vm).group(1))*page
+        counters={key:int(re.search(label+r':\s+(\d+)',vm).group(1))*page for key,label in
+            (('compression_bytes','Compressions'),('decompression_bytes','Decompressions'),('swapout_bytes','Swapouts'))}
         pressure=int(subprocess.check_output(['/usr/sbin/sysctl','-n',
             'kern.memorystatus_vm_pressure_level'],text=True,timeout=5).strip())
         unreal=[]
@@ -105,9 +150,9 @@ class Budget:
             available_bytes=self.psutil.virtual_memory().available,
             swap_bytes=self.psutil.swap_memory().used,compressed_bytes=compressed,
             pressure_level=pressure,unreal_bytes=sum(x['footprint_bytes'] for x in unreal),
-            unreal=unreal,qwen_bytes=qwen)
+            unreal=unreal,qwen_bytes=qwen,**counters)
 
-    def observe(self,phase='decode',thermal_warning=None):
+    def observe(self,phase='steady',thermal_warning=None):
         # Fast source/tool guard calls may share a <=1second observation.
         if self.latest and time.monotonic()-self.last_at<1 and self.latest['phase']==phase:
             result=dict(self.latest)
@@ -116,6 +161,10 @@ class Budget:
             return result
         sample=self.sample();sample['thermal_warning']=thermal_warning
         result=assess(sample,self.baseline,phase);result.update(utc=sample['utc'],sample=sample)
+        compression=self.compression.observe(sample,result,time.monotonic())
+        result['compression_watch']=compression
+        if compression['failure']:
+            result['failure'].append('sustained-compression-with-reclamation-stress');result['passed']=False
         self.latest=result;self.last_at=time.monotonic()
         if self.journal:
             self.journal.parent.mkdir(parents=True,exist_ok=True)

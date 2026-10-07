@@ -14,13 +14,16 @@ def validate_boundary(old):
     expected=dict(status='paused',controller_pid=None,owned_process=None,current_round='q0144-dd98c86e',
         source_checkpoint=SOURCE,last_playable_checkpoint=ACCEPTED,task_index=7,task_failures=24,
         failure_streak=1,diagnosis_used=True,overall_deadline_epoch=HARD_CAP_EPOCH,
-        blocker='URLError: <urlopen error [Errno 61] Connection refused>')
-    if any(old.get(k)!=v for k,v in expected.items()) or old.get('capacity_trial_author_attempted'):
+        shared_workload_priority='simultaneous-no-default-priority',capacity_trial_runtime_attempted=True,
+        blocker='Halt: Capacity trial stopped during model load: compressor-growth-above2GiB; no author request started')
+    if (any(old.get(k)!=v for k,v in expected.items()) or old.get('capacity_trial_author_attempted')
+            or old.get('capacity_trial_phase_recovery_attempted')):
         raise Halt('Require the preserved partial authority and unattempted bounded trial boundary')
-    # Archive the stopped ledger's historical policy before recording the
-    # explicit simultaneous-operation instruction in recovery_settings.
-    if old.get('shared_workload_priority') not in ('external-unreal-first','simultaneous-no-default-priority'):
-        raise Halt('Require a recognized prior policy before the explicit simultaneous migration')
+    fault=old.get('capacity_trial_load_outcome',{})
+    if (fault.get('policy')!='simultaneous-capacity-trial-v1' or fault.get('candidate')!=SOURCE
+            or fault.get('cause')!='compressor-growth-above2GiB' or fault.get('author_requests')!=0
+            or not fault.get('all_owned_processes_stopped')):
+        raise Halt('Require the diagnosed load-only compression stop before the changed phase-aware attempt')
     if old.get('player_death_focused_fault',{}).get('cause')!='resident available-memory guard':
         raise Halt('Require the measured resource diagnosis before capacity qualification')
 
@@ -54,11 +57,13 @@ class CapacityAuthor(FocusedDeath):
         self.resume_capacity=self.priority_resume=self.transport_recovery=self.admission_recovery=False
 
     def recovery_settings(self):
-        return dict(capacity_trial_author_attempted=True,recovery_route='one-useful-capacity-qualification',
+        return dict(capacity_trial_author_attempted=True,capacity_trial_phase_recovery_attempted=True,
+            recovery_route='phase-aware-useful-capacity-qualification',
             shared_workload_priority='simultaneous-no-default-priority',
             shared_priority_user_utc='2026-10-07T00:51:00Z',
             recovery_change='Same local model/xhigh quality; official safe dynamic accounting plus measured '
-            'Unreal growth/OS/request reserves, original swap/thermal/graphics/speed guards and rollback.')
+            'Unreal growth/OS/request reserves, phase-aware sustained compression checks, original '
+            'swap/thermal/graphics/speed guards and rollback; preserve the original load-only fault.')
 
     def finish_author(self,ident,result):
         result.update(complete_death_integration=False,capacity_policy=POLICY,native_verified=False)

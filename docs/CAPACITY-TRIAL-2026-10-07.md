@@ -1,5 +1,19 @@
 # Bounded Qwen capacity qualification
 
+## Phase-aware correction
+
+The owner authorized correcting the diagnosed rule and continuing useful simultaneous work on October6 at10:29p.m.EDT. Policy`simultaneous-capacity-trial-v2` retains the exact model, quality settings, headroom budgets,512MiB swap-growth bound,192GiB Qwen footprint bound,40GiB Unreal envelope, thermal/access/graphics checks, shared locks and speed watchdog. Official oMLX`safe` accounting remains active. No OS setting changes.
+
+The measured11.072GiB loading spike is retained as telemetry instead of being treated as a failure by itself. The resident distinguishes **load**, **30-second settling**, and **steady** operation. Steady includes idle and request work; actual request prefill/decode durations and speed must be read separately from request evidence, not inferred from this budget label. A new phase gets a descriptive compression baseline; rolling stress history is retained across phases.
+
+The new compression check requires a30-second window with either more than2GiB net compressor growth or more than2GiB each of compression and decompression activity, **plus** more than64MiB swap-out activity or less than8GiB margin above the existing required headroom. That combined condition must persist for10seconds. A sampling gap above10seconds clears the temporal evidence rather than pretending unobserved stress persisted. All immediate hard guards still apply in every phase, including loading and settling. The original pre-load swap baseline is never reset.
+
+These timing/rate thresholds are explicit bounded-trial heuristics, not Apple limits: the old2GiB amount is now a sustained-activity signal with corroboration;8GiB reuses the existing exit allowance;64MiB is an early fraction of the unchanged512MiB swap bound. This correction follows Apple's distinction between compressed occupancy and overall pressure, and retains official oMLX's live safe ceiling. It does not assume unlimited compression is harmless. See [Apple](https://support.apple.com/guide/activity-monitor/view-memory-usage-actmntr1004/mac) and [official oMLX0.7 memory accounting](https://github.com/jundot/omlx/blob/v0.7.0/omlx/process_memory_enforcer.py).
+
+Before deployment,84 targeted CPU checks pass locally, including replay of the nine saved samples, sustained swap-backed compression, compression/decompression churn with low headroom, transient recovery, phase transitions, observation gaps, hard faults in every phase, native-boundary protection and shared ownership. The recorded loading spike now passes; the constructed sustained bad-pressure cases still stop. This is code qualification, not yet a successful local coding or native result.
+
+## Preserved first attempt
+
 **Latest outcome, October 6 at 10:24 p.m. EDT (October 7 02:24 UTC): the approved trial ran and stopped during model loading.** The authorization blocker was resolved. After bounded admission waiting, the resident started at10:21:01p.m.EDT. A new Unreal preview ran concurrently, with each owner holding one shared capture slot. At10:21:17p.m., the trial's **2GiB compressor-growth limit** fired. The supervisor gracefully stopped its model; the model, supervisor and keep-awake process were verified absent afterward. Unreal was not stopped or modified.
 
 | Measurement at the stop | Observed |
