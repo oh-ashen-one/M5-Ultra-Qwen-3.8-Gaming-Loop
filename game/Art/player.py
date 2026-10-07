@@ -1,212 +1,118 @@
-"""Original player character (art source). Pure bpy/bmesh, no imports.
+# ORIGINAL clothed courier - first art increment (Blender 5.2)
+# World: meters, +Z up, +Y forward. player_root at Z=0.79; foot soles at Z=0
+# (soles sit 0.79 under root; Unity subtracts 0.79 from instantiated localY).
+# Pivot bend axes: POSITIVE rotation about local +X swings limb forward(+Y).
+# Shoulder/elbow/hip/knee are empties; mesh parts overlap pivots so bends
+# stay covered by cloth. Parenting done exactly once via matrix_parent_inverse.
+import bpy, bmesh
+from mathutils import Vector
+SC = bpy.context
+CO = SC.collection
+for ob in list(SC.data.objects): bpy.data.objects.remove(ob, do_unlink=True)
+for me in list(bpy.data.meshes): bpy.data.meshes.remove(me)
+for cl in [c for c in bpy.data.collections if c != CO]: bpy.data.collections.remove(cl)
 
-Author: local Qwen builder. Convention: up = +Z, forward = +Y.
-Anatomical height 1.80 m measured from the foot-sole plane.
-
-EXPORT CONTRACT: the Unity integration shifts the instantiated visual by
-Y = -0.79 (localPosition += (0,-0.79,0)). The whole rig is therefore built
-lifted by L = 0.79 above player_root: sole-of-foot sits at Z = +0.79, so
-after the -0.79 Unity offset the feet land exactly on the controller base
-(controller bottom = body.y + 0.025) and the ~1.80 m body fills the 1.75 m
-controller. Every pivot/mesh gets ONE parent — no doubled offsets, nothing
-is reparented twice.
-
-TRANSFORM CONTRACT (made explicit and consistent here):
-  * pivot() places a NAMED PIVOT in WORLD space (matrix_world, world coords
-    include the lift L). Pivot-local frames are derived by Blender.
-  * mk() interprets its `mw` argument as the object's LOCAL matrix relative
-    to its `parent` (matrix_basis, identity parent-inverse). So:
-      - head / arm / leg / gun mesh callers pass TRUE parent-local coords
-        (e.g. arm hangs down the parent's local -Z).
-      - torso / pelvis callers carry readable absolute (world) numbers and
-        are routed through mkb(), which converts world -> body-local with
-        body.matrix_world.inverted(). The lift L cancels in that subtraction,
-        so torso anatomy heights stay exactly as authored.
-  * view_layer.update() is called after pivots exist so parent world
-    matrices are valid before any world->local conversion.
-
-Named pivots retained for the game pose code:
-  player_root  head_root  armL_root  armR_root  legL_root  legR_root
-  (plus gun_root under armR_root)
-"""
-import bpy
-import bmesh
-import math
-from mathutils import Matrix, Euler
-
-NAME = "player"
-L = 0.79  # presentation lift so Unity's -0.79 offset grounds the feet.
-F = lambda z: z + L
-scene = bpy.context.scene
-scene.name = NAME
-for ob in list(scene.objects):
-    bpy.data.objects.remove(ob, do_unlink=True)
-
-
-def mat(nm, col, rough=0.8, metal=0.0):
-    m = bpy.data.materials.get(nm) or bpy.data.materials.new(nm)
-    m.use_nodes = True
+def MAT(n, c, rough=0.8, metal=0.0):
+    m = bpy.data.materials.new(n); m.use_nodes = True
     b = m.node_tree.nodes.get("Principled BSDF")
-    b.inputs["Base Color"].default_value = (col[0], col[1], col[2], 1.0)
+    b.inputs["Base Color"].default_value = (*c, 1.0)
     b.inputs["Roughness"].default_value = rough
     b.inputs["Metallic"].default_value = metal
     return m
+M_SKIN = MAT("Skin_Warm", (0.42, 0.27, 0.19), 0.55)
+M_JKT  = MAT("Jacket_Charcoal", (0.065, 0.065, 0.075), 0.85)
+M_TRIM = MAT("Trim_JacketDark", (0.028, 0.028, 0.034), 0.7)
+M_JEANS= MAT("Jeans_DarkBlue", (0.055, 0.075, 0.135), 0.9)
+M_SHOE = MAT("Shoe_Black", (0.025, 0.025, 0.03), 0.5)
+M_HAIR = MAT("Hair_Black", (0.02, 0.016, 0.013), 0.5)
+M_PIST = MAT("Pistol_Steel", (0.085, 0.085, 0.1), 0.35, 0.8)
 
-
-M = {
-    "jacket":  mat("pl_jacket", (0.052, 0.056, 0.066), 0.78),
-    "jacket2": mat("pl_jacket2", (0.036, 0.038, 0.046), 0.74),
-    "shirt":   mat("pl_shirt", (0.720, 0.718, 0.700), 0.85),
-    "jeans":   mat("pl_jeans", (0.075, 0.095, 0.140), 0.88),
-    "skin":    mat("pl_skin", (0.330, 0.215, 0.155), 0.62),
-    "hair":    mat("pl_hair", (0.030, 0.028, 0.028), 0.70),
-    "shoe":    mat("pl_shoe", (0.045, 0.045, 0.050), 0.62),
-    "sole":    mat("pl_sole", (0.018, 0.018, 0.020), 0.90),
-    "steel":   mat("pl_steel", (0.230, 0.235, 0.250), 0.40, 1.0),
-    "gold":    mat("pl_buckle", (0.55, 0.45, 0.18), 0.35, 1.0),
-}
-
-I = Matrix.Identity(4)
-
-
-def T(x, y, z):
-    return Matrix.Translation((x, y, z))
-
-
-def rot(e):
-    # Supported mathutils Euler->4x4 rotation API (Matrix.Euler does NOT exist).
-    return Euler(tuple(math.radians(a) for a in e), "XYZ").to_matrix().to_4x4()
-
-
-def pivot(nm, mw, parent=None):
-    # World-space placement for named pivots.
-    o = bpy.data.objects.new(nm, None)
-    scene.collection.objects.link(o)
-    if parent:
-        o.parent = parent
-        o.matrix_parent_inverse = parent.matrix_world.inverted()
-    o.matrix_world = mw
+def OBJ(n, bm, m):
+    me = bpy.data.meshes.new(n); bm.to_mesh(me); bm.free()
+    me.materials.append(m)
+    o = bpy.data.objects.new(n, me); CO.objects.link(o); return o
+def BALL(n, c, r, m, s=None, seg=12):
+    bm = bmesh.new(); bmesh.ops.create_uvsphere(bm, u_segments=seg,
+        v_segments=max(6, seg // 2), radius=r)
+    if s: bmesh.ops.scale(bm, vec=Vector(s), verts=bm.verts)
+    o = OBJ(n, bm, m); o.location = c; return o
+def BOX(n, c, sz, m, s=None):
+    bm = bmesh.new(); bmesh.ops.create_cube(bm, size=1.0)
+    bmesh.ops.scale(bm, vec=Vector(sz), verts=bm.verts)
+    if s: bmesh.ops.scale(bm, vec=Vector(s), verts=bm.verts)
+    o = OBJ(n, bm, m); o.location = c; return o
+def TUBE(n, a, b, r0, r1, m, sx=1.0, sy=1.0, seg=12):
+    a, b = Vector(a), Vector(b); d = b - a
+    bm = bmesh.new(); bmesh.ops.create_cone(bm, cap_ends=True,
+        cap_tris=False, segments=seg, radius1=r0, radius2=r1, depth=d.length)
+    if sx != 1.0 or sy != 1.0: bmesh.ops.scale(bm, vec=(sx, sy, 1), verts=bm.verts)
+    o = OBJ(n, bm, m); o.location = (a + b) / 2
+    o.rotation_mode = "QUATERNION"; o.rotation_quaternion = d.to_track_quat("Z", "Y")
     return o
+def CAPS(n, a, b, r, m):
+    o = TUBE(n, a, b, r, r, m); BALL(n + "_a", a, r, m); BALL(n + "_b", b, r, m)
+def EMP(n, loc, size=0.07):
+    e = bpy.data.objects.new(n, None); e.empty_display_type = "SPHERE"
+    e.empty_display_size = size; e.location = loc; CO.objects.link(e); return e
+def PAR(o, p):
+    o.parent = p; o.matrix_parent_inverse = p.matrix_world.inverted()
 
+# ---- hierarchy: root -> shoulders -> elbows, hips -> knees, head ---------
+root = EMP("player_root", (0, 0, 0.79), 0.12)
+sh = {}; el = {}; hip = {}; kn = {}
+for sgn, s in (("l", 1), ("r", -1)):
+    sh[s] = EMP(f"pivot_shoulder_{s}", (0.195 * s, 0, 1.47))   # +X rot: arm fwd / +Y
+    el[s] = EMP(f"pivot_elbow_{s}",   (0.215 * s, 0, 1.17))
+    hip[s]= EMP(f"pivot_hip_{s}",     (0.095 * s, 0, 0.95))   # +X rot: thigh fwd
+    kn[s] = EMP(f"pivot_knee_{s}",    (0.095 * s, 0, 0.50))   # -X rot: shin back
+head = EMP("pivot_head", (0, 0, 1.52))                          # +X rot: nod fwd
+SC.view_layer.update()
+for s in ("l", "r"):
+    PAR(sh[s], root); PAR(el[s], sh[s]); PAR(hip[s], root); PAR(kn[s], hip[s])
+PAR(head, root)
 
-def ellb(r, clip=None):
-    def b(bm):
-        bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=10, radius=1.0)
-        for v in bm.verts:
-            v.co.x *= r[0]; v.co.y *= r[1]; v.co.z *= r[2]
-        if clip:
-            zt, yt = clip
-            vs = [v for v in bm.verts if v.co.z < zt and v.co.y > yt]
-            if vs:
-                bmesh.ops.delete(bm, geom=vs, context='VERTS')
-    return b
+# ---- torso: continuous jacket (collar+cuffs+hem trim), overlapped joints --
+parts = {}
+def add(o, key): parts.setdefault(key, []).append(o)
+add(TUBE("jkt_torso", (0,0,0.97), (0,0,1.50), 0.165, 0.185, M_JKT, 1.15, 0.72), "root")
+add(TUBE("jkt_collar",(0,0.005,1.48),(0,0.015,1.575),0.095,0.070,M_TRIM,1.1,0.9),"root")
+add(TUBE("jkt_hem",  (0,0,0.945),(0,0,1.01),0.185,0.172,M_TRIM,1.18,0.75), "root")
+add(TUBE("pant_pelvis",(0,0,0.86),(0,0,1.00),0.165,0.18,M_JEANS,1.15,0.72), "root")
+add(TUBE("belt_waist", (0,0,0.975),(0,0,1.015),0.185,0.178,M_TRIM,1.2,0.78), "root")
+add(TUBE("neck", (0,0,1.47),(0,0,1.60), 0.062, 0.058, M_SKIN), "head")
+add(BALL("head", (0,0,1.69), 0.105, M_SKIN, (0.95, 1.08, 1.15)), "head")
+add(BOX("nose", (0, 0.108, 1.665), (0.032, 0.03, 0.034), M_SKIN), "head")
+add(BALL("hair_top", (0, -0.01, 1.722), 0.113, M_HAIR, (1.0, 1.05, 0.92)), "head")
+add(BOX("hair_back", (0, -0.075, 1.64), (0.17, 0.06, 0.13), M_HAIR), "head")
 
+for sgn, s in (("l", 1), ("r", -1)):
+    sA = (0.195 * s, 0, 1.47); sE = (0.215 * s, 0, 1.17); sW = (0.232 * s, 0, 0.93)
+    add(BALL(f"jkt_delt_{sgn}", sA, 0.105, M_JKT, (1.05, 1.0, 0.95)), sgn + "sh")
+    add(TUBE(f"jkt_sleeve_{sgn}", sA, sE, 0.086, 0.080, M_JKT), sgn + "sh")
+    add(BALL(f"jkt_delt_cap_{sgn}", sE, 0.080, M_JKT), sgn + "sh")
+    add(TUBE(f"jkt_fore_{sgn}", sE, sW, 0.073, 0.066, M_JKT), sgn + "el")
+    add(BALL(f"jkt_cuff_{sgn}", (0.230*s, 0, 0.905), 0.070, M_TRIM), sgn + "el")
+    add(BALL(f"hand_{sgn}_w", sW, 0.058, M_SKIN), sgn + "el")
+    add(BOX(f"hand_{sgn}", (0.234*s, 0.012, 0.852), (0.058, 0.10, 0.115), M_SKIN), sgn + "el")
+    add(BOX(f"thumb_{sgn}", (0.205*s, 0.058, 0.882), (0.028, 0.055, 0.032), M_SKIN), sgn + "el")
+    hA = (0.095*s, 0, 0.95); hK = (0.095*s, 0, 0.50); hAn = (0.100*s, 0, 0.11)
+    add(BALL(f"pant_hip_{sgn}", hA, 0.116, M_JEANS), sgn + "hip")
+    add(TUBE(f"pant_thigh_{sgn}", hA, hK, 0.102, 0.092, M_JEANS), sgn + "hip")
+    add(BALL(f"pant_knee_{sgn}", hK, 0.09, M_JEANS), sgn + "knee")
+    add(TUBE(f"pant_shin_{sgn}", hK, hAn, 0.084, 0.07, M_JEANS), sgn + "knee")
+    add(BALL(f"pant_ankle_{sgn}", hAn, 0.072, M_JEANS), sgn + "knee")
+    add(BOX(f"shoe_{sgn}", (0.10*s, 0.05, 0.046), (0.115, 0.30, 0.09), M_SHOE), sgn + "knee")
+    add(BOX(f"toe_{sgn}", (0.10*s, 0.205, 0.040), (0.108, 0.10, 0.078), M_SHOE), sgn + "knee")
 
-def boxb(d, br=0.0, seg=2):
-    def b(bm):
-        bmesh.ops.create_cube(bm, size=1.0)
-        for v in bm.verts:
-            v.co.x *= d[0]; v.co.y *= d[1]; v.co.z *= d[2]
-        if br > 0:
-            bmesh.ops.bevel(bm, geom=bm.verts[:] + bm.edges[:] + bm.faces[:],
-                            offset=br, segments=seg, profile=0.5, affect='EDGES')
-    return b
+# right-hand original pistol (follows forearm for later aim articulation)
+add(BOX("pistol_slide", (0.234, 0.10, 0.845), (0.032, 0.21, 0.05), M_PIST), "rel")
+add(BOX("pistol_grip",  (0.232, -0.025, 0.76), (0.028, 0.055, 0.115), M_PIST), "rel")
 
-
-def mk(nm, mkey, parent, mw_local, build, smooth=True):
-    # mw_local is the LOCAL matrix relative to `parent` (identity parent-inverse);
-    # world = parent.matrix_world @ mw_local, so the body is assembled exactly once.
-    me = bpy.data.meshes.new(nm)
-    bm = bmesh.new()
-    build(bm)
-    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
-    bm.to_mesh(me)
-    bm.free()
-    ob = bpy.data.objects.new(nm, me)
-    scene.collection.objects.link(ob)
-    ob.data.materials.append(M[mkey])
-    for p in me.polygons:
-        p.use_smooth = smooth
-    ob.parent = parent
-    ob.matrix_basis = mw_local
-    return ob
-
-
-# ---------- pivots (one parent each; body carries the lift) ----------
-root = pivot("player_root", I)
-body = pivot("body", T(0, 0, F(0.95)), root)
-head = pivot("head_root", T(0, 0, F(1.545)), body)
-arms, legs = {}, {}
-for s, tag in ((-1, "L"), (1, "R")):
-    arms[tag] = pivot("arm%s_root" % tag,
-                      T(s * 0.262, 0, F(1.47)) @ rot((0, -6 * s, 0)), body)
-    legs[tag] = pivot("leg%s_root" % tag, T(s * 0.105, 0, F(0.95)), body)
-bpy.context.view_layer.update()
-
-# torso callers carry absolute (world) numbers -> convert to body-local once.
-# (The lift L cancels in body.matrix_world.inverted() @ world, so anatomy heights
-#  authored below are preserved unchanged.)
-BW_INV = body.matrix_world.inverted()
-def mkb(nm, mkey, mw_world, build, smooth=True):
-    return mk(nm, mkey, body, BW_INV @ mw_world, build, smooth)
-
-# ---------- torso / pelvis ----------
-mkb("pelvis", "jeans", T(0, 0, F(0.985)), ellb((0.150, 0.108, 0.118)))
-mkb("waist", "jacket", T(0, 0, F(1.18)), ellb((0.148, 0.128, 0.20)))
-mkb("chest", "jacket", T(0, 0, F(1.37)), ellb((0.205, 0.138, 0.145)))
-mkb("shoulders", "jacket", T(0, 0, F(1.455)), ellb((0.258, 0.132, 0.092)))
-mkb("neck", "skin", T(0, 0, F(1.545)), ellb((0.054, 0.052, 0.062)))
-mkb("collar", "jacket2", T(0, 0, F(1.525)), ellb((0.086, 0.082, 0.055)))
-# shirt V at the neck opening + jacket hem + peeking shirt hem + belt
-mkb("shirt_v", "shirt", T(0, 0.112, F(1.40)), boxb((0.085, 0.02, 0.15), 0.012))
-mkb("zipper", "steel", T(0, 0.118, F(1.24)), boxb((0.018, 0.014, 0.34), 0.006))
-mkb("jacket_hem", "jacket2", T(0, 0, F(1.06)), ellb((0.154, 0.132, 0.05)))
-mkb("shirt_hem", "shirt", T(0, 0, F(1.005)), ellb((0.146, 0.120, 0.032)))
-mkb("belt", "sole", T(0, 0, F(0.985)), ellb((0.152, 0.124, 0.036)))
-mkb("buckle", "gold", T(0, 0.126, F(0.985)), boxb((0.028, 0.014, 0.028), 0.006))
-
-# ---------- head / hair (local to head_root) ----------
-mk("skull", "skin", head, T(0, 0, 0.128), ellb((0.093, 0.102, 0.117)))
-mk("jaw", "skin", head, T(0, 0.020, 0.078), ellb((0.066, 0.078, 0.058)))
-mk("brow", "skin", head, T(0, 0.078, 0.150), ellb((0.062, 0.030, 0.024)))
-mk("nose", "skin", head, T(0, 0.100, 0.118), ellb((0.016, 0.022, 0.024)))
-mk("earL", "skin", head, T(0.090, -0.008, 0.122), ellb((0.013, 0.030, 0.032)))
-mk("earR", "skin", head, T(-0.090, -0.008, 0.122), ellb((0.013, 0.030, 0.032)))
-# cap (front-lower verts removed for a short cut) + back/nape mass
-mk("hair_cap", "hair", head, T(0, -0.012, 0.148),
-   ellb((0.099, 0.106, 0.102), clip=(-0.015, 0.030)))
-mk("hair_back", "hair", head, T(0, -0.052, 0.096), ellb((0.090, 0.058, 0.088)))
-
-# ---------- arms (local to armX_root; limb runs down local -Z) ----------
-for s, tag in ((-1, "L"), (1, "R")):
-    a = arms[tag]
-    mk("arm%s_delt" % tag, "jacket", a, T(s * 0.012, 0, -0.005), ellb((0.084, 0.084, 0.092)))
-    mk("arm%s_upper" % tag, "jacket", a, T(0, 0.004, -0.165), ellb((0.072, 0.076, 0.160)))
-    mk("arm%s_elbow" % tag, "jacket", a, T(0, 0.010, -0.300), ellb((0.060, 0.062, 0.064)))
-    mk("arm%s_fore" % tag, "jacket", a, T(0, 0.020, -0.440), ellb((0.055, 0.057, 0.150)))
-    mk("arm%s_cuff" % tag, "jacket2", a, T(0, 0.024, -0.565), ellb((0.052, 0.054, 0.034)))
-    mk("arm%s_hand" % tag, "skin", a, T(0, 0.030, -0.645), ellb((0.044, 0.060, 0.086)))
-    mk("arm%s_thumb" % tag, "skin", a, T(-s * 0.046, 0.042, -0.625),
-       ellb((0.018, 0.028, 0.040)))
-
-# ---------- legs + shoes (local to legX_root) ----------
-for s, tag in ((-1, "L"), (1, "R")):
-    l = legs[tag]
-    mk("leg%s_thigh" % tag, "jeans", l, T(0, 0, -0.205), ellb((0.094, 0.102, 0.235)))
-    mk("leg%s_knee" % tag, "jeans", l, T(0, 0.004, -0.420), ellb((0.073, 0.076, 0.074)))
-    mk("leg%s_shin" % tag, "jeans", l, T(0, -0.006, -0.620), ellb((0.068, 0.071, 0.200)))
-    mk("leg%s_cuff" % tag, "jeans", l, T(0, 0, -0.800), ellb((0.058, 0.060, 0.045)))
-    mk("leg%s_shoe" % tag, "shoe", l, T(0, 0.058, -0.892), boxb((0.150, 0.300, 0.118), 0.045), False)
-    mk("leg%s_sole" % tag, "sole", l, T(0, 0.062, -0.928), boxb((0.160, 0.318, 0.044), 0.016), False)
-
-# ---------- pistol under right hand (gun_root placed in world via pivot) ----------
-gun = pivot("gun_root", T(0.293, 0.095, F(0.700)) @ rot((-8, 0, 0)), arms["R"])
-bpy.context.view_layer.update()
-# gun meshes are local to gun_root:
-mk("gun_slide", "steel", gun, T(0, 0.045, 0), boxb((0.028, 0.108, 0.040), 0.010), False)
-mk("gun_grip", "shoe", gun, T(0, -0.045, -0.060) @ rot((18, 0, 0)),
-   boxb((0.024, 0.034, 0.068), 0.010), False)
-mk("gun_trigger", "steel", gun, T(0, -0.010, -0.030), boxb((0.010, 0.030, 0.030), 0.004), False)
-
-bpy.context.view_layer.update()
-print("player built:", len(scene.objects), "objects, lift", L)
+# ---- parent every mesh part exactly once, preserving world position ------
+keys = {"root": root, "head": head,
+        "lsh": sh["l"], "lel": el["l"], "rsh": sh["r"], "rel": el["r"],
+        "lhip": hip["l"], "lknee": kn["l"], "rhip": hip["r"], "rknee": kn["r"]}
+for key, objs in parts.items():
+    for o in objs: PAR(o, keys[key])
+SC.view_layer.update()
+print("courier v1 built:", len(SC.data.objects), "objects")
