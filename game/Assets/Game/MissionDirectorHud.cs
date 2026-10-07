@@ -83,27 +83,45 @@ namespace ChicagoGame
             if (!_courier) _courier = FindAny<CourierMission>();
 
             var _interception = FindAny<InterceptionMission>();
-            string s = null;
-            if (_interception != null && _interception.Active)
-                s = _interception.Objective;
-            else if (_relay != null && _relay.Active)
+
+            // Death outranks every board line, live or completed, and is read
+            // from the single authority before any chapter is consulted: a
+            // courier whose health is spent never keeps reading "PARCEL IN
+            // HAND", "DELIVERY COMPLETE" or a live interception objective -
+            // he reads the depleted health and the ordinary R retry that
+            // releases the latch. A more specific failure a chapter genuinely
+            // recorded first is kept ahead of the death line instead of being
+            // overwritten by it.
+            bool down = DeathAuthority.IsDead;
+            string s = down ? DeathBoard(_interception) : null;
+
+            if (s == null)
             {
-                string two = _relay.Objective ?? "OBJECTIVE UNAVAILABLE";
-                string foot = "\nDelivery complete / Dead-drop complete";
-                if (_relay.AllComplete) foot += "\nR reset";
-                s = two + foot;
+                if (_interception != null && _interception.Active)
+                    s = _interception.Objective;
+                else if (_relay != null && _relay.Active)
+                {
+                    string two = _relay.Objective ?? "OBJECTIVE UNAVAILABLE";
+                    string foot = "\nDelivery complete / Dead-drop complete";
+                    if (_relay.AllComplete) foot += "\nR reset";
+                    s = two + foot;
+                }
+                else if (_route != null && _route.RouteStage >= 1)
+                {
+                    var rh = GameObject.Find("RouteHud");
+                    var rt = rh ? rh.GetComponentInChildren<TextMesh>(true) : null;
+                    string two = rt ? rt.text : "";
+                    string foot = "\nDELIVERY COMPLETE";
+                    s = two + foot;
+                }
+                else if (_courier != null) s = Courier(_courier);
             }
-            else if (_route != null && _route.RouteStage >= 1)
-            {
-                var rh = GameObject.Find("RouteHud");
-                var rt = rh ? rh.GetComponentInChildren<TextMesh>(true) : null;
-                string two = rt ? rt.text : "";
-                string foot = "\nDELIVERY COMPLETE";
-                s = two + foot;
-            }
-            else if (_courier != null) s = Courier(_courier);
 
             _board.text = s ?? "OBJECTIVE UNAVAILABLE";
+            // The colour follows the same verdict, so the failure is
+            // unmistakable and a released death returns the board to exactly
+            // the colour Setup installed.
+            _board.color = down ? DownColor : BoardColor;
             foreach (var r in _hide) if (r) r.enabled = false;
         }
 
