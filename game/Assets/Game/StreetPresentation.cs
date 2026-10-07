@@ -87,6 +87,11 @@ namespace ChicagoGame
                 if (em.HasProperty("_EmissionColor")) em.SetColor("_EmissionColor", Color.black);
                 eR.sharedMaterial = em;
             }
+Place(root, facadeMesh, new Color(0.57f,0.53f,0.47f,1f), basis, new Vector3(-1.25f,0.78f,31.0f), new Vector3(0.9f,1.56f,1.0f));
+Place(root, facadeMesh, new Color(0.57f,0.53f,0.47f,1f), basis, new Vector3(6.25f,0.78f,31.0f), new Vector3(0.9f,1.56f,1.0f));
+Place(root, facadeMesh, new Color(0.60f,0.56f,0.50f,1f), basis, new Vector3(2.5f,1.32f,31.0f), new Vector3(8.0f,0.40f,1.0f));
+Place(root, facadeMesh, new Color(0.31f,0.13f,0.09f,1f), basis, new Vector3(2.5f,0.58f,31.0f), new Vector3(8.0f,1.16f,1.0f));
+root.transform.GetChild(root.transform.childCount - 1).name = "CityBoundaryNorth";
             Tiling();
             Detail();
             RenderSettings.fog = true;
