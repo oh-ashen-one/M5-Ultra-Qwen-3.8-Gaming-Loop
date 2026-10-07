@@ -73,19 +73,21 @@ public sealed class VehiclePresentation : MonoBehaviour {
     Vector3 Curve(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float u) { float u2 = u * u, u3 = u2 * u; return 0.5f * ((2f * b) + (-a + c) * u + (2f * a - 5f * b + 4f * c - d) * u2 + (-a + 3f * b - 3f * c + d) * u3); }
 
     Vector3 BoardPoint(float t, Vector3 seated) {
-        Vector3 start = vehicle.TransformPoint(startLocal); if (t <= 0f) return start; if (t >= 1f) return seated;
-        Vector3 hip = hipAnchor.position, f = Flat(fwdAnchor.position - hip), r = Flat(Vector3.Cross(Vector3.up, f)), l = -r, s = Vector3.zero; float sc = VehicleScale();
-        float mf = Vector3.Dot(start - hip, f) / sc, ml = Vector3.Dot(start - hip, l) / sc;
-        path[0] = start;
-        path[1] = hip + f * (Mathf.Clamp(mf - 0.25f, -3.25f, -2.25f) * sc) + l * (Mathf.Clamp(ml, 1.22f, 1.62f) * sc);
-        path[2] = hip + f * (-1.02f * sc) + l * (1.15f * sc);
-        path[3] = hip + f * (-0.03f * sc) + l * (1.07f * sc);
-        path[4] = hip + f * (-0.15f * sc) + l * (0.93f * sc);
-        path[5] = Vector3.Lerp(hip + f * (-0.11f * sc) + l * (0.17f * sc), seated, 0.35f);
-        path[6] = seated;
-        int i = (int)(t * 6f); if (i < 0) i = 0; if (i > 5) i = 5; float u = t * 6f - i;
-        return Curve(path[Mathf.Max(0, i - 1)], path[i], path[Mathf.Min(6, i + 1)], path[Mathf.Min(6, i + 2)], u);
-    }
+    Vector3 start = vehicle.TransformPoint(startLocal); if (t <= 0f) return start; if (t >= 1f) return seated;
+    Vector3 hip = hipAnchor.position, f = Flat(fwdAnchor.position - hip), r = Flat(Vector3.Cross(Vector3.up, f)), l = -r, s = Vector3.zero; float sc = VehicleScale();
+    float mf = Vector3.Dot(start - hip, f) / sc, ml = Vector3.Dot(start - hip, l) / sc;
+    path[0] = start;
+    path[1] = hip + f * (Mathf.Clamp(mf - 0.25f, -3.25f, -2.25f) * sc) + l * (Mathf.Clamp(ml, 1.22f, 1.62f) * sc);
+    path[2] = hip + f * (-1.02f * sc) + l * (1.15f * sc);
+    path[3] = hip + f * (-0.03f * sc) + l * (1.07f * sc);
+    path[4] = hip + f * (-0.15f * sc) + l * (0.93f * sc);
+    path[5] = Vector3.Lerp(hip + f * (-0.11f * sc) + l * (0.17f * sc), seated, 0.35f);
+    path[6] = seated;
+    float y0 = start.y, y1 = seated.y;
+    for (int k = 1; k < 6; k++) { float frac = k / 6f; Vector3 p = path[k]; p.y = Mathf.Lerp(y0, y1, frac); path[k] = p; }
+    int i = (int)(t * 6f); if (i < 0) i = 0; if (i > 5) i = 5; float u = t * 6f - i;
+    return Curve(path[Mathf.Max(0, i - 1)], path[i], path[Mathf.Min(6, i + 1)], path[Mathf.Min(6, i + 2)], u);
+}
 
     float ComputeDoorSign(Vector3 f, Vector3 r) {
         if (doorHinge == null || hipAnchor == null) return 1f;
