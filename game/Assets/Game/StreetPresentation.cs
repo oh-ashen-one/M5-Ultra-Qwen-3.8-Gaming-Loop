@@ -56,7 +56,7 @@ namespace ChicagoGame
                 if (om != null && om.mainTexture != null) { asphaltMat = om; break; }
             }
             Place(root, facadeMesh, new Color(0.2f, 0.195f, 0.19f), basis,
-                  new Vector3(2f, 0.09f, 57.5f), new Vector3(40f, 0.24f, 48f));
+                  new Vector3(19f, 0.015f, 56f), new Vector3(83f, 0.25f, 51f));
             var north = root.transform.GetChild(root.transform.childCount - 1);
             north.name = "FarGroundNorth";
             var nR = north.GetComponent<MeshRenderer>();
@@ -72,7 +72,7 @@ namespace ChicagoGame
                 nR.sharedMaterial = nm;
             }
             Place(root, facadeMesh, new Color(0.2f, 0.195f, 0.19f), basis,
-                  new Vector3(110f, 0.09f, 32f), new Vector3(92f, 0.24f, 56f));
+                  new Vector3(108.25f, 0.015f, 34f), new Vector3(95.5f, 0.25f, 60f));
             var east = root.transform.GetChild(root.transform.childCount - 1);
             east.name = "FarGroundEast";
             var eR = east.GetComponent<MeshRenderer>();
