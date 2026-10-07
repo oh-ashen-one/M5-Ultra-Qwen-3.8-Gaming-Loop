@@ -142,7 +142,8 @@ class LocalModel:
             raise Halt("Model identity changed or another request owns the model")
 
     def session(self, role, session_id, system, prompt, tools, dispatch, images=(), turns=16,
-                reasoning_effort="xhigh", visual_contract=None, retained_assistant=None):
+                reasoning_effort="xhigh", visual_contract=None, retained_assistant=None,
+                retained_instruction=None):
         if reasoning_effort not in ("low", "medium", "xhigh"):
             raise ValueError("Pinned Qwen template supports only low, medium and xhigh")
         sampling = {**SAMPLING, "reasoning_effort": reasoning_effort,
@@ -162,10 +163,11 @@ class LocalModel:
             messages.append({k: retained_assistant[k] for k in
                 ('role', 'content', 'reasoning_content', 'reasoning') if k in retained_assistant})
             submission = retained_submission(tools)
-            messages.append({'role': 'user', 'content':
+            continuation = retained_instruction or (
                 'The previous response hit its output cap before submitting its result. Use that retained work; '
                 'do not repeat the analysis. Thinking effort remains ' + reasoning_effort + '. ' + submission +
-                ' Stay within the available output budget.'})
+                ' Stay within the available output budget.')
+            messages.append({'role': 'user', 'content': continuation})
         self.store.event("role-start", role=role, session_id=session_id, images=image_records)
         unsupported_calls = 0
         with exclusive(Path(self.config["coordination_dir"]) / "request.lock"):
