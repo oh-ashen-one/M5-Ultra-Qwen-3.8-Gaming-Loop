@@ -44,6 +44,13 @@ namespace ChicagoGame
             foreach (var s in sp) Tower(root, s);
             Tiling();
             Detail();
+            RenderSettings.fog = true;
+            RenderSettings.fogMode = FogMode.Linear;
+            RenderSettings.fogColor = new Color(0.82f, 0.71f, 0.58f, 1f);
+            RenderSettings.fogStartDistance = 62f;
+            RenderSettings.fogEndDistance = 230f;
+            RenderSettings.fogDensity = 0.0045f;
+            RenderSettings.ambientLight = new Color(0.42f, 0.41f, 0.40f, 1f);
         }
 
         static void Collect()
