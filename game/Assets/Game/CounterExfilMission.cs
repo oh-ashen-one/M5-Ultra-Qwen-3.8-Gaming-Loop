@@ -86,6 +86,7 @@ namespace ChicagoGame
         // can never satisfy the exit.
         const float EXIT_X = 3.2f, EXIT_Z = 16.0057f, EXIT_HALF_Z = 1.5f;
         const float CROSS_ARM = 0.6f;          // seen this far east before crossing
+        const float MAX_FOOT_STEP = 0.5f;      // < CROSS_ARM: no lone sample may jump the line
         const float LANE_EAST_X = 47.0f, LANE_WEST_X = 8.0f;
         const float MAX_SEAT_SPEED = 0.25f, STILL_TIME = 0.30f;
         // The surveyed piecewise central corridor, ordered east -> west: the
