@@ -402,7 +402,7 @@ def wheel(nm, loc, r=0.40, w=0.28):
     for p in mr.polygons:
         p.use_smooth = True
     rim = obj(nm + '_rim', mr, 'rim', parent=ob)
-    rim.location = (0, 0, 0)
+    rim.location = (((1 if loc[0] >= 0 else -1) * (w / 2 - rim_t + 0.006)), 0, 0)
 
     ms = bpy.data.meshes.new(nm + '_spokes')
     bms = bmesh.new()
@@ -427,7 +427,7 @@ def wheel(nm, loc, r=0.40, w=0.28):
     bms.normal_update()
     bms.to_mesh(ms); bms.free()
     sp = obj(nm + '_spokes', ms, 'rim', parent=ob)
-    sp.location = (0, 0, 0)
+    sp.location = (((1 if loc[0] >= 0 else -1) * (w / 2 - spoke_w / 2 + 0.006)), 0, 0)
 
     mh = bpy.data.meshes.new(nm + '_hub')
     bmn = bmesh.new()
@@ -441,7 +441,7 @@ def wheel(nm, loc, r=0.40, w=0.28):
     bmn.normal_update()
     bmn.to_mesh(mh); bmn.free()
     h = obj(nm + '_hub', mh, 'rim', parent=ob)
-    h.location = (0, 0, 0)
+    h.location = (((1 if loc[0] >= 0 else -1) * (w / 2 - hub_depth / 2 + 0.006)), 0, 0)
     return ob
 
 
