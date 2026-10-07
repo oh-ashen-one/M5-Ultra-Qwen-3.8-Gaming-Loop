@@ -2,7 +2,9 @@
 
 Status at **2026-10-07 00:50 UTC**: implementation published in `4922d1eeadcc92a8c8449d1b6c71d3f59b7d9ac7`, deployed into a separate runtime directory, and **59 targeted CPU checks pass on both hosts**. The original supervisor and configuration are preserved for rollback. **The new resident has not been started; authoring and native qualification remain pending.** A subsequent read-only admission check was rejected by automatic authorization review, so no launch followed. The last successful machine observation below is a dated sample, not current admission.
 
-The separate Unreal workload has priority. This experiment changes only Qwen's admission and memory accounting, preserving the pinned Flash-Next oQ6e model, official oMLX 0.7.0 / MLX 0.32.2, thinking with `xhigh`, sampling, native context, serial requests and quality settings. It does not change OS limits or another workload.
+**Updated 2026-10-07 02:08 UTC:** the owner explicitly confirmed the concurrent trial. Neither Unreal nor Qwen has automatic priority; the earlier priority assignment is superseded. The read-only admission check now succeeds. At02:07:56UTC memory admission passed, while an existing exclusive performance reservation held both shared capture slots; no model was loaded. The stopped ledger retains its historical priority until the archived recovery migration records the current instruction.
+
+ This experiment changes only Qwen's admission and memory accounting, preserving the pinned Flash-Next oQ6e model, official oMLX 0.7.0 / MLX 0.32.2, thinking with `xhigh`, sampling, native context, serial requests and quality settings. It does not change OS limits or another workload.
 
 ## Why change the fixed reserve
 
@@ -53,9 +55,11 @@ This instantaneous budget passed. Its newly established baseline reports zero sw
 ## Retained safeguards and rollback
 
 - Stop Qwen on pressure, more than 512 MiB swap growth, more than 2 GiB compressor growth, an OS thermal warning, a changed owned-process identity, a Qwen footprint above 192 GiB or an exceeded trial budget.
-- Preserve desktop/graphics checks, shared slot and queue ownership, bounded request/progress checks, sustained throughput checks, one model and serial execution. Yield Qwen when another live owner is waiting for the protected capacity; never modify its records or processes.
+- Preserve desktop/graphics checks, shared slot and queue ownership, bounded request/progress checks, sustained throughput checks, one model and serial execution. Preserve actual shared lock ownership and exclusive performance reservations; a waiting workload alone does not preempt an admitted task. Never modify another owner's records or processes.
 - Keep the original supervisor/configuration untouched and a rollback copy of the changed controller entry points. Ordinary and native-only runs retain the original 64 GiB guard. This opt-in entry point requires an explicit trial flag and a verified supervisor/server identity receipt.
 - No automatic restart, model substitution, quality reduction, broad benchmark campaign or extension of **2026-10-08 06:33:12 UTC**.
+
+The current policy identifier is `simultaneous-capacity-trial-v1`. Its reconciliation passes64 local CPU checks: seven capacity/boundary checks, ten death-contract checks,43controller checks and four shared-slot checks; remote revalidation is pending. The earlier implementation and observations retain their historical identifier; do not treat that label as current intent.
 
 Implementation: [budget](../tools/qwen_capacity.py), [isolated resident](../tools/flash_next_capacity_trial.py), [single useful author task](../tools/qualify_qwen_capacity.py), and [focused tests](../tests/test_qwen_capacity.py). The 59 checks comprise six capacity tests, ten death-contract tests and 43 controller tests. Passing CPU checks does not qualify the policy under load.
 

@@ -34,7 +34,7 @@ def main():
     parser.add_argument('--capacity-trial',action='store_true',help='Explicit owner-authorized dynamic capacity qualification')
     parser.add_argument("--allow-one-existing-renderer", action="store_true")
     parser.add_argument('--authorized-shared-coexistence',action='store_true',
-        help='Explicit owner priority: observe other apps without treating presence as load; preserve actual resource and owned-lease guards')
+        help='Simultaneous operation: observe actual load and preserve shared slots, resource and owned-lease guards')
     args = parser.parse_args()
     if not args.allow_load or not args.capacity_trial:
         parser.error('Current owner authorization, --allow-load and --capacity-trial are required')
@@ -115,7 +115,7 @@ def main():
                      "mtp_enabled": False, "qwen4_ple_ssd_offload": False},
         'limits': {'memory_policy':POLICY,'omlx_memory_guard':'safe',
                    'maximum_qwen_footprint_GiB':192,'maximum_swap_growth_MiB':512,
-                   'maximum_compressor_growth_GiB':2,'unreal_priority':True},
+                   'maximum_compressor_growth_GiB':2,'workload_priority':'simultaneous-no-default-priority'},
         "preserved_external_renderer_pids": existing,
         "authorized_shared_coexistence":args.authorized_shared_coexistence,
     }
@@ -147,14 +147,8 @@ def main():
         renderers()  # Preserve detection of a competing inference service.
         observed=snapshot(args.coordination_dir,baseline,engine_lease,coexistence=args.authorized_shared_coexistence)
         state['admission_snapshot']=observed
-        # Yield only this model when a live other owner cannot obtain the slots
-        # it requested. No foreign process, lock, queue or project is modified.
-        held=sum(bool(v.get('held')) for k,v in observed['slots'].items() if k.startswith('locks/capture.'))
-        for key,value in observed['slots'].items():
-            pid=value.get('pid')
-            if (key.startswith('queue/') and pid and pid!=os.getpid() and psutil.pid_exists(pid)
-                    and (value.get('class')=='perf' or held>=2)):
-                raise RuntimeError('Priority yield: another live GPU owner is waiting for capacity')
+        # Neither workload has automatic priority. Actual shared lock ownership
+        # and resource/graphics guards still govern admission and continuation.
         decision=observed['decision']
         waiting=args.coordination_dir/'capacity-wait.json' if args.coordination_dir else None
         if decision['status']=='capacity-wait':

@@ -9,7 +9,7 @@ import time
 
 GIB = 1024**3
 MIB = 1024**2
-POLICY = 'unreal-first-capacity-trial-v1'
+POLICY = 'simultaneous-capacity-trial-v1'
 # Explicit trial allowances, not claimed physical crash thresholds:
 # observed model footprint139.7GiB ->140; measured Unreal peak30.7 ->40.
 # OS16 follows the official safe tier's maximum reserve; request8 and

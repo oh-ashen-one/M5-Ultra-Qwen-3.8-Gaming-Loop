@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """One useful local death-install/walking edit qualifies opt-in capacity accounting."""
-import psutil
 from resume_player_death_focused import FocusedDeath
 from resume_camera_native_only import ACCEPTED
 from resume_three_day_queue import main
@@ -15,10 +14,13 @@ def validate_boundary(old):
     expected=dict(status='paused',controller_pid=None,owned_process=None,current_round='q0144-dd98c86e',
         source_checkpoint=SOURCE,last_playable_checkpoint=ACCEPTED,task_index=7,task_failures=24,
         failure_streak=1,diagnosis_used=True,overall_deadline_epoch=HARD_CAP_EPOCH,
-        shared_workload_priority='external-unreal-first',
         blocker='URLError: <urlopen error [Errno 61] Connection refused>')
     if any(old.get(k)!=v for k,v in expected.items()) or old.get('capacity_trial_author_attempted'):
-        raise Halt('Require the preserved partial authority and explicit Unreal-first trial boundary')
+        raise Halt('Require the preserved partial authority and unattempted bounded trial boundary')
+    # Archive the stopped ledger's historical policy before recording the
+    # explicit simultaneous-operation instruction in recovery_settings.
+    if old.get('shared_workload_priority') not in ('external-unreal-first','simultaneous-no-default-priority'):
+        raise Halt('Require a recognized prior policy before the explicit simultaneous migration')
     if old.get('player_death_focused_fault',{}).get('cause')!='resident available-memory guard':
         raise Halt('Require the measured resource diagnosis before capacity qualification')
 
@@ -34,6 +36,7 @@ class CapacityAuthor(FocusedDeath):
         'qualification task. Those remain pending; do not claim the whole death contract is repaired.'),)
 
     def __init__(self,*args,**kwargs):
+        import psutil
         super().__init__(*args,**kwargs)
         receipt=read_json(self.store.root/'private/current-capacity-trial.json')
         if receipt.get('policy')!=POLICY:raise Halt('Explicit scoped trial receipt is required')
@@ -52,6 +55,8 @@ class CapacityAuthor(FocusedDeath):
 
     def recovery_settings(self):
         return dict(capacity_trial_author_attempted=True,recovery_route='one-useful-capacity-qualification',
+            shared_workload_priority='simultaneous-no-default-priority',
+            shared_priority_user_utc='2026-10-07T00:51:00Z',
             recovery_change='Same local model/xhigh quality; official safe dynamic accounting plus measured '
             'Unreal growth/OS/request reserves, original swap/thermal/graphics/speed guards and rollback.')
 

@@ -72,5 +72,23 @@ class CapacityTests(unittest.TestCase):
                 machine.capacity_budget=SimpleNamespace(observe=lambda **kw:dict(passed=True,failure=[]))
                 machine.guard()
 
+    def test_simultaneous_migration_preserves_stopped_source_and_one_attempt(self):
+        from qualify_qwen_capacity import validate_boundary, CapacityAuthor, SOURCE, ACCEPTED, HARD_CAP_EPOCH
+        from loop_controller.core import Halt
+        old=dict(status='paused',controller_pid=None,owned_process=None,current_round='q0144-dd98c86e',
+            source_checkpoint=SOURCE,last_playable_checkpoint=ACCEPTED,task_index=7,task_failures=24,
+            failure_streak=1,diagnosis_used=True,overall_deadline_epoch=HARD_CAP_EPOCH,
+            shared_workload_priority='external-unreal-first',
+            blocker='URLError: <urlopen error [Errno 61] Connection refused>',
+            player_death_focused_fault={'cause':'resident available-memory guard'})
+        validate_boundary(old)
+        settings=CapacityAuthor.__new__(CapacityAuthor).recovery_settings()
+        self.assertEqual(settings['shared_workload_priority'],'simultaneous-no-default-priority')
+        self.assertEqual(old['shared_workload_priority'],'external-unreal-first')
+        validate_boundary(dict(old,shared_workload_priority=settings['shared_workload_priority']))
+        for changed in ({'capacity_trial_author_attempted':True},{'source_checkpoint':'different'},
+                {'controller_pid':123},{'task_failures':0},{'overall_deadline_epoch':HARD_CAP_EPOCH+3600}):
+            with self.subTest(changed=changed),self.assertRaises(Halt):validate_boundary(dict(old,**changed))
+
 
 if __name__=='__main__':unittest.main()

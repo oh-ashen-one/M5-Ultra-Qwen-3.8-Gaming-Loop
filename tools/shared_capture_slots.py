@@ -38,7 +38,7 @@ def capture_slots(base, metadata, external_renderers=0, coexistence=False, guard
         check()
         value={**metadata,'pid':os.getpid(),'slot':str(slots[0]),'reserved_slots':slots,
                'external_renderer_count':external_renderers,
-               'admission_policy':'authorized-priority-coexistence' if coexistence else 'legacy-exclusive-capture'}
+               'admission_policy':'authorized-shared-coexistence' if coexistence else 'legacy-exclusive-capture'}
         try:
             with holder.open('x') as f: json.dump(value,f,indent=2);f.write('\n')
             owned=True
