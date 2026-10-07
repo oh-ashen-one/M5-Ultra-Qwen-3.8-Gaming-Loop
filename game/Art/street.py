@@ -51,8 +51,8 @@ IMGMAP = {
 }
 TINTMAP = {"darkbrick": (0.55, 0.50, 0.50)}
 TEX = {
-    "brick": (4.0, 1.0), "darkbrick": (4.0, 1.0),
-    "limestone": (2.0, 2.0), "concrete": (2.0, 2.0),
+    "brick": (4.0, 1.0), "dkbrick": (4.0, 1.0),
+    "stone": (2.0, 2.0), "concrete": (2.0, 2.0),
     "asphalt": (4.0, 4.0), "wood": (1.0, 0.5),
 }
 
@@ -160,22 +160,27 @@ def box(nm, dims, loc, m, rx=0.0, rz=0.0, parent=root):
     ob.parent = parent
     md = ob.data
     us, vs = TEX.get(m, (1.0, 1.0))
-    for pl in md.loops:
-        c = md.vertices[pl.vertex_index].co
+    uv_layer = md.uv_layers.active
+    if uv_layer is None:
+        uv_layer = md.uv_layers.new(name='UVMap')
+    for poly in md.polygons:
+        n = poly.normal
         ax = 0
-        if abs(c[1]) >= abs(c[0]) and abs(c[1]) >= abs(c[2]):
+        if abs(n[1]) >= abs(n[0]) and abs(n[1]) >= abs(n[2]):
             ax = 1
-        elif abs(c[0]) >= abs(c[2]):
+        elif abs(n[0]) >= abs(n[2]):
             ax = 0
         else:
             ax = 2
-        if ax == 1:
-            u, v = c[0], c[2]
-        elif ax == 0:
-            u, v = c[1], c[2]
-        else:
-            u, v = c[0], c[1]
-        pl.uv = (u / us, v / vs)
+        for li in poly.loop_indices:
+            co = md.vertices[md.loops[li].vertex_index].co
+            if ax == 1:
+                u, v = co[0], co[2]
+            elif ax == 0:
+                u, v = co[1], co[2]
+            else:
+                u, v = co[0], co[1]
+            uv_layer.data[li].uv = (u / us, v / vs)
     md.update()
     return ob
 

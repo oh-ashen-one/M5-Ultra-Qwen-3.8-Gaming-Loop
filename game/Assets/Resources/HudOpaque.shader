@@ -6,7 +6,7 @@ Shader "Chicago/HudOpaque"
     }
     SubShader
     {
-        Tags { "Queue" = "2999" }
+        Tags { "Queue" = "Transparent-1" }
         Pass
         {
             ZTest Always

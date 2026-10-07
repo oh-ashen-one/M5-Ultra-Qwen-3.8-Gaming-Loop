@@ -162,9 +162,9 @@ namespace ChicagoGame
 
         static float Hash(string s)
         {
-            int h = 2166136261;
-            foreach (char c in s) { h ^= c; h *= 16777619; }
-            return ((h >>> 8) & 0xFFFF) / 65535f;
+            uint h = 2166136261u;
+            foreach (char c in s) { h ^= (uint)c; h *= 16777619u; }
+            return ((h >> 8) & 0xFFFFu) / 65535f;
         }
     }
 }
