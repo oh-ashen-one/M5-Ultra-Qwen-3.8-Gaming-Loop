@@ -1,19 +1,69 @@
 {
-  "action_id": "q0253-8dd99434-player-fit-export",
+  "action_id": "q0297-0b0b2508-clothing-export",
   "author": "local-Qwen",
   "export_succeeded": true,
   "files": [
     {
-      "bytes": 350828,
-      "path": "Assets/Resources/Generated/player/scene.fbx",
-      "sha256": "ab3e0cd613eb40a946c2c2a09a6a9b8a1fedff19ae33f3f87ce2b65d7fe974a5"
+      "bytes": 45272,
+      "path": "Assets/Resources/Generated/player/Textures/00-Jacket_Charcoal_Tex.png",
+      "sha256": "cadd4601a99d1b4ce12b5c678534cfce6750558249c194f614294f3882f1475b"
     },
     {
-      "bytes": 155274,
+      "bytes": 35829,
+      "path": "Assets/Resources/Generated/player/Textures/01-Jacket_Highlight_Tex.png",
+      "sha256": "2f152be5ca6793957dee52b8bf2399ed8bab78be3f746b8cfed5cfd0ccfa0131"
+    },
+    {
+      "bytes": 46764,
+      "path": "Assets/Resources/Generated/player/Textures/02-Jeans_DarkBlue_Tex.png",
+      "sha256": "86e95811bd639c1f4bc9b1c54561b14b5e267eaf5f954a721e8d206b03d27bcc"
+    },
+    {
+      "bytes": 48684,
+      "path": "Assets/Resources/Generated/player/Textures/03-Jeans_Seam_Tex.png",
+      "sha256": "70aee8a2f97a3d835dff717c68e9dfd908dd57b989f9ced09a189171b6883f72"
+    },
+    {
+      "bytes": 631036,
+      "path": "Assets/Resources/Generated/player/scene.fbx",
+      "sha256": "2740213a4c8572e785d551569c74832fabb32b8b22f2fb4b440e938eb4a4d535"
+    },
+    {
+      "bytes": 45272,
+      "path": "ArtSources/player/Textures/00-Jacket_Charcoal_Tex.png",
+      "sha256": "cadd4601a99d1b4ce12b5c678534cfce6750558249c194f614294f3882f1475b"
+    },
+    {
+      "bytes": 35829,
+      "path": "ArtSources/player/Textures/01-Jacket_Highlight_Tex.png",
+      "sha256": "2f152be5ca6793957dee52b8bf2399ed8bab78be3f746b8cfed5cfd0ccfa0131"
+    },
+    {
+      "bytes": 46764,
+      "path": "ArtSources/player/Textures/02-Jeans_DarkBlue_Tex.png",
+      "sha256": "86e95811bd639c1f4bc9b1c54561b14b5e267eaf5f954a721e8d206b03d27bcc"
+    },
+    {
+      "bytes": 48684,
+      "path": "ArtSources/player/Textures/03-Jeans_Seam_Tex.png",
+      "sha256": "70aee8a2f97a3d835dff717c68e9dfd908dd57b989f9ced09a189171b6883f72"
+    },
+    {
+      "bytes": 793,
+      "path": "ArtSources/player/original-images.json",
+      "sha256": "bfbf1c2da064a653d5ffdc89ba45832e6d91ee52bd4e97baa5bba76a01a955e4"
+    },
+    {
+      "bytes": 7665,
+      "path": "ArtSources/player/original-uv-observation.json",
+      "sha256": "db929ccbda404a0095fae5ac08b196d7dca6ae5a7387d03d43f78846136a5470"
+    },
+    {
+      "bytes": 366921,
       "path": "ArtSources/player/source.blend",
-      "sha256": "7651b3fa3148d164a18243e523b2e7330d756811455f1cfb35bcfb71a34c4d84"
+      "sha256": "976a4dd3f3cc80907723b93ae5cf77db870582816b9f48a66dd3aa8b391a8282"
     }
   ],
   "script": "Art/player.py",
-  "script_sha256": "4d2bbdcdf0aae75cf4380387e39bdf4cc97e877f66efe512f8a06a5b4daba9e4"
+  "script_sha256": "b69a8bb2b942341b97489142abbf890105a097eef86b39e5241cb5364f962450"
 }

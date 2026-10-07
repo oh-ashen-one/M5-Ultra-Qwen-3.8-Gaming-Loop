@@ -1,0 +1,34 @@
+[
+  {
+    "image": "Jacket_Charcoal_Tex",
+    "file": "Textures/00-Jacket_Charcoal_Tex.png",
+    "width": 256,
+    "height": 256,
+    "original_generated_pixels": true,
+    "external_input": false
+  },
+  {
+    "image": "Jacket_Highlight_Tex",
+    "file": "Textures/01-Jacket_Highlight_Tex.png",
+    "width": 256,
+    "height": 256,
+    "original_generated_pixels": true,
+    "external_input": false
+  },
+  {
+    "image": "Jeans_DarkBlue_Tex",
+    "file": "Textures/02-Jeans_DarkBlue_Tex.png",
+    "width": 256,
+    "height": 256,
+    "original_generated_pixels": true,
+    "external_input": false
+  },
+  {
+    "image": "Jeans_Seam_Tex",
+    "file": "Textures/03-Jeans_Seam_Tex.png",
+    "width": 256,
+    "height": 256,
+    "original_generated_pixels": true,
+    "external_input": false
+  }
+]
