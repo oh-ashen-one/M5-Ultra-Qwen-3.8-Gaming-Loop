@@ -1,0 +1,99 @@
+{
+  "candidate": "d4d13937c63b9e056d3c40bf72fbf02e63eb3990",
+  "build_id": "810ee2cb3d9e84ae37bac4bcba8134f4301e147fb0bf396afd42302ca4c8b618",
+  "evidence": "q0160-4244e2b1-survey",
+  "time": 77.0,
+  "health": 28.0,
+  "player": [
+    28.18739128112793,
+    0.13499999046325684,
+    13.939845085144043
+  ],
+  "vehicle": [
+    47.60508728027344,
+    -0.009999275207519531,
+    17.460317611694336
+  ],
+  "actualBoxSize": [
+    1.7999999523162842,
+    1.2000000476837158,
+    4.300000190734863
+  ],
+  "original_gate_preserved": {
+    "passed": false,
+    "failure": [
+      "unchanging-captures"
+    ]
+  },
+  "original_sha256": {
+    "gate.json": "6b52233c1616dc95aab13844b40f022bdc8d1ddced250b66a7c842dbd331c0af",
+    "captures/counter-exfil-survey.json": "4c98dcaea676e6606e32ac727df3fe9f15a7e3f28e2b7c8b87132e4b0b752d7e",
+    "captures/runtime-result.json": "22a7d407a1a85bbe2436a180fa102d38a7624d7d71e0759ea21a4651a9e1fc99",
+    "captures/scene-transforms.json": "72966b2384cda14b04742c2527426cdd78d8ff6f9ef7d64244b4b3cff38ec3fc",
+    "captures/trace.jsonl": "c39d7c676e0a65c276d7e2501415f1a0138f69a837c18a63724cffbc2cf5c0f4",
+    "captures/frame-000.png": "62212cd45906a0034f840399ae7a17fd4c6668f3bc9251adcabfdf5cda94ed50",
+    "captures/frame-001.png": "62212cd45906a0034f840399ae7a17fd4c6668f3bc9251adcabfdf5cda94ed50"
+  },
+  "scoped_qualification": "Native westbound clearance and renderer-bounds union only. Turning, driven traversal, activation and incident remain unverified.",
+  "routes": [
+    {
+      "name": "central-westbound",
+      "capsule_clear": true,
+      "coupe_clear": true,
+      "renderer_bounds_union_covered": true,
+      "points": 94,
+      "segments": 91,
+      "obstacles": []
+    },
+    {
+      "name": "candidate-z10",
+      "capsule_clear": false,
+      "coupe_clear": false,
+      "renderer_bounds_union_covered": false,
+      "points": 91,
+      "segments": 90,
+      "obstacles": [
+        "Props/alley_props/dumpster_a/dumpster_a_body",
+        "Props/ltrack/pier_01/pier_base01",
+        "Props/ltrack/pier_01/pier_colL01",
+        "RelaySite2",
+        "WorldCollision/AlleyDumpster/dumpster_a_body",
+        "WorldCollision/EastStreetGround/CurbSouth",
+        "WorldCollision/EastStreetGround/SidewalkSouth"
+      ]
+    },
+    {
+      "name": "candidate-z15",
+      "capsule_clear": false,
+      "coupe_clear": false,
+      "renderer_bounds_union_covered": true,
+      "points": 91,
+      "segments": 90,
+      "obstacles": [
+        "Props/alley_props/dumpster_b/dumpster_b_body"
+      ]
+    },
+    {
+      "name": "candidate-z19",
+      "capsule_clear": true,
+      "coupe_clear": false,
+      "renderer_bounds_union_covered": true,
+      "points": 91,
+      "segments": 90,
+      "obstacles": [
+        "WorldCollision/AlleyNorthWall",
+        "WorldCollision/Barrier",
+        "WorldCollision/StreetWestNubWall"
+      ]
+    },
+    {
+      "name": "handoff-foot-retrieval",
+      "capsule_clear": true,
+      "coupe_clear": true,
+      "renderer_bounds_union_covered": true,
+      "points": 41,
+      "segments": 40,
+      "obstacles": []
+    }
+  ]
+}
