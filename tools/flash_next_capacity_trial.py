@@ -305,7 +305,7 @@ def main():
                 state["status"] = "stopped-by-request"
             except Exception as exc:
                 state.update(status="stopped-on-fault", error=str(exc), error_type=type(exc).__name__)
-                try:state['stop_snapshot']=snapshot(args.coordination_dir,baseline,engine_lease)
+                try:state['stop_snapshot']=snapshot(args.coordination_dir,baseline,engine_lease,coexistence=args.authorized_shared_coexistence)
                 except Exception as capture_error:state['stop_snapshot_error']=type(capture_error).__name__+': '+str(capture_error)
             finally:
                 if child is not None and child.poll() is None:
