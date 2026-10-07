@@ -22,6 +22,21 @@ namespace ChicagoGame
         static readonly Color BoardColor = new Color(.95f, .95f, .95f);
         static readonly Color DownColor = new Color(1f, .26f, .22f);
 
+        // The one backing Setup cloned, plus the geometry Setup gave it. No
+        // second board, no new asset: this same clone stretches for the armed
+        // five-line ending and takes its installed geometry back otherwise.
+        // Measured live: viewport travel per local unit = (.94701-.76754)/.36 =
+        // .4985; text bottom .75927 spilled .00827 below card bottom .76754.
+        // Top edge is pinned at its original local .055 (-.125+.18 = -.145+.200)
+        // and only the bottom moves: scale.y .36 -> .400 puts the bottom at
+        // local -.345 = .7476 viewport, containing five lines with a third of a
+        // line spare. Height .1994 stays under the .24 ceiling and on screen in
+        // both 4:3 and 16:9 because the mapping is height-based.
+        Transform _card;
+        Vector3 _cardPos0, _cardScale0;
+        static readonly Vector3 ArmedPos = new Vector3(0f, -.145f, .025f);
+        static readonly Vector3 ArmedScale = new Vector3(1.5f, .400f, .01f);
+
         public static void Install(GameObject player, Camera cam)
         {
             if (_inst != null) return;
@@ -62,6 +77,11 @@ namespace ChicagoGame
                 boardMat.color = new Color(0.06f, 0.07f, 0.085f, 1f);
                 foreach (var r in cl.GetComponentsInChildren<Renderer>()) { r.material = boardMat; r.enabled = true; }
                 foreach (var col in cl.GetComponentsInChildren<Collider>()) col.enabled = false;
+                // Storing this very clone and exactly what was installed keeps
+                // the armed stretch reversible rather than permanent.
+                _card = cl.transform;
+                _cardPos0 = cl.transform.localPosition;
+                _cardScale0 = cl.transform.localScale;
             }
 
             var list = new List<Renderer>();
@@ -98,18 +118,28 @@ namespace ChicagoGame
             bool down = DeathAuthority.IsDead;
             string s = down ? DeathBoard(_interception, _counter) : null;
 
+            // The backing stretches for one case only: genuinely armed after
+            // the old interception chain finished clean, where the copy really
+            // runs to five lines. Live objectives, the three-line relay and
+            // route endings, death and the R reset all stay on installed
+            // geometry.
+            bool armedFive = false;
+
             if (s == null)
             {
                 if (_counter != null && _counter.BoardPriority)
                     s = _counter.Objective;
                 else if (_counter != null && _counter.Armed)
                 {
+                    // All four interception ending lines verbatim, then exactly
+                    // one compact Armed hint with coupe distance and E/F.
                     string old = _interception != null ? _interception.Objective : null;
                     string line = _counter.HudLine;
                     if (!string.IsNullOrEmpty(old))
                         s = string.IsNullOrEmpty(line) ? old : old + "\n" + line;
                     else if (!string.IsNullOrEmpty(line))
                         s = line;
+                    armedFive = s != null && Lines(s) >= 5;
                 }
                 else if (_interception != null && _interception.Active)
                     s = _interception.Objective;
@@ -136,8 +166,22 @@ namespace ChicagoGame
             // unmistakable and a released death returns the board to exactly
             // the colour Setup installed.
             _board.color = down ? DownColor : BoardColor;
+
+            // Same clone, top pinned: downward-only while armed, exact
+            // installed geometry in every other state.
+            if (_card)
+            {
+                Vector3 p = armedFive ? ArmedPos : _cardPos0;
+                Vector3 q = armedFive ? ArmedScale : _cardScale0;
+                if (_card.localPosition != p) _card.localPosition = p;
+                if (_card.localScale != q) _card.localScale = q;
+            }
+
             foreach (var r in _hide) if (r) r.enabled = false;
         }
+
+        static int Lines(string t)
+        { int n = 1; for (int i = 0; i < t.Length; i++) if (t[i] == '\n') n++; return n; }
 
         /// <summary>Board copy for a downed courier, chosen before any chapter
         /// is consulted so a health-depleted failure always beats live and
