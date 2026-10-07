@@ -41,7 +41,7 @@ namespace ChicagoGame
             _board.fontSize = 40; _board.characterSize = .0145f;
             _board.anchor = TextAnchor.UpperCenter;
             _board.alignment = TextAlignment.Center;
-            _board.color = new Color(.95f, .95f, .95f);
+            _board.color = BoardColor;
 
             Transform src = null;
             var mh = GameObject.Find("MissionHud");
