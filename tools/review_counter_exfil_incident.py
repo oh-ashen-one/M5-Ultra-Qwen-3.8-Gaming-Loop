@@ -44,17 +44,23 @@ def require_native(result,source):
 def validate_boundary(old):
     expected=dict(status='paused',controller_pid=None,owned_process=None,last_playable_checkpoint=ACCEPTED,
         task_index=7,task_failures=24,failure_streak=1,diagnosis_used=True,overall_deadline_epoch=HARD_CAP_EPOCH,
-        counter_exfil_negatives_attempted=True,
+        counter_exfil_negatives_attempted=True,counter_exfil_exit_negative_attempted=True,
         blocker='Halt: One Counter-Exfil incident passes physical success, contact/death negatives and original regressions; source-matched pixel review required')
     if any(old.get(k)!=v for k,v in expected.items()) or old.get('counter_exfil_visual_review_attempted'):
         raise Halt('Require complete stopped incident qualification and unchanged accepted history')
     require_native(old.get('counter_exfil_negatives_outcome',{}),old.get('source_checkpoint'))
+    extra=old.get('counter_exfil_exit_negative_outcome',{})
+    if not extra.get('passed') or extra.get('candidate')!=old.get('source_checkpoint') or not extra.get('native',{}).get('passed'):
+        raise Halt('Require the actual unresolved-foot-exit and repeated-F negative')
 
 class ReviewCounterIncident(CapacityAuthor):
     def validate_recovery(self,old):
         validate_boundary(old);self.source=old['source_checkpoint'];self.native_result=old['counter_exfil_negatives_outcome']
-        self.native_path=self.store.root/'evidence'/(old['current_round']+'-counter-negatives.json')
+        self.native_path=self.store.root/'evidence'/(old['counter_exfil_native_round']+'-counter-negatives.json')
         if read_json(self.native_path)!=self.native_result:raise Halt('Native ledger and preserved artifact disagree')
+        self.exit_result=old['counter_exfil_exit_negative_outcome']
+        self.exit_path=self.store.root/'evidence'/self.exit_result['evidence']/'early-exit-gate.json'
+        if read_json(self.exit_path)!=self.exit_result:raise Halt('Early-exit ledger and preserved artifact disagree')
         self.resume_capacity=self.priority_resume=self.transport_recovery=self.admission_recovery=False
     def recovery_settings(self):
         return dict(counter_exfil_visual_review_attempted=True,recovery_route='fresh-local-complete-incident-pixel-review',
@@ -66,7 +72,7 @@ class ReviewCounterIncident(CapacityAuthor):
             ('combat-after',prior['success'],5),('complete',prior['success'],7),
             ('escape',prior['activation_escape'],4),('active-death',deaths['active-runners'],1),
             ('failed-death',deaths['failed-escape'],1),('reset',deaths['active-runners'],3)]
-        images=[];times={};proof={self.native_path:sha(self.native_path.read_bytes())}
+        images=[];times={};proof={self.native_path:sha(self.native_path.read_bytes()),self.exit_path:sha(self.exit_path.read_bytes())}
         for name,item,index in selected:
             bundle=self.store.root/'evidence'/item['evidence'];frame=bundle/'captures'/f'frame-{index:03d}.png'
             label=name+'/'+frame.name;t=read_json(bundle/'captures/scenario.json')['captures'][index];times[label]=t
@@ -78,6 +84,7 @@ class ReviewCounterIncident(CapacityAuthor):
         self.c.update(working_context_tokens=98304,output_tokens=16384,model_timeout_seconds=600)
         facts=dict(candidate=self.source,physical_success=self.native_result['success_continuity']['facts'],
             real_contact_release=self.native_result['contact']['release'],all_four_new_and_six_old_death_cases_passed=True,
+            unresolved_foot_exit_negative=self.exit_result['early_crossing'],duplicate_F_does_not_respawn=True,
             original_healthy_and_ten_regressions_passed=True,death_cases_use_declared_external_health_zero=True,
             full_game_art_and_ten_minute_pacing_unfinished=True)
         result=self.model.session('critic',ident+'-incident-critic',
@@ -105,6 +112,7 @@ class ReviewCounterIncident(CapacityAuthor):
         accepted=bool(result.get('ok') and result.get('verdict')=='PASS')
         artifact=dict(candidate=self.source,native_artifact=self.native_path.name,
             native_sha256=proof[self.native_path],review=result,frames=packet['records'],
+            early_exit_evidence=self.exit_result['evidence'],early_exit_sha256=proof[self.exit_path],
             scoped_accepted=accepted,final_game_accepted=False,ten_minute_gameplay_proven=False)
         atomic(self.store.root/'evidence'/(ident+'-counter-visual-review.json'),artifact)
         self.store.set(counter_exfil_visual_review_outcome=artifact);self.store.report()
