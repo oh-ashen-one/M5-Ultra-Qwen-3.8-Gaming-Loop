@@ -29,6 +29,8 @@ def validate_boundary(old):
 
 
 class RefineCounterExfil(CapacityAuthor):
+    scope_context_tokens=65536
+    scope_output_tokens=16384
     def validate_recovery(self,old):
         validate_boundary(old)
         self.proposal=old['next_connected_expansion']
@@ -64,7 +66,8 @@ class RefineCounterExfil(CapacityAuthor):
         atomic(self.store.root/'evidence'/(ident+'-handoff-facts.json'),facts)
         context='\n\n'.join(name+'\n'+(self.project/'Assets/Game'/name).read_text() for name in
             ['Combat.cs','VehicleInteraction.cs','InterceptionMission.cs','MissionDirectorHud.cs','DeathAuthority.cs'])
-        self.c.update(working_context_tokens=65536,output_tokens=16384,model_timeout_seconds=600)
+        self.c.update(working_context_tokens=self.scope_context_tokens,
+            output_tokens=self.scope_output_tokens,model_timeout_seconds=600)
         result=self.model.session('planner',ident+'-scope-refinement',
             'You are local Qwen. Revise your selected counter-exfil proposal using concrete review findings.',
             'Keep the chosen counter-exfil concept and return only the same six concise final fields '
@@ -89,7 +92,9 @@ class RefineCounterExfil(CapacityAuthor):
             json.dumps(self.proposal)+'\nACTUAL NATIVE FACTS:\n'+json.dumps(facts)+
             '\nCURRENT EXACT CONTROL/CHAPTER APIs:\n'+context,
             [tool('submit_plan','Save the reviewed final first-incident scope.',{k:{'type':'string'} for k in FIELDS})],
-            {'submit_plan':lambda _,f:validate_plan(f)},turns=2,reasoning_effort='xhigh')
+            {'submit_plan':lambda _,f:validate_plan(f)},turns=2,reasoning_effort='xhigh',
+            retained_assistant=getattr(self,'retained_scope',None),
+            retained_instruction=getattr(self,'retained_instruction',None))
         if not result.get('ok') and set(result)=={'summary'}:
             try:
                 result=final_text_plan(result['summary']);result['submission_route']='strict-final-json-content'
@@ -101,4 +106,3 @@ class RefineCounterExfil(CapacityAuthor):
 
 
 if __name__=='__main__':raise SystemExit(main(RefineCounterExfil))
-

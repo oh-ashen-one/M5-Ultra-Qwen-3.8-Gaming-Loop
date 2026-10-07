@@ -1,16 +1,16 @@
 # M5 Ultra Qwen 3.8 Gaming Loop
 
-**Status, 2026-10-05 13:17 UTC: continuous local game queue running.** A limited world-collision milestone passes its native gate, original walking regression and fresh scoped critique; the same owner automatically advanced into vehicle collision/reset. Source `54580a0` and milestone `af675bf` are published. **49 controller tests pass on both machines.** Visual boundary fences remain deficient, and no whole game is accepted. See [actual frames, measured gates and caveats](diagnostics/continuous-2026-10-05/README.md). The original overall deadline remains **21:37:50 UTC**; mission/failure/retry, combat/pursuit/HUD/audio and whole-route polish follow in the [continuous queue](docs/CONTINUOUS-QUEUE.md).
+**Status, 2026-10-07: death/reset integration accepted; next connected objective under local review.** Candidate `d4d13937c63b9e056d3c40bf72fbf02e63eb3990` passes six zero-health chapter cases, the normal healthy route and all ten gameplay regressions, followed by corrected fresh local visual review. [The evidence](docs/DEATH-INTEGRATION-2026-10-07.md) preserves both a narrow checker correction and a disproven cloud pixel suspicion. No final game or art-quality acceptance is claimed. [The rolling handoff](HANDOFF.md) records current work and remaining limits.
 
-The accepted baseline includes continuous paving, proximity entry, **10.639 m forward driving**, and a visibly grounded exit/return walk. Its original walking regression passed **18.960 m**, with **125/125** sampled positions over pavement. The tag `baseline/walk-drive-20261005` preserves it. Chicago-target quality, robust collision/handling and the complete ten-minute game remain unfinished. See [actual baseline frames and rejected candidates](diagnostics/subfeatures-2026-10-05/README.md) and [separate subfeature/final acceptance](docs/SUBFEATURE-ACCEPTANCE.md).
+The existing native route includes walking, driving, courier delivery, a dead drop, relay activation and a moving interception. Actual gameplay completion is around 75 seconds; the 95-second replay includes validation and reset. The target remains a polished ten-minute experience with varied action. Rough original characters, environment, lighting and audio remain unfinished. The fixed work cap is **2026-10-08 06:33:12 UTC**; it is not automatically extended.
 
-An open-source plan for a local-first coding loop that aims to produce a polished, roughly ten-minute playable urban action/driving game. The M5 Ultra was verified with 256 GB memory and 80 GPU cores. The selected model is now `mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp`, pinned and loaded through isolated oMLX 0.6.4. See [current readiness](docs/FLASH-NEXT-READINESS.md) for exact settings, evidence and launch blockers. Earlier 27B BF16 records are historical.
+This open-source project studies a local-first game-coding loop on a verified M5 Ultra with 256 GB memory and 80 GPU cores. The selected model is `mlx-community/Qwen3.8-Flash-Next-oQ6e-mtp`, pinned and currently qualified on official oMLX 0.7.0 with xhigh reasoning. [Measured capacity work](docs/CAPACITY-TRIAL-2026-10-07.md) separates actual useful coding from load-only observations. Earlier 27B BF16 and oMLX 0.6.4 preparation records remain historical evidence.
 
 The game should evoke the movement, driving, camera, atmosphere, and mission flow of a GTA5-style experience while using original content. Local Qwen must author every eventual 3D model, material, rig and animation from scratch through Blender. No Meshy, Tripo or premade asset packs. This is a small playable slice, with no promise of AAA parity. Native Unity CLI/C# is selected; a browser build is a fallback.
 
 ## Start boundary
 
-The existing M5 tests are closed. The owner subsequently authorized implementing the controller, qualifying it, and starting the full Chicago run autonomously. [The consolidated brief](docs/CHICAGO-BRIEF.md) is authoritative. The initial controller has a 12-hour wall-clock bound with bounded failure recovery; time and round counts never imply completion. Parent dot supplies the existing 30-minute oversight schedule.
+The existing M5 tests are closed. The owner subsequently authorized implementing the controller, qualifying it, and starting the full Chicago run autonomously. [The consolidated brief](docs/CHICAGO-BRIEF.md) is authoritative. The current owner-authorized cap is October 8 at 06:33:12 UTC, with bounded failure recovery and preserved task history. Time and round counts never imply completion. The parent supplies the existing ten-minute oversight; this project does not create a competing schedule or owner.
 
 This repository contains documentation, a durable serial controller, native Unity/Blender adapters, bounded diagnostic tools, descriptions of private Chicago visual targets and a small attributed set of source references. Actual game code/art comes from local Qwen on a separate game branch. Public progress must distinguish controller qualification, generated targets and actual game evidence.
 
@@ -33,6 +33,8 @@ The [source references](reference/README.md) include selected MIT diagnostic, in
 
 | Document | Purpose |
 | --- | --- |
+| [Latest verified death/reset milestone](docs/DEATH-INTEGRATION-2026-10-07.md) | Native cases, corrected pixel review, provenance and known limits |
+| [Rolling handoff](HANDOFF.md) | Current task branch, verified state and next work |
 | [Plan](docs/PLAN.md) | Acceptance-first phases, start gate, unresolved choices |
 | [Architecture](docs/ARCHITECTURE.md) | Context, edit boundaries, verification, recovery, provenance |
 | [Prior attempts](docs/PRIOR-ATTEMPTS.md) | Pinned static evidence and limits on success claims |
