@@ -150,10 +150,13 @@ class LocalModel:
                 raise Halt('Only inspected non-tool private work may be continued')
             messages.append({k: retained_assistant[k] for k in
                 ('role', 'content', 'reasoning_content', 'reasoning') if k in retained_assistant})
+            submission = ('Call finish_source now with one complete, compact usable source submission.'
+                if any(t['function']['name'] == 'finish_source' for t in tools)
+                else 'Use the available source-edit tools to save the complete implementation promptly, then call finish_task.')
             messages.append({'role': 'user', 'content':
                 'The previous response hit its output cap without saving a file. Use that retained work; '
-                'do not repeat the analysis. Thinking effort remains ' + reasoning_effort + '. Call finish_source now with '
-                'one complete, compact usable source file within the available output budget.'})
+                'do not repeat the analysis. Thinking effort remains ' + reasoning_effort + '. ' + submission +
+                ' Stay within the available output budget.'})
         self.store.event("role-start", role=role, session_id=session_id, images=image_records)
         unsupported_calls = 0
         with exclusive(Path(self.config["coordination_dir"]) / "request.lock"):
@@ -171,6 +174,13 @@ class LocalModel:
                 request_id = session_id + "-" + str(turn)
                 payload = dict(model=MODEL, messages=messages, tools=tools,
                                tool_choice="auto", max_tokens=self.config["output_tokens"], **sampling)
+                atomic(private / ('request-%03d-settings.json' % turn), dict(
+                    request_id=request_id, role=role, model=payload['model'],
+                    reasoning_effort=payload['reasoning_effort'], max_tokens=payload['max_tokens'],
+                    working_context_tokens=self.config['working_context_tokens'],
+                    conservative_prompt_bound=bound, chat_template_kwargs=payload['chat_template_kwargs'],
+                    sampling={k:payload[k] for k in ('temperature','top_p','top_k','min_p',
+                        'presence_penalty','repetition_penalty')}, payload_sha256=sha(encode(payload))))
                 if visual_contract is not None:
                     from .visual_context import verify_payload
                     receipt=verify_payload(messages,visual_contract)

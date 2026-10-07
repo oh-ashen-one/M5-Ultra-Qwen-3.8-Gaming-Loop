@@ -11,7 +11,7 @@ from types import SimpleNamespace
 import zlib
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"tools"))
-from loop_controller.core import Files, Halt, Store, atomic, failure_key, seal, sha, verify_seal
+from loop_controller.core import Files, Halt, Store, atomic, encode, failure_key, seal, sha, verify_seal
 from loop_controller.adapters import evaluate_runtime, sandbox_profile
 from loop_controller.model import LocalModel, conservative_prompt_bound, tool, typed_arguments, response_accounting
 from loop_controller.runner import Runner, git, scenario_for
@@ -221,7 +221,7 @@ class ControllerTests(unittest.TestCase):
         model.config={'coordination_dir':str(self.root/'coord'),'output_tokens':8192,'working_context_tokens':65536,'model_timeout_seconds':1}
         requests=[]
         def api(route,payload,timeout):
-            requests.append(payload)
+            requests.append(json.loads(json.dumps(payload)))
             return {'choices':[{'finish_reason':'tool_calls','message':{'role':'assistant','reasoning_content':'private fixture text','tool_calls':[
                 {'id':'1','type':'function','function':{'name':'finish_task','arguments':'{}'}}]}}]}
         model.api=api
@@ -232,7 +232,13 @@ class ControllerTests(unittest.TestCase):
             self.assertTrue(result['ok'])
         self.assertEqual([v['reasoning_effort'] for v in requests],['low','xhigh','xhigh'])
         self.assertIn('Thinking effort remains xhigh', requests[-1]['messages'][3]['content'])
+        self.assertIn('then call finish_task', requests[-1]['messages'][3]['content'])
+        self.assertNotIn('Call finish_source', requests[-1]['messages'][3]['content'])
         self.assertEqual(requests[-1]['messages'][2]['reasoning_content'], 'private retained fixture')
+        settings=json.loads((self.store.root/'private/sessions/retained/request-000-settings.json').read_text())
+        self.assertEqual(settings['reasoning_effort'],'xhigh');self.assertEqual(settings['max_tokens'],8192)
+        self.assertEqual(settings['payload_sha256'],sha(encode(requests[-1])))
+        self.assertNotIn('private retained fixture',json.dumps(settings))
         self.assertTrue(all(v['chat_template_kwargs']=={'enable_thinking':True,'preserve_thinking':True} for v in requests))
         receipt=json.loads(self.store.db.execute("SELECT result FROM actions WHERE id='small-0'").fetchone()[0])
         self.assertEqual(receipt['reasoning_effort'],'low');self.assertEqual(receipt['response_accounting']['parsed_tool_calls'],1)

@@ -102,7 +102,7 @@ class PlayerDeathSource(ReticleSource):
 
         evidence = [{k:row.get(k) for k in ('case','failure','injection_time','prior_chapter_state',
             'zero_health_samples','reset_samples','intervention')} for row in self.red['cases']]
-        self.c.update(working_context_tokens=98304, output_tokens=16384, model_timeout_seconds=600)
+        self.c.update(working_context_tokens=98304, output_tokens=32768, model_timeout_seconds=600)
         result = self.model.session('builder', ident + '-death-source',
             'You are local Qwen, sole gameplay author. Implement a coherent repair of the measured player-death integration defect.',
             'Native negative tests reached the existing chapters through ordinary input, injected health=0 once '
@@ -132,7 +132,7 @@ class PlayerDeathSource(ReticleSource):
             'current source and records its hashes, so an initial replace_text can use a supplied exact span. '
             'After an edit, read_file refreshes the current hash before further edits to that file. Save complete '
             'logical changes through tools promptly; each save is checkpointed with local authorship. '
-            'Use xhigh reasoning for cross-component ordering and reset correctness.16,384output tokens per '
+            'Use xhigh reasoning for cross-component ordering and reset correctness.32,768output tokens per '
             'response and bounded tool turns are available. Return finish_task after complete integration, '
             'not a prose-only design. No native engine runs during this author phase; green tests follow.\n'
             'READ-ONLY API: LoopSignals.Health is float; Restarts,Shots,Hits,PursuitLevel are int; Mode/Mission '
@@ -147,7 +147,7 @@ class PlayerDeathSource(ReticleSource):
                   {'path':{'type':'string'},'content':{'type':'string'}}),
              tool('finish_task','Finish the complete saved integration; native verification follows.',{'summary':{'type':'string'}})],
             {'read_file':edits.read,'replace_text':replace,'create_file':create,'finish_task':finish},
-            turns=12, reasoning_effort='xhigh')
+            turns=12, reasoning_effort='xhigh', retained_assistant=getattr(self, 'retained_assistant', None))
         atomic(self.store.root / 'evidence' / (ident + '-death-author.json'), result)
         if not result.get('ok'):
             raise Halt('Local death integration incomplete; preserve all saved source and bounded response for changed continuation')
