@@ -1,19 +1,19 @@
 {
-  "action_id": "q0191-5bf45f93-character-export",
+  "action_id": "q0198-1d013de2-character-export",
   "author": "local-Qwen",
   "export_succeeded": true,
   "files": [
     {
-      "bytes": 135404,
+      "bytes": 266492,
       "path": "Assets/Resources/Generated/player/scene.fbx",
-      "sha256": "64b36368c724411dfeca61a8a149261e63b68a960edee6220190ac736bf39b40"
+      "sha256": "4a8d045b6d7e464ac2b2d7f940ccf0a491ad2ab072ffd4d8a1f644de71d6832b"
     },
     {
-      "bytes": 118028,
+      "bytes": 135945,
       "path": "ArtSources/player/source.blend",
-      "sha256": "eae69a958901a7160365c576b0688e18cdc58d4ed1bf6c2aebf1179bad16bfb4"
+      "sha256": "3c47608513462964becf5634371b442bb7e645c855db4a9c232a58662116229f"
     }
   ],
   "script": "Art/player.py",
-  "script_sha256": "1a162b388596c52e0866cf42c6c7bdf917abe92e509bdb90622fe29093744a26"
+  "script_sha256": "576ecd78f6309450eeab9688e751aff993ac9f05affc32a0d12e971639178d9d"
 }
