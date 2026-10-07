@@ -6,6 +6,7 @@ mission, chapter, relay, reset, physical-prop and regression contracts stay.
 import math
 import re
 from .chapter_presentation import rect,overlaps
+from .counter_exfil_checks import old_ending_with_armed_hint
 
 def phase(row):
     intercept=row.get('interception',{})
@@ -27,8 +28,9 @@ def inspect_hud(rows,required=()):
         ch=row.get('routeChapter',{});panels={p.get('name'):p for p in ch.get('hudPanels',[])}
         p=panels.get('MissionBoard',{});h=panels.get('HudStatus',{});state=phase(row);seen.add(state)
         text=(p.get('text') or '').lower();lines=text.splitlines()
+        armed_hint=old_ending_with_armed_hint(row,text)
         if not p.get('visible') or not h.get('visible'):failures.add('primary-or-health-panel-hidden')
-        if not 1<=len(lines)<=4 or any(len(line)>40 for line in lines):failures.add('objective-not-compact')
+        if not 1<=len(lines)<=(5 if armed_hint else 4) or any(len(line)>40 for line in lines):failures.add('objective-not-compact')
         if any(panels.get(n,{}).get('visible') or panels.get(n,{}).get('visibleRenderers',-1)!=0
                for n in ('MissionHud','RouteHud','RelayHud')):failures.add('competing-legacy-card-visible')
         if 'health' not in (h.get('text') or '').lower() or 'wanted' not in (h.get('text') or '').lower():
@@ -77,7 +79,7 @@ def inspect_hud(rows,required=()):
                 failures.add('relay-live-objective-not-rendered')
         if state.startswith('interception'):
             current=row['interception']
-            if not current.get('valid') or text!=(current.get('objective') or '').lower():
+            if not current.get('valid') or (text!=(current.get('objective') or '').lower() and not armed_hint):
                 failures.add('interception-live-objective-not-rendered')
             if f"stopped {current.get('stopped')} / escaped {current.get('escaped')}" not in text:
                 failures.add('interception-actual-counts-not-rendered')

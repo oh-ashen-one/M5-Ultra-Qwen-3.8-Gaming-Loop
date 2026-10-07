@@ -2,6 +2,7 @@
 import math
 from .aim_checks import inspect_aim_contract
 from .continuous_checks import validate_proposed
+from .counter_exfil_checks import old_ending_with_armed_hint
 
 NAMES = {'InterceptRunner1','InterceptRunner2','InterceptRunner3'}
 
@@ -57,7 +58,8 @@ def inspect_interception(rows,events,case):
             if not row.get('relay',{}).get('complete') or row.get('mission')!='complete': fail('interception-mutated-prior-state')
             panels={p.get('name'):p for p in row.get('routeChapter',{}).get('hudPanels',[])}
             text=panels.get('MissionBoard',{}).get('text','')
-            if not s.get('objective') or text!=s['objective']: fail('actual-interception-objective-not-rendered')
+            if not s.get('objective') or (text!=s['objective'] and not old_ending_with_armed_hint(row,text)):
+                fail('actual-interception-objective-not-rendered')
             if 'R reset' not in text or 'relay complete' not in text.lower(): fail('interception-receipt-or-reset-hint-missing')
         for name,v in targets.items():
             pos=v.get('position',[])

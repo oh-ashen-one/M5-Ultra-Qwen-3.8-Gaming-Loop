@@ -1,5 +1,6 @@
 """Independent native observations for the first chapter's entry/escape/reset."""
 import math
+import re
 
 def values(entries):
     result={}
@@ -27,6 +28,22 @@ def chapter(row):
         PinnedNow=sum(values(a.get('state')).get('hold',0)>=.8 for a in data.get('actors',[]) if a.get('alive')))
 
 def horizontal(a,b):return math.hypot(a[0]-b[0],a[2]-b[2])
+
+def old_ending_with_armed_hint(row,text):
+    """Only the authorized fifth line may augment a genuinely completed ending."""
+    state=chapter(row);old=row.get('interception',{})
+    if (not state.get('Armed') or any(state.get(k) for k in ('Active','Complete','Failed','SpawnedCount'))
+            or not old.get('valid') or not old.get('complete') or old.get('failed')
+            or old.get('stopped')!=3 or old.get('escaped')!=0 or row.get('health',0)<=0):return False
+    original=(old.get('objective') or '').lower();text=text.lower()
+    if not original or not text.startswith(original+'\n'):return False
+    hint=text[len(original)+1:]
+    if ('\n' in hint or len(hint)>40 or not hint.startswith('exfil')
+            or not all(re.search(r'\b'+word+r'\b',hint) for word in ('coupe','e','f'))):return False
+    distance=re.search(r'\b(\d+)\s*m\b',hint)
+    actor=row.get('vehicle') if row.get('mode')=='vehicle' else row.get('player')
+    car=row.get('vehicle')
+    return bool(distance and actor and car and abs(int(distance[1])-horizontal(actor,car))<=1)
 
 def inspect_activation_escape(rows,exit_x=3.2):
     failure=[];facts={}
