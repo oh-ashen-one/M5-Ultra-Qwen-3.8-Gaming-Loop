@@ -58,12 +58,16 @@ namespace ChicagoGame
         float activatedAt, activeTime;
         bool deathHeld; string objectiveBeforeDeath;
 
-        // Real on-foot east->west crossing evidence. Sampled only while the
-        // chapter is live, and only from a living courier on foot: standing
-        // beyond the line never counts, only an observed crossing does. Both
-        // samples and their timestamps are wiped by the ordinary R reset.
-        bool footEastOfExit;   // a foot sample really seen east of the line
-        bool crossedWest;      // a later foot sample really seen west of it
+        // Real on-foot east->west crossing evidence. Sampled on every live frame
+        // while the chapter is Active - settled or not - and only ever from a
+        // living courier on foot: standing beyond the line never counts, only an
+        // unbroken chain of foot samples that starts east of it and ends west of
+        // it does. Any vehicle frame (boarding, being driven, an E exit), any
+        // death hold and the ordinary R reset wipe the chain and its timestamps.
+        bool footEastOfExit;   // a live foot sample really seen east of the line
+        bool crossedWest;      // a later, contiguous foot sample really west of it
+        bool footValid;        // the previous foot sample belongs to this chain
+        Vector3 lastFoot;      // that previous sample, for the step-distance guard
         float crossedAt, settledAt;
 
         readonly CounterExfilRunner[] _runners = new CounterExfilRunner[3];
