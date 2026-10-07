@@ -421,7 +421,7 @@
   "shutdown_status": "stopped-by-request",
   "model_quality_changed": false,
   "other_workload_modified": false,
-  "native_status": "pending",
+  "native_status": "scoped-pass",
   "complete_death_integration": false,
   "final_game_accepted": false,
   "request_phase_alignment": "Approximate: request guard UTC/elapsed plus reported prefill/generation durations; budget samples roughly2seconds apart.",
@@ -432,5 +432,8 @@
     "capacity-budget.jsonl": "4c341aa60fa53d042a46e8e07ffbe5a08bc119b2c4fa72eedd8e6b2fe106e47b",
     "model-server.log": "bb1df339e5be657bf6c1a0dc8ef676fddf632a51a39f081afc4eb4732d528161",
     "author-performance.json": "3d9f7ce4fbd56336a1aa05788ceb31d965d5e9f7d4ac95ea646b5a48be42e4da"
-  }
+  },
+  "native_round": "q0147-d77ec817",
+  "native_evidence": "native-verification.json",
+  "native_scope": "Healthy95-second route and zero-health walking/reset pass; firing, pickup/progression and early failure-HUD gates remain red."
 }

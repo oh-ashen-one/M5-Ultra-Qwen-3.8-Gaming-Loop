@@ -1,0 +1,150 @@
+{
+  "verified_utc": "2026-10-07T03:04:34.324063+00:00",
+  "round": "q0147-d77ec817",
+  "candidate": "dbfc89901b813ced826e976eb79c3370c95471b2",
+  "controller_commit": "2757c5727c84bf5bf5a1d387b209336f38db1d36",
+  "model_unloaded": true,
+  "native_status": "scoped-pass",
+  "positive": {
+    "candidate_commit": "dbfc89901b813ced826e976eb79c3370c95471b2",
+    "build_id": "93e02557989f9040d4753a662a0fba9f800915f5501e1f10916ed11133673126",
+    "build_exit": 0,
+    "compile_errors": [],
+    "compile_reused": false,
+    "build_input_sha256": "913b05b1959d645b0aba06a1cc4125ebdf2c11ba8f8de635705fc8eea983421c",
+    "passed": true,
+    "failure": null
+  },
+  "negative_native": {
+    "candidate_commit": "dbfc89901b813ced826e976eb79c3370c95471b2",
+    "build_id": "93e02557989f9040d4753a662a0fba9f800915f5501e1f10916ed11133673126",
+    "build_exit": 0,
+    "compile_errors": [],
+    "compile_reused": true,
+    "build_input_sha256": "913b05b1959d645b0aba06a1cc4125ebdf2c11ba8f8de635705fc8eea983421c",
+    "passed": true,
+    "failure": null
+  },
+  "walking": {
+    "complete_death_integration": false,
+    "failure": [],
+    "native_natural_damage_death_proven": false,
+    "passed": true,
+    "zero_health_samples": 30
+  },
+  "death_contract": {
+    "build_id": "93e02557989f9040d4753a662a0fba9f800915f5501e1f10916ed11133673126",
+    "candidate": "dbfc89901b813ced826e976eb79c3370c95471b2",
+    "case": "courier-pickup",
+    "evidence": "q0147-d77ec817-courier-pickup",
+    "failure": [
+      "death-failure-and-reset-not-visible",
+      "objective-progression-after-zero-health",
+      "player-can-fire-while-dead"
+    ],
+    "final_game_accepted": false,
+    "injection_time": 7.400000095367432,
+    "intervention": "External declared one-time health=0 injection; progression and controls remain ordinary game code.",
+    "native_natural_damage_death_proven": false,
+    "passed": false,
+    "prior_chapter_state": {
+      "carrying": false,
+      "courierStage": 0,
+      "escaped": 0,
+      "interceptionActive": false,
+      "interceptionComplete": false,
+      "interceptionFailed": false,
+      "relayActive": false,
+      "relayComplete": false,
+      "relayCount": 0,
+      "relayExpected": 0,
+      "relayFailed": false,
+      "routeComplete": false,
+      "routeStage": 0,
+      "spawned": 0,
+      "stopped": 0
+    },
+    "reset_samples": 7,
+    "setup_passed": true,
+    "zero_health_samples": 30
+  },
+  "measurements": {
+    "dead_horizontal_displacement_metres": 0,
+    "reset_samples": 7,
+    "walking_after_reset_metres": 3.200000524520874
+  },
+  "shared_admission": {
+    "prior_round": "q0146-05eff4e0",
+    "prior_timeout_seconds": 300,
+    "changed_poll_seconds": 1,
+    "current_bound_seconds": 300,
+    "other_workload_modified": false
+  },
+  "state": {
+    "status": "paused",
+    "controller_pid": null,
+    "owned_process": null,
+    "source_checkpoint": "dbfc89901b813ced826e976eb79c3370c95471b2",
+    "last_playable_checkpoint": "c9bbf1acc28a26c2a0d06a83da4d3b2b44cde188",
+    "task_index": 7,
+    "task_failures": 24,
+    "failure_streak": 1,
+    "diagnosis_used": true,
+    "overall_deadline_epoch": 1791441192,
+    "blocker": "Halt: Local install/walk source passes healthy route and dead-walking/reset verification; full death integration remains pending"
+  },
+  "complete_death_integration": false,
+  "final_game_accepted": false,
+  "positive_checks": {
+    "interception": {
+      "passed": true,
+      "failure": null
+    },
+    "hud": {
+      "passed": true,
+      "failure": null
+    },
+    "polish": {
+      "passed": true,
+      "failure": null
+    },
+    "relay": {
+      "passed": true,
+      "failure": null
+    }
+  },
+  "private_evidence_sha256": {
+    "q0147-d77ec817-capacity-native.json": "9f87f14500382c06fddf044a96b9cd38c1cdfeb5f48cd8ceedab8978de130c0a",
+    "q0147-d77ec817-positive/moving-encounter-gate.json": "be09d176d32dc2fe9a32112fb397c8a78c1781741952d619b7e2b99b98377d1f",
+    "q0147-d77ec817-positive/captures/scenario.json": "b4d5993dd003612072ee061095eb2f706e1494879e6f75fc1165106002e42d27",
+    "q0147-d77ec817-courier-pickup/captures/scenario.json": "55b7d88820d7e027fc97540504b67e266ff1a27d2e0e232253d552841e279b9d",
+    "q0147-d77ec817-courier-pickup/captures/trace.jsonl": "88fd72d64e84788c6fbcc4c76aedc4a91e80c2fe0578bdbaaa174870242829da",
+    "q0147-d77ec817-courier-pickup/captures/death-injection.json": "3fcf3ce1a2fb023450db4a9597fbe5ba50dbddff3d476b8afca016a77da87a9b",
+    "q0147-d77ec817-courier-pickup/player-death-gate.json": "d52d3b42576cde71b7bee6cd37d78b0839a910b550dc954c44846ffe7c2f381f",
+    "q0147-d77ec817-courier-pickup/captures/frame-002.png": "2dc775182b6992aa4befe7216ba7dd3a10111cc0160bc7a0adee896933193e6d"
+  },
+  "source_clean": true,
+  "death_window_details": {
+    "hud_bad_samples": 12,
+    "hud_bad_first": {
+      "time": 7.633333206176758,
+      "visible": true,
+      "text": "PARCEL IN HAND\n24m / 23s\nE car | F deliver | Mouse0 fire\nR reset"
+    },
+    "hud_bad_last": {
+      "time": 8.783333778381348,
+      "visible": true,
+      "text": "PARCEL IN HAND\n24m / 22s\nE car | F deliver | Mouse0 fire\nR reset"
+    },
+    "shots_at_injection": 0,
+    "max_shots_while_dead": 3,
+    "carrying_became_true": true
+  },
+  "screenshot": {
+    "replay_seconds": 9.9,
+    "sha256": "2dc775182b6992aa4befe7216ba7dd3a10111cc0160bc7a0adee896933193e6d",
+    "delivery": "confirmed private Library upload; identifier retained in private outbox",
+    "pixel_observation": "HEALTH 0 and MISSION FAILED / R to retry are visible at9.9seconds. Earlier12dead-window samples still show PARCEL IN HAND. Primitive character shapes and unfinished street art remain visible.",
+    "local_visual_critic_run": false
+  }
+}

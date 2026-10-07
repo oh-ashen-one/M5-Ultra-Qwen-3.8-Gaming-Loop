@@ -1,5 +1,15 @@
 # Bounded Qwen capacity qualification
 
+## Native result
+
+**October 6, 11:04 p.m. EDT / October 7 03:04 UTC:** the useful local source now has native proof. Round `q0147-d77ec817` compiled `dbfc89901b813ced826e976eb79c3370c95471b2` without errors, passed the unchanged 95-second healthy route and then reused that exact build for the unchanged courier-pickup death probe. Its 30 zero-health samples show **0.0 metres of horizontal player movement** despite movement input. Ordinary R restored the full observed reset state; walking then covered **3.2 metres**.
+
+The full death contract remains **red**. Three shots occurred after zero health, courier pickup still progressed, and 12 early dead-window samples displayed the carrying objective instead of failure/retry information. The actual 9.9-second screenshot does show HEALTH 0 and MISSION FAILED / R to retry, so the HUD problem is inconsistent timing, not total absence. That screenshot was inspected and delivered privately. Primitive character geometry and unfinished street art remain visible.
+
+The probe uses an explicit external one-time health injection; natural enemy-damage death is not established. No full-game promotion occurred. Accepted checkpoint `c9bbf1ac`, counters, diagnosis history and the October 8 cap remain unchanged. The model and Unity processes are stopped, and the saved gameplay worktree is clean. Next work is local vehicle/combat/chapter/HUD death integration, followed by the complete death and regression suite.
+
+The one-second admission polling passed 16 focused checks on both hosts and acquired a slot within the original five-minute bound. Other workloads and their locks were untouched. See [source-matched native results, measurements and evidence hashes](../diagnostics/capacity-2026-10-07/native-verification.json).
+
 ## Phase-aware correction
 
 The owner authorized correcting the diagnosed rule and continuing useful simultaneous work on October6 at10:29p.m.EDT. Policy`simultaneous-capacity-trial-v2` retains the exact model, quality settings, headroom budgets,512MiB swap-growth bound,192GiB Qwen footprint bound,40GiB Unreal envelope, thermal/access/graphics checks, shared locks and speed watchdog. Official oMLX`safe` accounting remains active. No OS setting changes.
@@ -10,7 +20,7 @@ The new compression check requires a30-second window with either more than2GiB n
 
 These timing/rate thresholds are explicit bounded-trial heuristics, not Apple limits: the old2GiB amount is now a sustained-activity signal with corroboration;8GiB reuses the existing exit allowance;64MiB is an early fraction of the unchanged512MiB swap bound. This correction follows Apple's distinction between compressed occupancy and overall pressure, and retains official oMLX's live safe ceiling. It does not assume unlimited compression is harmless. See [Apple](https://support.apple.com/guide/activity-monitor/view-memory-usage-actmntr1004/mac) and [official oMLX0.7 memory accounting](https://github.com/jundot/omlx/blob/v0.7.0/omlx/process_memory_enforcer.py).
 
-Before deployment,84 targeted CPU checks pass locally, including replay of the nine saved samples, sustained swap-backed compression, compression/decompression churn with low headroom, transient recovery, phase transitions, observation gaps, hard faults in every phase, native-boundary protection and shared ownership. The recorded loading spike now passes; the constructed sustained bad-pressure cases still stop. The same84 checks also pass on the M5. The changed runtime then completed the useful local task described below; native verification is still pending.
+Before deployment,84 targeted CPU checks pass locally, including replay of the nine saved samples, sustained swap-backed compression, compression/decompression churn with low headroom, transient recovery, phase transitions, observation gaps, hard faults in every phase, native-boundary protection and shared ownership. The recorded loading spike now passes; the constructed sustained bad-pressure cases still stop. The same84 checks also pass on the M5. The changed runtime then completed the useful local task described below and its scoped native qualification above.
 
 ## Changed-policy useful source
 
@@ -18,11 +28,11 @@ Local Qwen completed eight real requests and saved`dbfc89901b813ced826e976eb79c3
 
 The model loaded, spent30seconds settling and ran with actual Unreal overlap. Sampled Qwen footprint peaked140.087GiB while loading,145.158GiB during request prefill and140.196GiB during decode. Maximum swap growth was4.125MiB; pressure remained normal and thermal warnings stayed0. Compression growth peaked16.584GiB during loading, then stabilized and later decreased. No temporal compression condition or other resource guard failed. Per-request phase alignment is approximate, using recorded request timestamps/durations against roughly2-second resident samples. See the [complete sanitized measurements and hashes](../diagnostics/capacity-2026-10-07/useful-source.json).
 
-After completion, only the verified idle Qwen model was gracefully stopped. Native q0146 exhausted shared admission after300seconds without launching an engine. Its original timeout is preserved. The prepared continuation changes only this task to one-second admission checks, keeping the same300-second bound, locks, resource guards, exact source and unchanged native scenarios;16focused tests pass locally. Useful source is established, but native walking/reset proof and the95-second route remain pending. Combat, vehicle, chapter and HUD death integration remains outside this partial edit.
+After completion, only the verified idle Qwen model was gracefully stopped. Native q0146 exhausted shared admission after300seconds without launching an engine. Its original timeout is preserved. Continuation q0147 used one-second admission checks for this task, keeping the same300-second bound, locks, resource guards, exact source and unchanged native scenarios;16focused tests pass on both hosts. Native walking/reset proof and the95-second route now pass. Combat, vehicle, chapter and HUD death integration remains outside this partial edit.
 
 ## Preserved first attempt
 
-**Latest outcome, October 6 at 10:24 p.m. EDT (October 7 02:24 UTC): the approved trial ran and stopped during model loading.** The authorization blocker was resolved. After bounded admission waiting, the resident started at10:21:01p.m.EDT. A new Unreal preview ran concurrently, with each owner holding one shared capture slot. At10:21:17p.m., the trial's **2GiB compressor-growth limit** fired. The supervisor gracefully stopped its model; the model, supervisor and keep-awake process were verified absent afterward. Unreal was not stopped or modified.
+**First-attempt outcome, October 6 at 10:24 p.m. EDT (October 7 02:24 UTC): the approved trial ran and stopped during model loading.** The authorization blocker was resolved. After bounded admission waiting, the resident started at10:21:01p.m.EDT. A new Unreal preview ran concurrently, with each owner holding one shared capture slot. At10:21:17p.m., the trial's **2GiB compressor-growth limit** fired. The supervisor gracefully stopped its model; the model, supervisor and keep-awake process were verified absent afterward. Unreal was not stopped or modified.
 
 | Measurement at the stop | Observed |
 | --- | --- |
