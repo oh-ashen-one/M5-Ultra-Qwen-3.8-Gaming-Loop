@@ -270,6 +270,10 @@ namespace ChicagoGame
                         + "m\nPress F to place (<=1.5m)";
                 if (dp <= 1.5f && LoopInput.Pressed(KeyCode.F))
                 {
+                    // Second live read of the authority: if this frame's lethal
+                    // hit lands after the check above, the drop still is not
+                    // banked. Death wins simultaneous objective input.
+                    if (DeathAuthority.IsDead) { HoldForDeath(); return; }
                     RouteStage = 2; RouteComplete = true;
                     Objective = "EAST DEAD-DROP COMPLETE";
                     if (tintedMat != null)
@@ -279,6 +283,41 @@ namespace ChicagoGame
                     }
                 }
             }
+        }
+
+        // ---- death hold -----------------------------------------------------
+        // Freeze the chapter without rewriting it. RouteStage, RouteComplete,
+        // reachedInVehicle and an already-placed cache stay exactly as the
+        // courier left them; only the visible objective text reports the
+        // failure, and only an ordinary R (the Restarts edge above) clears it.
+        void HoldForDeath()
+        {
+            if (!deathHeld)
+            {
+                deathHeld = true;
+                objectiveBeforeDeath = Objective;
+            }
+            Objective = FailureText();
+            if (hud != null) { hud.text = FailureText(); hud.color = DownColor; }
+        }
+
+        void ReleaseDeath()
+        {
+            if (!deathHeld) return;
+            deathHeld = false;
+            Objective = objectiveBeforeDeath;
+            objectiveBeforeDeath = null;
+            if (hud != null) hud.color = HudColor;
+        }
+
+        /// <summary>Board copy for a downed courier. A more specific
+        /// pre-existing failure reason is kept ahead of it, but the depleted
+        /// health and the R reset are always named.</summary>
+        string FailureText()
+        {
+            if (!string.IsNullOrEmpty(FailReason))
+                return FailReason + "\\nHEALTH DEPLETED - PRESS R";
+            return "COURIER DOWN\\nHEALTH DEPLETED - PRESS R";
         }
 
         void ActivateCache()
