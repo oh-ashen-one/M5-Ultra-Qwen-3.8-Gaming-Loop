@@ -29,6 +29,9 @@ def writes_shared_signals(source):
     return bool(re.search(r'LoopSignals\.(Health|Restarts|Shots|Hits|Mode|Mission)\s*(?:[+*/-]?=(?!=)|\+\+|--)',source))
 
 class SubmitCounterExfil(CapacityAuthor):
+    part_labels=('crossing','runner','hud')
+    source_context_tokens=65536
+    source_output_tokens=16384
     def validate_recovery(self,old):
         validate_boundary(old)
         self.resume_capacity=self.priority_resume=self.transport_recovery=self.admission_recovery=False
@@ -39,7 +42,7 @@ class SubmitCounterExfil(CapacityAuthor):
             'bookkeeping. Same local model/xhigh and original guards. Native acceptance remains independent.')
     def work(self):
         ident=self.begin(TASK,'local-counter-exfil-direct-source')
-        files=Files(self.project,self.store);parts=[]
+        files=Files(self.project,self.store);parts=list(getattr(self,'initial_parts',[]))
         tasks=[('crossing',MISSION,
             'The saved SampleFoot still sets crossedWest whenever Settled, without requiring footEastOfExit '
             'or an actual crossing. Replace ONLY that exact method. Capture the PREVIOUS foot position '
@@ -70,6 +73,7 @@ class SubmitCounterExfil(CapacityAuthor):
             'Setup, sizes, materials, Courier, ParseCd, signal access, camera and reticle unchanged. '
             'No planning or extra features. Return complete C# source, at most350lines/24000bytes.')]
         for label,path,instruction in tasks:
+            if label not in self.part_labels:continue
             self.store.set(counter_exfil_current_part=label);self.store.report()
             original=files.path(path).read_text();digest=sha(original.encode())
             protected={str(p.relative_to(self.project)):sha(p.read_bytes()) for p in self.project.rglob('*')
@@ -102,7 +106,7 @@ class SubmitCounterExfil(CapacityAuthor):
                 self.store.set(source_checkpoint=candidate);self.store.report()
                 return dict(ok=True,local_authored=True,part=label,candidate=candidate,changed_files=[path],
                     source_sha256=sha(files.path(path).read_bytes()),native_verified=False)
-            self.c.update(working_context_tokens=65536,output_tokens=16384,model_timeout_seconds=600)
+            self.c.update(working_context_tokens=self.source_context_tokens,output_tokens=self.source_output_tokens,model_timeout_seconds=600)
             result=self.model.session('builder',ident+'-'+label+'-source',
                 'You are local Qwen, sole gameplay author. Submit actual finished C# through finish_source now.',
                 instruction+'\nAll source below is exact current text and hash-backed. No read calls or '
@@ -110,7 +114,9 @@ class SubmitCounterExfil(CapacityAuthor):
                 'this focused part. Do not merely claim completion.\nCURRENT FILE:\n'+original+
                 '\nEXACT SELECTED SOURCE TO REPLACE:\n'+selected+'\nREAD-ONLY DEPENDENCY:\n'+extra,
                 [tool('finish_source','Save the actual complete selected C# source and finish this part.',{'content':{'type':'string'}})],
-                {'finish_source':submit},turns=3,reasoning_effort='xhigh')
+                {'finish_source':submit},turns=3,reasoning_effort='xhigh',
+                retained_assistant=getattr(self,'retained_parts',{}).get(label),
+                retained_instruction=getattr(self,'retained_instruction',None) if label in getattr(self,'retained_parts',{}) else None)
             atomic(self.store.root/'evidence'/(ident+'-'+label+'-source.json'),result)
             if not result.get('ok'):raise Halt('Preserve saved local source; direct '+label+' submission incomplete: '+str(result.get('bounded_stop','no source tool')))
             parts.append(result);self.store.set(counter_exfil_direct_parts=parts);self.store.report()
