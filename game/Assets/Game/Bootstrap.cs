@@ -89,6 +89,15 @@ namespace ChicagoGame
             rig.transform.position = body.transform.position + new Vector3(0f, 3.1f, -5.2f);
             rig.transform.rotation = Quaternion.Euler(10f, body.transform.eulerAngles.y, 0f);
             var follow = rig.AddComponent<Follow>(); follow.target = body.transform;
+            // Single death authority, installed once against the REAL courier body
+            // and the REAL camera before any chapter or vehicle is wired, so every
+            // later reader (Walker stride now; throttle/door/trigger in the
+            // pending chapters) resolves the one Restarts-cleared latch instead of
+            // inventing its own death rule. No execution-order risk: the class
+            // carries DefaultExecutionOrder(-40000), and this call adds only a
+            // deciding component - no health, input, camera or HUD state is
+            // written here, and nothing about the Follow rig changes.
+            DeathAuthority.Install(body, cam);
             if (coupe != null) VehicleInteraction.Install(body, coupe, follow);
             CourierMission.Install(body, cam);
             Combat.Install(body, cam);
