@@ -162,7 +162,8 @@ class ResolveDeathPixels(CapacityAuthor):
             'Prior gameplay completions:'+json.dumps(self.native_result['positive'].get('interception',{}).get('completions',[]))+
             '\nCURRENT EXACT CHAPTER/DEATH APIs:\n'+context,
             [tool('submit_plan','Save one implementable connected gameplay scope.',{k:S for k in fields})],
-            {'submit_plan':save},turns=3,reasoning_effort='xhigh')
+            {'submit_plan':save},turns=3,reasoning_effort='xhigh',
+            retained_assistant=getattr(self,'retained_plan',None))
         atomic(self.store.root/'evidence'/(ident+'-next-connected-plan.json'),result)
         self.store.set(next_connected_expansion=result);self.store.report()
         if not result.get('ok'):raise Halt('Death repair accepted; retain the bounded next-plan result for focused continuation')
@@ -170,4 +171,3 @@ class ResolveDeathPixels(CapacityAuthor):
 
 
 if __name__=='__main__':raise SystemExit(main(ResolveDeathPixels))
-

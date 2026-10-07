@@ -62,6 +62,17 @@ def image_part(path):
     return {"type": "image_url", "image_url": {"url": "data:image/png;base64," + base64.b64encode(raw).decode()}}
 
 
+def retained_submission(tools):
+    names={t['function']['name'] for t in tools}
+    if 'submit_plan' in names:
+        return 'Call submit_plan now with concise final design decisions. No source edits are available or requested.'
+    if 'submit_review' in names:
+        return 'Call submit_review now with the final evidence-based verdict.'
+    if 'finish_source' in names:
+        return 'Call finish_source now with one complete, compact usable source submission.'
+    return 'Use the available source-edit tools to save the complete implementation promptly, then call finish_task.'
+
+
 def conservative_prompt_bound(messages, tools, text_counter=None):
     # Use the pinned local tokenizer for serialized text when configured. Keep
     # separate conservative image/framing allowances; bytes are only a fallback.
@@ -150,11 +161,9 @@ class LocalModel:
                 raise Halt('Only inspected non-tool private work may be continued')
             messages.append({k: retained_assistant[k] for k in
                 ('role', 'content', 'reasoning_content', 'reasoning') if k in retained_assistant})
-            submission = ('Call finish_source now with one complete, compact usable source submission.'
-                if any(t['function']['name'] == 'finish_source' for t in tools)
-                else 'Use the available source-edit tools to save the complete implementation promptly, then call finish_task.')
+            submission = retained_submission(tools)
             messages.append({'role': 'user', 'content':
-                'The previous response hit its output cap without saving a file. Use that retained work; '
+                'The previous response hit its output cap before submitting its result. Use that retained work; '
                 'do not repeat the analysis. Thinking effort remains ' + reasoning_effort + '. ' + submission +
                 ' Stay within the available output budget.'})
         self.store.event("role-start", role=role, session_id=session_id, images=image_records)
