@@ -2,7 +2,7 @@
 
 ## Current distribution
 
-Original documentation and the source-integrity validator are covered by [LICENSE](LICENSE). Selected MIT source files/excerpts are distributed under their preserved upstream notices. The [import manifest](reference/IMPORT-MANIFEST.json) records exact commits, files, hashes and modifications, and [reference notes](reference/README.md) describe all integration gaps. **No third-party models, art, audio, fonts, demo scenes or assets are distributed.**
+Original documentation, controller/diagnostic/manual-player helpers, game source and original procedural Blender scripts/assets are covered by [LICENSE](LICENSE). The game sources and exports are now included in `game`; they were authored originally for this project rather than copied from an upstream asset pack. Per-asset provenance is retained beside the Blender sources. Selected upstream MIT code/excerpts retain their own notices. The [import manifest](reference/IMPORT-MANIFEST.json) records those imports, and [reference notes](reference/README.md) describe integration gaps. **No third-party production models, art, audio, fonts, demo scenes or model weights are distributed.**
 
 Full upstream license texts are retained alongside each imported component:
 
@@ -23,6 +23,8 @@ The catalog attributes external tool and gameplay candidates to their respective
 | Material/candidate | Observed license boundary | Current distribution |
 | --- | --- | --- |
 | Original project documentation | MIT | Included |
+| Original game/controller/manual-player code | Root MIT | Included; authorship distinguished in README and provenance |
+| Original procedural Blender scripts and their model/texture exports | Root MIT for original project material | Included in `game`; per-asset provenance retained; no upstream production art imported |
 | `ralph-loop-playbook` | MIT | Exact stdlib diagnostic script; other material linked only |
 | `slop-of-tsushima-qwen` | Repository MIT; inspect asset-specific notices | Links and research summaries only |
 | `grindline`, `space-salvage` | Code MIT; separate asset attribution described as CC0 in license texts | Selected input/verification excerpts; no assets |
@@ -36,7 +38,7 @@ The catalog attributes external tool and gameplay candidates to their respective
 | SanAndreasUnity | MIT code does not license required GTA game data | Excluded production base |
 | oMLX 0.6.4 | Apache-2.0 at pinned upstream commit | Machine-local installation only; no upstream runtime code/binaries bundled |
 | Qwen3.8-Flash-Next-oQ6e-mtp | Model-card metadata: Qwen Community 1.0 (`license: other`); exact pack license applies | Machine-local model only; no weights bundled |
-| Future original Blender outputs and audio | Exact component/provider terms and rights to be reviewed | No production assets included |
+| Future externally sourced/provider assets | Exact component/provider terms and rights must be reviewed separately | None imported by this closeout |
 
 ## Before any future import
 

@@ -1,5 +1,7 @@
 # Gaming task operating boundary
 
+**Completed snapshot, October 8, 2026:** the bounded development experiment is finished. See README and `docs/COMPLETED-EXPERIMENT.md` for its final verified source, test scopes and unresolved manual input. Historical development/start instructions below do not authorize restarting inference, generation or the automatic game loop. Publication and owner-requested manual walkthrough tooling are separate from that closed run.
+
 Updated 2026-10-05. Apply the owner's current instruction and ancestor safety rules.
 
 - The existing M5 benchmark campaign is closed. Its historical two-event inference stop, counters, failures and closeout belong to that campaign. They do not prohibit this separately authorized gaming task. Never reset or rewrite those historical records.

@@ -20,3 +20,7 @@ resident-supervisor.log
 diagnostics/**/recreated-*
 reference/visual-targets/chicago/*.png
 reference/visual-targets/chicago/manifest.json
+/build/
+/game/Assets/LoopHarness/
+/game/Assets/ManualInputTrace.cs
+/game/Assets/ManualInputTrace.cs.meta
