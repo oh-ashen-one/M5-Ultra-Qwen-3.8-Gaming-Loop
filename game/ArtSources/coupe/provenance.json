@@ -1,0 +1,24 @@
+{
+  "action_id": "q0329-446b1fdd-coupe-edges-export",
+  "author": "local-Qwen",
+  "export_succeeded": true,
+  "files": [
+    {
+      "bytes": 242300,
+      "path": "Assets/Resources/Generated/coupe/scene.fbx",
+      "sha256": "decd5ea075ad124a18b29d0a7d3bf81eb21d5fa8bb225beb5b869fd79d48f0c8"
+    },
+    {
+      "bytes": 14020,
+      "path": "ArtSources/coupe/original-geometry-observation.json",
+      "sha256": "2b653ce8619b43e384bed85a14bdae8315048fe9c30ac6d857010c782d27442b"
+    },
+    {
+      "bytes": 143650,
+      "path": "ArtSources/coupe/source.blend",
+      "sha256": "7200e4c0cc800b5a40f63897031e73049ce23f70daf9f0130fee83ad58337ebf"
+    }
+  ],
+  "script": "Art/coupe.py",
+  "script_sha256": "f30dde08a65ed08fd3ea5f462f3261e87721c205b6d3fa1a97ed7f202fe6dd84"
+}

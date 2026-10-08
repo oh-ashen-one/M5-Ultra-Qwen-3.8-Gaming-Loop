@@ -1,0 +1,69 @@
+{
+  "action_id": "q0309-f14b0dcf-Board-spine-export",
+  "author": "local-Qwen",
+  "export_succeeded": true,
+  "files": [
+    {
+      "bytes": 45272,
+      "path": "Assets/Resources/Generated/player/Textures/00-Jacket_Charcoal_Tex.png",
+      "sha256": "cadd4601a99d1b4ce12b5c678534cfce6750558249c194f614294f3882f1475b"
+    },
+    {
+      "bytes": 35829,
+      "path": "Assets/Resources/Generated/player/Textures/01-Jacket_Highlight_Tex.png",
+      "sha256": "2f152be5ca6793957dee52b8bf2399ed8bab78be3f746b8cfed5cfd0ccfa0131"
+    },
+    {
+      "bytes": 46764,
+      "path": "Assets/Resources/Generated/player/Textures/02-Jeans_DarkBlue_Tex.png",
+      "sha256": "86e95811bd639c1f4bc9b1c54561b14b5e267eaf5f954a721e8d206b03d27bcc"
+    },
+    {
+      "bytes": 48684,
+      "path": "Assets/Resources/Generated/player/Textures/03-Jeans_Seam_Tex.png",
+      "sha256": "70aee8a2f97a3d835dff717c68e9dfd908dd57b989f9ced09a189171b6883f72"
+    },
+    {
+      "bytes": 630972,
+      "path": "Assets/Resources/Generated/player/scene.fbx",
+      "sha256": "ff2cfc1eba02fc09193bdba4a4793b9ced70ba37acbf854ca817917b0614faad"
+    },
+    {
+      "bytes": 45272,
+      "path": "ArtSources/player/Textures/00-Jacket_Charcoal_Tex.png",
+      "sha256": "cadd4601a99d1b4ce12b5c678534cfce6750558249c194f614294f3882f1475b"
+    },
+    {
+      "bytes": 35829,
+      "path": "ArtSources/player/Textures/01-Jacket_Highlight_Tex.png",
+      "sha256": "2f152be5ca6793957dee52b8bf2399ed8bab78be3f746b8cfed5cfd0ccfa0131"
+    },
+    {
+      "bytes": 46764,
+      "path": "ArtSources/player/Textures/02-Jeans_DarkBlue_Tex.png",
+      "sha256": "86e95811bd639c1f4bc9b1c54561b14b5e267eaf5f954a721e8d206b03d27bcc"
+    },
+    {
+      "bytes": 48684,
+      "path": "ArtSources/player/Textures/03-Jeans_Seam_Tex.png",
+      "sha256": "70aee8a2f97a3d835dff717c68e9dfd908dd57b989f9ced09a189171b6883f72"
+    },
+    {
+      "bytes": 793,
+      "path": "ArtSources/player/original-images.json",
+      "sha256": "bfbf1c2da064a653d5ffdc89ba45832e6d91ee52bd4e97baa5bba76a01a955e4"
+    },
+    {
+      "bytes": 7665,
+      "path": "ArtSources/player/original-uv-observation.json",
+      "sha256": "db929ccbda404a0095fae5ac08b196d7dca6ae5a7387d03d43f78846136a5470"
+    },
+    {
+      "bytes": 367104,
+      "path": "ArtSources/player/source.blend",
+      "sha256": "1189c01c899bd0b989f57a503f2fbcbe72576fc35fb490d72fefeafc0b4f84c0"
+    }
+  ],
+  "script": "Art/player.py",
+  "script_sha256": "048e06bbdb6447e90fa09391af4839dd64ea20a3d942d4ebb3b997c9d080e858"
+}

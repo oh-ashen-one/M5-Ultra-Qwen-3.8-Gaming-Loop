@@ -1,0 +1,16 @@
+{
+  "accepted_utc": "2026-10-05T12:10:30.466441+00:00",
+  "candidate": "8a57dd4f6501e3d3c205c01b008f6f6205133acd",
+  "evidence": "evidence/vehicle-heading-corrected",
+  "final_game_accepted": false,
+  "remaining": "Chicago target quality, final HUD/audio/performance, combat and complete ten-minute mission remain separate.",
+  "review": {
+    "camera_readable": true,
+    "car_visible": true,
+    "continuous_paving": true,
+    "ok": true,
+    "summary": "Limited scope supported. frame-001.png, frame-002.png, frame-003.png and frame-004.png all show the same blue coupe, and the native trace records 10.31 m of forward motion at ~1.0 forward alignment (entry plus >3 m drive) with 97/97 pavement-covered return-walk samples (exit and return to walking). Pavement is continuous street/sidewalk in every supplied frame. Weaknesses noted but outside this milestone: frame-000.png omits the car, frame-001.png and frame-003.png occlude it behind the spiked fence, frame-004.png is partly blocked by a pillar, and no on-foot player mesh is visible. HUD/audio/FPS, Chicago-target art and full collision/audio remain unmet and are not credited.",
+    "verdict": "PASS"
+  },
+  "scope": "vehicle-entry-drive-exit"
+}

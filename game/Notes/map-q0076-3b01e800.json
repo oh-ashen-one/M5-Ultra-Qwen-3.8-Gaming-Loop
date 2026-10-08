@@ -1,0 +1,26 @@
+{
+  "accepted_utc": "2026-10-06T08:17:29.784412+00:00",
+  "candidate": "2ab467692d10a715500bf89e0d8982694fa5eb80",
+  "capture_manifest_sha256": "6238bf4d527a44fc909320b863f497d261f5342359e7ddc61b57a454bc772c76",
+  "evidence": "evidence/q0076-3b01e800",
+  "final_game_accepted": false,
+  "review": {
+    "fixes": [
+      "Remove the coplanar seam artifact: a thin bright diagonal streak crosses the new alcove floor in frames 002/006, and road_asphalt bounds extend to X 13.65 underneath the new AlleyPavement (X 6–22) — trim or lower the overlapping road/centerline mesh so the junction shows one clean pavement plane with no Z-fighting edge peek.",
+      "Fix the pale 'garage door' panel in the alcove end wall: it visibly leans/tilts out of the wall plane in frames 002/006 — set it flush with correct thickness so the dead end reads as a closed garage frontage.",
+      "Clarify the junction elevation: the guard-railed road beyond the west gap reads as a lower platform with an abrupt step, which could be mistaken for a drop-off or blocked route — add a visible curb or continuous-flat transition so the side opening reads unambiguously as a driveable side-alley entry.",
+      "Offset the objective/courier HUD box so it no longer overlaps the HEALTH/WANTED box (visible clipping in frames 001/002/006).",
+      "Polish pass (deferred art, direction only per target): the alcove currently reads as a bare salmon box room — add building fronts/brick facade, warm dusk material consistency and one or two target-consistent props so the extension reads as a Chicago side alley rather than an empty test room."
+    ],
+    "ok": true,
+    "summary": "Scoped foundation outcome is met by trace + frames. The trace shows a new rendered support surface (WorldCollision/AlleyPavement, X 6–22, Z 8–20) east of the old rectangle (X −1..6, Z −2..30), opened as a side connector away from the west/forward test routes: all regressions (walk, world-collision, vehicle reset, courier, failure-retry, combat foot/wall/driving, aim) pass unchanged, and prop clone parity (AlleyBollard S/N, AlleyDumpster parts incl. BoxCollider) matches sources. Traversal requirements are satisfied without any R/reset (restarts 0): foot exited 6.53 m beyond the boundary (15 outside samples) and physically returned by 15.97 s; the actual coupe exited 13.77 m beyond (48 outside samples) and returned by 33.63 s, all inside the 150 s budget with 188/188 walking-support samples covered by rendered planes (no invisible world-sized support). Frames corroborate: t=10.8/12.9 show the player walking the new bollard-lined pavement with the junction (guard-railed road, lamp, containers) readable to the left; t=26.8 shows the blue coupe parked/positioned inside the new alcove beyond the old boundary; t=35.0 shows the car back at the junction after return. The 'MISSION FAILED' overlay at 35.0 s is an expected courier timeout from the test input, not a regression — the failure-retry regression passes (fail 30.1 s → reset 32.0 s → retry 46.3 s). The 4 s stationary opening is not visible in the supplied captures but is trace-supported (stationary_grounded true). Rough boxy dev art is acceptable at foundation phase, but concrete visible defects remain, listed below.",
+    "verdict": "PASS",
+    "verified_capture_time_citations": {
+      "frame-001.png": 10.817,
+      "frame-002.png": 12.89791,
+      "frame-006.png": 26.84647,
+      "frame-010.png": 34.99647
+    }
+  },
+  "scope": "One connected Chicago street or side-alley extension, walked and driven out and back."
+}

@@ -1,0 +1,19 @@
+{
+  "accepted_utc": "2026-10-05T17:20:05.322247+00:00",
+  "candidate": "7ad8e37c7a67fa12e2e9d271686c8671ca40e61b",
+  "evidence": "evidence/q0012-451a06e2",
+  "final_game_accepted": false,
+  "review": {
+    "fixes": [
+      "After pickup, hide the world parcel or visibly attach a carried copy to the player: in frame-003 the yellow cube still sits on the ground beside the character while the HUD claims 'parcel in hand', which reads as a disconnect.",
+      "During the drive leg (frame-003) the green destination is only a distant teal beam; add a directional pointer or waypoint marker plus the remaining-distance readout so the 24 m route is unambiguous without prior knowledge.",
+      "The HUD panel has a ragged left-edge tail and inconsistent width between states (compare frame-000 vs frame-003/007); give it a fixed anchored background box so it stays stable across objective changes.",
+      "Mark the green pad more strongly in world space (brighter ring/decal plus a taller beacon) so the delivery zone reads as a deliberate destination in frame-007 rather than a flat patch partly hidden by the car.",
+      "On completion, hold or fade the ending banner with a visible star/state change and keep the delivered parcel visible on the pad, so the ending is unmistakable in a single still frame."
+    ],
+    "ok": true,
+    "summary": "The scoped mission_complete check is supported by real gameplay evidence across the scheduled captures. frame-000 (t=3.2s) shows the Courier HUD with a live proximity objective (\"reach the parcel (4 m)\") and controls line including the new F plus preserved E and R. frame-003 (t=7.9s, just after the 7.43s pickup anchor) correctly switches to \"parcel in hand / drive to the GREEN pad (24 m)\", and the trace shows genuine input-driven motion (player walk-away/return before pickup, then ~17.4 m horizontal vehicle displacement before the 14.35s delivery anchor). frame-007 (t=15.2s) shows the unmistakable ending: \"★ DELIVERY COMPLETE ★ / The parcel has been delivered. / R to reset\" with the car parked on the green pad. frame-009 (t=18.5s) is the post-reset (17.13s) initial state, matching the reset anchor rather than being mislabelled as pre-reset. Regression gates (walk/world/motor) all pass with no blocking regression. The blockout art is far from the photoreal target, but that is polish, not this scope; the route, pickup input, drive leg and ending are coherent and readable.",
+    "verdict": "PASS"
+  },
+  "scope": "connected-mission"
+}

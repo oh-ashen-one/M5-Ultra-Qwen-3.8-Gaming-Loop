@@ -1,0 +1,180 @@
+using UnityEngine;
+
+namespace ChicagoGame
+{
+    public partial class RelaySequence : MonoBehaviour
+    {
+        static RelaySequence _inst;
+        GameObject player;
+        Camera cam;
+        RouteMission chapter;
+        int lastRestarts;
+
+        public bool Active, AllComplete, Failed;
+        public int ActivationCount, ExpectedIndex, WrongOrderCount;
+        public float Remaining;
+        public string Objective;
+
+        // ---- death integration (RelaySequence) ------------------------------
+        // DeathAuthority owns the single death decision; this chain only
+        // freezes, reports and refuses to arm or bank. FailReason keeps the
+        // genuine timeout the chain itself recorded, so a later death report
+        // shows that more specific reason instead of overwriting history.
+        public string FailReason;
+        string objectiveBeforeDeath;
+        bool deathHeld;
+        public Transform[] Relays = new Transform[3];
+
+        float armedAt, flashUntil;
+        int flashIndex = -1;
+
+        public static void Install(GameObject player, Camera cam)
+        {
+            var go = new GameObject("RelaySequence");
+            _inst = go.AddComponent<RelaySequence>();
+            _inst.player = player;
+            _inst.cam = cam;
+            _inst.chapter = GameObject.Find("RouteMission").GetComponent<RouteMission>();
+            _inst.lastRestarts = LoopSignals.Restarts;
+            _inst.BuildProps();
+            _inst.BuildHud();
+            _inst.SetSitesVisible(false);
+            _inst.HideHud();
+        }
+
+        void Update()
+        {
+            if (LoopSignals.Restarts != lastRestarts)
+            {
+                // Ordinary R re-arms the whole chain: counters, timer, sites,
+                // hud and this file's death report all return to a fresh loop,
+                // the same Restarts edge that releases the DeathAuthority
+                // latch, so a reset never strands a downed courier.
+                lastRestarts = LoopSignals.Restarts;
+                Active = AllComplete = Failed = false;
+                ActivationCount = ExpectedIndex = WrongOrderCount = 0;
+                Remaining = 0;
+                FailReason = null;
+                deathHeld = false;
+                objectiveBeforeDeath = null;
+                flashIndex = -1;
+                flashUntil = 0;
+                SetSitesVisible(false);
+                HideHud();
+                return;
+            }
+
+            // Death outranks the chain. While the courier is down the chain
+            // cannot be armed off a finished route, no relay is armed, no
+            // arming order is scored, the countdown never expires into a fresh
+            // failure and the final receipt cannot be banked. Genuine earlier
+            // receipts (activations, wrong-order strikes, a real timeout) are
+            // preserved rather than rewound.
+            if (DeathAuthority.IsDead) { HoldForDeath(); return; }
+            ReleaseDeath();
+
+            if (!Active)
+            {
+                if (chapter.RouteStage == 2 && chapter.RouteComplete)
+                {
+                    Active = true;
+                    armedAt = Time.time;
+                    Remaining = 45;
+                    SetSitesVisible(true);
+                }
+                return;
+            }
+
+            if (AllComplete || Failed) return;
+            Remaining = UnityEngine.Mathf.Max(0, 45 - (Time.time - armedAt));
+            if (Remaining <= 0)
+            {
+                // The chain's own genuine failure, recorded at the exact frame
+                // its window really expires, so a death that lands afterwards
+                // reports this more specific reason instead of erasing it. The
+                // first recorded reason wins and is never overwritten; a chain
+                // whose countdown is still running never reaches this line, and
+                // one that arms all three relays never reaches it at all.
+                if (string.IsNullOrEmpty(FailReason))
+                    FailReason = "RELAY WINDOW EXPIRED";
+                Failed = true;
+                return;
+            }
+
+            if (LoopInput.Pressed(KeyCode.F) && LoopSignals.Mode == "foot")
+            {
+                int hit = -1;
+                float px = player.transform.position.x, pz = player.transform.position.z;
+                for (int i = 0; i < Relays.Length; i++)
+                {
+                    if (Relays[i] == null) continue;
+                    float dx = Relays[i].position.x - px, dz = Relays[i].position.z - pz;
+                    if (dx * dx + dz * dz <= 2.25f) { hit = i; break; }
+                }
+                if (hit < 0) return;
+                if (hit == ExpectedIndex)
+                {
+                    ActivationCount++;
+                    ExpectedIndex++;
+                    if (ActivationCount >= 3) AllComplete = true;
+                }
+                else
+                {
+                    ActivationCount = 0;
+                    ExpectedIndex = 0;
+                    WrongOrderCount++;
+                    flashIndex = hit;
+                    flashUntil = Time.time + 0.3f;
+                }
+            }
+        }
+
+        // ---- death hold -----------------------------------------------------
+        // Freeze the chain without rewriting it. Active, AllComplete, Failed,
+        // ActivationCount, ExpectedIndex, WrongOrderCount and the countdown
+        // value all stay exactly as the courier left them - a downed runner
+        // banks no relay and unwinds none - and only the visible objective
+        // reports the failure. Only the ordinary Restarts edge in Update ever
+        // clears the hold, so R can always recover a dead courier.
+        void HoldForDeath()
+        {
+            if (!deathHeld)
+            {
+                deathHeld = true;
+                objectiveBeforeDeath = Objective;
+            }
+            Objective = DeathBoardText();
+        }
+
+        void ReleaseDeath()
+        {
+            if (!deathHeld) return;
+            deathHeld = false;
+            Objective = objectiveBeforeDeath;
+            objectiveBeforeDeath = null;
+        }
+
+        /// <summary>Board copy for a downed courier while the chain is held. A
+        /// more specific failure the chain genuinely recorded first - the relay
+        /// window expiring - is kept ahead of the death line, never replaced by
+        /// it; with no such record only the depleted health and the R reset are
+        /// named, because nothing else happened. Real line breaks, no escaped
+        /// literals.</summary>
+        string DeathBoardText()
+        {
+            if (!string.IsNullOrEmpty(FailReason))
+                return FailReason + "\nCOURIER DOWN - HEALTH DEPLETED\nPRESS R TO RESTART";
+            return "COURIER DOWN\nHEALTH DEPLETED\nPRESS R TO RESTART";
+        }
+
+        void LateUpdate()
+        {
+            // Presentation keeps honouring the freeze: an unearned highlight
+            // never keeps cycling over a downed courier (the WrongOrderCount
+            // strike that caused it stays banked), while UpdateHud simply
+            // renders the frozen state and the death copy held in Objective.
+            PaintSites(!deathHeld && Time.time < flashUntil ? flashIndex : -1);
+            UpdateHud();
+        }
+    }
+}

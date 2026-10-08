@@ -1,0 +1,380 @@
+[
+  {
+    "mesh": "ankle_l",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.1088999935746191,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "ankle_r",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.1088999935746191,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "belt_waist",
+    "polygons": 24,
+    "uv_faces": 24,
+    "minimum_uv_area": 0.03937814739748546,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "brow_l",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0030249999672174455,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "brow_r",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0030249999672174455,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "chin",
+    "polygons": 242,
+    "uv_faces": 242,
+    "minimum_uv_area": 0.00030440309423149584,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "cuff_l",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.11880000407695768,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "cuff_r",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.11880000407695768,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "ear_l",
+    "polygons": 242,
+    "uv_faces": 242,
+    "minimum_uv_area": 0.00012311413032081026,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "ear_r",
+    "polygons": 242,
+    "uv_faces": 242,
+    "minimum_uv_area": 0.00012311413032081026,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "eye_l",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.004234999954104424,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "eye_r",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.004234999954104424,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "fingers_l",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.06957499908208842,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "fingers_r",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.06957499908208842,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "fold_l",
+    "polygons": 36,
+    "uv_faces": 36,
+    "minimum_uv_area": 0.04536859954009742,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "fold_r",
+    "polygons": 36,
+    "uv_faces": 36,
+    "minimum_uv_area": 0.04536859954009742,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "fore_l",
+    "polygons": 46,
+    "uv_faces": 46,
+    "minimum_uv_area": 0.06013329322669847,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "fore_r",
+    "polygons": 46,
+    "uv_faces": 46,
+    "minimum_uv_area": 0.06013329322669847,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "hair_back",
+    "polygons": 242,
+    "uv_faces": 242,
+    "minimum_uv_area": 0.0021024104413526756,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "hair_cap",
+    "polygons": 242,
+    "uv_faces": 242,
+    "minimum_uv_area": 0.0032983763226217544,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "head",
+    "polygons": 242,
+    "uv_faces": 242,
+    "minimum_uv_area": 0.002908740841350843,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "jaw",
+    "polygons": 242,
+    "uv_faces": 242,
+    "minimum_uv_area": 0.0018940630778814943,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "jkt_collar",
+    "polygons": 45,
+    "uv_faces": 45,
+    "minimum_uv_area": 0.02364957700038417,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "jkt_hem",
+    "polygons": 46,
+    "uv_faces": 46,
+    "minimum_uv_area": 0.043872329684873534,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "jkt_placket",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.010080000532865507,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "jkt_pocket_l",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.03369599924468991,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "jkt_pocket_r",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.03369599924468991,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "jkt_torso",
+    "polygons": 132,
+    "uv_faces": 132,
+    "minimum_uv_area": 0.03609448805377724,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "jkt_yoke",
+    "polygons": 45,
+    "uv_faces": 45,
+    "minimum_uv_area": 0.015345831428131618,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "kneepad_l",
+    "polygons": 242,
+    "uv_faces": 242,
+    "minimum_uv_area": 0.0010505679728595035,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "kneepad_r",
+    "polygons": 242,
+    "uv_faces": 242,
+    "minimum_uv_area": 0.0010505679728595035,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "neck",
+    "polygons": 45,
+    "uv_faces": 45,
+    "minimum_uv_area": 0.033288923236412415,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "nose",
+    "polygons": 242,
+    "uv_faces": 242,
+    "minimum_uv_area": 0.00017587732706578728,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "palm_l",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.11192500386834148,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "palm_r",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.11192500386834148,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "pantcuff_l",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07897500560581694,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "pantcuff_r",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07897500560581694,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "pants_pelvis",
+    "polygons": 45,
+    "uv_faces": 45,
+    "minimum_uv_area": 0.029703158961382314,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "pistol_grip",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.03932500268816952,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "pistol_slide",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.04174499643325813,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "shin_l",
+    "polygons": 45,
+    "uv_faces": 45,
+    "minimum_uv_area": 0.05555306007217098,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "shin_r",
+    "polygons": 45,
+    "uv_faces": 45,
+    "minimum_uv_area": 0.05555306007217098,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "shoe_l",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.12196799474430087,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "shoe_r",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.12196799474430087,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "sleeve_l",
+    "polygons": 155,
+    "uv_faces": 155,
+    "minimum_uv_area": 0.0064036211772702245,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "sleeve_r",
+    "polygons": 155,
+    "uv_faces": 155,
+    "minimum_uv_area": 0.0064036211772702245,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "temple_hair_l",
+    "polygons": 242,
+    "uv_faces": 242,
+    "minimum_uv_area": 0.00024352241538706278,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "temple_hair_r",
+    "polygons": 242,
+    "uv_faces": 242,
+    "minimum_uv_area": 0.00024352241538706278,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "thigh_l",
+    "polygons": 45,
+    "uv_faces": 45,
+    "minimum_uv_area": 0.0841757275884163,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "thigh_r",
+    "polygons": 45,
+    "uv_faces": 45,
+    "minimum_uv_area": 0.0841757275884163,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "thumb_l",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.017303000714004035,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "thumb_r",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.017303000714004035,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "toe_l",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.09074999737739553,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "toe_r",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.09074999737739553,
+    "collapsed_faces": 0
+  }
+]

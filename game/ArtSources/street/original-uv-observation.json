@@ -1,0 +1,1808 @@
+[
+  {
+    "mesh": "Cube",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0625,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.001",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 17.600000381469727,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.002",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.08399999430775651,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.003",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.016500000566244122,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.004",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.022099999421834937,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.005",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.06820000015497207,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.006",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.42349998721480375,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.007",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.20249998927116408,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.008",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.009",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.010",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.011",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.012",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.013",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.014",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.015",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.016",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.017",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.018",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.019",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.020",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.021",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.022",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.023",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.024",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.025",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.026",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015000000819563875,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.027",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.23040000400543192,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.028",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07999999821186066,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.029",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013299999889731406,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.030",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.031",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.032",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.033",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.23040000400543192,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.034",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07999999821186066,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.035",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013299999889731406,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.036",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.037",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.038",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.039",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.23040000400543192,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.040",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07999999821186066,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.041",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013299999889731406,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.042",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.043",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.044",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.045",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.23040000400543192,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.046",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07999999821186066,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.047",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013299999889731406,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.048",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.049",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.050",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.051",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.23040000400543192,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.052",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07999999821186066,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.053",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013299999889731406,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.054",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.055",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.056",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.057",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.23040000400543192,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.058",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07999999821186066,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.059",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013299999889731406,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.060",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.061",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.062",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.063",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.23040000400543192,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.064",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07999999821186066,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.065",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013299999889731406,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.066",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.067",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.068",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.069",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.23040000400543192,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.070",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07999999821186066,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.071",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013299999889731406,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.072",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.073",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.074",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.075",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.23040000400543192,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.076",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07999999821186066,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.077",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013299999889731406,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.078",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.079",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.080",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.081",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.23040000400543192,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.082",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07999999821186066,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.083",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013299999889731406,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.084",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.085",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.086",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.087",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.23040000400543192,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.088",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07999999821186066,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.089",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013299999889731406,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.090",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.091",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.092",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.093",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.23040000400543192,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.094",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07999999821186066,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.095",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013299999889731406,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.096",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.097",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.098",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.007000000134110451,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.099",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.08030000166296958,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.100",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.2119999917149542,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.101",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.03199999976158141,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.102",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.016149999967217443,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.103",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.032299999934434886,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.104",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.048449998486042034,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.105",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.061749996960163145,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.106",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.061749996960163145,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.107",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.006399999713897708,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.108",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.006399999713897708,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.109",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.08030000166296958,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.110",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.2119999917149542,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.111",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.03199999976158141,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.112",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.016149999967217443,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.113",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.032299999934434886,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.114",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.048449998486042034,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.115",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.061749996960163145,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.116",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.061749996960163145,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.117",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.006399999713897708,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.118",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.006399999713897708,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.119",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.09449999946355803,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.120",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.004900000041723251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.121",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.122",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.123",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.124",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.125",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.126",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.010000000298023226,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.127",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.03500000014901161,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.128",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.09449999946355803,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.129",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.004900000041723251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.130",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.131",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.132",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.133",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.134",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.135",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.010000000298023226,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.136",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.03500000014901161,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.137",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.09449999946355803,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.138",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.004900000041723251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.139",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.140",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.141",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.142",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.143",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.144",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.010000000298023226,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.145",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.03500000014901161,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.146",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.09449999946355803,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.147",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.004900000041723251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.148",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.149",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.150",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.151",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.152",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0025000000745058065,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.153",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.010000000298023226,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.154",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.03500000014901161,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.155",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.05100000256299975,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.156",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.020700001198053375,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.157",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.05100000256299975,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.158",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.020700001198053375,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.159",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.05100000256299975,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.160",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.020700001198053375,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.161",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.06325000251829627,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.162",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.08000000238418581,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.163",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.06325000251829627,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.164",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.08000000238418581,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.165",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.06325000251829627,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.166",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.08000000238418581,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.167",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.11200000214576722,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.168",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.009900000339746473,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.169",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.0824999981559813,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.170",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.004799999785423281,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.171",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.004799999785423281,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.172",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.004799999785423281,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.173",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.004799999785423281,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.174",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.004799999785423281,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.175",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.004799999785423281,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.176",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.034999999925494185,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.177",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.002999999977648257,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.178",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.002999999977648257,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.179",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.002999999977648257,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.180",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.002999999977648257,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.181",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.002999999977648257,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.182",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.002999999977648257,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.183",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.07874999955296502,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.184",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.020399999758601184,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.185",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.05199999886751172,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.186",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.029999999329447746,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.187",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013599999839067456,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.188",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.029999999329447746,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.189",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013599999839067456,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.190",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.029999999329447746,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.191",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013599999839067456,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.192",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.029999999329447746,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.193",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013599999839067456,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.194",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.029999999329447746,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.195",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.013599999839067456,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.196",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.019500000059604616,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.197",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.16799998861551302,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.198",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.062399996316433004,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.199",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.012600000554323199,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.200",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.201",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.006300000277161599,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.202",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.16799998861551302,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.203",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.062399996316433004,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.204",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.012600000554323199,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.205",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.206",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.006300000277161599,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.207",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.16799998861551302,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.208",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.062399996316433004,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.209",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.012600000554323199,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.210",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.211",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.006300000277161599,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.212",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.16799998861551302,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.213",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.062399996316433004,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.214",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.012600000554323199,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.215",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.216",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.006300000277161599,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.217",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.16799998861551302,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.218",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.062399996316433004,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.219",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.012600000554323199,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.220",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.221",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.006300000277161599,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.222",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.16799998861551302,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.223",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.062399996316433004,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.224",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.012600000554323199,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.225",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.226",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.006300000277161599,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.227",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.16799998861551302,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.228",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.062399996316433004,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.229",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.012600000554323199,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.230",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.231",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.006300000277161599,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.232",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.16799998861551302,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.233",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.062399996316433004,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.234",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.012600000554323199,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.235",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.015599999079108251,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.236",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.006300000277161599,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.237",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.014399999356269844,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.238",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.014399999356269844,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.239",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.022000000208616255,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.240",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.014399999356269844,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.241",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.014399999356269844,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.242",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.022000000208616255,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.243",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.054399999356269824,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.244",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.054399999356269824,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.245",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.09520000140666962,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.246",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.09520000140666962,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.247",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.019199999141693125,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.248",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.019199999141693125,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.249",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.019199999141693125,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.250",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.019199999141693125,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.251",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.019199999141693125,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.252",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.019199999141693125,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.253",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.019199999141693125,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Cube.254",
+    "polygons": 6,
+    "uv_faces": 6,
+    "minimum_uv_area": 0.019199999141693125,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Icosphere",
+    "polygons": 20,
+    "uv_faces": 20,
+    "minimum_uv_area": 0.014314528474077326,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Icosphere.001",
+    "polygons": 20,
+    "uv_faces": 20,
+    "minimum_uv_area": 0.014314528474077326,
+    "collapsed_faces": 0
+  },
+  {
+    "mesh": "Icosphere.002",
+    "polygons": 20,
+    "uv_faces": 20,
+    "minimum_uv_area": 0.014314528474077326,
+    "collapsed_faces": 0
+  }
+]

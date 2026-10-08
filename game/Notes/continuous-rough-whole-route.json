@@ -1,0 +1,13 @@
+{
+  "accepted_utc": "2026-10-05T23:04:50.229745+00:00",
+  "candidate": "1295417194c0f2cdf9716982df06afebd6336c57",
+  "evidence": "evidence/q0035-e5f1e32d",
+  "final_game_accepted": false,
+  "review": {
+    "fixes": [],
+    "ok": true,
+    "summary": "Scoped rough-whole-route checks are supported by the supplied native frames and trace (the Chicago image is only the target reference, not the build). Connected 52 s replay: walking (player displacement 26.2 m) and driving (vehicle displacement 20.1 m) both occur. Combat is real in both directions: two Mouse0 shots at t=7.53/9.22 register first_aim_collider \"Rival\" and drop rival HP 3→2→1 with viewport_contains_center true, while enemy attacks separately reduce player health (visible 100→92→80, and 56 at failure). Pursuit arms before the clear window (level 0→3→2→3 early, wanted stars visible in frames) and the escape is genuine: far_pursuit_levels [0], longest continuous escape 2.9 s vs required 2.0 s, rival motion 4.47 m during driving, pursuit back to 0 at ~18 m distance. Failure is real, not scripted mid-run: frame-008 (t=31) shows the MISSION FAILED / \"Ran out of time\" banner at t=30.08 with health 56; frame-009 (t=32.5, post-reset, restarts=1) shows HEALTH 100, \"WANTED ...\", and the reset 30 s grab-the-YELLOW-parcel objective with the yellow cube present. Retry ends in frame-012 (t=47.2) with ★ DELIVERY COMPLETE ★ at the green pad, matching the trace's delivery edge (distance 1.21 m, mission \"complete\", negligible 0.0026 m penetration). HUD is readable and state-consistent in every frame (health, wanted stars, objective/help lines, mission banners); audio_peak_rms 0.206 establishes a live mixer signal per the stated standard, though sound quality remains unproven. Build/compile clean, all ten regressions pass, duration 52 s is within the 240 s budget. Minor rough-stage polish observed but not route-breaking: the yellow parcel cube still appears near the fence in frame-010 after the \"parcel in hand\" state (pickup t=39.43), the world remains placeholder-grade (flat brown plane, bare skyline), and the delivery pad beam overlaps the car body — acceptable dev art for this stage. This is a scoped PASS, not final game acceptance.",
+    "verdict": "PASS"
+  },
+  "scope": "rough-whole-route"
+}

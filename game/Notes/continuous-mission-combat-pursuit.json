@@ -1,0 +1,13 @@
+{
+  "accepted_utc": "2026-10-05T20:49:45.546163+00:00",
+  "candidate": "5034b67116838b8bc413acd40e9bb8d712bff623",
+  "evidence": "evidence/combat-runtime-ae58a377-stable-combined",
+  "final_game_accepted": false,
+  "review": {
+    "fixes": [],
+    "ok": true,
+    "summary": "Scoped checks pass on actual native evidence. Combat: frame-002 (t=8) and frame-005 (t=24.4) show a distinct red rival rendered in the mission street with an armed/raised-arm attack pose, and the trace confirms Mouse0 fired through a real aim path with first_aim_collider=Rival and genuine rival HP decrements 3→2→1 (2 shots, 2 hits, foot contract). Rival attacks causally reduce player health (8 foot damage events), and the wall contract proves occlusion (84 blocked attacks, 6 blocked shots), so hits/misses reflect real geometry. Pursuit: pursuit_transitions arm from the actual encounter (level 0→3 at t=4.03 alongside the first enemy damage), escalate on foot, and in the driving scope decay 3→2→1→0 as the player escapes to 18–23 m with 5.78 s continuous escape (required 2.0 s); the rival keeps visibly moving 15.9 m during the drive, and pursuit re-arms (level 1) when it closes again. Frame-005's HUD (\"parcel in hand – RIVAL PURSUING … MOUSE0 fire the rival, or drive off to break pursuit\") makes the encounter and escape condition readable. Mission: frame-004 shows the grab objective on foot, frame-008 (t=31.7) shows \"DELIVERY COMPLETE / R to reset\" at the green pad, matching trace pickup (23.98 s), delivery input edge (30.83 s), and mission states active→complete; walk/world/motor/courier/failure-retry regressions all pass, preserving objective, ending, and R retry. Replay coverage: walking (player displacement 5.21 m), vehicle entry/drive (vehicle displacement 17.38 m, driving-scope mode transitions), foot exit visible in frame-005, a real hit, pursuit start/escape, and the ending. Rough greybox art is within the accepted scope; the target image remains aspirational visual direction only. Build exit 0, no compile errors.",
+    "verdict": "PASS"
+  },
+  "scope": "mission-combat-pursuit"
+}

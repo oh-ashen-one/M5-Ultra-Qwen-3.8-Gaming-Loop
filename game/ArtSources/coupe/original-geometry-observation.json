@@ -1,0 +1,805 @@
+[
+  {
+    "object": "apillar_L",
+    "mesh": "apillar_L",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "apillar_R",
+    "mesh": "apillar_R",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "body_side_L_front",
+    "mesh": "body_side_L_front",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "body_side_L_rear",
+    "mesh": "body_side_L_rear",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "body_side_L_sill",
+    "mesh": "body_side_L_sill",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "body_side_R",
+    "mesh": "body_side_R",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "bpillar_L",
+    "mesh": "bpillar_L",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "bpillar_R",
+    "mesh": "bpillar_R",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "bumper_f",
+    "mesh": "bumper_f",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "bumper_r",
+    "mesh": "bumper_r",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "cpillar_L",
+    "mesh": "cpillar_L",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "cpillar_R",
+    "mesh": "cpillar_R",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "dash",
+    "mesh": "dash",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "dash_top",
+    "mesh": "dash_top",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "deck",
+    "mesh": "deck",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "door_doorline",
+    "mesh": "door_doorline",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "door_line_R",
+    "mesh": "door_line_R",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "driver_door",
+    "mesh": "driver_door",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "firewall",
+    "mesh": "firewall",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "floor",
+    "mesh": "floor",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "front_fender_L",
+    "mesh": "front_fender_L",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "front_fender_R",
+    "mesh": "front_fender_R",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "front_lower",
+    "mesh": "front_lower",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "grille",
+    "mesh": "grille",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_chrome"
+    ]
+  },
+  {
+    "object": "headlamp_L",
+    "mesh": "headlamp_L",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_lamp"
+    ]
+  },
+  {
+    "object": "headlamp_R",
+    "mesh": "headlamp_R",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_lamp"
+    ]
+  },
+  {
+    "object": "hood",
+    "mesh": "hood",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "mirror_L",
+    "mesh": "mirror_L",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "mirror_R",
+    "mesh": "mirror_R",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "nose",
+    "mesh": "nose",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint_dark"
+    ]
+  },
+  {
+    "object": "rail_L",
+    "mesh": "rail_L",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "rail_R",
+    "mesh": "rail_R",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "rear_bulk",
+    "mesh": "rear_bulk",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "rear_fender_L",
+    "mesh": "rear_fender_L",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "rear_fender_R",
+    "mesh": "rear_fender_R",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "rear_lower",
+    "mesh": "rear_lower",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "rear_window",
+    "mesh": "rear_window",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_glass"
+    ]
+  },
+  {
+    "object": "rocker_L",
+    "mesh": "rocker_L",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "rocker_R",
+    "mesh": "rocker_R",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "roof",
+    "mesh": "roof",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint"
+    ]
+  },
+  {
+    "object": "seat_L",
+    "mesh": "seat_L_cush",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_seat"
+    ]
+  },
+  {
+    "object": "seat_L_back",
+    "mesh": "seat_L_back",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_seat"
+    ]
+  },
+  {
+    "object": "seat_L_head",
+    "mesh": "seat_L_head",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_seat"
+    ]
+  },
+  {
+    "object": "seat_R",
+    "mesh": "seat_R_cush",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_seat"
+    ]
+  },
+  {
+    "object": "seat_R_back",
+    "mesh": "seat_R_back",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_seat"
+    ]
+  },
+  {
+    "object": "seat_R_head",
+    "mesh": "seat_R_head",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_seat"
+    ]
+  },
+  {
+    "object": "spoiler",
+    "mesh": "spoiler",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint_dark"
+    ]
+  },
+  {
+    "object": "steering_col",
+    "mesh": "steering_col",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "steering_hub",
+    "mesh": "steering_hub",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "steering_spoke_210",
+    "mesh": "steering_spoke_210",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "steering_spoke_330",
+    "mesh": "steering_spoke_330",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "steering_spoke_90",
+    "mesh": "steering_spoke_90",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "steering_wheel",
+    "mesh": "steering_wheel",
+    "vertices": 224,
+    "polygons": 224,
+    "smooth_faces": 0,
+    "flat_faces": 224,
+    "materials": [
+      "coupe_trim"
+    ]
+  },
+  {
+    "object": "tail",
+    "mesh": "tail",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_paint_dark"
+    ]
+  },
+  {
+    "object": "tailamp_L",
+    "mesh": "tailamp_L",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_tail"
+    ]
+  },
+  {
+    "object": "tailamp_R",
+    "mesh": "tailamp_R",
+    "vertices": 56,
+    "polygons": 54,
+    "smooth_faces": 48,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_tail"
+    ]
+  },
+  {
+    "object": "wheel_FL",
+    "mesh": "wheel_FL",
+    "vertices": 44,
+    "polygons": 24,
+    "smooth_faces": 0,
+    "flat_faces": 24,
+    "materials": [
+      "coupe_tire"
+    ]
+  },
+  {
+    "object": "wheel_FL_hub",
+    "mesh": "wheel_FL_hub",
+    "vertices": 32,
+    "polygons": 18,
+    "smooth_faces": 0,
+    "flat_faces": 18,
+    "materials": [
+      "coupe_rim"
+    ]
+  },
+  {
+    "object": "wheel_FL_rim",
+    "mesh": "wheel_FL_rim",
+    "vertices": 256,
+    "polygons": 256,
+    "smooth_faces": 256,
+    "flat_faces": 0,
+    "materials": [
+      "coupe_rim"
+    ]
+  },
+  {
+    "object": "wheel_FL_spokes",
+    "mesh": "wheel_FL_spokes",
+    "vertices": 32,
+    "polygons": 24,
+    "smooth_faces": 0,
+    "flat_faces": 24,
+    "materials": [
+      "coupe_rim"
+    ]
+  },
+  {
+    "object": "wheel_FR",
+    "mesh": "wheel_FR",
+    "vertices": 44,
+    "polygons": 24,
+    "smooth_faces": 0,
+    "flat_faces": 24,
+    "materials": [
+      "coupe_tire"
+    ]
+  },
+  {
+    "object": "wheel_FR_hub",
+    "mesh": "wheel_FR_hub",
+    "vertices": 32,
+    "polygons": 18,
+    "smooth_faces": 0,
+    "flat_faces": 18,
+    "materials": [
+      "coupe_rim"
+    ]
+  },
+  {
+    "object": "wheel_FR_rim",
+    "mesh": "wheel_FR_rim",
+    "vertices": 256,
+    "polygons": 256,
+    "smooth_faces": 256,
+    "flat_faces": 0,
+    "materials": [
+      "coupe_rim"
+    ]
+  },
+  {
+    "object": "wheel_FR_spokes",
+    "mesh": "wheel_FR_spokes",
+    "vertices": 32,
+    "polygons": 24,
+    "smooth_faces": 0,
+    "flat_faces": 24,
+    "materials": [
+      "coupe_rim"
+    ]
+  },
+  {
+    "object": "wheel_RL",
+    "mesh": "wheel_RL",
+    "vertices": 44,
+    "polygons": 24,
+    "smooth_faces": 0,
+    "flat_faces": 24,
+    "materials": [
+      "coupe_tire"
+    ]
+  },
+  {
+    "object": "wheel_RL_hub",
+    "mesh": "wheel_RL_hub",
+    "vertices": 32,
+    "polygons": 18,
+    "smooth_faces": 0,
+    "flat_faces": 18,
+    "materials": [
+      "coupe_rim"
+    ]
+  },
+  {
+    "object": "wheel_RL_rim",
+    "mesh": "wheel_RL_rim",
+    "vertices": 256,
+    "polygons": 256,
+    "smooth_faces": 256,
+    "flat_faces": 0,
+    "materials": [
+      "coupe_rim"
+    ]
+  },
+  {
+    "object": "wheel_RL_spokes",
+    "mesh": "wheel_RL_spokes",
+    "vertices": 32,
+    "polygons": 24,
+    "smooth_faces": 0,
+    "flat_faces": 24,
+    "materials": [
+      "coupe_rim"
+    ]
+  },
+  {
+    "object": "wheel_RR",
+    "mesh": "wheel_RR",
+    "vertices": 44,
+    "polygons": 24,
+    "smooth_faces": 0,
+    "flat_faces": 24,
+    "materials": [
+      "coupe_tire"
+    ]
+  },
+  {
+    "object": "wheel_RR_hub",
+    "mesh": "wheel_RR_hub",
+    "vertices": 32,
+    "polygons": 18,
+    "smooth_faces": 0,
+    "flat_faces": 18,
+    "materials": [
+      "coupe_rim"
+    ]
+  },
+  {
+    "object": "wheel_RR_rim",
+    "mesh": "wheel_RR_rim",
+    "vertices": 256,
+    "polygons": 256,
+    "smooth_faces": 256,
+    "flat_faces": 0,
+    "materials": [
+      "coupe_rim"
+    ]
+  },
+  {
+    "object": "wheel_RR_spokes",
+    "mesh": "wheel_RR_spokes",
+    "vertices": 32,
+    "polygons": 24,
+    "smooth_faces": 0,
+    "flat_faces": 24,
+    "materials": [
+      "coupe_rim"
+    ]
+  },
+  {
+    "object": "windshield",
+    "mesh": "windshield",
+    "vertices": 8,
+    "polygons": 6,
+    "smooth_faces": 0,
+    "flat_faces": 6,
+    "materials": [
+      "coupe_glass"
+    ]
+  }
+]

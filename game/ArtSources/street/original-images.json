@@ -1,0 +1,50 @@
+[
+  {
+    "image": "t_asph",
+    "file": "Textures/00-t_asph.png",
+    "width": 512,
+    "height": 512,
+    "original_generated_pixels": true,
+    "external_input": false
+  },
+  {
+    "image": "t_brick",
+    "file": "Textures/01-t_brick.png",
+    "width": 512,
+    "height": 512,
+    "original_generated_pixels": true,
+    "external_input": false
+  },
+  {
+    "image": "t_brick_dk",
+    "file": "Textures/02-t_brick_dk.png",
+    "width": 512,
+    "height": 512,
+    "original_generated_pixels": true,
+    "external_input": false
+  },
+  {
+    "image": "t_conc",
+    "file": "Textures/03-t_conc.png",
+    "width": 512,
+    "height": 512,
+    "original_generated_pixels": true,
+    "external_input": false
+  },
+  {
+    "image": "t_stone",
+    "file": "Textures/04-t_stone.png",
+    "width": 512,
+    "height": 512,
+    "original_generated_pixels": true,
+    "external_input": false
+  },
+  {
+    "image": "t_wood",
+    "file": "Textures/05-t_wood.png",
+    "width": 512,
+    "height": 512,
+    "original_generated_pixels": true,
+    "external_input": false
+  }
+]

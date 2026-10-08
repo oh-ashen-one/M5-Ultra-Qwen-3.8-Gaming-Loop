@@ -1,0 +1,18 @@
+{
+  "accepted_utc": "2026-10-05T13:12:28.356262+00:00",
+  "candidate": "54580a0eb03160d4d68a2cf576351c83f65c2756",
+  "evidence": "evidence/q0002-7c289d53",
+  "final_game_accepted": false,
+  "review": {
+    "fixes": [
+      "Supply the missing frame-001 capture (10s); the mid-W-route state is currently unproven visually, so coherence of the W4-16s leg rests only on the displacement numbers.",
+      "Make the stop edges visually understandable: frame-002.png and frame-003.png show the player halted within about half a metre of an unguarded pavement drop into brown void. Carry the existing fence/curb meshes (matching the yellow-post fence seen in frame-002.png) across the western and southern stop edges so the invisible BoxCollider reads as a real barrier.",
+      "frame-000.png shows the start view hugging the east facade and stepped pier ledge so closely that the forward corridor is half occluded; adjust the spawn view or facade-relative offset so the intended clear centre walking corridor is legible at the start of the route.",
+      "Thin dark seam lines cross the pavement in frame-000.png, frame-002.png and frame-003.png; verify these are cosmetic seams between pavement tiles rather than real gaps that could snag the character or expose the void at a collider boundary."
+    ],
+    "ok": true,
+    "summary": "Scoped world-collision review using the supplied native frames frame-000.png (start, camera tight to the east facade and pier bases), frame-002.png (west/east edge stop with fence, yellow posts, bin and coupe visible in the distance), and frame-003.png (third angle showing the player stopped at the pavement edge beside the pier plinth and dark facade). Runtime evidence matches the requirement set: 23 colliders (compact, not per-trim), forward stop motion 0.0 and side stop motion ~1.2e-7 while W and A remain held, vertical drop only 0.158 (spawn settle onto the Y0.14 pavement top), zero uncovered pavement samples over 124 regression samples, and the ~19m route preserved (18.979m displacement). Across all three frames the player rig, fence, bin and coupe read clearly, and there is no visible penetration into the facade, piers or props. Bootstrap.Create installation is not directly readable from frames but is corroborated by the runtime collider count and non-penetrating stop behaviour. This is a scoped pass only, not final acceptance. Weaknesses visible in the evidence: the stop in frame-002.png and frame-003.png occurs at a bare drop-off into brown void with no fence/curb in view, and the mid-route capture frame-001 is absent from the supplied set.",
+    "verdict": "PASS"
+  },
+  "scope": "world-collision"
+}
