@@ -118,9 +118,9 @@ MissionDirectorHud.Install(body,cam);
             sun.intensity = 1.32f;
             sun.color = new Color(1.0f, 0.83f, 0.62f);
             sun.shadows = LightShadows.Soft;
-            sun.shadowStrength = 0.72f;
+            sun.shadowStrength = 0.9f;
             // Low elevation (~16 deg) for long shadows; azimuth down the block.
-            sun.transform.rotation = Quaternion.Euler(16f, -34f, 0f);
+            sun.transform.rotation = Quaternion.Euler(15.0f, -55.0f, 0.0f);
 
             // Warm hazy dusk fog fades the far skyline into the sky glow so the
             // tiled blocks dissolve like the reference photo instead of hard-
@@ -134,7 +134,7 @@ MissionDirectorHud.Install(body,cam);
             // reads as dusk rather than flat grey, while staying under the warm
             // key light. Unity 6 Built-in exposes ambientLight (Flat) reliably.
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.40f, 0.43f, 0.50f);
+            RenderSettings.ambientLight = new Color(0.36f, 0.4f, 0.52f);
 
             // Warm the existing skybox only through guarded, present properties
             // (no Shader.Find, so a stripped sky shader is never required).
