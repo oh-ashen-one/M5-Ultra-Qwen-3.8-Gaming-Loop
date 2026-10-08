@@ -316,6 +316,8 @@ pad.transform.position = new Vector3(1, PAV_TOP + 0.01f, 26);
             RefreshHud();
         }
 
+        void LateUpdate(){ if(stage != 1 || parcel == null || player == null || DeathAuthority.IsDead) return; if(!player.gameObject.activeInHierarchy) return; string mode = LoopSignals.Mode; if(!string.IsNullOrEmpty(mode) && (mode.IndexOf("Veh", System.StringComparison.OrdinalIgnoreCase) >= 0 || mode.IndexOf("Drive", System.StringComparison.OrdinalIgnoreCase) >= 0 || mode.IndexOf("Car", System.StringComparison.OrdinalIgnoreCase) >= 0)) return; Transform visual = null; for(int i=0;i<player.childCount;++i){ Transform child = player.GetChild(i); if(child != null && child.name == "PlayerVisual"){ visual = child; break; } } if(visual == null || !visual.gameObject.activeInHierarchy) return; Renderer hand = null; foreach(Renderer r in visual.GetComponentsInChildren<Renderer>()){ if(r == null || !r.enabled || !r.gameObject.activeInHierarchy) continue; string n = r.name; if(string.IsNullOrEmpty(n)) continue; string lower = n.ToLowerInvariant(); if(lower.IndexOf("palm_l", System.StringComparison.Ordinal) >= 0 || lower.IndexOf("palml", System.StringComparison.Ordinal) >= 0){ hand = r; break; } } if(hand == null) return; Vector3 half = parcel.localScale * 0.5f; if(half.x < 0.01f || half.y < 0.01f || half.z < 0.01f) return; Vector3 offset = player.up * Mathf.Max(0.03f, half.y * 0.28f) + player.forward * Mathf.Max(0.03f, half.z * 0.16f); parcel.position = hand.bounds.center + offset; parcel.rotation = player.rotation; }
+
         void Respawn()
         {
             stage = 0; missionStartTime = Time.time;
