@@ -137,8 +137,6 @@ def box(nm, dims, loc, m, parent=root):
 
 def prism(nm, poly, axis, a0, a1, m):
     """Closed thin skin: extrude an in-plane polygon along one axis a0..a1."""
-    if nm in ('body_side_L_rear', 'body_side_L_front', 'body_side_R') and axis == 0 and m == 'paint':
-        poly = {'body_side_L_rear': [(-0.20, 0.92), (-0.98, 0.92), (-1.12, 0.80), (-1.12, 0.42), (-0.06, 0.42), (-0.06, 0.82)], 'body_side_L_front': [(1.06, 0.42), (1.06, 0.84), (1.00, 0.92), (0.9704, 0.80), (0.94, 0.42)], 'body_side_R': [(-0.9376, 0.58), (-0.50, 0.92), (0.90, 0.92), (1.012, 0.72), (1.06, 0.42), (-1.12, 0.42)]}[nm]
     me = bpy.data.meshes.new(nm)
     bm = bmesh.new()
     oax = [i for i in range(3) if i != axis]
