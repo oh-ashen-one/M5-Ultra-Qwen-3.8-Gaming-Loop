@@ -92,41 +92,54 @@ def gen(nm, s, mode):
                 sh = 0.5 * bw if (ri % 2) else 0.0
                 u2 = u - sh
                 bx = u2 % bw; by = v - ri * rh
-                fi = int(u2 // bw)
-                vthr = 0.0011; hthr = 0.0045
-                mo = bx < vthr or bx > bw - vthr or by < hthr or by > rh - hthr
-                g1 = _fb(u, v, 64, s + 5)
-                ao = 1.0
+                fi = int(u2 // bw) % 16
+                vthr = 0.0017; hthr = 0.0042
                 dv = bx if bx < bw - bx else bw - bx
-                if dv < 0.008: ao *= 0.80 + 0.20 * (dv / 0.008)
                 dh = by if by < rh - by else rh - by
-                if dh < 0.018: ao *= 0.86 + 0.14 * (dh / 0.018)
-                i = (row + x) * 4
-                if mo:
-                    mv = _h(fi, ri, s + 21) * 0.04 - 0.02
-                    rr = 0.405 + mv + (g1 - 0.5) * 0.05
-                    gg = 0.372 + mv + (g1 - 0.5) * 0.04
-                    bb = 0.338 + mv + (g1 - 0.5) * 0.035
-                    dr = 0.205 + (g1 - 0.5) * 0.030 + mv * 0.5
-                    dg = 0.190 + (g1 - 0.5) * 0.025 + mv * 0.5
-                    db = 0.178 + (g1 - 0.5) * 0.020 + mv * 0.5
-                else:
-                    ti = _h(fi, ri, s + 3); ti2 = _h(fi, ri, s + 13)
-                    rr = 0.330 + 0.100 * ti; gg = 0.150 + 0.055 * ti; bb = 0.125 + 0.045 * ti
-                    dr = 0.115 + 0.045 * ti; dg = 0.085 + 0.030 * ti; db = 0.070 + 0.024 * ti
-                    if ti2 > 0.82:
-                        rr *= 0.80; gg *= 0.80; bb *= 0.82
-                        dr *= 0.80; dg *= 0.80; db *= 0.82
-                    elif ti2 < 0.12:
-                        rr = rr * 0.9 + 0.055; gg = gg * 0.9 + 0.055; bb = bb * 0.9 + 0.050
-                        dr = dr * 0.9 + 0.020; dg = dg * 0.9 + 0.020; db = db * 0.9 + 0.018
-                    rr += (g1 - 0.5) * 0.06; gg += (g1 - 0.5) * 0.05; bb += (g1 - 0.5) * 0.04
-                    dr += (g1 - 0.5) * 0.03; dg += (g1 - 0.5) * 0.025; db += (g1 - 0.5) * 0.02
-                rr *= ao; gg *= ao; bb *= ao
-                dr *= ao; dg *= ao; db *= ao
-                px[i] = max(0.0, min(1.0, rr)); px[i + 1] = max(0.0, min(1.0, gg)); px[i + 2] = max(0.0, min(1.0, bb)); px[i + 3] = 1.0
-                pxdk[i] = max(0.0, min(1.0, dr)); pxdk[i + 1] = max(0.0, min(1.0, dg)); pxdk[i + 2] = max(0.0, min(1.0, db)); pxdk[i + 3] = 1.0
-                continue
+                mw = 1.0 - max(0.0, min(1.0, dv / vthr))
+                mh = 1.0 - max(0.0, min(1.0, dh / hthr))
+                m = max(mw, mh)
+                g1 = _fb(u, v, 64, s + 5)
+                g2 = _vn(u, v, 96, s + 29)
+                g3 = _vn(u, v, 18, s + 43)
+                gr = 0.5 * g1 + 0.5 * g2
+                ti = _h(fi, ri, s + 3)
+                ti2 = _h(fi, ri, s + 13)
+                ti3 = _h(fi, ri, s + 27)
+                w = ti - 0.5
+                q = ti2 - 0.5
+                weather = g3 + 0.35 * ti3 - 0.675
+                fr = 0.97 if ti2 > 0.82 else (0.96 if ti2 < 0.18 else 1.0)
+                fg = 1.03 if ti2 > 0.82 else (0.97 if ti2 < 0.18 else 1.0)
+                fb = 1.06 if ti2 > 0.82 else (0.99 if ti2 < 0.18 else 1.0)
+                br = 0.312 + 0.052 * w + 0.018 * q + 0.018 * weather + 0.010 * (gr - 0.5)
+                bg = 0.168 + 0.040 * w + 0.013 * q + 0.012 * weather + 0.007 * (gr - 0.5)
+                bb = 0.118 + 0.028 * w + 0.009 * q + 0.008 * weather + 0.005 * (gr - 0.5)
+                br *= fr; bg *= fg; bb *= fb
+                br *= 1.0 - 0.035 * m; bg *= 1.0 - 0.035 * m; bb *= 1.0 - 0.035 * m
+                dr = 0.158 + 0.034 * w + 0.012 * q + 0.012 * weather + 0.006 * (gr - 0.5)
+                dg = 0.106 + 0.025 * w + 0.008 * q + 0.008 * weather + 0.004 * (gr - 0.5)
+                db = 0.088 + 0.018 * w + 0.006 * q + 0.006 * weather + 0.003 * (gr - 0.5)
+                dfr = 0.97 if ti2 > 0.82 else (0.96 if ti2 < 0.18 else 1.0)
+                dfg = 1.02 if ti2 > 0.82 else (0.97 if ti2 < 0.18 else 1.0)
+                dfb = 1.05 if ti2 > 0.82 else (0.99 if ti2 < 0.18 else 1.0)
+                dr *= dfr; dg *= dfg; db *= dfb
+                dr *= 1.0 - 0.035 * m; dg *= 1.0 - 0.035 * m; db *= 1.0 - 0.035 * m
+                mr = 0.292 + 0.036 * (g1 - 0.5) + 0.024 * (g3 - 0.5)
+                mg = 0.280 + 0.032 * (g1 - 0.5) + 0.022 * (g3 - 0.5)
+                mb = 0.262 + 0.030 * (g1 - 0.5) + 0.020 * (g3 - 0.5)
+                drm = 0.152 + 0.022 * (g1 - 0.5) + 0.016 * (g3 - 0.5)
+                dgm = 0.148 + 0.020 * (g1 - 0.5) + 0.014 * (g3 - 0.5)
+                dbm = 0.142 + 0.018 * (g1 - 0.5) + 0.012 * (g3 - 0.5)
+                corner = min(mw, mh)
+                mr *= 1.0 - 0.10 * corner; mg *= 1.0 - 0.10 * corner; mb *= 1.0 - 0.10 * corner
+                drm *= 1.0 - 0.10 * corner; dgm *= 1.0 - 0.10 * corner; dbm *= 1.0 - 0.10 * corner
+                rr = br + (mr - br) * m
+                gg = bg + (mg - bg) * m
+                bb = bb + (mb - bb) * m
+                dr = dr + (drm - dr) * m
+                dg = dg + (dgm - dg) * m
+                db = db + (dbm - db) * m
             elif mode == "stone":
                 m1 = _fb(u, v, 8, s + 1); st = _fb(u, v * 0.6, 5, s + 7)
                 m2 = _fb(u, v, 3, s + 33)
