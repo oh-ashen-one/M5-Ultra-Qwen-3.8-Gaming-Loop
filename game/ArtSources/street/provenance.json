@@ -1,12 +1,12 @@
 {
-  "action_id": "q0267-c85c2337-street-export",
+  "action_id": "q0382-dc24ae73-asphalt-export",
   "author": "local-Qwen",
   "export_succeeded": true,
   "files": [
     {
-      "bytes": 184304,
+      "bytes": 188562,
       "path": "Assets/Resources/Generated/street/Textures/00-t_asph.png",
-      "sha256": "635cd14719f1d3beda28a634fae56e87794cac539f5f3bab8a672bee05b79035"
+      "sha256": "92a9d2b006d6e9b74b3f76d9d338b4c66503d1646d570cb95e3538fab7392b7f"
     },
     {
       "bytes": 215899,
@@ -34,14 +34,14 @@
       "sha256": "4f2a6996988a6d78e91a0267544573e7d92fba41093fffc20180e4a30032571f"
     },
     {
-      "bytes": 1688012,
+      "bytes": 1692284,
       "path": "Assets/Resources/Generated/street/scene.fbx",
-      "sha256": "7e6c2ef52b8767dfcb5623b9839efd706d47c645448688bbf2e0bbffb41f72a9"
+      "sha256": "687e0caee651421ced3ae9908ab300829680d3f15b68ac81a2e9969accce60cb"
     },
     {
-      "bytes": 184304,
+      "bytes": 188562,
       "path": "ArtSources/street/Textures/00-t_asph.png",
-      "sha256": "635cd14719f1d3beda28a634fae56e87794cac539f5f3bab8a672bee05b79035"
+      "sha256": "92a9d2b006d6e9b74b3f76d9d338b4c66503d1646d570cb95e3538fab7392b7f"
     },
     {
       "bytes": 215899,
@@ -69,6 +69,11 @@
       "sha256": "4f2a6996988a6d78e91a0267544573e7d92fba41093fffc20180e4a30032571f"
     },
     {
+      "bytes": 48336,
+      "path": "ArtSources/street/original-geometry-observation.json",
+      "sha256": "9ae928e963016d946ee8aae58a12f47b97d0f59e295df660109637aac1ca8a8b"
+    },
+    {
       "bytes": 1059,
       "path": "ArtSources/street/original-images.json",
       "sha256": "1fd4bf8747fbe502ff0896635a00ded5435a3b15acf817b0efdc6f7788596ec1"
@@ -79,11 +84,11 @@
       "sha256": "f10bb467c60a38e64bd76fe4c78eda72924bdef08f82e4ad4132c6029bd96ba3"
     },
     {
-      "bytes": 1219105,
+      "bytes": 1223757,
       "path": "ArtSources/street/source.blend",
-      "sha256": "994891ee473800e3a0fb961abb45807d7ded129dd08f732772a5d9a4f3cb9b30"
+      "sha256": "5034bd4dd01d9ea326d903ffb2182148d8ac2ccb3dfc910b4aa77e3f3d96ae95"
     }
   ],
   "script": "Art/street.py",
-  "script_sha256": "ba5dbecca2aa01db837db19a2f7d5f5e453ea03a2c69af7f96472065112e050e"
+  "script_sha256": "7d86dc6d3652f6067697c8217c42a89e78c8e46c8281920e75237c8374a56647"
 }
