@@ -93,15 +93,21 @@ def obj(nm, me, m, parent=root):
                         if edges:
                             ok = False
                             try:
-                                bmesh.ops.bevel(bm, geom=edges, offset=bw, offset_type='OFFSET', segments=1, profile=0.5, affect='EDGES', clamp_overlap=True)
+                                res = bmesh.ops.bevel(bm, geom=edges, offset=bw, offset_type='OFFSET', segments=2, profile=0.5, affect='EDGES', clamp_overlap=True)
+                                for nf in res.get('face', []):
+                                    nf.smooth = True
                                 ok = True
                             except Exception:
                                 try:
-                                    bmesh.ops.bevel(bm, geom=edges, offset=bw, offset_type='OFFSET', segments=1, profile=0.5, affect='EDGES')
+                                    res = bmesh.ops.bevel(bm, geom=edges, offset=bw, offset_type='OFFSET', segments=2, profile=0.5, affect='EDGES')
+                                    for nf in res.get('face', []):
+                                        nf.smooth = True
                                     ok = True
                                 except Exception:
                                     try:
-                                        bmesh.ops.bevel(bm, geom=edges, offset=bw, segments=1, profile=0.5, affect='EDGES')
+                                        res = bmesh.ops.bevel(bm, geom=edges, offset=bw, segments=2, profile=0.5, affect='EDGES')
+                                        for nf in res.get('face', []):
+                                            nf.smooth = True
                                         ok = True
                                     except Exception:
                                         ok = False
