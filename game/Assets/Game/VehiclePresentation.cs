@@ -57,7 +57,7 @@ static void FinishSurfaces(Transform root) {
             float met, g;
             if (p1) { c = new Color(0.030f, 0.130f, 0.620f, 1f); met = 0.30f; g = 0.72f; }
             else if (d2) { c = new Color(0.016f, 0.075f, 0.380f, 1f); met = 0.30f; g = 0.68f; }
-            else if (rim) { c = new Color(0.300f, 0.310f, 0.330f, 1f); met = 0.70f; g = 0.32f; }
+            else if (rim) { c = new Color(0.520f, 0.530f, 0.550f, 1f); met = 0.70f; g = 0.45f; }
             else if (chrome) { c = new Color(0.750f, 0.760f, 0.780f, 1f); met = 0.70f; g = 0.55f; }
             else if (trim) { c = new Color(0.020f, 0.022f, 0.026f, 1f); met = 0.10f; g = 0.28f; }
             else if (lamp) { c = new Color(0.900f, 0.900f, 0.850f, 1f); met = 0f; g = 0.50f; }
