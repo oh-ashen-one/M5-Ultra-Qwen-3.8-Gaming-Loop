@@ -102,7 +102,7 @@ root.transform.GetChild(root.transform.childCount - 1).name = "CityBoundaryNorth
             RenderSettings.fogStartDistance = 62f;
             RenderSettings.fogEndDistance = 230f;
             RenderSettings.fogDensity = 0.0045f;
-            RenderSettings.ambientLight = new Color(0.42f, 0.41f, 0.40f, 1f);
+            RenderSettings.ambientLight = new Color(0.36f, 0.4f, 0.52f, 1f);
         }
 
         static void Collect()

@@ -134,7 +134,7 @@ MissionDirectorHud.Install(body,cam);
             // reads as dusk rather than flat grey, while staying under the warm
             // key light. Unity 6 Built-in exposes ambientLight (Flat) reliably.
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.36f, 0.4f, 0.52f);
+            RenderSettings.ambientLight = new Color(0.40f, 0.43f, 0.50f);
 
             // Warm the existing skybox only through guarded, present properties
             // (no Shader.Find, so a stripped sky shader is never required).
