@@ -22,7 +22,7 @@ static void FinishSurfaces(Transform root){
    if(!clones.TryGetValue(m,out c)){
     c=new Material(m); c.name=m.name;
     Color col;
-    if(s=="jacketcharcoal")col=new Color(0.46f,0.44f,0.4f,1f);
+    if(s=="jacketcharcoal")col=new Color(0.34f,0.34f,0.38f,1f);
     else if(s=="jackethighlight")col=new Color(0.42f,0.42f,0.46f,1f);
     else if(s=="jeansdarkblue")col=new Color(0.40f,0.46f,0.62f,1f);
     else col=new Color(0.44f,0.50f,0.64f,1f);
