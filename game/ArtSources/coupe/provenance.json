@@ -1,24 +1,24 @@
 {
-  "action_id": "q0329-446b1fdd-coupe-edges-export",
+  "action_id": "q0336-6c32e7c1-coupe-edges-export",
   "author": "local-Qwen",
   "export_succeeded": true,
   "files": [
     {
-      "bytes": 242300,
+      "bytes": 245260,
       "path": "Assets/Resources/Generated/coupe/scene.fbx",
-      "sha256": "decd5ea075ad124a18b29d0a7d3bf81eb21d5fa8bb225beb5b869fd79d48f0c8"
+      "sha256": "ceb8c4a4fed1476f3b4705d1125b5dc048d92ac43991dc613c79e1070507d5cb"
     },
     {
       "bytes": 14020,
       "path": "ArtSources/coupe/original-geometry-observation.json",
-      "sha256": "2b653ce8619b43e384bed85a14bdae8315048fe9c30ac6d857010c782d27442b"
+      "sha256": "aeb150250a594e307a411c48ba6cc1e30d4e2f02bcef22c25ad42fa8f02f3ba0"
     },
     {
-      "bytes": 143650,
+      "bytes": 145772,
       "path": "ArtSources/coupe/source.blend",
-      "sha256": "7200e4c0cc800b5a40f63897031e73049ce23f70daf9f0130fee83ad58337ebf"
+      "sha256": "618f6741b4f0dcf1a655fc55c942ae7c83a38a590d99fc6fe772373c1d379c6e"
     }
   ],
   "script": "Art/coupe.py",
-  "script_sha256": "f30dde08a65ed08fd3ea5f462f3261e87721c205b6d3fa1a97ed7f202fe6dd84"
+  "script_sha256": "83ccda296c59d3678af931521f84e04c92d5dd7c6b87fd2c1e66d85ab8732f38"
 }

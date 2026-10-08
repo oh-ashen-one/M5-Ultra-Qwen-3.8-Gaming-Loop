@@ -24,10 +24,10 @@
   {
     "object": "body_side_L_front",
     "mesh": "body_side_L_front",
-    "vertices": 56,
-    "polygons": 54,
-    "smooth_faces": 48,
-    "flat_faces": 6,
+    "vertices": 70,
+    "polygons": 67,
+    "smooth_faces": 60,
+    "flat_faces": 7,
     "materials": [
       "coupe_paint"
     ]
@@ -35,10 +35,10 @@
   {
     "object": "body_side_L_rear",
     "mesh": "body_side_L_rear",
-    "vertices": 56,
-    "polygons": 54,
-    "smooth_faces": 48,
-    "flat_faces": 6,
+    "vertices": 84,
+    "polygons": 80,
+    "smooth_faces": 72,
+    "flat_faces": 8,
     "materials": [
       "coupe_paint"
     ]
@@ -57,10 +57,10 @@
   {
     "object": "body_side_R",
     "mesh": "body_side_R",
-    "vertices": 56,
-    "polygons": 54,
-    "smooth_faces": 48,
-    "flat_faces": 6,
+    "vertices": 84,
+    "polygons": 80,
+    "smooth_faces": 72,
+    "flat_faces": 8,
     "materials": [
       "coupe_paint"
     ]
